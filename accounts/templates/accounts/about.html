@@ -1,0 +1,20 @@
+{% extends "accounts/base.html" %}
+{% load i18n %}
+{% block content %}
+    <br>
+    <div class="container-fluid form-special">
+        <div class="card text-white custom-bg-dark">
+            <div class="card-body">
+                <h3 class="font-weight-normal text-center">{% trans "This is the about page" %}</h3>
+                <hr>
+                <p>{% trans "About Page coming soon !" %}</p>
+                <hr>
+                {% if user.account %}
+                    <a class="btn btn-outline-warning" href="{% url 'accounts:home' user.account.pk %}">
+                        {% trans "Home" %}</a>
+                {% endif %}
+                <small style="float: right;">{% trans "version:0.0.1" %}</small>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

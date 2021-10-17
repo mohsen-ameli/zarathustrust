@@ -1,0 +1,50 @@
+{% extends "accounts/base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <br>
+    <div class="container-fluid">
+        <div class="card text-white register-form">
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    <fieldset class="form-group">
+                        <h4 class="font-weight-normal">{% trans "Why not join now ?!" %}</h4>
+                        <hr>
+                        <!-- {{ form|crispy }} -->
+                        {{ form.username|as_crispy_field }}
+                        {{ form.email|as_crispy_field }}
+                        <div class="row">
+                            <!-- <div class="dropdown">
+                                <button class="btn btn-white dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false">
+                                    <span class="flag-icon flag-icon-ca"></span>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    {% for id, name in form.phone_ext.field.choices %}
+                                        <button type="button" class="dropdown-item" value="{{ id }}" name="country-click">{{ name }}</button>
+                                    {% endfor %}
+                                </div>
+                            </div> -->
+                            {{ form.phone_ext|as_crispy_field }}{{ form.phone_number|as_crispy_field }}
+                        </div>
+                        {{ form.iban|as_crispy_field }}
+                        {{ form.password1|as_crispy_field }}
+                        {{ form.password2|as_crispy_field }}
+                    </fieldset>
+                    <div class="form-group">
+                        <button class="btn btn-outline-warning" type="submit">{% trans "Sign Up" %}</button>
+                    </div>
+                </form>
+                <hr>
+                <div class="boarder-top">
+                    <small class="text-white" style="font-size: 9.5pt;">
+                        {% trans "Already Have An Acount ?" %} 
+                        <a class="ml-2" href="{% url 'login-view' %}" style="color: #f8b119;">{% trans "Log In" %}</a>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+{% endblock content %}

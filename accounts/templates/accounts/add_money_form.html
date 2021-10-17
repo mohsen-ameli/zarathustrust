@@ -1,0 +1,23 @@
+{% extends "accounts/base.html" %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% block content %}
+    <br>
+    <div class="container-fluid form-special">
+        <div class="card text-white custom-bg-dark">
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    <fieldset class="form-group">
+                        <h4 class="font-weight-normal text-center">{% trans "Deposit Money From Your Account" %}</h4>
+                        <hr>
+                        {{ form|crispy }}
+                    </fieldset>
+                    <div class="form-group">
+                        <button class="btn btn-outline-warning" type="submit">{% trans "Deposit" %}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

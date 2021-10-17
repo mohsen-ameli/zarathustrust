@@ -1,0 +1,31 @@
+{% extends "accounts/base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% block content %}
+<br>
+<div class="row">
+    <div class="col-md-5 mx-lg-auto mx-md-auto">
+        <div class="card text-white custom-bg-dark">
+            <div class="card-body text-center">
+                <h5>Business Sign Up !</h5>
+                <hr>
+                <p>{% trans "This is a business account. Sign up now to be able to use our website as a payment for you own shop. Remember, you still get interest on all your capital as well." %}</p>
+                <hr>
+                <a class="btn btn-outline-warning" href="{% url 'business' %}">{% trans "Business" %}</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-5 mx-md-auto">
+        <div class="card text-white custom-bg-dark">
+            <div class="card-body text-center">
+                <h5>Personal Sign Up</h5>
+                <hr>
+                <p>{% trans "This is a normal personal account. Sign up now to start making interest on your ballance." %}</p>
+                <hr>
+                <a class="btn btn-outline-warning" href="{% url 'personal' %}">{% trans "Personal" %}</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

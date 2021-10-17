@@ -1,0 +1,15 @@
+{% extends "accounts/base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <br>
+    <div class="container-fluid form-special">
+        <div class="card text-white custom-bg-dark">
+            <div class="card-body">
+                <h3 class="font-weight-normal text-center">{% trans "You have been logged out !" %}</h3>
+                <hr>
+                <a class="btn btn-outline-warning" href="{% url 'login-view' %}">{% trans "Log In Again" %}</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

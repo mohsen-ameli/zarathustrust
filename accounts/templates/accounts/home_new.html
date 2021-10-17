@@ -1,0 +1,24 @@
+{% extends "accounts/base.html" %}
+{% load i18n %}
+{% block content %}
+    <br>
+    <div class="container-fluid">
+        <h3 class="text-capitalize text-center">{% trans "we pay you 1% interest on your balance !!!" %}</h5>
+        <!---------- 3 buttons ---------->
+        <div class="row">
+            <div class="col-xl-6 text-center">
+                <a href="{% url 'register' %}" style="text-decoration:none">
+                    <i class="fas fa-user-plus" style="font-size: 5rem; color: #f8b119; margin: 1rem;"></i>
+                    <h1 style="color: black;">{% trans "Sign Up" %}</h1>
+                </a>
+            </div>
+            <div class="col-xl-6 text-center">
+                <a href="{% url 'login-view' %}" style="text-decoration:none">
+                    <i class="fas fa-sign-in-alt" style="font-size: 5rem; color: #f8b119; margin: 1rem;"></i>
+                    <h1 style="color: black;">{% trans "Login" %}</h1>
+                </a>
+            </div>
+        </div>
+    </div>
+    <script src="https://kit.fontawesome.com/5f5fa5bcd8.js" crossorigin="anonymous"></script>
+{% endblock %}

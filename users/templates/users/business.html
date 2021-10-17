@@ -1,0 +1,31 @@
+{% extends "accounts/base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% block content %}
+<br>
+<div class="container-fluid">
+    <div class="card text-white register-form">
+        <div class="card-body">
+            <form method="POST">
+                {% csrf_token %}
+                <fieldset class="form-group">
+                    <h4 class="font-weight-normal">{% trans "Why not join now ?!" %}</h4>
+                    <hr>
+                    {{ form|crispy }}
+                </fieldset>
+                <div class="form-group">
+                    <button class="btn btn-outline-warning" type="submit">{% trans "Sign Up" %}</button>
+                </div>
+            </form>
+            <hr>
+            <div class="boarder-top">
+                <small class="text-white" style="font-size: 9.5pt;">
+                    {% trans "Already Have An Acount ?" %}
+                    <a class="ml-2" href="{% url 'login-view' %}" style="color: #f8b119;">{% trans "Log In" %}</a>
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+{% endblock content %}

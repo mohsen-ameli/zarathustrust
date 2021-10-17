@@ -1,0 +1,594 @@
+body {
+  overflow-x: hidden;
+  background-image: url("../images/background.jpg");
+  background-repeat: repeat;
+}
+.navbar {
+  padding: 0.8 rem;
+}
+.navbar-dark .navbar-nav .nav-link {
+  margin-right: 0.5rem;
+  font-size: medium;
+  text-transform: uppercase;
+}
+.navbar-dark .navbar-nav .nav-link.active,
+.navbar-dark .navbar-nav .nav-link.dropdown-toggle,
+.navbar-dark .navbar-nav .dropdown-link,
+.navbar-dark .navbar-nav .nav-link:hover {
+  color: #f8b119;
+}
+.flag-icon-en {
+  background-image: url("https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.1/flags/4x3/us.svg");
+}
+.bg-dark {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+.bg-warning {
+  background-color: #f8b119c7 !important;
+}
+hr {
+  background-color: #f8b119c7 !important;
+}
+/* help text */
+#hint_id_email_verify_code,
+#hint_id_phone_verify_code,
+#hint_id_new_password1,
+#hint_id_username,
+#hint_id_phone_ext,
+#hint_id_phone_number,
+#hint_id_password1,
+#hint_id_password2,
+#hint_id_iban,
+#hint_id_referral_code,
+#hint_id_iban_verify_code {
+  color: white !important;
+}
+/* background-image: url(https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.1/flags/4x3/ca.svg); */
+#id_phone_ext {
+  width: 110px;
+  padding-left: 1rem;
+  padding-top: 0.2rem;
+}
+#id_phone_number {
+  width: 355px;
+}
+#div_id_phone_number {
+  margin-top: 2rem;
+}
+/* end */
+.fa-question-circle {
+  color: #f8b119c7 !important;
+}
+/* Tooltip */
+.bs-tooltip-auto[x-placement^="bottom"] .arrow::before,
+.bs-tooltip-bottom .arrow::before {
+  border-bottom-color: #f8b119; /* Red */
+}
+.tooltip-inner {
+  background-color: #f8b119c7 !important;
+  /*!important is not necessary if you place custom.css at the end of your css calls. For the purpose of this demo, it seems to be required in SO snippet*/
+  color: rgb(0, 0, 0);
+}
+.tooltip.top .tooltip-arrow {
+  border-top-color: #f8b119c7;
+}
+
+.tooltip.right .tooltip-arrow {
+  border-right-color: #f8b119c7;
+}
+
+.tooltip.bottom .tooltip-arrow {
+  border-bottom-color: #f8b119c7;
+}
+
+.tooltip.left .tooltip-arrow {
+  border-left-color: #f8b119c7;
+}
+/* end */
+.referral-copy {
+  margin-left: 0.5rem;
+}
+/* COLOUR */
+/*******   *******/
+.sp-second h1 {
+  color: #f8b119;
+  margin-top: 0.7rem;
+}
+.fa-hand-holding-usd {
+  font-size: 3rem;
+  color: #f8b119;
+  margin-right: 1rem;
+}
+/* XS */
+@media (max-width: 768px) {
+  /* alert */
+  .msg-alert {
+    margin: 1rem auto;
+    margin-bottom: 0;
+  }
+  /* end */
+  /* every form card */
+  .form-special {
+    position: relative;
+    left: 7rem;
+  }
+  .custom-bg-dark {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    max-width: 30rem;
+  }
+  .tamon-bg-dark {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    max-width: 30rem;
+    position: relative;
+    left: 8rem;
+  }
+  .register-form {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    max-width: 32rem;
+    position: relative;
+    left: 6rem;
+  }
+  /* end */
+  /* Top Part */
+  .tp-first {
+    display: inline;
+    position: relative;
+  }
+  .tp-second {
+    display: inline;
+    position: relative;
+    left: 7rem;
+    color: green;
+    font-size: 20pt;
+  }
+  .tp-second a {
+    display: inline;
+    position: relative;
+    font-size: 12pt;
+    text-decoration: none;
+    margin: 0.5rem 0 0 0.5rem;
+  }
+  /* Second Part */
+  .sp-second .row .first,
+  .sp-second .row .second {
+    color: green;
+    font-size: 24pt;
+  }
+}
+/* XS */
+@media (max-width: 640px) {
+  #id_phone_number {
+    width: 100%;
+  }
+  .referral-copy {
+    margin-top: 1rem;
+    margin-left: 0;
+  }
+  /* every form card */
+  .form-special {
+    position: relative;
+    left: 0rem;
+  }
+  .custom-bg-dark {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    max-width: 30rem;
+  }
+  .tamon-bg-dark {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    max-width: 23rem;
+    position: relative;
+    left: 1rem;
+  }
+  .register-form {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    max-width: 32rem;
+    position: relative;
+    left: 0rem;
+  }
+  /* end */
+  .sp-second img {
+    max-width: 10%;
+    height: 5%;
+    margin-left: 1rem;
+    margin-top: 1.6rem;
+  }
+  /* Second Part */
+  .sp-second .row .first,
+  .sp-second .row .second {
+    color: green;
+    font-size: 18pt;
+  }
+}
+/* Mobile */
+@media (max-width: 420px) {
+  #id_phone_ext {
+    width: 90px;
+    padding: 0rem 0rem 0.1rem 0rem;
+  }
+  #id_phone_number {
+    width: 150px;
+  }
+  /* alert */
+  .msg-alert {
+    margin: 1rem auto;
+    margin-bottom: 0;
+  }
+  /* end */
+  .referral-copy {
+    position: relative;
+    left: 1rem;
+    bottom: 1.5rem;
+  }
+  /* every form card */
+  .form-special {
+    position: relative;
+    right: 1rem;
+  }
+  .custom-bg-dark {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    max-width: 20rem;
+  }
+  .tamon-bg-dark {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    max-width: 20rem;
+    position: relative;
+    left: 0rem;
+  }
+  .register-form {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    max-width: 20rem;
+    position: relative;
+    left: 0rem;
+  }
+  /* end */
+  /* Top Part */
+  .tp-first {
+    display: inline;
+    position: relative;
+  }
+  .tp-first h3 {
+    font-size: 18pt;
+  }
+  .tp-second {
+    display: inline;
+    position: relative;
+    left: 2.5rem;
+  }
+  .tp-second h3 {
+    font-size: 18pt;
+  }
+  .tp-second a {
+    display: inline;
+    position: relative;
+    font-size: 12pt;
+    text-decoration: none;
+    margin: 0.5rem 0 0 0.5rem;
+  }
+  /* Second Part */
+  .sp-second .row .first,
+  .sp-second .row .second {
+    color: green;
+    font-size: 16pt;
+  }
+  .font-weight-normal {
+    font-size: 13pt;
+  }
+}
+/* SM */
+@media (min-width: 768px) {
+  /* alert */
+  .msg-alert {
+    margin: 1rem auto;
+    margin-bottom: 0;
+  }
+  /* end */
+  /* every form card */
+  .form-special {
+    position: relative;
+    left: 10rem;
+  }
+  .custom-bg-dark {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    max-width: 30rem;
+  }
+  .tamon-bg-dark {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    max-width: 30rem;
+    position: relative;
+    left: 10rem;
+  }
+  .register-form {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    max-width: 32rem;
+    position: relative;
+    left: 10rem;
+  }
+  /* end */
+  .tp-first {
+    display: inline;
+    position: relative;
+    left: 6rem;
+  }
+  .tp-second {
+    display: inline;
+    position: relative;
+    left: 5.5rem;
+    color: green;
+    font-size: 20pt;
+  }
+  .tp-second a {
+    display: inline;
+    position: relative;
+    font-size: 12pt;
+    text-decoration: none;
+    margin: 0.5rem 0 0 0.5rem;
+  }
+  .sp-first,
+  .sp-second {
+    display: inline;
+    position: relative;
+    left: 10rem;
+  }
+  .sp-second .row .first,
+  .sp-second .row .second {
+    color: green;
+    font-size: 22pt;
+  }
+}
+/* MD/SM */
+@media (min-width: 836px) {
+  /* alert */
+  .msg-alert {
+    width: 800px;
+    margin: 1rem auto;
+    margin-bottom: 0;
+  }
+  /* end */
+  /* every form card */
+  .form-special {
+    position: relative;
+    left: 15rem;
+  }
+  .custom-bg-dark {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    max-width: 30rem;
+  }
+  .tamon-bg-dark {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    max-width: 34rem;
+    position: relative;
+    left: 14rem;
+  }
+  .register-form {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    max-width: 32rem;
+    position: relative;
+    left: 15rem;
+  }
+  /* end */
+  /* Top Part */
+  .tp-first {
+    display: inline;
+    position: relative;
+    left: 0rem;
+  }
+  .tp-second {
+    display: inline;
+    position: relative;
+    left: 1rem;
+  }
+  .tp-second a {
+    display: inline;
+    position: relative;
+    font-size: 12pt;
+    text-decoration: none;
+    margin: 0.5rem 0 0 0.5rem;
+  }
+  /* Second Part */
+  .sp-first,
+  .sp-second {
+    display: inline;
+    position: relative;
+    left: 10rem;
+  }
+  .sp-second .row .first,
+  .sp-second .row .second {
+    color: green;
+    font-size: 22pt;
+  }
+}
+/* MD */
+@media (min-width: 992px) {
+  /* alert */
+  .msg-alert {
+    width: 800px;
+    margin: 1rem auto;
+    margin-bottom: 0;
+  }
+  /* end */
+  /* every form card */
+  .form-special {
+    position: relative;
+    left: 22rem;
+  }
+  .custom-bg-dark {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    max-width: 30rem;
+  }
+  .tamon-bg-dark {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    max-width: 36rem;
+    position: relative;
+    left: 20rem;
+  }
+  .register-form {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    max-width: 32rem;
+    position: relative;
+    left: 22rem;
+  }
+  /* end */
+  /* Top Part */
+  .tp-first {
+    display: inline;
+    position: relative;
+    left: 10rem;
+  }
+  .tp-second {
+    display: inline;
+    position: relative;
+    left: 15rem;
+    color: green;
+    font-size: 20pt;
+  }
+  .tp-second a {
+    display: inline;
+    position: relative;
+    font-size: 12pt;
+    text-decoration: none;
+    margin: 0.5rem 0 0 0.5rem;
+  }
+  /* Second Part */
+  .sp-first,
+  .sp-second {
+    display: inline;
+    position: relative;
+    left: 2rem;
+  }
+  .sp-second .row .first,
+  .sp-second .row .second {
+    color: green;
+    font-size: 22pt;
+  }
+}
+/* LG */
+@media (min-width: 1200px) {
+  /* alert */
+  .msg-alert {
+    width: 800px;
+    margin: 1rem auto;
+    margin-bottom: 0;
+  }
+  /* end */
+  /* every form card */
+  .form-special {
+    position: relative;
+    left: 24rem;
+  }
+  .custom-bg-dark {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    max-width: 30rem;
+  }
+  .tamon-bg-dark {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    max-width: 36rem;
+    position: relative;
+    left: 24rem;
+  }
+  .register-form {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    max-width: 32rem;
+    position: relative;
+    left: 24rem;
+  }
+  /* end */
+  /* Top Part */
+  .tp-first {
+    display: inline;
+    position: relative;
+    left: 24rem;
+  }
+  .tp-second {
+    display: inline;
+    position: relative;
+    left: 36rem;
+    color: green;
+    font-size: 20pt;
+  }
+  .tp-second a {
+    display: inline;
+    position: relative;
+    font-size: 12pt;
+    text-decoration: none;
+    margin: 0.5rem 0 0 0.5rem;
+  }
+  /* Second Part */
+  .sp-first,
+  .sp-second {
+    display: inline;
+    position: relative;
+    left: 2rem;
+  }
+  .sp-second {
+    margin-top: 1rem;
+  }
+  .sp-second .row .first,
+  .sp-second .row .second {
+    color: green;
+    font-size: 30pt;
+  }
+}
+/* XL */
+@media (min-width: 1360px) {
+  /* alert */
+  .msg-alert {
+    width: 800px;
+    margin: 1rem auto;
+    margin-bottom: 0;
+  }
+  /* end */
+  /* every form card */
+  .form-special {
+    position: relative;
+    left: 26rem;
+  }
+  .custom-bg-dark {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    max-width: 30rem;
+  }
+  .tamon-bg-dark {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    max-width: 36rem;
+    position: relative;
+    left: 24rem;
+  }
+  .register-form {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    max-width: 32rem;
+    position: relative;
+    left: 26rem;
+  }
+  /* end */
+  /* Top Part */
+  .tp-first {
+    display: inline;
+    position: relative;
+    left: 25rem;
+  }
+  .tp-second {
+    display: inline;
+    position: relative;
+    left: 35rem;
+  }
+  .tp-second a {
+    display: inline;
+    position: relative;
+    text-decoration: none;
+    margin: 0.5rem 0 0 0.5rem;
+  }
+  /* Second Part */
+  .sp-first,
+  .sp-second {
+    display: inline;
+    position: relative;
+    left: 2rem;
+  }
+  .sp-second {
+    margin-top: 1rem;
+  }
+  .sp-second .row .first,
+  .sp-second .row .second {
+    color: green;
+    font-size: 30pt;
+  }
+}

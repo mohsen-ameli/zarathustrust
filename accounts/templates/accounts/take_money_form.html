@@ -1,0 +1,31 @@
+{% extends "accounts/base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <br>
+    <div class="container-fluid">
+        <div class="card text-white tamon-bg-dark">
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    <fieldset class="form-group">
+                        <h4 class="font-weight-normal">{% trans "Withdraw Money From Your Account" %}</h4>
+                        <hr>
+                        <h5 class="font-weight-normal">
+                            {% blocktrans %}
+                            In order to withdraw money, please enter the value you want to 
+                            withdraw blelow <br> and we will transfer the amount you requested
+                            to your bank account, <span style="color: #f8b119;">within 1 bussiness day.</span>
+                            {% endblocktrans %}
+                        </h4> 
+                        <br>
+                        {{ form|crispy }}
+                    </fieldset>
+                    <div class="form-group">
+                        <button class="btn btn-outline-warning" type="submit">{% trans "Withdraw" %}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

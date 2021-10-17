@@ -1,0 +1,10 @@
+{% extends "accounts/base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="alert alert-danger msg-alert text-center" role="alert">
+        {% blocktrans %}
+            Login is locked for {{cooloff_timedelta}}. Please try again later ...
+        {% endblocktrans %}
+    </div>
+{% endblock content %}

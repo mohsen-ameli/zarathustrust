@@ -1,0 +1,35 @@
+{% extends "accounts/base.html" %}
+{% load i18n %}
+{% block content %}
+    <br>
+    <div class="container-fluid">
+        <div class="card text-white tamon-bg-dark">
+            <div class="card-body">
+                <h4 class="font-weight-normal">{% trans "Your Referral Code" %}</h4>
+                <hr>
+                {% trans "Share this code with your friends when they are registering, and you will get $1 added to your balance as well as another extra $200 to your bonus." %}
+                <br> <br>
+                <h5 class="font-weight-bold">
+                    {% trans "Referral Code :" %}
+                    {{ user.code.referral_code }}
+                    <button class="btn btn-info referral-copy" id="Copy">{% trans "Copy" %}</button>
+                </h5> <br>
+                <a class="btn btn-outline-warning"
+                    href="{% url 'accounts:home' user.account.pk %}">{% trans "Wallet" %}</a>
+        </div>
+    </div>
+    <script>
+        function Clipboard_CopyTo(value) {
+                var tempInput = document.createElement("input");
+                tempInput.value = value;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand("copy");
+                document.body.removeChild(tempInput);
+            }
+
+            document.querySelector('#Copy').onclick = function () {
+                Clipboard_CopyTo('{{ user.code.referral_code }} ');
+            }
+    </script>
+{% endblock %}
