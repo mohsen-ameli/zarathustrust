@@ -29,10 +29,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = config.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 if not DEBUG:
-    ALLOWED_HOSTS = ['www.zarathustrust.com']
+    ALLOWED_HOSTS = ['99.240.225.244', 'www.zarathustrust.com']
 else:
     ALLOWED_HOSTS = ["*"]
 
