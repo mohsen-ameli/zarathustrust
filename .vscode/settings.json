@@ -1,4 +1,9 @@
 {
-    "python.formatting.provider": "black",
-    "python.pythonPath": "C:\\Users\\Maedeh\\AppData\\Local\\Programs\\Python\\Python37\\python.exe"
+  "python.formatting.provider": "black",
+  // "python.pythonPath": "C:\\Users\\Maedeh\\AppData\\Local\\Programs\\Python\\Python37\\python.exe",
+  "python.pythonPath": "/mnt/d/Dev/money-moe-linux-master/venv/bin/python",
+  "python.linting.pylintEnabled": false,
+  "python.linting.enabled": false,
+  "python.linting.pylamaEnabled": false,
+  "python.linting.banditEnabled": true
 }
