@@ -267,11 +267,42 @@ def auth_view(request, url1, url2, url3, url4):
     return render(request, "users/login.html", {"form": form})
 
 
-class LoginClassView(LoginView):
-    template_name = "users/login.html"
+# class LoginClassView(LoginView):
+#     template_name = "users/login.html"
 
-    def get_success_url(self):
-        # url = self.get_redirect_url()
-        return reverse_lazy(
-            "accounts:home", kwargs={"pk": get_current_user().account.pk}
-        )
+    # I commented this out, becuase I want users to be able to be redirected to their specific
+    # pages after they log in. eg: say someone comes from a shop to /checkout then they have to 
+    # first login, then be immidietly redirected to that checkout page, by using the login_required 
+    # decorator, but if i have this get_success_url then it will overwrite the ?next parameter and
+    # mess up the proccess.
+
+    # def get_success_url(self):
+    #     # url = self.get_redirect_url()
+    #     return reverse_lazy(
+    #         "accounts:home", kwargs={"pk": get_current_user().account.pk}
+    #     )
+
+
+def LoginClassView(request):
+    form = AuthenticationForm()
+    template_name = "users/login.html"
+    next = request.GET.get('next')
+    if request.method == 'POST' and next is None:
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            # Redirect to a success page.
+            return redirect(reverse("accounts:home", kwargs={"pk" : get_current_user().pk}))
+        else:
+            messages.warning(request, _("Please enter a correct username and password. Note that both fields are case-sensitive."))
+    elif request.method == 'POST' and next is not None:
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            # Redirect to a success page.
+            return redirect(next)
+    return render(request, template_name, {'form' : form})

@@ -1,32 +1,36 @@
+import decimal
+import json
 from os import error
+
+import requests
+from bs4 import BeautifulSoup
+from crum import get_current_user
 from django.contrib import messages
-from django.utils.translation import gettext as _
-from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-# from django.contrib.messages.views import SuccessMessageMixin
-from django.urls.base import reverse
 from django.core.mail import send_mail
 from django.db.models import Q
 from django.db.models.base import ObjectDoesNotExist
-from django.views.generic import TemplateView, DetailView
-from .forms import TakeMoneyForm, AddMoneyForm, TransferForm
-from .models import account, account_interest
+from django.shortcuts import redirect, render
+# from django.contrib.messages.views import SuccessMessageMixin
+from django.urls.base import reverse
+from django.utils.translation import gettext as _
+from django.views.generic import DetailView, TemplateView
+from requests.api import get
 from users.models import CustomUser
+
+from .forms import AddMoneyForm, TakeMoneyForm, TransferForm
+from .models import account, account_interest
 from .tasks import interest_loop
-from crum import get_current_user
-import json
-import requests
-import lxml
-from bs4 import BeautifulSoup
-import decimal
 
 with open('/etc/config.json') as config_file:
     config = json.load(config_file)
 
+
 # Class Based Views
 class HomeTemplateView(TemplateView):
     template_name = 'accounts/home_new.html'
+
 
 class HomeView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = account
@@ -46,15 +50,19 @@ class HomeView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         context['is_bus'] = CustomUser.objects.get(pk=id).is_business
         return context
 
+
 # Function Based Views
 def AdminRickRoll(TemplateView):
     r = redirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley")
     return r
-    
+
+
+@login_required
 def new_dunc(request):
     # # # celery -A money_moe worker -l info --pool=solo
     interest_loop.delay()
     return render(request, 'accounts/new_dunc.html')
+
 
 @login_required
 def TransferCreateView(request, pk):
@@ -103,6 +111,7 @@ def TransferCreateView(request, pk):
         form = TransferForm()
     return render(request, 'accounts/transfer.html', {'form' : form})
 
+
 @login_required
 def cash_out(request, pk):
     interest_rate     = account_interest.objects.get(pk=pk).interest_rate
@@ -131,9 +140,11 @@ def cash_out(request, pk):
         messages.warning(request, _(f'You need at least $0.1 to be able to cash out ! keep going tho'))
         return redirect(reverse('accounts:home', kwargs={'pk':pk}))
 
+
 @login_required
 def ReferralCodeView(request, pk):
     return render(request, 'accounts/referral_code.html')
+
 
 @login_required
 def AddMoneyUpdateView(request, pk):
@@ -156,9 +167,11 @@ def AddMoneyUpdateView(request, pk):
             return redirect(reverse('accounts:add-money', kwargs={'pk':pk}))
     return render(request, 'accounts/add_money_form.html', {'form' : form})
 
+
 @login_required
 def AddMoneyInfo(request, pk):
     return render(request, 'accounts/add_money_info.html')
+
 
 @login_required
 def TakeMoneyUpdateView(request, pk):
@@ -185,11 +198,13 @@ def TakeMoneyUpdateView(request, pk):
             return redirect(reverse('accounts:take-money', kwargs={'pk':pk}))
     return render(request, 'accounts/take_money_form.html', {'form' : form})
 
+
 def AboutTemplateView(request):
     context = {
         'stuff' : _('hello hello hi hi'),
     }
     return render(request, 'accounts/about.html', context)
+
 
 def payment(request, url1, url2, url3, url4):
     # www.amazon.ca/CYBERPOWERPC-Xtreme-i5-10400F-GeForce-GXiVR8060A10/dp/B08FBK2DK5/
@@ -229,6 +244,7 @@ def payment(request, url1, url2, url3, url4):
     else:
         return redirect(reverse("login-view-pay", kwargs={"url1" : url1, "url2" : url2, "url3" : url3, "url4" : url4}))
 
+
 def paying_func(shop, price, buyer_balance):
     shop_owner = account.objects.get(created_by__username=shop).created_by
     shop_balance = account.objects.get(created_by=shop_owner).total_balance
@@ -237,6 +253,7 @@ def paying_func(shop, price, buyer_balance):
 
     # subtracting the price from the buyer
     account.objects.filter(pk=get_current_user().pk).update(total_balance=buyer_balance-price)
+
 
 @login_required
 def payment_done(request, url1, url2, url3, url4, price):
@@ -258,6 +275,46 @@ def payment_done(request, url1, url2, url3, url4, price):
     else:
         messages.warning(request, _("You do not have enough money for this order !"))
         return redirect(request.META['HTTP_REFERER'])
+
+
+@login_required
+def checkout(request, shop, price):
+    if "$" in price:
+        price = price.replace("$", '')
+    total_balance = account.objects.get(created_by=request.user).total_balance
+    remaining     = round(total_balance - decimal.Decimal(float(price)), 2)
+    context = {'price' : price, 'balance' : total_balance, 'remaining' : remaining, 'shop' : shop}
+    return render(request, "accounts/checkout.html", context)
+
+
+@login_required
+def checkout_complete(request, shop, price):
+    while "," in price:
+        translation_table = dict.fromkeys(map(ord, ','), None)
+        price = price.translate(translation_table)
+    price = decimal.Decimal(float(price)) # compatibilizing str price to decimalField in models 
+
+    # Checking to see if the buyer has enough money
+    buyer_balance = account.objects.get(pk=get_current_user().pk).total_balance
+    if buyer_balance >= round(price, 2):
+        shop_balance = account.objects.get(created_by__username=shop).total_balance
+        # adding price to the shop owner
+        account.objects.filter(created_by__username=shop).update(total_balance=shop_balance + price)
+        # subtracting price from buyer
+        account.objects.filter(pk=get_current_user().pk).update(total_balance=buyer_balance-price)
+
+        messages.success(request, _("Your order was purchased successfully !"))
+        return redirect(reverse("accounts:home", kwargs={"pk" : get_current_user().pk}))
+    else:
+        messages.warning(request, _("You do not have enough money for this order !"))
+        return redirect(reverse("accounts:add-money", kwargs={"pk" : get_current_user().pk}))
+
+
+
+
+
+
+
 
 # class TransferTakeUpdateView(SuccessMessageMixin, UpdateView):
 #     model = account
