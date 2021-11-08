@@ -8,11 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< HEAD
-"POT-Creation-Date: 2021-06-26 21:20-0500\n"
-=======
-"POT-Creation-Date: 2021-07-07 13:52-0400\n"
->>>>>>> 792ae9e893f1e3cd1c006c75b1bdb904f017c254
+"POT-Creation-Date: 2021-11-08 18:33-0500\n"
 "PO-Revision-Date: 2021-05-06 13:43-0500\n"
 "Last-Translator: b'  <ghoochani@hotmail.com>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,40 +19,40 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Translated-Using: django-rosetta 0.9.6\n"
 
-#: users/forms.py:21
+#: users/forms.py:31
 msgid "IBAN (optional)"
 msgstr ""
 
-#: users/forms.py:21
+#: users/forms.py:33
 msgid "For European countries only !"
 msgstr ""
 
-#: users/forms.py:51 users/forms.py:58 users/forms.py:65
+#: users/forms.py:84 users/forms.py:94 users/forms.py:104
 msgid "Code"
 msgstr ""
 
-#: users/forms.py:51
+#: users/forms.py:84
 msgid "Please enter the email verification code"
 msgstr "Geben Sie bitte den E-Mail Bestätigungscode ein !"
 
-#: users/forms.py:58
+#: users/forms.py:94
 #, fuzzy
 #| msgid "Please enter the email verification code"
 msgid "Please enter the phone number verification code"
 msgstr "Geben Sie bitte den E-Mail Bestätigungscode ein !"
 
-#: users/forms.py:65
+#: users/forms.py:104
 msgid "Please enter the iban verification code"
 msgstr ""
 "Geben Sie bitte hier den genauen Betrag ein, den wir Ihnen überwiesen haben. "
 "Wenn sie z.B 12 Cents bekommen haben, dann geben Sie den Betrag so ein: 0.12 "
 "also beginnend mit null und als Komma bitte einen Punkt verwenden ! "
 
-#: users/forms.py:72
+#: users/forms.py:115
 msgid "Referral Code(Optional)"
 msgstr ""
 
-#: users/forms.py:72
+#: users/forms.py:117
 #, fuzzy
 #| msgid "Please enter your referral code to get grand prizes !"
 msgid ""
@@ -293,6 +289,12 @@ msgstr ""
 "info@zarathustrust.com senden. Wir werden dann Ihnen und Ihrem Werber die "
 "Prämien nachträglich gutschreiben ! \n"
 "Herzlich willkommen bei ZarathusTrust !"
+
+#: users/views.py:299
+msgid ""
+"Please enter a correct username and password. Note that both fields are case-"
+"sensitive."
+msgstr ""
 
 #~ msgid "Phone number must be entered in the format: '+999999999'"
 #~ msgstr ""
