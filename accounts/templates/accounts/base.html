@@ -1,10 +1,11 @@
 {% load i18n %}
+{% load static  %}
+{% load crispy_forms_tags %}
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    {% load static  %}
-    {% load crispy_forms_tags %}
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -21,6 +22,9 @@
     <link rel="shortcut icon" type="image/png" href="{% static 'accounts/favicon.ico' %}">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.1/css/flag-icon.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
 
     <title>Home Page</title>
 </head>
@@ -29,9 +33,15 @@
     <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             {% if user.account %}
-                <a class="navbar-brand" href="{% url 'accounts:home' pk=user.account.pk %}">ZarathusTrust</a>
+                <a class="navbar-brand" href="{% url 'accounts:home' pk=user.account.pk %}">
+                    <img src="../../../static/accounts/images/zarathustrust.png" width="60" height="26" class="d-inline-block align-text-top">
+                    Zarathus Trust
+                </a>
             {% else %}
-                <a class="navbar-brand" href="{% url 'accounts:home-new' %}">ZarathusTrust</a>
+                <a class="navbar-brand" href="{% url 'accounts:home-new' %}">
+                    <img src="../../../static/accounts/images/zarathustrust.png" width="60" height="26" class="d-inline-block align-text-top">
+                    Zarathus Trust
+                </a>
             {% endif %}
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

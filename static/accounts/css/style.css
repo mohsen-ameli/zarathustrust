@@ -6,6 +6,9 @@ body {
 .navbar {
   padding: 0.8 rem;
 }
+.navbar-brand {
+  font-family: "Lobster", cursive;
+}
 .navbar-dark .navbar-nav .nav-link {
   margin-right: 0.5rem;
   font-size: medium;
