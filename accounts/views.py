@@ -18,6 +18,8 @@ from django.utils.translation import gettext as _
 from django.views.generic import DetailView, TemplateView
 from requests.api import get
 from users.models import CustomUser
+from django.http import HttpResponse
+
 
 from .forms import AddMoneyForm, TakeMoneyForm, TransferForm
 from .models import account, account_interest
@@ -304,7 +306,8 @@ def checkout_complete(request, shop, price):
         account.objects.filter(pk=get_current_user().pk).update(total_balance=buyer_balance-price)
 
         messages.success(request, _("Your order was purchased successfully !"))
-        return redirect(reverse("accounts:home", kwargs={"pk" : get_current_user().pk}))
+        return HttpResponse('<script type="text/javascript">window.close();</script>')
+        # return redirect(reverse("accounts:home", kwargs={"pk" : get_current_user().pk}))
     else:
         messages.warning(request, _("You do not have enough money for this order !"))
         return redirect(reverse("accounts:add-money", kwargs={"pk" : get_current_user().pk}))
