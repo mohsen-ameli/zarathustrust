@@ -1,10 +1,10 @@
 from django import forms
 from django.forms import ModelForm
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import ugettext_lazy as _
 from .models import account
 
 class TakeMoneyForm(ModelForm):
-    take_money = forms.DecimalField(label=ugettext_lazy('Enter Amount'), 
+    take_money = forms.DecimalField(label=_('Enter Amount'), 
         widget = forms.TextInput(attrs={'placeholder': '$0.0'}))
 
     class Meta:
@@ -12,7 +12,7 @@ class TakeMoneyForm(ModelForm):
         fields = ['take_money']
 
 class AddMoneyForm(ModelForm):
-    add_money  = forms.DecimalField(label=ugettext_lazy('Enter Amount'),
+    add_money  = forms.DecimalField(label=_('Enter Amount'),
         widget = forms.TextInput(attrs={'placeholder': '$0.0'}))
 
     class Meta:
@@ -20,11 +20,13 @@ class AddMoneyForm(ModelForm):
         fields = ['add_money']
 
 class TransferForm(ModelForm):
-    money_to_send  = forms.DecimalField(label=ugettext_lazy('Enter Amount'),
+    money_to_send  = forms.DecimalField(label=_('Enter Amount'),
         widget     = forms.TextInput(attrs={'placeholder': '$0.0'}))
     # account      = forms.ModelChoiceField(queryset=account.objects.all() ,label='Choose Account')
-    target_account = forms.CharField(max_length=30, label=ugettext_lazy('Enter Account'),
-        widget=forms.TextInput(attrs={'placeholder': 'username, email, phone number (+1999999999)'}))
+    target_account = forms.CharField(max_length=30, label=_('Enter Account'),
+        widget     = forms.TextInput(attrs={'placeholder': 'username, email, phone number (+1999999999)'}))
+    purpose        = forms.CharField(max_length=500, required=False, label=_('purpose of use (optional)'),
+        widget     = forms.TextInput(attrs={'placeholder': _('e.g. Happy Birthday honey !')}))
 
     class Meta:
         model  = account

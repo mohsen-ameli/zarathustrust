@@ -4,26 +4,26 @@
 {% block content %}
 <br>
 <div class="row">
-    <div class="col-md-5 mx-lg-auto mx-md-auto">
-        <div class="card text-white custom-bg-dark">
+    <div class="col-md-5 mx-auto">
+        <div class="card text-white zarathus-card">
             <div class="card-body text-center">
-                <h5>Business Sign Up !</h5>
+                <h3 class="font-weight-normal text-center">Business Sign Up</h3>
                 <hr>
-                <p>{% trans "This is a business account. Sign up now to be able to use our website as a payment for you own shop. Remember, you still get interest on all your capital as well." %}</p>
+                <h5 class="font-weight-normal">{% trans "This is a business account. Sign up now to be able to use our website as a payment for you own shop. Remember, you still get interest on all your capital as well." %}</h5>
                 <hr>
-                <a class="btn btn-outline-warning" href="{% url 'business' %}">{% trans "Business" %}</a>
+                <a class="btn btn-outline-warning" href="{% url 'business' %}">{% trans "Sign Up" %}</a>
             </div>
         </div>
     </div>
     
-    <div class="col-md-5 mx-md-auto">
-        <div class="card text-white custom-bg-dark">
+    <div class="col-md-5 mx-auto">
+        <div class="card text-white zarathus-card">
             <div class="card-body text-center">
-                <h5>Personal Sign Up</h5>
+                <h3 class="font-weight-normal text-center">Personal Sign Up</h3>
                 <hr>
-                <p>{% trans "This is a normal personal account. Sign up now to start making interest on your ballance." %}</p>
+                <h5 class="font-weight-normal">{% trans "This is a normal personal account. Sign up now to start making interest on your ballance." %}</h5>
                 <hr>
-                <a class="btn btn-outline-warning" href="{% url 'personal' %}">{% trans "Personal" %}</a>
+                <a class="btn btn-outline-warning" href="{% url 'personal' %}">{% trans "Sign Up" %}</a>
             </div>
         </div>
     </div>

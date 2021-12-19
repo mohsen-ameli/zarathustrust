@@ -2,12 +2,14 @@
 {% load i18n %}
 {% block content %}
     <br>
-    <div class="container-fluid form-special">
-        <div class="card text-white custom-bg-dark">
+    <div class="container-fluid">
+        <div class="card text-white zarathus-card mx-auto">
             <div class="card-body">
                 <h3 class="font-weight-normal text-center">{% trans "This is the about page" %}</h3>
                 <hr>
-                <p>{% trans "About Page coming soon !" %}</p>
+                <h5 class="font-weight-normal">
+                    {% trans "About Page coming soon !" %}
+                </h5>
                 <hr>
                 {% if user.account %}
                     <a class="btn btn-outline-warning" href="{% url 'accounts:home' user.account.pk %}">

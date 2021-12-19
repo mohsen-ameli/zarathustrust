@@ -4,12 +4,12 @@
 {% block content %}
     <br>
     <div class="container-fluid">
-        <div class="card text-white register-form">
+        <div class="card text-white zarathus-card mx-auto">
             <div class="card-body">
                 <form method="POST">
                     {% csrf_token %}
                     <fieldset class="form-group">
-                        <h4 class="font-weight-normal">{% trans "Why not join now ?!" %}</h4>
+                        <h3 class="font-weight-normal text-center">{% trans "Why not join now ?!" %}</h3>
                         <hr>
                         <!-- {{ form|crispy }} -->
                         {{ form.username|as_crispy_field }}

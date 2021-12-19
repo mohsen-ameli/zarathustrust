@@ -4,12 +4,12 @@
 {% block content %}
     <br>
     <div class="container-fluid">
-        <div class="card text-white tamon-bg-dark">
+        <div class="card text-white zarathus-card mx-auto">
             <div class="card-body">
                 <form method="POST">
                     {% csrf_token %}
                     <fieldset class="form-group">
-                        <h4 class="font-weight-normal">{% trans "Withdraw Money From Your Account" %}</h4>
+                        <h3 class="font-weight-normal text-center">{% trans "Withdraw Money From Your Account" %}</h3>
                         <hr>
                         <h5 class="font-weight-normal">
                             {% blocktrans %}
@@ -17,7 +17,7 @@
                             withdraw blelow <br> and we will transfer the amount you requested
                             to your bank account, <span style="color: #f8b119;">within 1 bussiness day.</span>
                             {% endblocktrans %}
-                        </h4> 
+                        </h5> 
                         <br>
                         {{ form|crispy }}
                     </fieldset>
