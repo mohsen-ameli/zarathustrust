@@ -19,6 +19,7 @@ from django.views.generic import DetailView, TemplateView
 from requests.api import get
 from users.models import CustomUser
 from django.http import HttpResponse
+from django.core.mail import EmailMessage
 
 
 from .forms import AddMoneyForm, TakeMoneyForm, TransferForm
@@ -73,39 +74,63 @@ def TransferCreateView(request, pk):
         if form.is_valid():
             target_account = form.cleaned_data.get('target_account')
             MoneyToSend    = form.cleaned_data.get('money_to_send')
+            purpose        = form.cleaned_data.get('purpose')
 
             found_accounts = CustomUser.objects.all().filter(
                 Q(email__icontains=target_account) | Q(phone_number__contains=target_account) | Q(username__icontains=target_account)
             )
             if not found_accounts:
                 messages.warning(request, _(f'Sorry, no account with the information provided was found :('))
-            checkbox = request.POST.get('checkbox')
+            else:
+                checkbox = request.POST.get('checkbox')
+                if checkbox is not None: # A target user has been aquired
+                    reciever_name = checkbox.split(',')[0]
+                    target_acc = account.objects.get(created_by__username=reciever_name).created_by
+                    reciever_pk = account.objects.get(created_by__username=reciever_name).pk # getting reciever's pk
+                    balance = account.objects.get(pk=pk).total_balance
+                    if MoneyToSend >= 1 and MoneyToSend <= balance:
 
-            if checkbox is not None: # A target user has been aquired
-                target_acc = account.objects.get(created_by__username=checkbox).created_by
-                reciever_pk = account.objects.get(created_by__username=checkbox).pk # getting reciever's pk
-                balance = account.objects.get(pk=pk).total_balance
-                if MoneyToSend >= 1 and MoneyToSend <= balance:
+                        # UPDATE ACCOUNT
+                        new_total_balance = account.objects.get(pk=reciever_pk).total_balance + MoneyToSend # adding money to reciever
+                        account.objects.filter(pk=reciever_pk).update(total_balance=new_total_balance)      # updating the reciever
+                        a = account.objects.get(created_by=get_current_user()).total_balance # getting balance of the sender
+                        rmv_total_balance = a - MoneyToSend                                  # minusing balance of sender by how much thy're sending
+                        account.objects.filter(created_by=get_current_user()).update(total_balance=rmv_total_balance)      # updating the giver
 
-                    # UPDATE ACCOUNT
-                    new_total_balance = account.objects.get(pk=reciever_pk).total_balance + MoneyToSend # adding money to reciever
-                    account.objects.filter(pk=reciever_pk).update(total_balance=new_total_balance)      # updating the reciever
-                    a = account.objects.get(created_by=get_current_user()).total_balance # getting balance of the sender
-                    rmv_total_balance = a - MoneyToSend                                  # minusing balance of sender by how much thy're sending
-                    account.objects.filter(created_by=get_current_user()).update(total_balance=rmv_total_balance)      # updating the giver
+                        # UPDATE ACCOUNT INTEREST
+                        a = account_interest.objects.get(pk=reciever_pk).interest + MoneyToSend                  # adding money to reciever
+                        account_interest.objects.filter(pk=reciever_pk).update(interest=a)                       # updating reciever
+                        b = account_interest.objects.get(pk=get_current_user().pk).interest - MoneyToSend        # minusing money from giver
+                        account_interest.objects.filter(pk=get_current_user().pk).update(interest=b)             # updating giver
+                        
+                        messages.success(request, _(f'${MoneyToSend} has been transfered to {reciever_name}'))
 
-                    # UPDATE ACCOUNT INTEREST
-                    a = account_interest.objects.get(pk=reciever_pk).interest + MoneyToSend                  # adding money to reciever
-                    account_interest.objects.filter(pk=reciever_pk).update(interest=a)                       # updating reciever
-                    b = account_interest.objects.get(pk=get_current_user().pk).interest - MoneyToSend        # minusing money from giver
-                    account_interest.objects.filter(pk=get_current_user().pk).update(interest=b)             # updating giver
-                    
-                    messages.success(request, _(f'${MoneyToSend} has been transfered to {target_acc}'))
-                    return redirect(reverse('accounts:home', kwargs={'pk':pk}))
-                elif MoneyToSend < 1:
-                    messages.warning(request, _(f'Please consider that the minimum amount to send is $1 !'))
-                elif MoneyToSend > balance:
-                    messages.warning(request, _(f'You have requested to transfer more than you have in your current balance !'))
+                        # emailing the reciever
+                        reciever_email = CustomUser.objects.get(pk=reciever_pk).email
+                        giver_username = CustomUser.objects.get(pk=get_current_user().pk).username
+                        giver_email = CustomUser.objects.get(pk=get_current_user().pk).email
+                        EMAIL_ID       = config.get('EMAIL_ID')
+                        msg = EmailMessage(_("ZARATHUS TRUST MONEY TRANSFER"),
+                                _(f"Dear {reciever_name}, <br> {giver_username} just transfered ${MoneyToSend} to your account ! <br> Purpose of Use : {purpose}"),
+                                f"{EMAIL_ID}",
+                                [f"{reciever_email}"]
+                        )
+                        msg.content_subtype = "html"
+                        msg.send()
+
+                        # emailing the giver
+                        msg1 = EmailMessage(_("ZARATHUS TRUST MONEY TRANSFER"),
+                                _(f"Dear {giver_username}, <br> ${MoneyToSend} has been transfered to {reciever_name} successfully ! <br> Purpose of Use : {purpose}"),
+                                f"{EMAIL_ID}",
+                                [f"{giver_email}"]
+                        )
+                        msg1.content_subtype = "html"
+                        msg1.send()
+                        return redirect(reverse('accounts:home', kwargs={'pk':pk}))
+                    elif MoneyToSend < 1:
+                        messages.warning(request, _(f'Please consider that the minimum amount to send is $1 !'))
+                    elif MoneyToSend > balance:
+                        messages.warning(request, _(f'You have requested to transfer more than you have in your current balance !'))
 
             context = {'form' : form, 'found_accounts' : found_accounts, 'pk' : pk}
             return render(request, 'accounts/transfer.html', context)
@@ -313,7 +338,9 @@ def checkout_complete(request, shop, price):
         return redirect(reverse("accounts:add-money", kwargs={"pk" : get_current_user().pk}))
 
 
-
+@login_required
+def History(request, pk):
+    return render(request, "accounts/history.html")
 
 
 

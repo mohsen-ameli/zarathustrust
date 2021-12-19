@@ -3,24 +3,24 @@
 {% load crispy_forms_tags %}
 {% block content %}
         <br>
-        <div class="container-fluid form-special">
-            <div class="card text-white custom-bg-dark">
+        <div class="container-fluid">
+            <div class="card text-white zarathus-card mx-auto">
                 <div class="card-body">
                     <form method="POST">
                         {% csrf_token %}
                         <fieldset class="form-group">
-                            <h4 class="font-weight-normal">{% trans "Send money to others" %}</h4>
+                            <h3 class="font-weight-normal text-center">{% trans "Send money to others" %}</h3>
                             <hr>
                             {{ form|crispy }}
                         </fieldset>
                         {% if found_accounts %}
-                            <h4 class="font-weight-normal">{% trans "Available Accounts:" %}</h4>
+                            <h3 class="font-weight-normal">{% trans "Available Accounts:" %}</h3>
                             <hr>
                             {% for found in found_accounts %}
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="checkbox" id="flexRadioDefault1" value="{{ found }}" area-checked>
                                     <label class="form-check-label" for="flexRadioDefault1">
-                                        {{ found }}
+                                        {{ found.username }}
                                     </label>
                                 </div>
                                 <br>

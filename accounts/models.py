@@ -25,7 +25,6 @@ class account(models.Model):
         if self.add_money:
             a = account_interest.objects.get(pk=self.pk).interest + self.add_money
             account_interest.objects.filter(pk=self.pk).update(interest=a)
-            print(a)
             self.total_balance = self.total_balance + self.add_money
             self.add_money = 0
         elif self.take_money:
@@ -49,32 +48,6 @@ class account_interest(models.Model):
     def __str__(self):
         return f'account-interest-pk : {self.pk}'
 
-""" class transfer(models.Model):
-    user                      = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True, editable=False)
-    account                   = models.ForeignKey(account, on_delete=models.CASCADE, null=True)
-    target_account            = models.CharField(max_length=30, null=True)
-    money_to_send             = models.PositiveIntegerField(null=True, default=0)
-
-    def __str__(self):
-        return f'{self.money_to_send} ,{self.account.total_balance}'
-
-    def save(self, *args, **kwargs):
-        if self.money_to_send:
-            new_total_balance = self.account.total_balance + self.money_to_send # adding money to reciever
-            account.objects.filter(pk=self.account.pk).update(total_balance=new_total_balance) # updating
-            a = account.objects.get(created_by=get_current_user()).total_balance # getting balance of the sender
-            rmv_total_balance = a - self.money_to_send # minusing balance of sender by how much thy're sending
-            account.objects.filter(created_by=get_current_user()).update(total_balance=rmv_total_balance) # updating
-
-            # new_interest_account = self.account.total_balance + self.money_to_send #adding money to reciever
-            a = account_interest.objects.get(pk=self.account.pk).interest + self.money_to_send # adding money to reciever
-            account_interest.objects.filter(pk=self.account.pk).update(interest=a) # updating reciever
-            b = account_interest.objects.get(pk=get_current_user().pk).interest - self.money_to_send # adding money to reciever
-            account_interest.objects.filter(pk=get_current_user().pk).update(interest=b) # updating reciever
-        super(transfer, self).save(*args, **kwargs)
-    
-    def get_absolute_url(self):
-        return reverse('accounts:home', kwargs={'pk':get_current_user().account.pk}) """
 
 # signal to create an account_interest, right after an account is created
 @receiver(post_save, sender=account)
@@ -104,3 +77,34 @@ def account_interest_created_handler(sender, created, instance, *args, **kwargs)
     if created:
         from .tasks import interest_loop
         interest_loop.delay()
+
+
+
+
+
+""" class transfer(models.Model):
+    user                      = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True, editable=False)
+    account                   = models.ForeignKey(account, on_delete=models.CASCADE, null=True)
+    target_account            = models.CharField(max_length=30, null=True)
+    money_to_send             = models.PositiveIntegerField(null=True, default=0)
+
+    def __str__(self):
+        return f'{self.money_to_send} ,{self.account.total_balance}'
+
+    def save(self, *args, **kwargs):
+        if self.money_to_send:
+            new_total_balance = self.account.total_balance + self.money_to_send # adding money to reciever
+            account.objects.filter(pk=self.account.pk).update(total_balance=new_total_balance) # updating
+            a = account.objects.get(created_by=get_current_user()).total_balance # getting balance of the sender
+            rmv_total_balance = a - self.money_to_send # minusing balance of sender by how much thy're sending
+            account.objects.filter(created_by=get_current_user()).update(total_balance=rmv_total_balance) # updating
+
+            # new_interest_account = self.account.total_balance + self.money_to_send #adding money to reciever
+            a = account_interest.objects.get(pk=self.account.pk).interest + self.money_to_send # adding money to reciever
+            account_interest.objects.filter(pk=self.account.pk).update(interest=a) # updating reciever
+            b = account_interest.objects.get(pk=get_current_user().pk).interest - self.money_to_send # adding money to reciever
+            account_interest.objects.filter(pk=get_current_user().pk).update(interest=b) # updating reciever
+        super(transfer, self).save(*args, **kwargs)
+    
+    def get_absolute_url(self):
+        return reverse('accounts:home', kwargs={'pk':get_current_user().account.pk}) """
