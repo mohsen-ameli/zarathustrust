@@ -105,7 +105,7 @@ hr {
 
 
 
-.register-form {
+.zarathus-card {
   background-color: rgba(0, 0, 0, 0.5) !important;
   max-width: 32rem;
 }
@@ -118,22 +118,6 @@ hr {
   .msg-alert {
     margin: 1rem auto;
     margin-bottom: 0;
-  }
-  /* end */
-  /* every form card */
-  .form-special {
-    position: relative;
-    left: 7rem;
-  }
-  .custom-bg-dark {
-    background-color: rgba(0, 0, 0, 0.5) !important;
-    max-width: 30rem;
-  }
-  .tamon-bg-dark {
-    background-color: rgba(0, 0, 0, 0.5) !important;
-    max-width: 30rem;
-    position: relative;
-    left: 8rem;
   }
   /* end */
   /* Top Part */
@@ -171,22 +155,6 @@ hr {
     margin-top: 1rem;
     margin-left: 0;
   }
-  /* every form card */
-  .form-special {
-    position: relative;
-    left: 0rem;
-  }
-  .custom-bg-dark {
-    background-color: rgba(0, 0, 0, 0.5) !important;
-    max-width: 30rem;
-  }
-  .tamon-bg-dark {
-    background-color: rgba(0, 0, 0, 0.5) !important;
-    max-width: 23rem;
-    position: relative;
-    left: 1rem;
-  }
-  /* end */
   .sp-second img {
     max-width: 10%;
     height: 5%;
@@ -220,22 +188,6 @@ hr {
     left: 1rem;
     bottom: 1.5rem;
   }
-  /* every form card */
-  .form-special {
-    position: relative;
-    right: 1rem;
-  }
-  .custom-bg-dark {
-    background-color: rgba(0, 0, 0, 0.5) !important;
-    max-width: 20rem;
-  }
-  .tamon-bg-dark {
-    background-color: rgba(0, 0, 0, 0.5) !important;
-    max-width: 20rem;
-    position: relative;
-    left: 0rem;
-  }
-  /* end */
   /* Top Part */
   .tp-first {
     display: inline;
@@ -275,22 +227,6 @@ hr {
   .msg-alert {
     margin: 1rem auto;
     margin-bottom: 0;
-  }
-  /* end */
-  /* every form card */
-  .form-special {
-    position: relative;
-    left: 10rem;
-  }
-  .custom-bg-dark {
-    background-color: rgba(0, 0, 0, 0.5) !important;
-    max-width: 30rem;
-  }
-  .tamon-bg-dark {
-    background-color: rgba(0, 0, 0, 0.5) !important;
-    max-width: 30rem;
-    position: relative;
-    left: 10rem;
   }
   /* end */
   .tp-first {
@@ -333,22 +269,6 @@ hr {
     margin-bottom: 0;
   }
   /* end */
-  /* every form card */
-  .form-special {
-    position: relative;
-    left: 15rem;
-  }
-  .custom-bg-dark {
-    background-color: rgba(0, 0, 0, 0.5) !important;
-    max-width: 30rem;
-  }
-  .tamon-bg-dark {
-    background-color: rgba(0, 0, 0, 0.5) !important;
-    max-width: 34rem;
-    position: relative;
-    left: 14rem;
-  }
-  /* end */
   /* Top Part */
   .tp-first {
     display: inline;
@@ -387,22 +307,6 @@ hr {
     width: 800px;
     margin: 1rem auto;
     margin-bottom: 0;
-  }
-  /* end */
-  /* every form card */
-  .form-special {
-    position: relative;
-    left: 22rem;
-  }
-  .custom-bg-dark {
-    background-color: rgba(0, 0, 0, 0.5) !important;
-    max-width: 30rem;
-  }
-  .tamon-bg-dark {
-    background-color: rgba(0, 0, 0, 0.5) !important;
-    max-width: 36rem;
-    position: relative;
-    left: 20rem;
   }
   /* end */
   /* Top Part */
@@ -445,22 +349,6 @@ hr {
     width: 800px;
     margin: 1rem auto;
     margin-bottom: 0;
-  }
-  /* end */
-  /* every form card */
-  .form-special {
-    position: relative;
-    left: 24rem;
-  }
-  .custom-bg-dark {
-    background-color: rgba(0, 0, 0, 0.5) !important;
-    max-width: 30rem;
-  }
-  .tamon-bg-dark {
-    background-color: rgba(0, 0, 0, 0.5) !important;
-    max-width: 36rem;
-    position: relative;
-    left: 24rem;
   }
   /* end */
   /* Top Part */
@@ -506,22 +394,6 @@ hr {
     width: 800px;
     margin: 1rem auto;
     margin-bottom: 0;
-  }
-  /* end */
-  /* every form card */
-  .form-special {
-    position: relative;
-    left: 26rem;
-  }
-  .custom-bg-dark {
-    background-color: rgba(0, 0, 0, 0.5) !important;
-    max-width: 30rem;
-  }
-  .tamon-bg-dark {
-    background-color: rgba(0, 0, 0, 0.5) !important;
-    max-width: 36rem;
-    position: relative;
-    left: 24rem;
   }
   /* end */
   /* Top Part */
