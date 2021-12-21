@@ -1,0 +1,49 @@
+{% extends "accounts/base.html" %}
+{% load i18n %}
+{% block content %}
+<div class="card text-white zarathus-card mx-auto">
+    <div class="card-body">
+        <h3 class="font-weight-normal text-center">{% trans "Transaction Details" %}</h3>
+        <hr>
+        <p style="font-size: large;">
+            {% if context.method == "Transfer" %}
+                {% if context.person.created_by.username != user.username %}
+                    {% blocktranslate with price=context.price person=context.person.created_by.username %}
+                        ${{ price }} has been transfered to you, by {{ person }}
+                    {% endblocktranslate %}
+                {% else %}
+                    {% blocktranslate with price=context.price second_person=context.second_person.created_by.username %}
+                        You have transfered ${{ price }} to {{ second_person }}
+                    {% endblocktranslate %}
+                {% endif %}
+            {% elif context.method == "Deposit" %}
+                {% blocktranslate with price=context.price person=context.person.created_by.username %}
+                    Deposit to {{ person }}, for the amount ${{ price }}
+                {% endblocktranslate %}
+            {% elif context.method == "Withdraw" %}
+                {% blocktranslate with price=context.price person=context.person.created_by.username %}
+                    Withdraw from {{ person }}, for the amount ${{ price }}
+                {% endblocktranslate %}
+            {% elif context.method == "Cash Out" %}
+                {% blocktranslate with price=context.price %}
+                    You have cashed out ${{ price }}
+                {% endblocktranslate %}
+            {% else %}
+                {% blocktranslate with price=context.price second_person=context.second_person.created_by.username %}
+                    You have paid {{ second_person }}, for a total of ${{ price }}
+                {% endblocktranslate %}
+            {% endif %}
+            <br>
+            <br>
+            {% if context.purpose_of_use != "None" %}
+                {% blocktranslate with purpose=context.purpose_of_use %}
+                    Purpose Of Use : {{ purpose }}
+                {% endblocktranslate %}
+                <br>
+                <br>
+            {% endif %}
+            <small>{{ context.date }}</small>
+        </p>
+    </div>
+</div>
+{% endblock %}

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-08 18:42-0500\n"
+"POT-Creation-Date: 2021-12-20 22:45-0500\n"
 "PO-Revision-Date: 2021-05-06 13:43-0500\n"
 "Last-Translator: b'  <ghoochani@hotmail.com>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,40 +19,40 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Translated-Using: django-rosetta 0.9.6\n"
 
-#: users/forms.py:31
+#: users/forms.py:29
 msgid "IBAN (optional)"
 msgstr ""
 
-#: users/forms.py:33
+#: users/forms.py:31
 msgid "For European countries only !"
 msgstr ""
 
-#: users/forms.py:84 users/forms.py:94 users/forms.py:104
+#: users/forms.py:82 users/forms.py:92 users/forms.py:102
 msgid "Code"
 msgstr ""
 
-#: users/forms.py:84
+#: users/forms.py:82
 msgid "Please enter the email verification code"
 msgstr "Geben Sie bitte den E-Mail Bestätigungscode ein !"
 
-#: users/forms.py:94
+#: users/forms.py:92
 #, fuzzy
 #| msgid "Please enter the email verification code"
 msgid "Please enter the phone number verification code"
 msgstr "Geben Sie bitte den E-Mail Bestätigungscode ein !"
 
-#: users/forms.py:104
+#: users/forms.py:102
 msgid "Please enter the iban verification code"
 msgstr ""
 "Geben Sie bitte hier den genauen Betrag ein, den wir Ihnen überwiesen haben. "
 "Wenn sie z.B 12 Cents bekommen haben, dann geben Sie den Betrag so ein: 0.12 "
 "also beginnend mit null und als Komma bitte einen Punkt verwenden ! "
 
-#: users/forms.py:115
+#: users/forms.py:113
 msgid "Referral Code(Optional)"
 msgstr ""
 
-#: users/forms.py:117
+#: users/forms.py:115
 #, fuzzy
 #| msgid "Please enter your referral code to get grand prizes !"
 msgid ""
@@ -62,46 +62,48 @@ msgstr ""
 "Geben Sie bitte Ihren persönlichen Empfehlungscode ein, um Ihre(n) Prämie(n) "
 "zu erhalten !"
 
-#: users/templates/users/business.html:12
-#: users/templates/users/personal.html:12
+#: users/templates/users/business.html:10
+#: users/templates/users/personal.html:10
 msgid "Why not join now ?!"
 msgstr ""
 "Eröffnen Sie in wenigen Minuten Ihr dauerhaft Kostenloses Konto bei uns ! "
 "Verschwenden Sie keine Zeit, denn Zeit ist bekanntlich Geld !"
 
-#: users/templates/users/business.html:17
-#: users/templates/users/personal.html:36
+#: users/templates/users/business.html:15
+#: users/templates/users/personal.html:34
+#: users/templates/users/register.html:13
+#: users/templates/users/register.html:25
 msgid "Sign Up"
 msgstr "Konto eröffnen"
 
-#: users/templates/users/business.html:23
-#: users/templates/users/personal.html:42
+#: users/templates/users/business.html:21
+#: users/templates/users/personal.html:40
 msgid "Already Have An Acount ?"
 msgstr "Sie haben sich bereits registriert?"
 
-#: users/templates/users/business.html:24 users/templates/users/login.html:12
-#: users/templates/users/login.html:17
-#: users/templates/users/password_reset_complete.html:10
-#: users/templates/users/personal.html:43
+#: users/templates/users/business.html:22 users/templates/users/login.html:10
+#: users/templates/users/login.html:15
+#: users/templates/users/password_reset_complete.html:8
+#: users/templates/users/personal.html:41
 msgid "Log In"
 msgstr "Einloggen"
 
-#: users/templates/users/email_verify.html:12
+#: users/templates/users/email_verify.html:10
 msgid "Verify Your Email"
 msgstr "Bestätigen Sie bitte Ihre E-Mail Adresse !"
 
-#: users/templates/users/email_verify.html:17
-#: users/templates/users/iban_verify.html:17
-#: users/templates/users/phone_verify.html:17
-#: users/templates/users/referral_code.html:17
+#: users/templates/users/email_verify.html:15
+#: users/templates/users/iban_verify.html:15
+#: users/templates/users/phone_verify.html:15
+#: users/templates/users/referral_code.html:15
 msgid "Verify"
 msgstr "Bestätigen"
 
-#: users/templates/users/iban_verify.html:12
+#: users/templates/users/iban_verify.html:10
 msgid "Verify Your IBAN"
 msgstr "Bestätigen Sie bitte Ihre IBAN"
 
-#: users/templates/users/login.html:23
+#: users/templates/users/login.html:21
 msgid "Reset Password ?"
 msgstr "Passwort zurück setzten"
 
@@ -109,76 +111,68 @@ msgstr "Passwort zurück setzten"
 #, python-format
 msgid ""
 "\n"
-"            Login is locked for %(cooloff_timedelta)s. Please try again "
+"        Login is locked for %(cooloff_timedelta)s. Please try again "
 "later ...\n"
-"        "
+"    "
 msgstr ""
 
-#: users/templates/users/logout.html:9
+#: users/templates/users/logout.html:7
 msgid "You have been logged out !"
 msgstr "Sie wurden ausgeloggt !"
 
-#: users/templates/users/logout.html:11
+#: users/templates/users/logout.html:9
 msgid "Log In Again"
 msgstr "Wieder einloggen"
 
-#: users/templates/users/password_reset.html:12
-#: users/templates/users/password_reset_confirm.html:12
+#: users/templates/users/password_reset.html:10
+#: users/templates/users/password_reset_confirm.html:10
 msgid "Reset Your Password"
 msgstr "Setzten Sie Ihr Passwort zurück !"
 
-#: users/templates/users/password_reset.html:17
+#: users/templates/users/password_reset.html:15
 msgid "Request Password Reset"
 msgstr "Fordern Sie an, das  Passwort zurückzusetzen "
 
-#: users/templates/users/password_reset_complete.html:8
+#: users/templates/users/password_reset_complete.html:6
 msgid "Congrats on changing your password !"
 msgstr "Sie haben Ihr Passwort erfolgreich geändert ! "
 
-#: users/templates/users/password_reset_confirm.html:17
+#: users/templates/users/password_reset_confirm.html:15
 msgid "Reset Password"
 msgstr "Passwort zurücksetzten"
 
-#: users/templates/users/password_reset_done.html:8
+#: users/templates/users/password_reset_done.html:6
 msgid "An email has been sent with instructions to reset your password !"
 msgstr ""
 "Wir haben Ihnen eine E-Mail mit der Anleitung zugeschickt, wie Sie Ihr "
 "Passwort ändern können."
 
-#: users/templates/users/phone_verify.html:12
+#: users/templates/users/phone_verify.html:10
 msgid "Verify Your Phone Number"
 msgstr "Bestätigen Sie bitte Ihre Telefonnummer!"
 
-#: users/templates/users/referral_code.html:12
+#: users/templates/users/referral_code.html:10
 msgid "Verify Your Referral Code"
 msgstr "Bestätigen Sie bitte Ihren Empfehlungscode !"
 
-#: users/templates/users/register.html:12
+#: users/templates/users/register.html:11
 msgid ""
 "This is a business account. Sign up now to be able to use our website as a "
 "payment for you own shop. Remember, you still get interest on all your "
 "capital as well."
 msgstr ""
 
-#: users/templates/users/register.html:14
-msgid "Business"
-msgstr ""
-
-#: users/templates/users/register.html:24
+#: users/templates/users/register.html:23
 msgid ""
 "This is a normal personal account. Sign up now to start making interest on "
 "your ballance."
 msgstr ""
 
-#: users/templates/users/register.html:26
-msgid "Personal"
-msgstr ""
-
-#: users/views.py:44
+#: users/views.py:36
 msgid "HIIIII"
 msgstr ""
 
-#: users/views.py:67
+#: users/views.py:59
 #, fuzzy
 #| msgid ""
 #| "Please check your mailbox for verification code, and enter the 5-digit "
@@ -190,12 +184,12 @@ msgstr ""
 "Sehen Sie bitte in Ihrem E-Mail Postfach nach. Wir haben Ihnen eine "
 "fünfstellige Zahl zugeschickt. Geben Sie bitte diese Zahl unten ein !"
 
-#: users/views.py:89
+#: users/views.py:81
 #, python-brace-format
 msgid "Hello {user.username}"
 msgstr "Hallo {user.username}"
 
-#: users/views.py:91
+#: users/views.py:83
 #, python-brace-format
 msgid ""
 "Your verification code is : {email_code}, you are very close to starting "
@@ -204,7 +198,7 @@ msgstr ""
 "Ihre Bestätigungscode lautet : {email_code} . Glückwunsch ! Sie sind kurz "
 "davor in den Genuss eines verzinsten Kontos zu kommen !"
 
-#: users/views.py:103
+#: users/views.py:94
 msgid ""
 "Please check your phone for verification code, and enter the 5-digit code "
 "below"
@@ -212,7 +206,7 @@ msgstr ""
 "Öffnen Sie bitte Ihre SMS-Nachrichten und geben Sie bitte unten den "
 "fünfstelligen Bestätigungscode ein !"
 
-#: users/views.py:110 users/views.py:151
+#: users/views.py:101 users/views.py:141
 #, fuzzy
 #| msgid "Please enter the iban verification code"
 msgid "You enterd the wrong verificaiton code ! Please try again"
@@ -221,7 +215,7 @@ msgstr ""
 "Wenn sie z.B 12 Cents bekommen haben, dann geben Sie den Betrag so ein: 0.12 "
 "also beginnend mit null und als Komma bitte einen Punkt verwenden ! "
 
-#: users/views.py:136
+#: users/views.py:126
 msgid ""
 "Please wait for our support team to send you a pre-decided amount of money. "
 "Check your bank account and then enter the small amount bellow."
@@ -230,7 +224,7 @@ msgstr ""
 "Nach Erhalt geben Sie bitte genau diesen Betrag unten ein, um Ihre IBAN zu "
 "bestätigen !"
 
-#: users/views.py:144 users/views.py:180
+#: users/views.py:134 users/views.py:169
 msgid ""
 "Enter your friend's referral code in order for both of you to get grand "
 "prize !"
@@ -238,24 +232,24 @@ msgstr ""
 "Geben Sie bitte hier den Empfehlungscode Ihres Werbers ein, damit Sie beide "
 "von zusätzlichen Prämien profitieren können ! "
 
-#: users/views.py:211
+#: users/views.py:200
 #, python-brace-format
 msgid "Dear {giver_name} !"
 msgstr "Liebe(r) {giver_name} !"
 
-#: users/views.py:213
+#: users/views.py:202
 #, fuzzy, python-brace-format
 #| msgid ""
 #| "{user} just used your referral code ! You recieved $1 on your balance !"
 msgid ""
-"{user} just used your referral code ! You recieved $1 on your balance, and "
-"$200 added to your bonus !"
+"{user.username} just used your referral code ! You recieved $1 on your "
+"balance, and $200 added to your bonus !"
 msgstr ""
 "{user} hat sich mit Ihrem Empfehlungscode registriert ! Ihnen wurde deshalb "
 "1€ Gutaheb und 300€ Bonus gutgeschrieben !\n"
 "Glückwunsch !"
 
-#: users/views.py:221
+#: users/views.py:210
 #, python-brace-format
 msgid ""
 "You have successfully registered, {user.username}. For your prize, $200 will "
@@ -271,12 +265,12 @@ msgstr ""
 "Funktionalitäten Ihres neuen Kontos bei uns unverzüglich sehen und "
 "ausprobieren können !"
 
-#: users/views.py:232
+#: users/views.py:221
 #, python-brace-format
 msgid "You have successfully registered, {user.username} !"
 msgstr " Ihre Registrierung wurde erfolgreich abgeschlossen, {user.username} !"
 
-#: users/views.py:244
+#: users/views.py:233
 #, python-brace-format
 msgid ""
 "Sorry, this referral code is incorrect, but you have successfully "
@@ -290,7 +284,7 @@ msgstr ""
 "Prämien nachträglich gutschreiben ! \n"
 "Herzlich willkommen bei ZarathusTrust !"
 
-#: users/views.py:299
+#: users/views.py:272
 msgid ""
 "Please enter a correct username and password. Note that both fields are case-"
 "sensitive."

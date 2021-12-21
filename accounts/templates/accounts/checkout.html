@@ -1,35 +1,32 @@
 {% extends "accounts/base.html" %}
 {% load i18n %}
 {% block content %}
-    <br>
-    <div class="container-fluid">
-        <div class="card text-white zarathus-card mx-auto">
-            <div class="card-body">
-                <h3 class="font-weight-normal text-center">{% trans "Payment Page" %}</h3>
-                <hr>
-                <p>
-                    {% blocktrans with balance=balance %}
-                        Current Balance : ${{ balance }}
-                    {% endblocktrans %}
-                </p>
-                <p style="color: rgb(255, 120, 120);">
-                    {% blocktrans with price=price %}
-                        Total : ${{ price }}
-                    {% endblocktrans %}
-                </p>
-                <hr style="width: 10rem; position: absolute; margin-top: .5rem;"> <br>
-                <p>
-                    {% blocktrans with remaining=remaining %}
-                        Remaining : ${{ remaining }}
-                    {% endblocktrans %}
-                </p>
-                <hr>
-                {% if user.account %}
-                    <a class="btn btn-success" href="{% url 'accounts:checkout-complete' shop=shop price=price %}">
-                        {% trans "Place Order" %}
-                    </a>
-                {% endif %}
-            </div>
-        </div>
+<div class="card text-white zarathus-card mx-auto">
+    <div class="card-body">
+        <h3 class="font-weight-normal text-center">{% trans "Payment Page" %}</h3>
+        <hr>
+        <p>
+            {% blocktrans with balance=balance %}
+                Current Balance : ${{ balance }}
+            {% endblocktrans %}
+        </p>
+        <p style="color: rgb(255, 120, 120);">
+            {% blocktrans with price=price %}
+                Total : ${{ price }}
+            {% endblocktrans %}
+        </p>
+        <hr style="width: 10rem; position: absolute; margin-top: .5rem;"> <br>
+        <p>
+            {% blocktrans with remaining=remaining %}
+                Remaining : ${{ remaining }}
+            {% endblocktrans %}
+        </p>
+        <hr>
+        {% if user.account %}
+            <a class="btn btn-success" href="{% url 'accounts:checkout-complete' shop=shop price=price %}">
+                {% trans "Place Order" %}
+            </a>
+        {% endif %}
     </div>
+</div>
 {% endblock content %}

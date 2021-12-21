@@ -1,30 +1,27 @@
 {% extends "accounts/base.html" %}
 {% load i18n %}
 {% block content %}
-    <br>
-    <div class="container-fluid">
-        <div class="card text-white zarathus-card mx-auto" style="max-width: 40rem">
-            <div class="card-body">
-                <h3 class="font-weight-normal text-center">{% trans "Deposit Money From Your Account" %}</h3>
-                <hr>
-                <h5 class="font-weight-normal">
-                    {% blocktrans %}
-                        In order to transfer money, please log into your
-                        own bank account and use the following informaiton to transfer money. 
-                        After that, when your transaction gets processed by us 
-                        (<span style="color: #f8b119;">within 1 bussiness day</span>), it will show 
-                        the new ballance on your wallet
-                    {% endblocktrans %}
-                </h5> <br>
-                <p class="text-capitalize">
-                    {% blocktrans with username=user.username pk=user.account.pk %}
-                    name : mohsen ameli <br>
-                    account number : 128739127312 <br>
-                    purpose(optional) : {{ username }}-{{ pk }}
-                    {% endblocktrans %}
-                </p>
-                <a class="btn btn-outline-warning"
-                    href="{% url 'accounts:home' user.account.pk %}">{% trans "Home" %}</a>
-        </div>
-    </div>
+<div class="card text-white zarathus-card mx-auto" style="max-width: 40rem">
+    <div class="card-body">
+        <h3 class="font-weight-normal text-center">{% trans "Deposit Money From Your Account" %}</h3>
+        <hr>
+        <h5 class="font-weight-normal">
+            {% blocktrans %}
+                In order to transfer money, please log into your
+                own bank account and use the following informaiton to transfer money. 
+                After that, when your transaction gets processed by us 
+                (<span style="color: #f8b119;">within 1 bussiness day</span>), it will show 
+                the new ballance on your wallet
+            {% endblocktrans %}
+        </h5> <br>
+        <p class="text-capitalize">
+            {% blocktrans with username=user.username pk=user.account.pk %}
+            name : mohsen ameli <br>
+            account number : 128739127312 <br>
+            purpose(optional) : {{ username }}-{{ pk }}
+            {% endblocktrans %}
+        </p>
+        <a class="btn btn-outline-warning"
+            href="{% url 'accounts:home' user.account.pk %}">{% trans "Home" %}</a>
+</div>
 {% endblock %}

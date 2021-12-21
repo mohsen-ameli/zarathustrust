@@ -1,7 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.utils.translation import gettext as _
 from django.db.models.deletion import CASCADE
 from django.db.models.fields import BooleanField, CharField

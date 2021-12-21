@@ -1,25 +1,17 @@
 import json
-from typing import Counter
 
 from accounts.models import account
 from crum import get_current_user
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.views import LoginView
 from django.core.mail import send_mail
 from django.shortcuts import redirect, render
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.utils.translation import gettext as _
 
-from .forms import (
-    BusinessForm,
-    EmailCodeForm,
-    IbanCodeForm,
-    PhoneCodeForm,
-    ReferralCodeForm,
-    RegisterForm,
-)
+from .forms import (BusinessForm, EmailCodeForm, IbanCodeForm, PhoneCodeForm,
+                    ReferralCodeForm, RegisterForm)
 from .models import CustomUser, code
 from .utils import phone_msg_verify
 

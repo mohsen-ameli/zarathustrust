@@ -16,6 +16,7 @@ urlpatterns = [
     path("<int:pk>/take_money/", account_views.TakeMoneyUpdateView, name="take-money"),
     path("<int:pk>/deposit-info/", account_views.AddMoneyInfo, name="add-money-info"),
     path("<int:pk>/history/", account_views.History, name="history"),
+    path("<int:pk>/history/<int:tran_id>", account_views.history_detail, name="history-detail"),
     path("<int:pk>/cash_out/", account_views.cash_out, name="cash-out"),
     path("payment/<str:url1>/<str:url2>/<str:url3>/<str:url4>/", account_views.payment, name="payment"),
     path("payment/<str:url1>/<str:url2>/<str:url3>/<str:url4>/<str:price>/payment_done/", account_views.payment_done, name="payment-done"),

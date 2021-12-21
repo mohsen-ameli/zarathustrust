@@ -2,22 +2,19 @@
 {% load crispy_forms_tags %}
 {% load i18n %}
 {% block content %}
-    <br>
-    <div class="container-fluid">
-        <div class="card text-white zarathus-card mx-auto">
-            <div class="card-body">
-                <form method="POST">
-                    {% csrf_token %}
-                    <fieldset class="form-group">
-                        <h3 class="font-weight-normal text-center">{% trans "Deposit Money From Your Account" %}</h3>
-                        <hr>
-                        {{ form|crispy }}
-                    </fieldset>
-                    <div class="form-group">
-                        <button class="btn btn-outline-warning" type="submit">{% trans "Deposit" %}</button>
-                    </div>
-                </form>
+<div class="card text-white zarathus-card mx-auto">
+    <div class="card-body">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <h3 class="font-weight-normal text-center">{% trans "Deposit Money From Your Account" %}</h3>
+                <hr>
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-warning" type="submit">{% trans "Deposit" %}</button>
             </div>
-        </div>
+        </form>
     </div>
+</div>
 {% endblock content %}

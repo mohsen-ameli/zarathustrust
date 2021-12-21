@@ -1,17 +1,69 @@
 {% extends "accounts/base.html" %}
 {% load i18n %}
 {% block content %}
-<br>
-<div class="container-fluid">
-    <div class="card zarathus-card mx-auto">
-        <div class="card-header">
-            Featured
-        </div>
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item">An item</li>
-            <li class="list-group-item">A second item</li>
-            <li class="list-group-item">A third item</li>
-        </ul>
+
+{% for each in trans_action %}
+    <div class="list-group mx-auto">
+        <a href="{% url 'accounts:history-detail' pk=user.pk tran_id=each.id %}" class="list-group-item list-group-item-action flex-column align-items-start text-white">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ each.date|date:'N d, Y' }}</h5>
+            </div>
+            <p class="mb-1">
+                {% if each.method == "Payment" %}
+                    <i class="bi bi-cart4 float-none" style="font-size: 1.5rem; color: #f8b119;"></i>
+                    <font class="float-none" style="margin-left: 1rem;">
+                        {% blocktranslate with person=each.person.created_by.username|capfirst second_person=each.second_person.created_by.username|capfirst %}
+                            Payment from {{ person }} to {{ second_person }}
+                        {% endblocktranslate %}
+                    </font>
+                {% elif each.method == "Transfer" %}
+                    <i class="bi bi-send-check float-none" style="font-size: 1.5rem; color: #f8b119;"></i>
+                    <font class="float-none" style="margin-left: 1rem;">
+                        {% blocktranslate with person=each.person.created_by.username|capfirst second_person=each.second_person.created_by.username|capfirst %}
+                            Transfer from {{ person }} to {{ second_person }}
+                        {% endblocktranslate %}
+                    </font>
+                {% elif each.method == "Deposit" %}
+                    <i class="bi bi-download float-none" style="font-size: 1.5rem; color: #f8b119;"></i>
+                    <font class="float-none" style="margin-left: 1rem;">
+                        {% blocktranslate with person=each.person.created_by.username|capfirst %}
+                            Deposit to {{ person }}
+                        {% endblocktranslate %}
+                    </font>
+                {% elif each.method == "Withdraw" %}
+                    <i class="bi bi-upload float-none" style="font-size: 1.5rem; color: #f8b119;"></i>
+                    <font class="float-none" style="margin-left: 1rem;">
+                        {% blocktranslate with person=each.person.created_by.username|capfirst %}
+                            Withdraw from {{ person }}
+                        {% endblocktranslate %}
+                    </font>
+                {% elif each.method == "Cash Out" %}
+                    <i class="fas fa-hand-holding-usd" style="font-size: 1.5rem; padding: 5px 0 5px 5px; color: #f8b119;"></i>
+                    <font class="float-none">
+                        {% blocktranslate with person=each.person.created_by.username|capfirst %}
+                            Cash Out for {{ person }}
+                        {% endblocktranslate %}
+                    </font>
+                {% endif %}
+
+                {% if each.second_person.created_by.username == user.get_username or each.method == "Deposit" or each.method == "Cash Out" %}
+                    <font class="float-right" style="color: rgb(0, 255, 0);">
+                        {% blocktranslate with price=each.price %}
+                            +${{ price }}
+                        {% endblocktranslate %}
+                    </font>
+                {% else %}
+                    <font class="float-right" style="color: rgb(190, 0, 0);">
+                        {% blocktranslate with price=each.price %}
+                            -${{ price }}
+                        {% endblocktranslate %}
+                    </font>
+                {% endif %}
+            </p>
+            <small style="color: rgba(255, 255, 255, 0.7);">{{ each.date|date:'l \a\t g:iA' }} • {{ each.method }}</small>
+        </a>
     </div>
-</div>
+    <br>
+{% endfor %}
+
 {% endblock %}
