@@ -12,51 +12,51 @@
                 {% if each.method == "Payment" %}
                     <i class="bi bi-cart4 float-none" style="font-size: 1.5rem; color: #f8b119;"></i>
                     <font class="float-none" style="margin-left: 1rem;">
-                        {% blocktranslate with person=each.person.created_by.username|capfirst second_person=each.second_person.created_by.username|capfirst %}
+                        {% blocktrans with person=each.person.created_by.username|capfirst second_person=each.second_person.created_by.username|capfirst %}
                             Payment from {{ person }} to {{ second_person }}
-                        {% endblocktranslate %}
+                        {% endblocktrans %}
                     </font>
                 {% elif each.method == "Transfer" %}
                     <i class="bi bi-send-check float-none" style="font-size: 1.5rem; color: #f8b119;"></i>
                     <font class="float-none" style="margin-left: 1rem;">
-                        {% blocktranslate with person=each.person.created_by.username|capfirst second_person=each.second_person.created_by.username|capfirst %}
+                        {% blocktrans with person=each.person.created_by.username|capfirst second_person=each.second_person.created_by.username|capfirst %}
                             Transfer from {{ person }} to {{ second_person }}
-                        {% endblocktranslate %}
+                        {% endblocktrans %}
                     </font>
                 {% elif each.method == "Deposit" %}
                     <i class="bi bi-download float-none" style="font-size: 1.5rem; color: #f8b119;"></i>
                     <font class="float-none" style="margin-left: 1rem;">
-                        {% blocktranslate with person=each.person.created_by.username|capfirst %}
+                        {% blocktrans with person=each.person.created_by.username|capfirst %}
                             Deposit to {{ person }}
-                        {% endblocktranslate %}
+                        {% endblocktrans %}
                     </font>
                 {% elif each.method == "Withdraw" %}
                     <i class="bi bi-upload float-none" style="font-size: 1.5rem; color: #f8b119;"></i>
                     <font class="float-none" style="margin-left: 1rem;">
-                        {% blocktranslate with person=each.person.created_by.username|capfirst %}
+                        {% blocktrans with person=each.person.created_by.username|capfirst %}
                             Withdraw from {{ person }}
-                        {% endblocktranslate %}
+                        {% endblocktrans %}
                     </font>
                 {% elif each.method == "Cash Out" %}
                     <i class="fas fa-hand-holding-usd" style="font-size: 1.5rem; padding: 5px 0 5px 5px; color: #f8b119;"></i>
                     <font class="float-none">
-                        {% blocktranslate with person=each.person.created_by.username|capfirst %}
+                        {% blocktrans with person=each.person.created_by.username|capfirst %}
                             Cash Out for {{ person }}
-                        {% endblocktranslate %}
+                        {% endblocktrans %}
                     </font>
                 {% endif %}
 
                 {% if each.second_person.created_by.username == user.get_username or each.method == "Deposit" or each.method == "Cash Out" %}
                     <font class="float-right" style="color: rgb(0, 255, 0);">
-                        {% blocktranslate with price=each.price %}
+                        {% blocktrans with price=each.price %}
                             +${{ price }}
-                        {% endblocktranslate %}
+                        {% endblocktrans %}
                     </font>
                 {% else %}
                     <font class="float-right" style="color: rgb(190, 0, 0);">
-                        {% blocktranslate with price=each.price %}
+                        {% blocktrans with price=each.price %}
                             -${{ price }}
-                        {% endblocktranslate %}
+                        {% endblocktrans %}
                     </font>
                 {% endif %}
             </p>

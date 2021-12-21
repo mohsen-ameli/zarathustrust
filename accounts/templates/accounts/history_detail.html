@@ -8,37 +8,37 @@
         <p style="font-size: large;">
             {% if context.method == "Transfer" %}
                 {% if context.person.created_by.username != user.username %}
-                    {% blocktranslate with price=context.price person=context.person.created_by.username %}
+                    {% blocktrans with price=context.price person=context.person.created_by.username %}
                         ${{ price }} has been transfered to you, by {{ person }}
-                    {% endblocktranslate %}
+                    {% endblocktrans %}
                 {% else %}
-                    {% blocktranslate with price=context.price second_person=context.second_person.created_by.username %}
+                    {% blocktrans with price=context.price second_person=context.second_person.created_by.username %}
                         You have transfered ${{ price }} to {{ second_person }}
-                    {% endblocktranslate %}
+                    {% endblocktrans %}
                 {% endif %}
             {% elif context.method == "Deposit" %}
-                {% blocktranslate with price=context.price person=context.person.created_by.username %}
+                {% blocktrans with price=context.price person=context.person.created_by.username %}
                     Deposit to {{ person }}, for the amount ${{ price }}
-                {% endblocktranslate %}
+                {% endblocktrans %}
             {% elif context.method == "Withdraw" %}
-                {% blocktranslate with price=context.price person=context.person.created_by.username %}
+                {% blocktrans with price=context.price person=context.person.created_by.username %}
                     Withdraw from {{ person }}, for the amount ${{ price }}
-                {% endblocktranslate %}
+                {% endblocktrans %}
             {% elif context.method == "Cash Out" %}
-                {% blocktranslate with price=context.price %}
+                {% blocktrans with price=context.price %}
                     You have cashed out ${{ price }}
-                {% endblocktranslate %}
+                {% endblocktrans %}
             {% else %}
-                {% blocktranslate with price=context.price second_person=context.second_person.created_by.username %}
+                {% blocktrans with price=context.price second_person=context.second_person.created_by.username %}
                     You have paid {{ second_person }}, for a total of ${{ price }}
-                {% endblocktranslate %}
+                {% endblocktrans %}
             {% endif %}
             <br>
             <br>
             {% if context.purpose_of_use != "None" %}
-                {% blocktranslate with purpose=context.purpose_of_use %}
+                {% blocktrans with purpose=context.purpose_of_use %}
                     Purpose Of Use : {{ purpose }}
-                {% endblocktranslate %}
+                {% endblocktrans %}
                 <br>
                 <br>
             {% endif %}
