@@ -2,29 +2,26 @@
 {% load i18n %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <br>
-    <div class="container-fluid">
-        <div class="card text-white zarathus-card mx-auto">
-            <div class="card-body">
-                <form method="POST">
-                    {% csrf_token %}
-                    <fieldset class="form-group">
-                        <h3 class="font-weight-normal text-center">{% trans "Log In" %}</h3>
-                        <hr>
-                        {{ form|crispy }}
-                    </fieldset>
-                    <div class="form-group">
-                        <button class="btn btn-outline-warning" type="submit">{% trans "Log In" %}</button>
-                    </div>
-                </form>
-                <div class="pt-2">
-                    <small class="text-muted">
-                        <a style="color: #f8b119c7; " href="{% url 'password_reset' %}">
-                            {% trans "Reset Password ?" %}
-                        </a>
-                    </small>
-                </div>
+<div class="card text-white zarathus-card mx-auto">
+    <div class="card-body">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <h3 class="font-weight-normal text-center">{% trans "Log In" %}</h3>
+                <hr>
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-warning" type="submit">{% trans "Log In" %}</button>
             </div>
+        </form>
+        <div class="pt-2">
+            <small class="text-muted">
+                <a style="color: #f8b119c7; " href="{% url 'password_reset' %}">
+                    {% trans "Reset Password ?" %}
+                </a>
+            </small>
         </div>
     </div>
+</div>
 {% endblock content %}

@@ -1,6 +1,5 @@
 import decimal
 import json
-from os import error
 
 import requests
 from bs4 import BeautifulSoup
@@ -10,9 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.mail import send_mail
 from django.db.models import Q
-from django.db.models.base import ObjectDoesNotExist
 from django.shortcuts import redirect, render
-# from django.contrib.messages.views import SuccessMessageMixin
 from django.urls.base import reverse
 from django.utils.translation import gettext as _
 from django.views.generic import DetailView, TemplateView
@@ -20,10 +17,11 @@ from requests.api import get
 from users.models import CustomUser
 from django.http import HttpResponse
 from django.core.mail import EmailMessage
+from django.http import Http404
 
 
 from .forms import AddMoneyForm, TakeMoneyForm, TransferForm
-from .models import account, account_interest
+from .models import account, account_interest, transaction_history
 from .tasks import interest_loop
 
 with open('/etc/config.json') as config_file:
@@ -85,7 +83,6 @@ def TransferCreateView(request, pk):
                 checkbox = request.POST.get('checkbox')
                 if checkbox is not None: # A target user has been aquired
                     reciever_name = checkbox.split(',')[0]
-                    target_acc = account.objects.get(created_by__username=reciever_name).created_by
                     reciever_pk = account.objects.get(created_by__username=reciever_name).pk # getting reciever's pk
                     balance = account.objects.get(pk=pk).total_balance
                     if MoneyToSend >= 1 and MoneyToSend <= balance:
@@ -103,6 +100,7 @@ def TransferCreateView(request, pk):
                         b = account_interest.objects.get(pk=get_current_user().pk).interest - MoneyToSend        # minusing money from giver
                         account_interest.objects.filter(pk=get_current_user().pk).update(interest=b)             # updating giver
                         
+                        # success message
                         messages.success(request, _(f'${MoneyToSend} has been transfered to {reciever_name}'))
 
                         # emailing the reciever
@@ -126,6 +124,14 @@ def TransferCreateView(request, pk):
                         )
                         msg1.content_subtype = "html"
                         msg1.send()
+
+                        # add the transaction to the user's history
+                        person = account.objects.get(pk=get_current_user().pk)
+                        second_person = account.objects.get(pk=reciever_pk)
+                        r = transaction_history(person=person, second_person=second_person,
+                        price=MoneyToSend, purpose_of_use=purpose, method="Transfer")
+                        r.save()
+
                         return redirect(reverse('accounts:home', kwargs={'pk':pk}))
                     elif MoneyToSend < 1:
                         messages.warning(request, _(f'Please consider that the minimum amount to send is $1 !'))
@@ -142,7 +148,8 @@ def TransferCreateView(request, pk):
 @login_required
 def cash_out(request, pk):
     interest_rate     = account_interest.objects.get(pk=pk).interest_rate
-    bonus             = account.objects.get(pk=pk).bonus
+    guy               = account.objects.get(pk=pk)
+    bonus             = guy.bonus
     if interest_rate >= 0.1:
         # checking bonus if it's more than interest rate or not
         if interest_rate <= bonus:
@@ -152,7 +159,9 @@ def cash_out(request, pk):
             account_interest.objects.filter(pk=pk).update(interest=total_balance) # updating account interest
             messages.success(request, _(f'You have successfully cashed out ${round(interest_rate, 1) * 2}'))
             account_interest.objects.filter(pk=pk).update(interest_rate=0)
-            account.objects.filter(pk=pk).update(bonus=bonus-round(interest_rate, 1)) # updating bonus 
+            account.objects.filter(pk=pk).update(bonus=bonus-round(interest_rate, 1)) # updating bonus
+            r = transaction_history(person=guy, price=round(interest_rate, 1) * 2, method="Cash Out")
+            r.save()
             return redirect(reverse('accounts:home', kwargs={'pk':pk}))
         else:
             total_balance = account.objects.get(pk=pk).total_balance # getting total balance
@@ -162,6 +171,8 @@ def cash_out(request, pk):
             messages.success(request, _(f'You have successfully cashed out ${round(interest_rate, 1) + bonus}'))
             account_interest.objects.filter(pk=pk).update(interest_rate=0)
             account.objects.filter(pk=pk).update(bonus=0) # updating bonus 
+            r = transaction_history(person=guy, price=round(interest_rate, 1) + bonus, method="Cash Out")
+            r.save()
             return redirect(reverse('accounts:home', kwargs={'pk':pk}))
     elif interest_rate < 0.1:
         messages.warning(request, _(f'You need at least $0.1 to be able to cash out ! keep going tho'))
@@ -181,7 +192,6 @@ def AddMoneyUpdateView(request, pk):
         if add_money >= 1:
             EMAIL_ID        = config.get('EMAIL_ID')
             EMAIL_ID_MAIN   = config.get('EMAIL_ID_MAIN')
-            MOE_EMAIL       = config.get('MOE_EMAIL')
             send_mail(f'{get_current_user()}', 
                     f'{get_current_user()} with account number : {pk} has requested to deposit ${add_money}',
                     f'{EMAIL_ID}',
@@ -330,6 +340,13 @@ def checkout_complete(request, shop, price):
         # subtracting price from buyer
         account.objects.filter(pk=get_current_user().pk).update(total_balance=buyer_balance-price)
 
+        # add the transaction to the user's history
+        person = account.objects.get(pk=get_current_user().pk)
+        second_person = account.objects.get(created_by__username=shop)
+        r = transaction_history(person=person, second_person=second_person,
+        price=price, method="Payment")
+        r.save()
+
         messages.success(request, _("Your order was purchased successfully !"))
         return HttpResponse('<script type="text/javascript">window.close();</script>')
         # return redirect(reverse("accounts:home", kwargs={"pk" : get_current_user().pk}))
@@ -340,9 +357,28 @@ def checkout_complete(request, shop, price):
 
 @login_required
 def History(request, pk):
-    return render(request, "accounts/history.html")
+    current_logged_user    = account.objects.get(pk=pk)
+    person_history         = transaction_history.objects.filter(person=current_logged_user).order_by('date').reverse()
+    seconed_person_history = transaction_history.objects.filter(second_person=current_logged_user).order_by('date').reverse()
+
+    # combining both query sets that have the cureently logged in user's history in them
+    a = person_history | seconed_person_history
+
+    return render(request, "accounts/history.html", {"trans_action" : a})
 
 
+@login_required
+def history_detail(request, pk, tran_id):
+    user = account.objects.get(pk=pk)
+
+    context = transaction_history.objects.get(pk=tran_id)
+    if context.person == user or context.second_person == user :
+        if pk == get_current_user().pk:
+            return render(request, "accounts/history_detail.html", {"context" : context})
+        else:
+            raise Http404
+    else:
+        raise Http404
 
 
 

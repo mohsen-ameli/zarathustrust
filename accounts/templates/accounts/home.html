@@ -3,135 +3,123 @@
 {% load l10n %}
 {% load static %}
 {% block content %}
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <div class="container-fluid">
-        <!---------- top part ---------->
+<!---------- top part ---------->
+<div class="row">
+    <div class="col-xs-8 tp-first">
+        <h3 class="text-capitalize text-center">{% trans "we pay you 1% interest on your balance !" %}</h3>
+    </div>
+    <div class="col-xs-4 tp-second">
         <div class="row">
-            <div class="col-xs-8 tp-first">
-                <h3 class="text-capitalize text-center">{% trans "we pay you 1% interest on your balance !!!" %}</h3>
-            </div>
-            <div class="col-xs-4 tp-second">
-                <div class="row">
-                    <h4>
-                        {% blocktrans with bonus=object.bonus %}
-                            Bonus : ${{ bonus }}
-                        {% endblocktrans %}
-                    </h4>
-                    {% blocktrans asvar the_title %}
-                        The $1000 bonus is a gift from us to every new user. It has no expiration date!
-                        Every time you transfer the accumulated interest to your balance,
-                        an equal amount will be taken out of your bonus.
+            <h4>
+                {% blocktrans with bonus=object.bonus %}
+                    Bonus : ${{ bonus }}
+                {% endblocktrans %}
+            </h4>
+            {% blocktrans asvar the_title %}
+                The $1000 bonus is a gift from us to every new user. It has no expiration date!
+                Every time you transfer the accumulated interest to your balance,
+                an equal amount will be taken out of your bonus.
+            {% endblocktrans %}
+            <a href="#" class="fas fa-question-circle red-tooltip"
+                data-toggle="tooltip" data-placement="bottom" 
+                data-original-title="Tooltip on bottom" title="{{ the_title }}"></a>
+        </div>
+    </div>
+</div>
+
+<!---------- second part ---------->
+<div class="row">
+    <!---------- ballance and yellow card ---------->
+    <div class="col-lg-6 sp-first">
+        <div class="row mx-auto">
+            <i class="bi-cash-stack" 
+            style="font-size: 3rem; color: #f8b119; margin-right: 1rem;"></i>
+            <h1 style="color: #f8b119; margin-top: .8rem;">{% trans "Ballance" %}</h1>
+        </div>
+        <div class="card text-white zarathus-card" style="max-width: 22rem;">
+            <div class="card-body">
+                <h5 class="font-weight-normal text-capitalize">
+                    {% blocktrans with username=user.username %}
+                        Name: {{ username }}
                     {% endblocktrans %}
-                    <a href="#" class="fas fa-question-circle red-tooltip"
-                        data-toggle="tooltip" data-placement="bottom" 
-                        data-original-title="Tooltip on bottom" title="{{ the_title }}"></a>
-                </div>
-            </div>
-        </div>
-        <!---------- second part ---------->
-        <div class="row">
-            <!---------- ballance and yellow card ---------->
-            <div class="col-lg-6 sp-first">
-                <div class="row">
-                    <i class="bi-cash-stack" 
-                    style="font-size: 3rem; color: #f8b119; margin-right: 1rem;"></i>
-                    <h1 style="color: #f8b119; margin-top: .7rem;">{% trans "Ballance" %}</h1>
-                </div>
-                <div class="card text-dark bg-warning mb-3" style="max-width: 22rem; margin: 0rem;">
-                    <div class="card-body">
-                        <h5 class="font-weight-normal text-capitalize">
-                            {% blocktrans with username=user.username %}
-                                Name : {{ username }}
-                            {% endblocktrans %}
-                            {% if is_bus == True %}
-                                <i class="fas fa-briefcase" style="size: 1rem; margin-left: .5rem;"></i>
-                            {% endif %}
-                        </h5>
-                        <hr>
-                        <h6 class="font-weight-normal" id="total">
-                            {% blocktrans with balance=object.total_balance %}
-                            You have ${{ balance }} in your account !
-                            {% endblocktrans %}
-                        </h6>
-                    </div>
-                </div>
-            </div>
-            <!---------- Interest ---------->
-            <div class="col-lg-6 sp-second">
-                <div class="row">
-                    <i class="fas fa-hand-holding-usd"></i>
-                    <h1>{% trans "Interest" %}</h1>
-                <!-- <img class="img-fluid" src="{% static 'accounts/images/new-live.gif' %}" alt=""> -->
-                </div>
-                <div class="row">
-                    {% if LANGUAGE_CODE != 'en' %}
-                        <div class="second" id="counter"></div>
-                        <div class="first">{% trans " $" %}</div>
-                    {% else %}
-                        <div class="first">$</div>
-                        <div class="second" id="counter"></div>
+                    {% if is_bus == True %}
+                        <i class="fas fa-briefcase" style="size: 1rem; margin-left: .5rem;"></i>
                     {% endif %}
-                </div>
-                <br>
-                <a href="{% url 'accounts:cash-out' object.pk %}" class="btn btn-outline-success">
-                    {% trans "Cash Out" %}
-                </a>
-            </div>
-        </div>
-        <!---------- 4 buttons ---------->
-        <div class="row">
-            <div class="col-xl-3 col-md-3 col-sm-4 text-center">
-                <a href="{% url 'accounts:add-money' pk=object.pk %}" style="text-decoration:none">
-                    <i class="bi-download" style="font-size: 4.5rem; color: #f8b119;"></i>
-                    <h3 style="color: black">{% trans "Deposit" %}</h3>
-                </a>
-            </div>
-            <div class="col-xl-3 col-md-3 col-sm-4 text-center">
-                <a href="{% url 'accounts:transfer' pk=object.pk %}" style="text-decoration:none">
-                    <i class="bi bi-send-check" style="font-size: 4.5rem; color: #f8b119;"></i>
-                    <h3 style="color: black">{% trans "Send Money" %}</h3>
-                </a>
-            </div>
-            <div class="col-xl-3 col-md-3 col-sm-4 text-center">
-                <a href="{% url 'accounts:take-money' pk=object.pk %}" style="text-decoration:none">
-                    <i class="bi-upload" style="font-size: 4.5rem; color: #f8b119;"></i>
-                    <h3 style="color: black">{% trans "Withdraw" %}</h3>
-                </a>
-            </div>
-            <div class="col-xl-3 col-md-3 col-sm-4 text-center">
-                <a href="{% url 'accounts:history' pk=object.pk %}" style="text-decoration:none">
-                    <i class="bi bi-book-half" style="font-size: 4.5rem; color: #f8b119;"></i>
-                    <h3 style="color: black">{% trans "History" %}</h3>
-                </a>
+                </h5>
+                <hr>
+                <h6 class="font-weight-normal" id="total">
+                    {% blocktrans with balance=object.total_balance %}
+                    You have ${{ balance }} on your account !
+                    {% endblocktrans %}
+                </h6>
             </div>
         </div>
     </div>
+    <!---------- Interest ---------->
+    <div class="col-lg-6 sp-second">
+        <div class="row">
+            <i class="fas fa-hand-holding-usd"></i>
+            <h1>{% trans "Interest" %}</h1>
+        <!-- <img class="img-fluid" src="{% static 'accounts/images/new-live.gif' %}" alt=""> -->
+        </div>
+        <div class="row">
+            {% if LANGUAGE_CODE != 'en' %}
+                <div class="second" id="counter"></div>
+                <div class="first">{% trans " $" %}</div>
+            {% else %}
+                <div class="first">$</div>
+                <div class="second" id="counter"></div>
+            {% endif %}
+        </div>
+        <br>
+        <a href="{% url 'accounts:cash-out' object.pk %}" class="btn btn-outline-success">
+            {% trans "Cash Out" %}
+        </a>
+    </div>
+</div>
 
-    <script>
-        window.onload = function () {
-            var total_bal = Number('{{ interest_list.interest|unlocalize }}');
-            var interest_rate = Number('{{ interest_list.interest_rate|unlocalize }}');
-            ctr = document.getElementById("counter");
-            function incrementCounter() {
-                ctr.innerHTML = interest_rate.toFixed(20);
-                interest = total_bal * 0.01 / 31536000
-                interest_rate = interest_rate + interest
+<!---------- 4 buttons ---------->
+<div class="row">
+    <a href="{% url 'accounts:add-money' pk=object.pk %}" style="text-decoration:none" 
+        class="col-xl-3 col-md-3 col-sm-4 text-center zoom">
+        <i class="bi-download" style="font-size: 4.5rem; color: #f8b119;"></i>
+        <h3 style="color: black">{% trans "Deposit" %}</h3>
+    </a>
+    <a href="{% url 'accounts:transfer' pk=object.pk %}" style="text-decoration:none" 
+        class="col-xl-3 col-md-3 col-sm-4 text-center zoom" >
+        <i class="bi bi-send-check" style="font-size: 4.5rem; color: #f8b119;"></i>
+        <h3 style="color: black">{% trans "Send Money" %}</h3>
+    </a>
+    <a href="{% url 'accounts:take-money' pk=object.pk %}" style="text-decoration:none" 
+        class="col-xl-3 col-md-3 col-sm-4 text-center zoom">
+        <i class="bi-upload" style="font-size: 4.5rem; color: #f8b119;"></i>
+        <h3 style="color: black">{% trans "Withdraw" %}</h3>
+    </a>
+    <a href="{% url 'accounts:history' pk=object.pk %}" style="text-decoration:none; max-width: 280px;" 
+        class="col-xl-3 col-md-3 col-sm-4 text-center zoom">
+        <i class="bi bi-book-half" style="font-size: 4.5rem; color: #f8b119;"></i>
+        <h3 style="color: black">{% trans "Transaction History" %}</h3>
+    </a>
+</div>
 
-                if (interest_rate < Infinity)
-                    setTimeout(incrementCounter, 1000);
-            }
-            if (total_bal > 0){
-                incrementCounter();
-            } else {
-                ctr.innerHTML = "0.0";
-            }
+<script>
+    window.onload = function () {
+        var total_bal = Number('{{ interest_list.interest|unlocalize }}');
+        var interest_rate = Number('{{ interest_list.interest_rate|unlocalize }}');
+        ctr = document.getElementById("counter");
+        function incrementCounter() {
+            ctr.innerHTML = interest_rate.toFixed(20);
+            interest = total_bal * 0.01 / 31536000
+            interest_rate = interest_rate + interest
+
+            if (interest_rate < Infinity)
+                setTimeout(incrementCounter, 1000);
         }
-    </script>
-
-    <script>
-        $(document).ready(function () {
-            $('[data-toggle="tooltip"]').tooltip();
-        });
-    </script>
+        if (total_bal > 0){
+            incrementCounter();
+        } else {
+            ctr.innerHTML = "0.0";
+        }
+    }
+</script>
 {% endblock %}

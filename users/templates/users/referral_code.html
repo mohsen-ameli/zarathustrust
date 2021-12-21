@@ -2,22 +2,19 @@
 {% load i18n %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <br>
-    <div class="container-fluid">
-        <div class="card text-white zarathus-card mx-auto">
-            <div class="card-body">
-                <form action="" method="POST">
-                    {% csrf_token %}
-                    <fieldset class="form-group">
-                        <h3 class="font-weight-normal text-center">{% trans "Verify Your Referral Code" %}</h3>
-                        <hr>
-                        {{ form|crispy }}
-                    </fieldset>
-                    <div class="form-group">
-                        <button class="btn btn-outline-warning" type="submit">{% trans "Verify" %}</button>
-                    </div>
-                </form>
+<div class="card text-white zarathus-card mx-auto">
+    <div class="card-body">
+        <form action="" method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <h3 class="font-weight-normal text-center">{% trans "Verify Your Referral Code" %}</h3>
+                <hr>
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-warning" type="submit">{% trans "Verify" %}</button>
             </div>
-        </div>
+        </form>
     </div>
+</div>
 {% endblock content %}

@@ -1,5 +1,4 @@
 from .models import code, CustomUser
-from accounts.models import account
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
