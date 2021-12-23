@@ -10,7 +10,7 @@
         </h5>
         <hr>
         {% if user.account %}
-            <a class="btn btn-outline-warning" href="{% url 'accounts:home' user.account.pk %}">
+            <a class="neon-button" href="{% url 'accounts:home' user.account.pk %}">
                 {% trans "Home" %}</a>
         {% endif %}
         <small style="float: right;">{% trans "version:0.0.1" %}</small>

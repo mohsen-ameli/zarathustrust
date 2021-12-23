@@ -23,7 +23,7 @@
         </p>
         <hr>
         {% if user.account %}
-            <a class="btn btn-success" href="{% url 'accounts:checkout-complete' shop=shop price=price %}">
+            <a class="btn btn-success" href="{% url 'accounts:checkout-complete' shop=shop price=price %}" onclick="return confirm('Confirm the Action ?');">
                 {% trans "Place Order" %}
             </a>
         {% endif %}

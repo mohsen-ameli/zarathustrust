@@ -1,20 +1,17 @@
 {% extends "accounts/base.html" %}
 {% load i18n %}
 {% block content %}
-<h3 class="text-capitalize text-center">{% trans "we pay you 1% interest on your balance !!!" %}</h5>
-<!---------- 3 buttons ---------->
-<div class="row">
-    <div class="col-xl-6 text-center">
-        <a href="{% url 'register' %}" style="text-decoration:none">
-            <i class="fas fa-user-plus" style="font-size: 5rem; color: #f8b119; margin: 1rem;"></i>
-            <h1 style="color: black;">{% trans "Sign Up" %}</h1>
-        </a>
-    </div>
-    <div class="col-xl-6 text-center">
-        <a href="{% url 'login-view' %}" style="text-decoration:none">
-            <i class="fas fa-sign-in-alt" style="font-size: 5rem; color: #f8b119; margin: 1rem;"></i>
-            <h1 style="color: black;">{% trans "Login" %}</h1>
-        </a>
-    </div>
-</div>
+<h3 class="text-capitalize text-center">{% trans "we pay you 1% interest on your balance !" %}</h5>
+<!---------- 2 buttons ---------->
+<div class="row text-center">
+    <a href="{% url 'register' %}" class="zoom-login">
+        <i class="fas fa-user-plus buttons-2 p-2"></i>
+        <h1>{% trans "Sign Up" %}</h1>
+    </a>
+    <a href="{% url 'login-view' %}" class="zoom-login">
+        <i class="fas fa-sign-in-alt buttons-2 p-2"></i>
+        <h1>{% trans "Login" %}</h1>
+    </a>
+</div> 
+<!-- col-xl-6 -->
 {% endblock %}

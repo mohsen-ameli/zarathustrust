@@ -44,11 +44,20 @@ class HomeView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         return False
 
     def get_context_data(self, **kwargs):
-        pk = account.objects.get(created_by=get_current_user()).pk
         context = super().get_context_data(**kwargs)
-        context['interest_list'] = account_interest.objects.get(pk=pk)
-        id = CustomUser.objects.get(pk=get_current_user().pk).pk
-        context['is_bus'] = CustomUser.objects.get(pk=id).is_business
+        context['interest_list'] = account_interest.objects.get(pk=get_current_user().pk)
+        context['is_bus'] = CustomUser.objects.get(pk=get_current_user().pk).is_business
+
+        acc = account.objects.get(pk=get_current_user().pk)
+
+        url = f'https://api.exchangerate.host/convert?from=USD&to=EUR' # 1 USD to EUR
+        response = requests.get(url) # getting a response
+        data = response.json() # getting the data
+        euro_rate = data['result'] # extracting the desired column and converting it into Decimal django field
+        context['euro_balance'] = round(decimal.Decimal(euro_rate) * acc.total_balance, 2) # set the EUR balance to euro_balance for templates
+        context['euro_rate']    = euro_rate  # passing euro_rate for 1 USD
+        context['euro_bonus']   = round(decimal.Decimal(euro_rate) * acc.bonus, 2)
+
         return context
 
 
@@ -77,9 +86,9 @@ def TransferCreateView(request, pk):
             found_accounts = CustomUser.objects.all().filter(
                 Q(email__icontains=target_account) | Q(phone_number__contains=target_account) | Q(username__icontains=target_account)
             )
-            if not found_accounts:
+            if not found_accounts: # no accounts were found
                 messages.warning(request, _(f'Sorry, no account with the information provided was found :('))
-            else:
+            else: # accounts were found
                 checkbox = request.POST.get('checkbox')
                 if checkbox is not None: # A target user has been aquired
                     reciever_name = checkbox.split(',')[0]
@@ -364,7 +373,12 @@ def History(request, pk):
     # combining both query sets that have the cureently logged in user's history in them
     a = person_history | seconed_person_history
 
-    return render(request, "accounts/history.html", {"trans_action" : a})
+    url = f'https://api.exchangerate.host/convert?from=USD&to=EUR' # 1 USD to EUR
+    response = requests.get(url) # getting a response
+    data = response.json() # getting the data
+    euro_rate = round(decimal.Decimal(data['result']), 2)
+
+    return render(request, "accounts/history.html", {"trans_action" : a, "euro_rate" : euro_rate})
 
 
 @login_required

@@ -34,11 +34,11 @@
 <body>
     <!-- NAVBAR -->
     <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
+        <div class="container-sm">
             {% if user.account %}
                 <a class="navbar-brand" href="{% url 'accounts:home' pk=user.account.pk %}">
                     <img src="../../../static/accounts/images/zarathustrust.png" width="60" height="26" class="d-inline-block align-text-top">
-                    ZarathusTrust
+                    <span style="font-size: x-large;">Z</span>arathus<span style="font-size: x-large;">T</span>rust
                 </a>
             {% else %}
                 <a class="navbar-brand" href="{% url 'accounts:home-new' %}">
@@ -53,11 +53,6 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link active" href="{% url 'accounts:home' user.account.pk %}">
-                                <i class="fas fa-home"></i> {% trans "home" %}
-                            </a>
-                        </li>
                         <li class="nav-item">
                             <a class="nav-link active" href="{% url 'accounts:referral-code' user.account.pk %}">
                                 <i class="fas fa-user-check"></i> {% trans "Invite A Friend" %}
@@ -74,7 +69,7 @@
 
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="dropdown09" data-toggle="dropdown" aria-haspopup="true"
+                        <a class="nav-link dropdown-toggle" style="color: white;" href="#" id="dropdown09" data-toggle="dropdown" aria-haspopup="true"
                             aria-expanded="false">
                             {% get_current_language as LANGUAGE_CODE %}
                             {% get_available_languages as LANGUAGES %}
@@ -114,7 +109,7 @@
     </nav>
     
     <!-- MESSAGES -->
-    <div class="container-fluid">
+    <div class="container">
         {% if messages %}
             {% for msg in messages|slice:":1" %}
                 {% if msg.tags == 'warning' %}
@@ -136,7 +131,7 @@
     
     <!-- MAIN CONTENT -->
     <br>
-    <div class="container-fluid">
+    <div class="container">
         {% block content %}{% endblock %}
     </div>
     <br>

@@ -1,7 +1,8 @@
 {% extends "accounts/base.html" %}
 {% load i18n %}
+{% load l10n %}
+{% load mathfilters %}
 {% block content %}
-
 {% for each in trans_action %}
     <div class="list-group mx-auto">
         <a href="{% url 'accounts:history-detail' pk=user.pk tran_id=each.id %}" class="list-group-item list-group-item-action flex-column align-items-start text-white">
@@ -10,35 +11,35 @@
             </div>
             <p class="mb-1">
                 {% if each.method == "Payment" %}
-                    <i class="bi bi-cart4 float-none" style="font-size: 1.5rem; color: #f8b119;"></i>
+                    <i class="bi bi-cart4 float-none" style="font-size: 1.5rem;"></i>
                     <font class="float-none" style="margin-left: 1rem;">
                         {% blocktrans with person=each.person.created_by.username|capfirst second_person=each.second_person.created_by.username|capfirst %}
                             Payment from {{ person }} to {{ second_person }}
                         {% endblocktrans %}
                     </font>
                 {% elif each.method == "Transfer" %}
-                    <i class="bi bi-send-check float-none" style="font-size: 1.5rem; color: #f8b119;"></i>
+                    <i class="bi bi-send-check float-none" style="font-size: 1.5rem;"></i>
                     <font class="float-none" style="margin-left: 1rem;">
                         {% blocktrans with person=each.person.created_by.username|capfirst second_person=each.second_person.created_by.username|capfirst %}
                             Transfer from {{ person }} to {{ second_person }}
                         {% endblocktrans %}
                     </font>
                 {% elif each.method == "Deposit" %}
-                    <i class="bi bi-download float-none" style="font-size: 1.5rem; color: #f8b119;"></i>
+                    <i class="bi bi-download float-none" style="font-size: 1.5rem;"></i>
                     <font class="float-none" style="margin-left: 1rem;">
                         {% blocktrans with person=each.person.created_by.username|capfirst %}
                             Deposit to {{ person }}
                         {% endblocktrans %}
                     </font>
                 {% elif each.method == "Withdraw" %}
-                    <i class="bi bi-upload float-none" style="font-size: 1.5rem; color: #f8b119;"></i>
+                    <i class="bi bi-upload float-none" style="font-size: 1.5rem;"></i>
                     <font class="float-none" style="margin-left: 1rem;">
                         {% blocktrans with person=each.person.created_by.username|capfirst %}
                             Withdraw from {{ person }}
                         {% endblocktrans %}
                     </font>
                 {% elif each.method == "Cash Out" %}
-                    <i class="fas fa-hand-holding-usd" style="font-size: 1.5rem; padding: 5px 0 5px 5px; color: #f8b119;"></i>
+                    <i class="fas fa-hand-holding-usd" style="font-size: 1.5rem; padding: 5px 0 5px 5px;"></i>
                     <font class="float-none">
                         {% blocktrans with person=each.person.created_by.username|capfirst %}
                             Cash Out for {{ person }}
@@ -47,16 +48,20 @@
                 {% endif %}
 
                 {% if each.second_person.created_by.username == user.get_username or each.method == "Deposit" or each.method == "Cash Out" %}
-                    <font class="float-right" style="color: rgb(0, 255, 0);">
-                        {% blocktrans with price=each.price %}
-                            +${{ price }}
-                        {% endblocktrans %}
+                    <font class="float-right" style="color: rgb(0, 255, 0); font-size: large;">
+                        {% if LANGUAGE_CODE == "de" %}
+                            +€{{ each.price|mul:euro_rate|floatformat:1 }}
+                        {% else %}
+                            +${{ each.price }}
+                        {% endif %}
                     </font>
                 {% else %}
-                    <font class="float-right" style="color: rgb(190, 0, 0);">
-                        {% blocktrans with price=each.price %}
-                            -${{ price }}
-                        {% endblocktrans %}
+                    <font class="float-right" style="color: rgb(185, 0, 0); font-size: large;">
+                        {% if LANGUAGE_CODE == "de" %}
+                            -€{{ each.price|mul:euro_rate|floatformat:1 }}
+                        {% else %}
+                            -${{ each.price }}
+                        {% endif %}
                     </font>
                 {% endif %}
             </p>
