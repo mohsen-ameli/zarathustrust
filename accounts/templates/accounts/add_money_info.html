@@ -21,7 +21,7 @@
             purpose(optional) : {{ username }}-{{ pk }}
             {% endblocktrans %}
         </p>
-        <a class="btn btn-outline-warning"
+        <a class="neon-button"
             href="{% url 'accounts:home' user.account.pk %}">{% trans "Home" %}</a>
 </div>
 {% endblock %}

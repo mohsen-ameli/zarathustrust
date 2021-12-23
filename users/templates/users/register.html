@@ -2,27 +2,29 @@
 {% load i18n %}
 {% load crispy_forms_tags %}
 {% block content %}
-<div class="row">
-    <div class="col-md-5 mx-auto">
-        <div class="card text-white zarathus-card">
-            <div class="card-body text-center">
-                <h3 class="font-weight-normal text-center">Business Sign Up</h3>
-                <hr>
+<div class="d-lg-flex">
+    <div class="p-3 mx-auto">
+        <div class="card text-white text-center zarathus-card" style="height: 20rem;">
+            <div class="card-body" style="display: flex; flex-direction: column;">
+                <h3 class="font-weight-normal">Business Sign Up <hr></h3>
                 <h5 class="font-weight-normal">{% trans "This is a business account. Sign up now to be able to use our website as a payment for you own shop. Remember, you still get interest on all your capital as well." %}</h5>
-                <hr>
-                <a class="btn btn-outline-warning" href="{% url 'business' %}">{% trans "Sign Up" %}</a>
+                <div class="mt-auto">
+                    <hr>
+                    <a class="neon-button-green" href="{% url 'business' %}">{% trans "Sign Up" %}</a>
+                </div>
             </div>
         </div>
     </div>
     
-    <div class="col-md-5 mx-auto">
-        <div class="card text-white zarathus-card">
-            <div class="card-body text-center">
-                <h3 class="font-weight-normal text-center">Personal Sign Up</h3>
-                <hr>
+    <div class="p-3 mx-auto">
+        <div class="card text-white text-center zarathus-card" style="height: 20rem;">
+            <div class="card-body" style="display: flex; flex-direction: column;">
+                <h3 class="font-weight-normal">Personal Sign Up <hr></h3>
                 <h5 class="font-weight-normal">{% trans "This is a normal personal account. Sign up now to start making interest on your ballance." %}</h5>
-                <hr>
-                <a class="btn btn-outline-warning" href="{% url 'personal' %}">{% trans "Sign Up" %}</a>
+                <div class="mt-auto">
+                    <hr>
+                    <a class="neon-button-green" href="{% url 'personal' %}">{% trans "Sign Up" %}</a>
+                </div>
             </div>
         </div>
     </div>

@@ -24,11 +24,11 @@
                     <br>
                 {% endfor %}
                 <div class="form-group">
-                    <button class="btn btn-outline-warning" type="submit">{% trans "Transfer" %}</button>
+                    <button class="neon-button" type="submit" name="Transfer" value="Transfer" onclick="return confirm('Confirm the Action ?');">{% trans "Transfer" %}</button>
                 </div>
             {% else %}
                 <div class="form-group">
-                    <button class="btn btn-outline-warning" type="submit">{% trans "Search" %}</button>
+                    <button class="neon-button" type="submit">{% trans "Search" %}</button>
                 </div>
             {% endif %}
         </form>

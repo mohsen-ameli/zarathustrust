@@ -3,123 +3,148 @@
 {% load l10n %}
 {% load static %}
 {% block content %}
-<!---------- top part ---------->
-<div class="row">
-    <div class="col-xs-8 tp-first">
-        <h3 class="text-capitalize text-center">{% trans "we pay you 1% interest on your balance !" %}</h3>
+<!-- <div class="loader"></div> -->
+<!---------- First Part ---------->
+<div class="d-lg-flex">
+    <div class="p-2 mr-auto">
+        <h3 class="text-capitalize">{% trans "we pay you 1% interest on your balance !" %}</h3>
     </div>
-    <div class="col-xs-4 tp-second">
+    <div class="p-2">
         <div class="row">
-            <h4>
-                {% blocktrans with bonus=object.bonus %}
-                    Bonus : ${{ bonus }}
-                {% endblocktrans %}
-            </h4>
+            <h3>
+                {% if LANGUAGE_CODE == 'de' %}
+                    Bonus: €{{ euro_bonus }}
+                {% else %}
+                    Bonus: ${{ object.bonus }}
+                {% endif %}
+            </h3>
             {% blocktrans asvar the_title %}
                 The $1000 bonus is a gift from us to every new user. It has no expiration date!
                 Every time you transfer the accumulated interest to your balance,
                 an equal amount will be taken out of your bonus.
             {% endblocktrans %}
-            <a href="#" class="fas fa-question-circle red-tooltip"
+            <a href="#" class="fas fa-question-circle p-2"
                 data-toggle="tooltip" data-placement="bottom" 
                 data-original-title="Tooltip on bottom" title="{{ the_title }}"></a>
         </div>
     </div>
 </div>
 
-<!---------- second part ---------->
-<div class="row">
+<!---------- Second Part ---------->
+<div class="d-lg-flex flex-row bd-highlight">
     <!---------- ballance and yellow card ---------->
-    <div class="col-lg-6 sp-first">
-        <div class="row mx-auto">
-            <i class="bi-cash-stack" 
-            style="font-size: 3rem; color: #f8b119; margin-right: 1rem;"></i>
-            <h1 style="color: #f8b119; margin-top: .8rem;">{% trans "Ballance" %}</h1>
+    <div class="bd-highlight mr-auto">
+        <!-- top part -->
+        <div class="d-flex">
+            <div class="pr-3">
+                <i class="bi-cash-stack"></i>
+            </div>
+            <div class="align-self-center">
+                <h1>{% trans "Ballance" %}</h1>
+            </div>
         </div>
-        <div class="card text-white zarathus-card" style="max-width: 22rem;">
+        <br>
+        <!-- bottom part (card) -->
+        <div class="card text-white home-card">
             <div class="card-body">
                 <h5 class="font-weight-normal text-capitalize">
                     {% blocktrans with username=user.username %}
                         Name: {{ username }}
                     {% endblocktrans %}
                     {% if is_bus == True %}
-                        <i class="fas fa-briefcase" style="size: 1rem; margin-left: .5rem;"></i>
+                        <i class="fas fa-briefcase pl-2 pr-2"></i> (Business Account)
                     {% endif %}
                 </h5>
                 <hr>
-                <h6 class="font-weight-normal" id="total">
-                    {% blocktrans with balance=object.total_balance %}
-                    You have ${{ balance }} on your account !
-                    {% endblocktrans %}
-                </h6>
+                {% if LANGUAGE_CODE == 'de' %}
+                    <h1 class="font-weight-normal">€{{ euro_balance }}</h1>
+                {% else %}
+                    <h1 class="font-weight-normal">${{ object.total_balance }}</h1>
+                {% endif %}
+                Current Balance
             </div>
         </div>
     </div>
     <!---------- Interest ---------->
-    <div class="col-lg-6 sp-second">
-        <div class="row">
-            <i class="fas fa-hand-holding-usd"></i>
-            <h1>{% trans "Interest" %}</h1>
-        <!-- <img class="img-fluid" src="{% static 'accounts/images/new-live.gif' %}" alt=""> -->
+    <div class="bd-highlight">
+        <!-- top part -->
+        <div class="d-flex pb-2">
+            <div class="pr-3">
+                <i class="bi bi-piggy-bank"></i>
+            </div>
+            <div class="align-self-center">
+                <h1>{% trans "Interest" %}</h1>
+            </div>
         </div>
+        <!-- bottom part (counter) -->
         <div class="row">
-            {% if LANGUAGE_CODE != 'en' %}
-                <div class="second" id="counter"></div>
-                <div class="first">{% trans " $" %}</div>
+            {% if LANGUAGE_CODE == 'de' %}
+            <div class="d-flex counter-interest">
+                <div class="">€</div>
+                <div id="counter"></div>
+            </div>
             {% else %}
-                <div class="first">$</div>
-                <div class="second" id="counter"></div>
+            <div class="d-flex counter-interest">
+                <div class="">$</div>
+                <div id="counter"></div>
+            </div>
             {% endif %}
         </div>
         <br>
-        <a href="{% url 'accounts:cash-out' object.pk %}" class="btn btn-outline-success">
-            {% trans "Cash Out" %}
-        </a>
+        <a href="{% url 'accounts:cash-out' object.pk %}" class="neon-button">{% trans "Cash Out" %}</a>
     </div>
 </div>
+<br>
 
 <!---------- 4 buttons ---------->
-<div class="row">
-    <a href="{% url 'accounts:add-money' pk=object.pk %}" style="text-decoration:none" 
-        class="col-xl-3 col-md-3 col-sm-4 text-center zoom">
-        <i class="bi-download" style="font-size: 4.5rem; color: #f8b119;"></i>
-        <h3 style="color: black">{% trans "Deposit" %}</h3>
+<div class="row text-center">
+    <a href="{% url 'accounts:add-money' pk=object.pk %}" class="col-md zoom">
+        <i class="bi bi-download buttons-4"></i>
+        <h3>{% trans "Deposit" %}</h3>
     </a>
-    <a href="{% url 'accounts:transfer' pk=object.pk %}" style="text-decoration:none" 
-        class="col-xl-3 col-md-3 col-sm-4 text-center zoom" >
-        <i class="bi bi-send-check" style="font-size: 4.5rem; color: #f8b119;"></i>
-        <h3 style="color: black">{% trans "Send Money" %}</h3>
+    <a href="{% url 'accounts:transfer' pk=object.pk %}" class="col-md zoom" >
+        <i class="bi bi-send-check buttons-4"></i>
+        <h3>{% trans "Send Money" %}</h3>
     </a>
-    <a href="{% url 'accounts:take-money' pk=object.pk %}" style="text-decoration:none" 
-        class="col-xl-3 col-md-3 col-sm-4 text-center zoom">
-        <i class="bi-upload" style="font-size: 4.5rem; color: #f8b119;"></i>
-        <h3 style="color: black">{% trans "Withdraw" %}</h3>
+    <a href="{% url 'accounts:take-money' pk=object.pk %}" class="col-md zoom">
+        <i class="bi bi-upload buttons-4"></i>
+        <h3>{% trans "Withdraw" %}</h3>
     </a>
-    <a href="{% url 'accounts:history' pk=object.pk %}" style="text-decoration:none; max-width: 280px;" 
-        class="col-xl-3 col-md-3 col-sm-4 text-center zoom">
-        <i class="bi bi-book-half" style="font-size: 4.5rem; color: #f8b119;"></i>
-        <h3 style="color: black">{% trans "Transaction History" %}</h3>
+    <a href="{% url 'accounts:history' pk=object.pk %}" class="col-md zoom">
+        <i class="bi bi-book-half buttons-4"></i>
+        <h3>{% trans "Transaction History" %}</h3>
     </a>
 </div>
 
 <script>
+    var total_bal = Number('{{ interest_list.interest|unlocalize }}');
+    var interest_rate = Number('{{ interest_list.interest_rate|unlocalize }}');
+    var lang = '{{ LANGUAGE_CODE }}'
+    var euro_rate = Number('{{ euro_rate|unlocalize }}')
     window.onload = function () {
-        var total_bal = Number('{{ interest_list.interest|unlocalize }}');
-        var interest_rate = Number('{{ interest_list.interest_rate|unlocalize }}');
+        /* multiplying total balacne to get the euro equivalent */
+        if (lang == "de") {
+            total_bal = total_bal * euro_rate;
+        }
         ctr = document.getElementById("counter");
         function incrementCounter() {
             ctr.innerHTML = interest_rate.toFixed(20);
+
+            /* one percent of the total balance per second */
             interest = total_bal * 0.01 / 31536000
             interest_rate = interest_rate + interest
 
-            if (interest_rate < Infinity)
-                setTimeout(incrementCounter, 1000);
+            /* timeout every second */
+            setTimeout(incrementCounter, 1000);
         }
         if (total_bal > 0){
+            /* loopdy loop back up untill infinity */
             incrementCounter();
         } else {
-            ctr.innerHTML = "0.0";
+            ctr.innerHTML = "0.00000000000000000000";
         }
     }
 </script>
+
+<!-- <img class="img-fluid" src="{% static 'accounts/images/new-live.gif' %}" alt=""> -->
 {% endblock %}

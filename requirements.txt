@@ -3,10 +3,10 @@ amqp==5.0.6
 appdirs==1.4.4
 asgiref==3.4.1
 auto-py-to-exe==2.10.0
+Babel==2.9.1
 backports.entry-points-selectable==1.1.0
 beautifulsoup4==4.9.3
 billiard==3.6.4.0
-black==21.7b0
 boto3==1.18.34
 botocore==1.21.34
 bottle==0.12.19
@@ -23,6 +23,7 @@ click-plugins==1.1.1
 click-repl==0.2.0
 colorama==0.4.4
 distlib==0.3.2
+distro==1.4.0
 dj-database-url==0.5.0
 Django==3.2.7
 django-axes==5.22.0
@@ -56,6 +57,8 @@ platformdirs==2.2.0
 polib==1.1.1
 prompt-toolkit==3.0.20
 psycopg2-binary==2.9.1
+py-moneyed==1.2
+pycodestyle==2.8.0
 pycparser==2.20
 pyinstaller==4.5.1
 pyinstaller-hooks-contrib==2021.2
@@ -71,6 +74,9 @@ s3transfer==0.5.0
 six==1.16.0
 soupsieve==2.2.1
 sqlparse==0.4.2
+ssh-import-id==5.10
+supervisor==4.1.0
+toml==0.10.2
 tomli==1.2.1
 twilio==6.63.1
 typing-extensions==3.10.0.2

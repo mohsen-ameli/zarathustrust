@@ -20,7 +20,7 @@
                 {{ form|crispy }}
             </fieldset>
             <div class="form-group">
-                <button class="btn btn-outline-warning" type="submit">{% trans "Withdraw" %}</button>
+                <button class="neon-button" type="submit" onclick="return confirm('Confirm the Action ?');">{% trans "Withdraw" %}</button>
             </div>
         </form>
     </div>

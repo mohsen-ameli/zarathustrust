@@ -12,12 +12,12 @@
                 {{ form|crispy }}
             </fieldset>
             <div class="form-group">
-                <button class="btn btn-outline-warning" type="submit">{% trans "Log In" %}</button>
+                <button class="neon-button-green" type="submit">{% trans "Log In" %}</button>
             </div>
         </form>
         <div class="pt-2">
             <small class="text-muted">
-                <a style="color: #f8b119c7; " href="{% url 'password_reset' %}">
+                <a style="color: #f8b119c7;" href="{% url 'password_reset' %}">
                     {% trans "Reset Password ?" %}
                 </a>
             </small>
