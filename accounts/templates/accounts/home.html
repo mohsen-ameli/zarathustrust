@@ -6,11 +6,11 @@
 <!-- <div class="loader"></div> -->
 <!---------- First Part ---------->
 <div class="d-lg-flex">
-    <div class="p-2 mr-auto">
-        <h3 class="text-capitalize">{% trans "we pay you 1% interest on your balance !" %}</h3>
+    <div class="py-2 mr-auto">
+        <h3 class="text-capitalize">{% trans "we pay you 2% interest on your balance !" %}</h3>
     </div>
     <div class="p-2">
-        <div class="row">
+        <div class="d-flex">
             <h3>
                 {% if LANGUAGE_CODE == 'de' %}
                     Bonus: €{{ euro_bonus }}
@@ -77,7 +77,7 @@
             </div>
         </div>
         <!-- bottom part (counter) -->
-        <div class="row">
+        <div class="d-flex">
             {% if LANGUAGE_CODE == 'de' %}
             <div class="d-flex counter-interest">
                 <div class="">€</div>
@@ -91,7 +91,7 @@
             {% endif %}
         </div>
         <br>
-        <a href="{% url 'accounts:cash-out' object.pk %}" class="neon-button">{% trans "Cash Out" %}</a>
+        <a href="{% url 'accounts:cash-out' object.pk %}" class="neon-button ml-2">{% trans "Cash Out" %}</a>
     </div>
 </div>
 <br>
@@ -102,7 +102,7 @@
         <i class="bi bi-download buttons-4"></i>
         <h3>{% trans "Deposit" %}</h3>
     </a>
-    <a href="{% url 'accounts:transfer' pk=object.pk %}" class="col-md zoom" >
+    <a href="{% url 'accounts:transfer-search' pk=object.pk %}" class="col-md zoom" >
         <i class="bi bi-send-check buttons-4"></i>
         <h3>{% trans "Send Money" %}</h3>
     </a>

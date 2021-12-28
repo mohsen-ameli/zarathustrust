@@ -13,6 +13,7 @@ class CustomUserAdmin(UserAdmin):
             'User Info',
             {
                 'fields': (
+                    'country',
                     'phone_ext',
                     'phone_number',
                     'iban',

@@ -1,6 +1,9 @@
+html {
+  scroll-behavior: smooth;
+}
 body {
   overflow-x: hidden;
-  background-image: url("../images/backgound-black.jpg");
+  background-image: url("../images/backgound-black3.jpg");
   /* background-image: url("https://static.vecteezy.com/system/resources/thumbnails/002/774/066/small_2x/abstract-green-cube-pattern-on-dark-blue-background-modern-lines-square-mesh-simple-flat-geometric-design-you-can-use-for-cover-poster-banner-web-flyer-landing-page-print-ad-vector.jpg"); */
   background-repeat: repeat;
   color: white;
@@ -69,7 +72,8 @@ i {
 #hint_id_password2,
 #hint_id_iban,
 #hint_id_referral_code,
-#hint_id_iban_verify_code {
+#hint_id_iban_verify_code,
+#hint_id_pag_num {
   color: white !important;
 }
 /********** end **********/
@@ -91,23 +95,26 @@ i {
 /********** Tooltip **********/    
 .bs-tooltip-auto[x-placement^="bottom"] .arrow::before,
 .bs-tooltip-bottom .arrow::before {
-  border-bottom-color: #f8b119;
+  border-bottom-color: rgb(133, 99, 26) !important;
   margin-left: .5rem;
 }
 .tooltip-inner {
-  background-color: #f8b119c7 !important;
+  background-color: rgb(248, 177, 25) !important;
   color: rgb(0, 0, 0);
 }
+.tooltip.show {
+  opacity: 1;
+}
 .tooltip.top .tooltip-arrow {
-  border-top-color: #f8b119c7;
+  border-top-color: rgb(248, 177, 25) !important;
 }
 
 .tooltip.right .tooltip-arrow {
-  border-right-color: #f8b119c7;
+  border-right-color: rgb(248, 177, 25) !important;
 }
 
 .tooltip.bottom .tooltip-arrow {
-  border-bottom-color: #f8b119c7;
+  border-bottom-color: rgb(248, 177, 25) !important;
 }
 
 .tooltip.left .tooltip-arrow {
@@ -141,7 +148,7 @@ hr {
 }
 .home-card {
   background-color: rgba(255, 255, 255, 0.26) !important;
-  width: 32rem;
+  width: 28rem;
 }
 .list-group-item-action { /* HISTORY CARDS */
   background-color: rgba(255, 255, 255, 0.26) !important;
@@ -177,8 +184,9 @@ hr {
 :root {
   --clr-neon: #f8b119c7;
   --clr-neon-red: #f81919c7;
-  --clr-neon-green: #19f83ec7;
+  --clr-neon-green: #12bb7ac7;
 }
+
 .neon-button-green {
   font-size: 1rem;
   background-color: transparent;
@@ -215,7 +223,10 @@ hr {
 
   position: relative;
 }
-.neon-button {
+.neon-button,
+button.swal2-confirm.swal2-styled,
+button.swal2-cancel.swal2-styled,
+.swal2-popup .swal2-styled:focus {
   font-size: 1rem;
   background-color: transparent;
 
@@ -229,11 +240,14 @@ hr {
 
   text-shadow: 0 0 0.125em rgba(255, 255, 255, 0.3), 0 0 0em currentColor;
 
-  box-shadow: inset 0 0 0.5em 0 var(--clr-neon), 0 0 0.5em 0 var(--clr-neon);
+  box-shadow: inset 0 0 0.5em 0 var(--clr-neon), 0 0 0.5em 0 var(--clr-neon) !important;
 
   position: relative;
 }
-.neon-button::after {
+
+.neon-button::after,
+button.swal2-cancel.swal2-styled::after,
+button.swal2-confirm.swal2-styled::after {
   content: "";
   position: absolute;
   top: 0;
@@ -272,23 +286,73 @@ hr {
   z-index: -1;
   transition: opacity 100ms linear;
 }
+
 .neon-button:hover,
 .neon-button-red:hover,
-.neon-button-green:hover {
+button.swal2-cancel.swal2-styled:hover,
+.neon-button-green:hover,
+button.swal2-confirm.swal2-styled:hover {
   color: black;
   text-shadow: none;
 }
+
 .neon-button:hover::before,
 .neon-button-red::before,
-.neon-button-green::before {
+button.swal2-cancel.swal2-styled::before,
+.neon-button-green::before,
+button.swal2-confirm.swal2-styled::before {
   opacity: 1;
 }
+
 .neon-button:hover::after,
 .neon-button-red:hover::after,
-.neon-button-green:hover::after {
+button.swal2-cancel.swal2-styled:hover::after,
+.neon-button-green:hover::after,
+button.swal2-confirm.swal2-styled:hover::after {
   opacity: 1;
 }
 /************ end *********/
+
+/************ Pagination ************/
+
+.pagination > li > a
+{
+    background-color: #6c757d;
+    color: #fff;
+    border-color: rgb(185, 185, 185);
+}
+.pagination > li > a:focus,
+.pagination > li > a:hover,
+.pagination > li > span:focus,
+.pagination > li > span:hover
+{
+    color: #5a5a5a;
+    background-color: #eee;
+    border-color: #ddd;
+}
+.pagination > .active > a:hover
+{
+    background-color: #5A4181 !Important;
+    border: solid 1px #5A4181;
+}
+#myBtn {
+  display: none;
+  position: fixed;
+  bottom: 15px;
+  right: 21px;
+  z-index: 99;
+  font-size: 20px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 1rem 1.5rem;
+  border-radius: 4px;
+}
+#myBtn:hover {
+  background-color: #555;
+}
+
+/************ end ************/
 
 /* XS */
 @media (max-width: 768px) {
@@ -392,24 +456,67 @@ hr {
   }
 }
 
-
-.loader {
-  border: 16px solid #f3f3f3;
-  border-radius: 50%;
-  border-top: 16px solid #3498db;
-  width: 120px;
-  height: 120px;
-  -webkit-animation: spin 2s linear infinite; /* Safari */
-  animation: spin 2s linear infinite;
+/* bootstrap spinner */
+/*
+.spinner-inner {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }
 
-/* Safari */
-@-webkit-keyframes spin {
-  0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
-}
+.spinner-border {
+  width: 6rem;
+  height: 6rem;
+} */
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+
+.spinner {
+  background: rgba(0, 0, 0, .4);
+  overflow-y: auto;
+  display: grid;
+  position: absolute;
+  z-index: 1060;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.spinner-class {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+#container {
+  width: 200px;
+  height: 200px;
+}
+@keyframes animation {
+  0% {
+    stroke-dasharray: 1 98;
+    stroke-dashoffset: -105;
+  }
+  50% {
+    stroke-dasharray: 80 10;
+    stroke-dashoffset: -160;
+  }
+  100% {
+    stroke-dasharray: 1 98;
+    stroke-dashoffset: -300;
+  }
+}
+#spinner {
+  transform-origin: center;
+  animation-name: animation;
+  animation-duration: 1.2s;
+  animation-timing-function: cubic-bezier;
+  animation-iteration-count: infinite;
+  fill:transparent;
+  stroke:#f8b119c7;
+  stroke-width: 7px;
+  stroke-linecap: round;
+  filter:url(#shadow);
 }

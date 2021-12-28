@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-12-20 23:27-0500\n"
+"POT-Creation-Date: 2021-12-28 14:30-0500\n"
 "PO-Revision-Date: 2021-12-22 19:10-0518\n"
 "Last-Translator: mohsen ameli <mohsen.ameli83@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,20 +19,32 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Translated-Using: django-rosetta 0.9.7\n"
 
-#: accounts/forms.py:7 accounts/forms.py:15 accounts/forms.py:23
+#: accounts/forms.py:8 accounts/forms.py:17
 msgid "Enter Amount"
 msgstr "Betrag eingeben"
 
-#: accounts/forms.py:26
-msgid "Enter Account"
-msgstr "Betrag eingeben"
-
-#: accounts/forms.py:28
-msgid "purpose of use (optional)"
+#: accounts/forms.py:27
+msgid "Enter a number"
 msgstr ""
 
-#: accounts/forms.py:29
-msgid "e.g. Happy Birthday honey !"
+#: accounts/forms.py:28
+msgid "Enter the number \"0\" to show all transactions"
+msgstr ""
+
+#: accounts/forms.py:34
+msgid "Reciever"
+msgstr ""
+
+#: accounts/forms.py:43
+msgid "Amount to Send"
+msgstr ""
+
+#: accounts/forms.py:45
+msgid "Message (optional)"
+msgstr ""
+
+#: accounts/forms.py:46
+msgid "e.g. Happy Birthday Honey !"
 msgstr ""
 
 #: accounts/models.py:101
@@ -49,6 +61,7 @@ msgstr ""
 
 #: accounts/templates/accounts/about.html:14
 #: accounts/templates/accounts/add_money_info.html:25
+#: accounts/templates/accounts/base.html:61
 msgid "Home"
 msgstr "Startseite"
 
@@ -62,44 +75,35 @@ msgid "Deposit Money From Your Account"
 msgstr "Überweisen Sie bitte den gewünschten Betrag von Ihrem Bankkonto"
 
 #: accounts/templates/accounts/add_money_form.html:15
-#: accounts/templates/accounts/home.html:86
+#: accounts/templates/accounts/home.html:103
 msgid "Deposit"
 msgstr "Einzahlen"
 
 #: accounts/templates/accounts/add_money_info.html:9
-#| msgid ""
-#| "\n"
-#| "                        In order to transfer money, please log into your\n"
-#| "                        own bank account and use the following informaiton to transfer money. \n"
-#| "                        After that, when your transaction gets processed by us \n"
-#| "                        (<span style=\"color: #f8b119;\">within 1 bussiness day</span>), it will show \n"
-#| "                        the new ballance on your wallet\n"
-#| "                    "
 msgid ""
 "\n"
 "                In order to transfer money, please log into your\n"
-"                own bank account and use the following informaiton to transfer money. \n"
+"                own bank account and use the following informaiton to "
+"transfer money. \n"
 "                After that, when your transaction gets processed by us \n"
-"                (<span style=\"color: #f8b119;\">within 1 bussiness day</span>), it will show \n"
+"                (<span style=\"color: #f8b119;\">within 1 bussiness day</"
+"span>), it will show \n"
 "                the new ballance on your wallet\n"
 "            "
 msgstr ""
 "\n"
-"Um Guthaben auf Ihr verzinstes Konto bei uns zu übertragen, brauchen Sie nichts weiter zu tun, als die gewünschte Summe durch eine Banküberweisung an die folgende Bankverbindung zu senden.\n"
+"Um Guthaben auf Ihr verzinstes Konto bei uns zu übertragen, brauchen Sie "
+"nichts weiter zu tun, als die gewünschte Summe durch eine Banküberweisung an "
+"die folgende Bankverbindung zu senden.\n"
 "\n"
-"Bitte geben Sie dabei stets den Verwendungszweck an, der Ihnen im Anschluss angezeigt wird, damit die Gutschrift nicht unnötig verzögert wird. \n"
+"Bitte geben Sie dabei stets den Verwendungszweck an, der Ihnen im Anschluss "
+"angezeigt wird, damit die Gutschrift nicht unnötig verzögert wird. \n"
 "\n"
 "\n"
 "(<span style=\"color: #f8b119;\">innerhalb von 3 Geschäftstagen</span>)"
 
 #: accounts/templates/accounts/add_money_info.html:18
 #, python-format
-#| msgid ""
-#| "\n"
-#| "                    name : mohsen ameli <br>\n"
-#| "                    account number : 128739127312 <br>\n"
-#| "                    purpose(optional) : %(username)s-%(pk)s\n"
-#| "                    "
 msgid ""
 "\n"
 "            name : mohsen ameli <br>\n"
@@ -112,37 +116,33 @@ msgstr ""
 "Kontonummer : 128739127312 <br>\n"
 "Verwendungszweck(optional) : %(username)s-%(pk)s"
 
-#: accounts/templates/accounts/base.html:58
-msgid "home"
-msgstr "Startseite"
-
-#: accounts/templates/accounts/base.html:63
+#: accounts/templates/accounts/base.html:66
 msgid "Invite A Friend"
 msgstr "Kunden werben Kunden"
 
-#: accounts/templates/accounts/base.html:70
+#: accounts/templates/accounts/base.html:73
 msgid "about"
 msgstr "Über uns"
 
-#: accounts/templates/accounts/base.html:82
+#: accounts/templates/accounts/base.html:85
 msgid "Language"
 msgstr "Sprache"
 
-#: accounts/templates/accounts/base.html:99
+#: accounts/templates/accounts/base.html:102
 msgid "Log Out"
 msgstr "Ausloggen"
 
-#: accounts/templates/accounts/base.html:103
+#: accounts/templates/accounts/base.html:106
 msgid "Log In"
 msgstr "Einloggen"
 
-#: accounts/templates/accounts/base.html:107
-#: accounts/templates/accounts/home_new.html:10
+#: accounts/templates/accounts/base.html:110
+#: accounts/templates/accounts/home_new.html:9
 msgid "Sign Up"
 msgstr "Registrieren"
 
-#: accounts/templates/accounts/base.html:122
-#: accounts/templates/accounts/base.html:128
+#: accounts/templates/accounts/base.html:125
+#: accounts/templates/accounts/base.html:131
 #, python-format
 msgid ""
 "\n"
@@ -152,140 +152,85 @@ msgstr ""
 "\n"
 "%(msg)s"
 
-#: accounts/templates/accounts/checkout.html:6
+#: accounts/templates/accounts/checkout.html:10
 #: accounts/templates/accounts/payment.html:6
 msgid "Payment Page"
 msgstr ""
 
-#: accounts/templates/accounts/checkout.html:9
+#: accounts/templates/accounts/checkout.html:13
 #, python-format
-#| msgid ""
-#| "\n"
-#| "                        Bonus : $%(bonus)s\n"
-#| "                        "
 msgid ""
 "\n"
 "                Current Balance : $%(balance)s\n"
 "            "
 msgstr ""
 
-#: accounts/templates/accounts/checkout.html:14
-#: accounts/templates/accounts/payment.html:14
-#, python-format
+#: accounts/templates/accounts/checkout.html:18
+#, fuzzy, python-format
 #| msgid ""
 #| "\n"
-#| "                        Bonus : $%(bonus)s\n"
-#| "                        "
+#| "                    You have cashed out $%(price)s\n"
+#| "                "
 msgid ""
 "\n"
-"                Total : $%(price)s\n"
+"                Total : $<element id=\"price\">%(price)s</element>\n"
 "            "
 msgstr ""
+"\n"
+"Sie haben %(balance)s € auf Ihrem Konto !"
 
-#: accounts/templates/accounts/checkout.html:20
+#: accounts/templates/accounts/checkout.html:24
 #, python-format
-#| msgid ""
-#| "\n"
-#| "                        %(msg)s\n"
-#| "                        "
 msgid ""
 "\n"
 "                Remaining : $%(remaining)s\n"
 "            "
 msgstr ""
 
-#: accounts/templates/accounts/checkout.html:27
+#: accounts/templates/accounts/checkout.html:32
 #: accounts/templates/accounts/payment.html:27
 msgid "Place Order"
 msgstr ""
 
-#: accounts/templates/accounts/history.html:15
+#: accounts/templates/accounts/history.html:32
 #, python-format
-#| msgid ""
-#| "\n"
-#| "                                Name : %(username)s\n"
-#| "                            "
 msgid ""
 "\n"
 "                            Payment from %(person)s to %(second_person)s\n"
 "                        "
 msgstr ""
 
-#: accounts/templates/accounts/history.html:22
+#: accounts/templates/accounts/history.html:39
 #, python-format
-#| msgid ""
-#| "\n"
-#| "                                Name : %(username)s\n"
-#| "                            "
 msgid ""
 "\n"
 "                            Transfer from %(person)s to %(second_person)s\n"
 "                        "
 msgstr ""
 
-#: accounts/templates/accounts/history.html:29
+#: accounts/templates/accounts/history.html:46
 #, python-format
-#| msgid ""
-#| "\n"
-#| "                        %(msg)s\n"
-#| "                        "
 msgid ""
 "\n"
 "                            Deposit to %(person)s\n"
 "                        "
 msgstr ""
 
-#: accounts/templates/accounts/history.html:36
+#: accounts/templates/accounts/history.html:53
 #, python-format
-#| msgid ""
-#| "\n"
-#| "                        %(msg)s\n"
-#| "                        "
 msgid ""
 "\n"
 "                            Withdraw from %(person)s\n"
 "                        "
 msgstr ""
 
-#: accounts/templates/accounts/history.html:43
+#: accounts/templates/accounts/history.html:60
 #, python-format
-#| msgid ""
-#| "\n"
-#| "                        %(msg)s\n"
-#| "                        "
 msgid ""
 "\n"
 "                            Cash Out for %(person)s\n"
 "                        "
 msgstr ""
-
-#: accounts/templates/accounts/history.html:51
-#, python-format
-#| msgid ""
-#| "\n"
-#| "                        %(msg)s\n"
-#| "                        "
-msgid ""
-"\n"
-"                            +$%(price)s\n"
-"                        "
-msgstr ""
-"\n"
-"+€%(price)s"
-
-#: accounts/templates/accounts/history.html:57
-#, python-format
-#| msgid ""
-#| "\n"
-#| "                        %(msg)s\n"
-#| "                        "
-msgid ""
-"\n"
-"                            -$%(price)s\n"
-"                        "
-msgstr ""
-"\n"
-"-€%(price)s"
 
 #: accounts/templates/accounts/history_detail.html:6
 msgid "Transaction Details"
@@ -293,22 +238,15 @@ msgstr ""
 
 #: accounts/templates/accounts/history_detail.html:11
 #, python-format
-#| msgid ""
-#| "\n"
-#| "                                Name : %(username)s\n"
-#| "                            "
 msgid ""
 "\n"
-"                        $%(price)s has been transfered to you, by %(person)s\n"
+"                        $%(price)s has been transfered to you, by "
+"%(person)s\n"
 "                    "
 msgstr ""
 
 #: accounts/templates/accounts/history_detail.html:15
 #, python-format
-#| msgid ""
-#| "\n"
-#| "                            You have $%(balance)s in your account !\n"
-#| "                            "
 msgid ""
 "\n"
 "                        You have transfered $%(price)s to %(second_person)s\n"
@@ -319,10 +257,6 @@ msgstr ""
 
 #: accounts/templates/accounts/history_detail.html:20
 #, python-format
-#| msgid ""
-#| "\n"
-#| "                        Bonus : $%(bonus)s\n"
-#| "                        "
 msgid ""
 "\n"
 "                    Deposit to %(person)s, for the amount $%(price)s\n"
@@ -331,10 +265,6 @@ msgstr ""
 
 #: accounts/templates/accounts/history_detail.html:24
 #, python-format
-#| msgid ""
-#| "\n"
-#| "                                Name : %(username)s\n"
-#| "                            "
 msgid ""
 "\n"
 "                    Withdraw from %(person)s, for the amount $%(price)s\n"
@@ -343,10 +273,6 @@ msgstr ""
 
 #: accounts/templates/accounts/history_detail.html:28
 #, python-format
-#| msgid ""
-#| "\n"
-#| "                            You have $%(balance)s in your account !\n"
-#| "                            "
 msgid ""
 "\n"
 "                    You have cashed out $%(price)s\n"
@@ -357,77 +283,51 @@ msgstr ""
 
 #: accounts/templates/accounts/history_detail.html:32
 #, python-format
-#| msgid ""
-#| "\n"
-#| "                            You have $%(balance)s in your account !\n"
-#| "                            "
 msgid ""
 "\n"
-"                    You have paid %(second_person)s, for a total of $%(price)s\n"
+"                    You have paid %(second_person)s, for a total of $"
+"%(price)s\n"
 "                "
 msgstr ""
 
 #: accounts/templates/accounts/history_detail.html:39
 #, python-format
-#| msgid ""
-#| "\n"
-#| "                        Bonus : $%(bonus)s\n"
-#| "                        "
 msgid ""
 "\n"
 "                    Purpose Of Use : %(purpose)s\n"
 "                "
 msgstr ""
 
-#: accounts/templates/accounts/home.html:9
-#, python-format
-#| msgid "we pay you 1%% interest on your balance !!!"
-msgid "we pay you 1%% interest on your balance !"
+#: accounts/templates/accounts/home.html:10
+#: accounts/templates/accounts/home_new.html:4
+#, fuzzy, python-format
+#| msgid "we pay you 1%% interest on your balance !"
+msgid "we pay you 2%% interest on your balance !"
 msgstr "Wir zahlen Ihnen 1 %% Zinsen auf Ihr Guthaben !"
 
-#: accounts/templates/accounts/home.html:14
-#, python-format
-#| msgid ""
-#| "\n"
-#| "                        Bonus : $%(bonus)s\n"
-#| "                        "
+#: accounts/templates/accounts/home.html:21
 msgid ""
 "\n"
-"                    Bonus : $%(bonus)s\n"
-"                "
-msgstr ""
-"\n"
-"Bonus : %(bonus)s €"
-
-#: accounts/templates/accounts/home.html:18
-#| msgid ""
-#| "\n"
-#| "                        The $1000 bonus is a gift from us to every new user. It has no expiration date!\n"
-#| "                        Every time you transfer the accumulated interest to your balance,\n"
-#| "                        an equal amount will be taken out of your bonus.\n"
-#| "                    "
-msgid ""
-"\n"
-"                The $1000 bonus is a gift from us to every new user. It has no expiration date!\n"
-"                Every time you transfer the accumulated interest to your balance,\n"
+"                The $1000 bonus is a gift from us to every new user. It has "
+"no expiration date!\n"
+"                Every time you transfer the accumulated interest to your "
+"balance,\n"
 "                an equal amount will be taken out of your bonus.\n"
 "            "
 msgstr ""
 "\n"
 "Ihr €1000,- Neukunden-Bonus  verfällt nie!\n"
 "\n"
-"Jedes Mal, wenn Sie die angesammelten Zinsen auf Ihr Guthabenkonto übertragen, wird genauso viel von Ihrem Bonus frei und automatisch Ihrem Guthabenkonto zusätzlich gutgeschrieben. "
+"Jedes Mal, wenn Sie die angesammelten Zinsen auf Ihr Guthabenkonto "
+"übertragen, wird genauso viel von Ihrem Bonus frei und automatisch Ihrem "
+"Guthabenkonto zusätzlich gutgeschrieben. "
 
-#: accounts/templates/accounts/home.html:37
+#: accounts/templates/accounts/home.html:43
 msgid "Ballance"
 msgstr "Guthaben"
 
-#: accounts/templates/accounts/home.html:42
+#: accounts/templates/accounts/home.html:51
 #, python-format
-#| msgid ""
-#| "\n"
-#| "                                Name : %(username)s\n"
-#| "                            "
 msgid ""
 "\n"
 "                        Name: %(username)s\n"
@@ -436,72 +336,49 @@ msgstr ""
 "\n"
 "Name : %(username)s"
 
-#: accounts/templates/accounts/home.html:51
-#, python-format
-#| msgid ""
-#| "\n"
-#| "                            You have $%(balance)s in your account !\n"
-#| "                            "
-msgid ""
-"\n"
-"                    You have $%(balance)s on your account !\n"
-"                    "
-msgstr ""
-"\n"
-"Sie haben %(balance)s € auf Ihrem Konto !"
-
-#: accounts/templates/accounts/home.html:62
+#: accounts/templates/accounts/home.html:76
 msgid "Interest"
 msgstr "Zinsen"
 
-#: accounts/templates/accounts/home.html:68
-msgid " $"
-msgstr " €"
-
-#: accounts/templates/accounts/home.html:76
+#: accounts/templates/accounts/home.html:94
 msgid "Cash Out"
 msgstr "Zinsen auf das Guthabenkonto Übertragen"
 
-#: accounts/templates/accounts/home.html:91
+#: accounts/templates/accounts/home.html:107
 msgid "Send Money"
 msgstr "Jemandem Geld schicken"
 
-#: accounts/templates/accounts/home.html:96
-#: accounts/templates/accounts/take_money_form.html:23
+#: accounts/templates/accounts/home.html:111
+#: accounts/templates/accounts/take_money_form.html:26
 msgid "Withdraw"
 msgstr "Abbuchen"
 
-#: accounts/templates/accounts/home.html:101
+#: accounts/templates/accounts/home.html:115
 msgid "Transaction History"
 msgstr "Umsätze"
 
-#: accounts/templates/accounts/home_new.html:4
-#, python-format
-msgid "we pay you 1%% interest on your balance !!!"
-msgstr "Wir zahlen Ihnen 1 %% Zinsen auf Ihr Guthaben !"
-
-#: accounts/templates/accounts/home_new.html:16
+#: accounts/templates/accounts/home_new.html:13
 msgid "Login"
 msgstr "Einloggen"
 
 #: accounts/templates/accounts/payment.html:9
 #, python-format
-#| msgid ""
-#| "\n"
-#| "                        Bonus : $%(bonus)s\n"
-#| "                        "
 msgid ""
 "\n"
 "                Current Balance : $%(total)s\n"
 "            "
 msgstr ""
 
+#: accounts/templates/accounts/payment.html:14
+#, python-format
+msgid ""
+"\n"
+"                Total : $%(price)s\n"
+"            "
+msgstr ""
+
 #: accounts/templates/accounts/payment.html:20
 #, python-format
-#| msgid ""
-#| "\n"
-#| "                        %(msg)s\n"
-#| "                        "
 msgid ""
 "\n"
 "            Remaining : $%(remaining)s\n"
@@ -517,9 +394,12 @@ msgid ""
 "Share this code with your friends when they are registering, and you will "
 "get $1 added to your balance as well as another extra $200 to your bonus."
 msgstr ""
-"Empfehlen Sie uns weiter, indem Sie ihren FreundInnen diesen Link schicken !\n"
-"Wenn sie sich darüber bei uns registrieren, bekommen Sie und Ihr(e) Freund(in) jeweils 1 € auf Ihrem verzinsten Guthabenkonto gutgeschrieben. \n"
-"Ihr(e) Freund(in) bekommt selbstverständlich auch €1000 Bonus und Ihr Bonus wird pro erfolgreiche Werbung auch um weitere €200 erhöht !  "
+"Empfehlen Sie uns weiter, indem Sie ihren FreundInnen diesen Link "
+"schicken !\n"
+"Wenn sie sich darüber bei uns registrieren, bekommen Sie und Ihr(e) "
+"Freund(in) jeweils 1 € auf Ihrem verzinsten Guthabenkonto gutgeschrieben. \n"
+"Ihr(e) Freund(in) bekommt selbstverständlich auch €1000 Bonus und Ihr Bonus "
+"wird pro erfolgreiche Werbung auch um weitere €200 erhöht !  "
 
 #: accounts/templates/accounts/referral_code.html:11
 msgid "Referral Code :"
@@ -533,130 +413,203 @@ msgstr "kopieren"
 msgid "Wallet"
 msgstr "Geldbörse"
 
-#: accounts/templates/accounts/take_money_form.html:10
+#: accounts/templates/accounts/take_money_form.html:13
 msgid "Withdraw Money From Your Account"
 msgstr "Buchen Sie Geld von diesem Konto ab "
 
-#: accounts/templates/accounts/take_money_form.html:13
-#| msgid ""
-#| "\n"
-#| "                            In order to withdraw money, please enter the value you want to \n"
-#| "                            withdraw blelow <br> and we will transfer the amount you requested\n"
-#| "                            to your bank account, <span style=\"color: #f8b119;\">within 1 bussiness day.</span>\n"
-#| "                            "
+#: accounts/templates/accounts/take_money_form.html:16
 msgid ""
 "\n"
-"                    In order to withdraw money, please enter the value you want to \n"
-"                    withdraw blelow <br> and we will transfer the amount you requested\n"
-"                    to your bank account, <span style=\"color: #f8b119;\">within 1 bussiness day.</span>\n"
+"                    In order to withdraw money, please enter the value you "
+"want to \n"
+"                    withdraw blelow <br> and we will transfer the amount you "
+"requested\n"
+"                    to your bank account, <span style=\"color: #f8b119;"
+"\">within 1 bussiness day.</span>\n"
 "                    "
 msgstr ""
 "\n"
-"Geben Sie bitte den Betrag, den Sie von Ihrem Konto bei uns abbuchen möchten unten ein <br> und wir werden\n"
-"den Betrag auf Ihr Bankkonto überweisen, <span style=\"color: #f8b119;\">innerhalb von 3 Werktagen.</span>"
+"Geben Sie bitte den Betrag, den Sie von Ihrem Konto bei uns abbuchen möchten "
+"unten ein <br> und wir werden\n"
+"den Betrag auf Ihr Bankkonto überweisen, <span style=\"color: #f8b119;"
+"\">innerhalb von 3 Werktagen.</span>"
 
-#: accounts/templates/accounts/transfer.html:10
 #: accounts/templates/accounts/transfer_form.html:10
 msgid "Send money to others"
 msgstr "Geld senden an andere"
 
-#: accounts/templates/accounts/transfer.html:15
-msgid "Available Accounts:"
-msgstr "Registrierte Konten"
-
-#: accounts/templates/accounts/transfer.html:27
 #: accounts/templates/accounts/transfer_form.html:15
 msgid "Transfer"
 msgstr "Überweisung"
 
-#: accounts/templates/accounts/transfer.html:31
+#: accounts/templates/accounts/transfer_search.html:10
+#, fuzzy
+#| msgid "Send money to others"
+msgid "Send Money to Others"
+msgstr "Geld senden an andere"
+
+#: accounts/templates/accounts/transfer_search.html:15
+msgid "Available Accounts:"
+msgstr "Registrierte Konten"
+
+#: accounts/templates/accounts/transfer_search.html:31
+msgid "Select"
+msgstr ""
+
+#: accounts/templates/accounts/transfer_search.html:34
 msgid "Search"
 msgstr "Suche"
 
-#: accounts/views.py:81
-msgid "Sorry, no account with the information provided was found :("
+#: accounts/templates/accounts/transfer_send.html:18
+msgid "Send"
 msgstr ""
-"Schade, mit diesen Spezifikationen ist (noch) kein Konto bei uns registriert. Überprüfen Sie bitte nochmal Ihre Angaben auf Korrektheit. \n"
-"\n"
-"Laden Sie doch Ihre(n) Freund(in) ein, auch von unserem völlig kostenlosen Service zu profitieren ! "
 
-#: accounts/views.py:104
+#: accounts/views.py:119
 #, python-brace-format
-#| msgid "${MoneyToSend} has been transfered to {target_acc}"
 msgid "${MoneyToSend} has been transfered to {reciever_name}"
 msgstr "€{MoneyToSend} wurden auf {target_acc} übertragen."
 
-#: accounts/views.py:111 accounts/views.py:120
+#: accounts/views.py:126 accounts/views.py:135
 msgid "ZARATHUS TRUST MONEY TRANSFER"
 msgstr ""
 
-#: accounts/views.py:112
+#: accounts/views.py:127
 #, python-brace-format
 msgid ""
 "Dear {reciever_name}, <br> {giver_username} just transfered ${MoneyToSend} "
 "to your account ! <br> Purpose of Use : {purpose}"
 msgstr ""
 
-#: accounts/views.py:121
+#: accounts/views.py:136
 #, python-brace-format
 msgid ""
 "Dear {giver_username}, <br> ${MoneyToSend} has been transfered to "
 "{reciever_name} successfully ! <br> Purpose of Use : {purpose}"
 msgstr ""
 
-#: accounts/views.py:137
+#: accounts/views.py:152
 msgid "Please consider that the minimum amount to send is $1 !"
 msgstr "Überweisungen müssen mindestens 1 € betragen."
 
-#: accounts/views.py:139
+#: accounts/views.py:154
 msgid ""
 "You have requested to transfer more than you have in your current balance !"
 msgstr ""
 
-#: accounts/views.py:160
+#: accounts/views.py:177
+msgid "Sorry, no account with the information provided was found :("
+msgstr ""
+"Schade, mit diesen Spezifikationen ist (noch) kein Konto bei uns "
+"registriert. Überprüfen Sie bitte nochmal Ihre Angaben auf Korrektheit. \n"
+"\n"
+"Laden Sie doch Ihre(n) Freund(in) ein, auch von unserem völlig kostenlosen "
+"Service zu profitieren ! "
+
+#: accounts/views.py:179 accounts/views.py:184
+msgid "Sorry, but you cannot send money to yourself"
+msgstr ""
+
+#: accounts/views.py:210
 msgid "You have successfully cashed out ${round(interest_rate, 1) * 2}"
 msgstr ""
 "Zinsen erfolgreich auf das Guthabenkonto übertragen! €{round(interest_rate, "
 "1) * 2}"
 
-#: accounts/views.py:171
+#: accounts/views.py:221
 msgid "You have successfully cashed out ${round(interest_rate, 1) + bonus}"
 msgstr ""
 "Zinsen erfolgreich auf das Guthabenkonto übertragen! €{round(interest_rate, "
 "1) + bonus}"
 
-#: accounts/views.py:178
+#: accounts/views.py:228
 msgid "You need at least $0.1 to be able to cash out ! keep going tho"
-msgstr ""
-"Für eine Übertragung müssen mindestens €0,10 an Zinsen verdient sein. "
+msgstr "Für eine Übertragung müssen mindestens €0,10 an Zinsen verdient sein. "
 
-#: accounts/views.py:203 accounts/views.py:234
+#: accounts/views.py:259 accounts/views.py:295
 msgid ""
 "Please consider that the minimum amount to withdraw must be $1 or higher !"
 msgstr "Überweisungen müssen mindestens €1 betragen."
 
-#: accounts/views.py:228
+#: accounts/views.py:290
 #, python-brace-format
 msgid "${take_money} was requested to be taken out"
 msgstr "€{take_money} wird an Ihr Bankkonto überwiesen. "
 
-#: accounts/views.py:231
-msgid ""
-"You have requested to take more than you have in your current balance !"
+#: accounts/views.py:293
+msgid "You have requested to take more than you have in your current balance !"
 msgstr ""
 
-#: accounts/views.py:241
+#: accounts/views.py:303
 msgid "hello hello hi hi"
 msgstr "Hallo Hallo hi hi"
 
-#: accounts/views.py:310 accounts/views.py:350
-#| msgid "$%(money_to_send)s was transfered successfully"
+#: accounts/views.py:372
 msgid "Your order was purchased successfully !"
 msgstr ""
 
-#: accounts/views.py:313 accounts/views.py:354
+#: accounts/views.py:375 accounts/views.py:412
 msgid "You do not have enough money for this order !"
 msgstr ""
+
+#~ msgid "Enter Account"
+#~ msgstr "Betrag eingeben"
+
+#~ msgid "home"
+#~ msgstr "Startseite"
+
+#~| msgid ""
+#~| "\n"
+#~| "                        %(msg)s\n"
+#~| "                        "
+#~ msgid ""
+#~ "\n"
+#~ "                            +$%(price)s\n"
+#~ "                        "
+#~ msgstr ""
+#~ "\n"
+#~ "+€%(price)s"
+
+#~| msgid ""
+#~| "\n"
+#~| "                        %(msg)s\n"
+#~| "                        "
+#~ msgid ""
+#~ "\n"
+#~ "                            -$%(price)s\n"
+#~ "                        "
+#~ msgstr ""
+#~ "\n"
+#~ "-€%(price)s"
+
+#~| msgid ""
+#~| "\n"
+#~| "                        Bonus : $%(bonus)s\n"
+#~| "                        "
+#~ msgid ""
+#~ "\n"
+#~ "                    Bonus : $%(bonus)s\n"
+#~ "                "
+#~ msgstr ""
+#~ "\n"
+#~ "Bonus : %(bonus)s €"
+
+#~| msgid ""
+#~| "\n"
+#~| "                            You have $%(balance)s in your account !\n"
+#~| "                            "
+#~ msgid ""
+#~ "\n"
+#~ "                    You have $%(balance)s on your account !\n"
+#~ "                    "
+#~ msgstr ""
+#~ "\n"
+#~ "Sie haben %(balance)s € auf Ihrem Konto !"
+
+#~ msgid " $"
+#~ msgstr " €"
+
+#~ msgid "we pay you 1%% interest on your balance !!!"
+#~ msgstr "Wir zahlen Ihnen 1 %% Zinsen auf Ihr Guthaben !"
 
 #, fuzzy
 #~ msgid ""

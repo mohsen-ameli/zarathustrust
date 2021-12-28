@@ -1,0 +1,29 @@
+{% extends "accounts/base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% block content %}
+<!-- spinner -->
+<div id="spinnner"></div>
+
+<div class="card text-white zarathus-card mx-auto">
+    <div class="card-body">
+        <form method="POST" id="form-swal">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <h3 class="font-weight-normal text-center">Send Money to {{ reciever_name }}</h3>
+                <hr>
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="neon-button" type="submit" name="Transfer" value="Transfer" id="Action">{% trans "Send" %}</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    var person = '{{ reciever_name }}'
+</script>
+
+<script src="../../static/accounts/js/transfer.js"></script>
+{% endblock content %}

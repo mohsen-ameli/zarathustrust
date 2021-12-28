@@ -5,8 +5,10 @@ from django.db.models.deletion import CASCADE
 from django.db.models.fields import BooleanField, CharField
 import random
 import string
+from django_countries.fields import CountryField
 
 class CustomUser(AbstractUser):
+    country             = CountryField(null=True)
     phone_ext           = CharField(max_length=4, null=True, blank=True)
     phone_number        = CharField(max_length=20, null=True)
     iban                = CharField(max_length=30, null=True, blank=True)
