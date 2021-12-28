@@ -1,8 +1,30 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.utils.translation import gettext as _
+from django_countries.widgets import CountrySelectWidget
+from django_countries.fields import CountryField
+from django_countries import countries
 
 from .models import CustomUser, code
+
+
+class CountryForm(forms.ModelForm):
+    country_choices = [
+        ("1", "🇨🇦(+1)"),
+        ("1", "🇺🇸(+1)"),
+        ("49", "🇩🇪(+49)"),
+        ("98", "🇮🇷(+98)"),
+    ]
+
+    # country = CountryField(blank=True)
+
+    country = forms.ChoiceField(
+        choices=country_choices,
+        label="Country")
+
+    class Meta:
+        model = CustomUser
+        fields = ['country']
 
 
 class RegisterForm(UserCreationForm):
@@ -12,6 +34,7 @@ class RegisterForm(UserCreationForm):
         ("49", "🇩🇪(+49)"),
         ("98", "🇮🇷(+98)"),
     ]
+    # country = CountryField(blank=True)
 
     email = forms.EmailField()
     phone_ext = forms.ChoiceField(
@@ -41,6 +64,7 @@ class RegisterForm(UserCreationForm):
             "iban",
             "password1",
             "password2",
+            # 'country'
         ]
         # widgets    = {'country': CountrySelectWidget()}
 

@@ -29,7 +29,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = config.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 if not DEBUG:
     ALLOWED_HOSTS = ['99.240.225.244', 'www.zarathustrust.com']
@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     "django_crontab",
     "rosetta",
     "axes",
+    "django_countries",
+    # "django_elasticsearch_dsl",
     "mathfilters",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -174,6 +176,12 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # LOGIN
 LOGIN_URL = "/login/"
 # LOGIN_REDIRECT_URL = "/"
+
+# ELASTICSEARCH_DSL={
+#     'default': {
+#         'hosts': 'localhost:8000'
+#     },
+# }
 
 # AXES LOGIN
 AXES_FAILURE_LIMIT = 3

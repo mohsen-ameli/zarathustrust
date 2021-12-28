@@ -1,6 +1,10 @@
 {% extends "accounts/base.html" %}
 {% load i18n %}
+{% load static %}
 {% block content %}
+<!-- spinner -->
+<div id="spinnner"></div>
+
 <div class="card text-white zarathus-card mx-auto">
     <div class="card-body">
         <h3 class="font-weight-normal text-center">{% trans "Payment Page" %}</h3>
@@ -12,7 +16,7 @@
         </p>
         <p style="color: rgb(255, 120, 120);">
             {% blocktrans with price=price %}
-                Total : ${{ price }}
+                Total : $<element id="price">{{ price }}</element>
             {% endblocktrans %}
         </p>
         <hr style="width: 10rem; position: absolute; margin-top: .5rem;"> <br>
@@ -23,10 +27,17 @@
         </p>
         <hr>
         {% if user.account %}
-            <a class="btn btn-success" href="{% url 'accounts:checkout-complete' shop=shop price=price %}" onclick="return confirm('Confirm the Action ?');">
-                {% trans "Place Order" %}
-            </a>
+        <form method="POST" id="form-swal">
+            {% csrf_token %}
+            <button class="neon-button-green" type="submit" id="Action">{% trans "Place Order" %}</button>
+        </form>
         {% endif %}
     </div>
 </div>
+
+<script type="text/javascript"> 
+    var price = "{{ price }}";
+ </script>
+
+<script src="{% static 'accounts/js/checkout.js' %}"></script>
 {% endblock content %}

@@ -1,7 +1,12 @@
 {% extends "accounts/base.html" %}
 {% load i18n %}
+{% load countries %}
+{% load static %}
 {% load crispy_forms_tags %}
 {% block content %}
+{% get_countries as countries %}
+<!-- <link rel="stylesheet" href="{% static 'flags/sprite-hq.css' %}"> -->
+
 <div class="card text-white zarathus-card mx-auto">
     <div class="card-body">
         <form method="POST">
@@ -12,7 +17,7 @@
                 <!-- {{ form|crispy }} -->
                 {{ form.username|as_crispy_field }}
                 {{ form.email|as_crispy_field }}
-                <div class="row">
+                <div class="d-flex">
                     <!-- <div class="dropdown">
                         <button class="btn btn-white dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
@@ -20,11 +25,14 @@
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             {% for id, name in form.phone_ext.field.choices %}
-                                <button type="button" class="dropdown-item" value="{{ id }}" name="country-click">{{ name }}</button>
+                                <button type="menu" class="dropdown-item" value="{{ id }}" name="country-picker">
+                                    (+{{ id }}) <span class="flag-icon flag-icon-{{ name }}"></span>
+                                </button>
                             {% endfor %}
                         </div>
                     </div> -->
-                    {{ form.phone_ext|as_crispy_field }}{{ form.phone_number|as_crispy_field }}
+                    {{ form.phone_ext|as_crispy_field }}
+                    {{ form.phone_number|as_crispy_field }}
                 </div>
                 {{ form.iban|as_crispy_field }}
                 {{ form.password1|as_crispy_field }}
@@ -43,4 +51,11 @@
         </div>
     </div>
 </div>
+
+<!-- {% for country in countries %}
+<div class="d-flex">
+    <img class="m-1" src="/static/flags/{{ country.code|lower }}.gif" alt="" style="width: 25px; height: 15px;">
+    <option value="{{ country.code }}">{{ country.name }}</option>
+</div>
+{% endfor %} -->
 {% endblock content %}
