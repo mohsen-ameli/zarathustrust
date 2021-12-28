@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "rosetta",
     "axes",
-    #"mathfilters",
+    "mathfilters",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
