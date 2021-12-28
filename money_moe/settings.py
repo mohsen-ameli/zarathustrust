@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     "django_crontab",
     "rosetta",
     "axes",
-    "mathfilters",
+    #"mathfilters",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
