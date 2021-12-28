@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     "mathfilters",
     "django_countries",
     # "django_elasticsearch_dsl",
-    "mathfilters",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
