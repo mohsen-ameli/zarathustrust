@@ -49,13 +49,10 @@ INSTALLED_APPS = [
     "django_crontab",
     "rosetta",
     "axes",
-<<<<<<< HEAD
-    #"mathfilters",
-=======
+    "mathfilters",
     "django_countries",
     # "django_elasticsearch_dsl",
     "mathfilters",
->>>>>>> 31e3d3773b518d826055c14b55090a38acf21fa0
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",

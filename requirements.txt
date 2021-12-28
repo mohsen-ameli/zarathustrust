@@ -60,14 +60,11 @@ django-timezone-field==4.2.1
 docutils==0.14
 drumhat==0.1.0
 Eel==0.12.4
-<<<<<<< HEAD
 entrypoints==0.3
 envirophat==1.0.0
 ExplorerHAT==0.4.2
-=======
 elasticsearch==7.16.2
 elasticsearch-dsl==7.4.0
->>>>>>> 31e3d3773b518d826055c14b55090a38acf21fa0
 filelock==3.0.12
 Flask==1.0.2
 fourletterphat==0.1.0
@@ -133,14 +130,11 @@ pyinotify==0.9.6
 pyinstaller==4.5.1
 pyinstaller-hooks-contrib==2021.2
 PyJWT==1.7.1
-<<<<<<< HEAD
 pylint==2.2.2
 pyOpenSSL==19.0.0
 pyserial==3.4
 pysmbc==1.0.15.6
 python-apt==1.8.4.3
-=======
->>>>>>> 31e3d3773b518d826055c14b55090a38acf21fa0
 python-crontab==2.5.1
 python-dateutil==2.8.2
 pytz==2021.1
