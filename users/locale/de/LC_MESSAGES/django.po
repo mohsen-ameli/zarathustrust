@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-12-28 18:36-0500\n"
-"PO-Revision-Date: 2021-12-22 19:06-0518\n"
+"PO-Revision-Date: 2021-12-28 19:58-0518\n"
 "Last-Translator: mohsen ameli <mohsen.ameli83@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Translated-Using: django-rosetta 0.9.7\n"
+"X-Translated-Using: django-rosetta 0.9.8\n"
 
 #: users/forms.py:52
 msgid "IBAN (optional)"
@@ -42,9 +42,9 @@ msgstr "Geben Sie bitte den E-Mail Bestätigungscode ein !"
 #: users/forms.py:126
 msgid "Please enter the iban verification code"
 msgstr ""
-"Geben Sie bitte hier den genauen Betrag ein, den wir Ihnen überwiesen haben. "
-"Wenn sie z.B 12 Cents bekommen haben, dann geben Sie den Betrag so ein: 0.12 "
-"also beginnend mit null und als Komma bitte einen Punkt verwenden ! "
+"Geben Sie bitte hier den genauen Betrag ein, den wir Ihnen überwiesen haben."
+" Wenn sie z.B 12 Cents bekommen haben, dann geben Sie den Betrag so ein: "
+"0.12 also beginnend mit null und als Komma bitte einen Punkt verwenden ! "
 
 #: users/forms.py:137
 msgid "Referral Code(Optional)"
@@ -55,8 +55,8 @@ msgid ""
 "Please enter your referral code to get grand prizes , or leave blank for no "
 "prize !"
 msgstr ""
-"Geben Sie bitte Ihren persönlichen Empfehlungscode ein, um Ihre(n) Prämie(n) "
-"zu erhalten !"
+"Geben Sie bitte Ihren persönlichen Empfehlungscode ein, um Ihre(n) Prämie(n)"
+" zu erhalten !"
 
 #: users/templates/users/business.html:10
 #: users/templates/users/personal.html:15
@@ -64,7 +64,6 @@ msgstr ""
 msgid "Why not join now ?!"
 msgstr ""
 "Eröffnen Sie in wenigen Minuten Ihr dauerhaft Kostenloses Konto bei uns ! "
-"Verschwenden Sie keine Zeit, denn Zeit ist bekanntlich Geld !"
 
 #: users/templates/users/business.html:15
 #: users/templates/users/personal.html:42
@@ -110,8 +109,7 @@ msgstr "Passwort zurück setzten"
 #, python-format
 msgid ""
 "\n"
-"        Login is locked for %(cooloff_timedelta)s. Please try again "
-"later ...\n"
+"        Login is locked for %(cooloff_timedelta)s. Please try again later ...\n"
 "    "
 msgstr ""
 
@@ -208,17 +206,17 @@ msgstr ""
 #: users/views.py:126 users/views.py:169
 msgid "You enterd the wrong verificaiton code ! Please try again"
 msgstr ""
-"Geben Sie bitte hier den genauen Betrag ein, den wir Ihnen überwiesen haben. "
-"Wenn sie z.B 12 Cents bekommen haben, dann geben Sie den Betrag so ein: 0.12 "
-"also beginnend mit null und als Komma bitte einen Punkt verwenden ! "
+"Geben Sie bitte hier den genauen Betrag ein, den wir Ihnen überwiesen haben."
+" Wenn sie z.B 12 Cents bekommen haben, dann geben Sie den Betrag so ein: "
+"0.12 also beginnend mit null und als Komma bitte einen Punkt verwenden ! "
 
 #: users/views.py:154
 msgid ""
 "Please wait for our support team to send you a pre-decided amount of money. "
 "Check your bank account and then enter the small amount bellow."
 msgstr ""
-"Wir überweisen Ihnen einen kleinen Betrag an Ihr hier angegebenes Bankkonto. "
-"Nach Erhalt geben Sie bitte genau diesen Betrag unten ein, um Ihre IBAN zu "
+"Wir überweisen Ihnen einen kleinen Betrag an Ihr hier angegebenes Bankkonto."
+" Nach Erhalt geben Sie bitte genau diesen Betrag unten ein, um Ihre IBAN zu "
 "bestätigen !"
 
 #: users/views.py:162 users/views.py:200
@@ -240,30 +238,26 @@ msgid ""
 "{user.username} just used your referral code ! You recieved $1 on your "
 "balance, and $200 added to your bonus !"
 msgstr ""
-"{user.username} hat sich mit Ihrem Empfehlungscode registriert ! Ihnen wurde "
-"deshalb €1 Gutaheb und €300 Bonus gutgeschrieben !\n"
+"{user.username} hat sich mit Ihrem Empfehlungscode registriert ! Ihnen wurde deshalb €1 Gutaheb und €300 Bonus gutgeschrieben !\n"
 "Glückwunsch !"
 
 #: users/views.py:244
 #, python-brace-format
 msgid ""
-"You have successfully registered, {user.username}. For your prize, $200 will "
-"be transfered to your bonus !"
+"You have successfully registered, {user.username}. For your prize, $200 will"
+" be transfered to your bonus !"
 msgstr ""
-"Herzlich willkommen bei ZarathusTrust ! Ihre Registrierung wurde erfolgreich "
-"abgeschlossen, {user.username}.\n"
+"Herzlich willkommen bei ZarathusTrust ! Ihre Registrierung wurde erfolgreich abgeschlossen, {user.username}.\n"
 "\n"
-"Als geworbener Neukunde bekommen Sie zusätzlich  zu Ihrem 1000 € "
-"Neukundenbonus weitere 300€ dazu !\n"
+"Als geworbener Neukunde bekommen Sie zusätzlich  zu Ihrem 1000 € Neukundenbonus weitere 300€ dazu !\n"
 "\n"
-"Außerdem haben wir Ihrem Guthabenkonto 1€ Gutgeschrieben, damit Sie die "
-"Funktionalitäten Ihres neuen Kontos bei uns unverzüglich sehen und "
-"ausprobieren können !"
+"Außerdem haben wir Ihrem Guthabenkonto 1€ Gutgeschrieben, damit Sie die Funktionalitäten Ihres neuen Kontos bei uns unverzüglich sehen und ausprobieren können !"
 
 #: users/views.py:255
 #, python-brace-format
 msgid "You have successfully registered, {user.username} !"
-msgstr " Ihre Registrierung wurde erfolgreich abgeschlossen, {user.username} !"
+msgstr ""
+" Ihre Registrierung wurde erfolgreich abgeschlossen, {user.username} !"
 
 #: users/views.py:267
 #, python-brace-format
@@ -271,18 +265,15 @@ msgid ""
 "Sorry, this referral code is incorrect, but you have successfully "
 "registered, {user.username} !"
 msgstr ""
-"Leider war Ihr Empfehlungscode nicht richtig, Ihre Registrierung wurde "
-"jedoch erfolgreich abgeschlossen, {user.username} !\n"
+"Leider war Ihr Empfehlungscode nicht richtig, Ihre Registrierung wurde jedoch erfolgreich abgeschlossen, {user.username} !\n"
 "\n"
-"Sie können aber nachträglich den richtigen Empfehlungscode an "
-"info@zarathustrust.com senden. Wir werden dann Ihnen und Ihrem Werber die "
-"Prämien nachträglich gutschreiben ! \n"
+"Sie können aber nachträglich den richtigen Empfehlungscode an info@zarathustrust.com senden. Wir werden dann Ihnen und Ihrem Werber die Prämien nachträglich gutschreiben ! \n"
 "Herzlich willkommen bei ZarathusTrust !"
 
 #: users/views.py:312
 msgid ""
-"Please enter a correct username and password. Note that both fields are case-"
-"sensitive."
+"Please enter a correct username and password. Note that both fields are "
+"case-sensitive."
 msgstr ""
 
 #~ msgid "Reset Password"
