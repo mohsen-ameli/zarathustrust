@@ -1,12 +1,10 @@
 """Functional Utilities."""
 
+import inspect
+import random
+import threading
 from collections import OrderedDict, UserDict
 from collections.abc import Iterable, Mapping
-import random
-import sys
-import threading
-import inspect
-
 from itertools import count, repeat
 from time import sleep, time
 
@@ -38,7 +36,7 @@ class ChannelPromise:
         try:
             return repr(self.__value__)
         except AttributeError:
-            return '<promise: 0x{:x}>'.format(id(self.__contract__))
+            return f'<promise: 0x{id(self.__contract__):x}>'
 
 
 class LRUCache(UserDict):
@@ -126,20 +124,9 @@ class LRUCache(UserDict):
         self.__dict__ = state
         self.mutex = threading.RLock()
 
-    if sys.version_info[0] == 3:  # pragma: no cover
-        keys = _iterate_keys
-        values = _iterate_values
-        items = _iterate_items
-    else:  # noqa
-
-        def keys(self):
-            return list(self._iterate_keys())
-
-        def values(self):
-            return list(self._iterate_values())
-
-        def items(self):
-            return list(self._iterate_items())
+    keys = _iterate_keys
+    values = _iterate_values
+    items = _iterate_items
 
 
 def memoize(maxsize=None, keyfun=None, Cache=LRUCache):

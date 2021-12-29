@@ -3,13 +3,20 @@ from prompt_toolkit.completion import Completer, Completion
 from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.shortcuts import prompt
 import click
-import click._bashcomplete
 import click.parser
 import os
 import shlex
 import sys
 import six
 from .exceptions import InternalCommandException, ExitReplException  # noqa
+
+# Handle backwards compatibility between Click 7.0 and 8.0
+try: 
+    import click.shell_completion
+    HAS_C8 = True
+except ImportError:
+    import click._bashcomplete
+    HAS_C8 = False
 
 # Handle click.exceptions.Exit introduced in Click 7.0
 try:
@@ -26,7 +33,7 @@ else:
     text_type = str  # noqa
 
 
-__version__ = "0.1.6"
+__version__ = "0.2.0"
 
 _internal_commands = dict()
 
@@ -107,8 +114,12 @@ class ClickCompleter(Completer):
             # We've not entered anything, either at all or for the current
             # command, so give all relevant completions for this context.
             incomplete = ""
-
-        ctx = click._bashcomplete.resolve_ctx(self.cli, "", args)
+        # Resolve context based on click version
+        if HAS_C8:
+            ctx = click.shell_completion._resolve_context(self.cli, {}, "", args)
+        else: 
+            ctx = click._bashcomplete.resolve_ctx(self.cli, "", args)
+            
         if ctx is None:
             return
 

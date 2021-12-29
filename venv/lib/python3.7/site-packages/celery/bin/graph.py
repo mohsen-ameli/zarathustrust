@@ -9,8 +9,9 @@ from celery.utils.graph import DependencyGraph, GraphFormatter
 
 
 @click.group()
+@click.pass_context
 @handle_preload_options
-def graph():
+def graph(ctx):
     """The ``celery graph`` command."""
 
 
@@ -73,7 +74,7 @@ def workers(ctx):
         def __init__(self, label, **kwargs):
             self.real_label = label
             super().__init__(
-                label='thr-{}'.format(next(tids)),
+                label=f'thr-{next(tids)}',
                 pos=0,
             )
 
@@ -140,7 +141,7 @@ def workers(ctx):
         size = len(l)
         abbr = max and size > max
         if 'enumerate' in args:
-            l = ['{}{}'.format(name, subscript(i + 1))
+            l = [f'{name}{subscript(i + 1)}'
                  for i, obj in enumerate(l)]
         if abbr:
             l = l[0:max - 1] + [l[size - 1]]

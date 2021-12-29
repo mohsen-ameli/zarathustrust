@@ -47,13 +47,9 @@ INSTALLED_APPS = [
     "crispy_forms",
     "rosetta",
     "axes",
-<<<<<<< HEAD
     "mathfilters",
     "django_countries",
     # "django_elasticsearch_dsl",
-=======
-    #"mathfilters",
->>>>>>> a0f94bca76d7f4dab04adb7b91d491dac757ccd7
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
