@@ -8,7 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2021-12-28 19:12-0500\n"
+=======
+"POT-Creation-Date: 2021-12-28 18:35-0500\n"
+>>>>>>> 0aa38cde91d336a44ffd3b7acc0bb9deafcf0009
 "PO-Revision-Date: 2021-12-22 19:10-0518\n"
 "Last-Translator: mohsen ameli <mohsen.ameli83@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -192,7 +196,7 @@ msgstr ""
 msgid "Place Order"
 msgstr ""
 
-#: accounts/templates/accounts/history.html:32
+#: accounts/templates/accounts/history.html:35
 #, python-format
 msgid ""
 "\n"
@@ -200,7 +204,7 @@ msgid ""
 "                        "
 msgstr ""
 
-#: accounts/templates/accounts/history.html:39
+#: accounts/templates/accounts/history.html:42
 #, python-format
 msgid ""
 "\n"
@@ -208,7 +212,7 @@ msgid ""
 "                        "
 msgstr ""
 
-#: accounts/templates/accounts/history.html:46
+#: accounts/templates/accounts/history.html:49
 #, python-format
 msgid ""
 "\n"
@@ -216,7 +220,7 @@ msgid ""
 "                        "
 msgstr ""
 
-#: accounts/templates/accounts/history.html:53
+#: accounts/templates/accounts/history.html:56
 #, python-format
 msgid ""
 "\n"
@@ -224,7 +228,7 @@ msgid ""
 "                        "
 msgstr ""
 
-#: accounts/templates/accounts/history.html:60
+#: accounts/templates/accounts/history.html:63
 #, python-format
 msgid ""
 "\n"
