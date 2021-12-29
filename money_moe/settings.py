@@ -48,11 +48,8 @@ INSTALLED_APPS = [
     "rosetta",
     "axes",
     "mathfilters",
-<<<<<<< HEAD
     "django_countries",
     # "django_elasticsearch_dsl",
-=======
->>>>>>> 0aa38cde91d336a44ffd3b7acc0bb9deafcf0009
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
