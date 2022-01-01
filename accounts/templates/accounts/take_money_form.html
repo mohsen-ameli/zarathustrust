@@ -6,25 +6,27 @@
 <div id="spinnner"></div>
 
 <div class="card text-white zarathus-card mx-auto">
-    <div class="card-body">
+    <div class="card-body" style="padding: 1.5rem;">
         <form method="POST" id="form-swal">
             {% csrf_token %}
-            <fieldset class="form-group">
-                <h3 class="font-weight-normal text-center">{% trans "Withdraw Money From Your Account" %}</h3>
-                <hr>
-                <h5 class="font-weight-normal">
-                    {% blocktrans %}
-                    In order to withdraw money, please enter the value you want to 
-                    withdraw blelow <br> and we will transfer the amount you requested
-                    to your bank account, <span style="color: #f8b119;">within 1 bussiness day.</span>
-                    {% endblocktrans %}
-                </h5> 
-                <br>
-                {{ form|crispy }}
-            </fieldset>
-            <div class="form-group">
-                <button class="neon-button" type="submit" id="Action">{% trans "Withdraw" %}</button>
+            <h3 class="fw-normal text-center">{% trans "Withdraw Money From Your Account" %}</h3>
+            <hr>
+            <h5 class="fw-normal">
+                {% blocktrans %}
+                In order to withdraw money, please enter the value you want to 
+                withdraw blelow <br> and we will transfer the amount you requested
+                to your bank account, <span style="color: #f8b119;">within 1 bussiness day.</span>
+                {% endblocktrans %}
+            </h5> 
+            <br>
+            <div id="div_id_take_money" class="form-group form-floating mb-3" style="color: black;">
+                <input type="text" name="take_money" placeholder="$0.0" class="textinput textInput form-control" 
+                required="" id="id_take_money">
+                <label for="id_take_money" class=" requiredField">
+                    Enter Amount
+                </label>
             </div>
+            <button class="neon-button my-3" type="submit" id="Action">{% trans "Withdraw" %}</button>
         </form>
     </div>
 </div>

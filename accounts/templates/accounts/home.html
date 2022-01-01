@@ -6,13 +6,13 @@
 <!-- <div class="loader"></div> -->
 <!---------- First Part ---------->
 <div class="d-lg-flex">
-    <div class="py-2 mr-auto">
-        <h3 class="text-capitalize">{% trans "we pay you 2% interest on your balance !" %}</h3>
+    <div class="py-2">
+        <h3 class="text-capitalize">{% trans "Welcome, " %} {{ user.username }} !</h3>
     </div>
-    <div class="p-2">
+    <div class="py-2 ms-auto">
         <div class="d-flex">
             <h3>
-                {% if LANGUAGE_CODE == 'de' %}
+                {% if currency == 'EUR' %}
                     Bonus: €{{ euro_bonus }}
                 {% else %}
                     Bonus: ${{ object.bonus }}
@@ -23,9 +23,8 @@
                 Every time you transfer the accumulated interest to your balance,
                 an equal amount will be taken out of your bonus.
             {% endblocktrans %}
-            <a href="#" class="fas fa-question-circle p-2"
-                data-toggle="tooltip" data-placement="bottom" 
-                data-original-title="Tooltip on bottom" title="{{ the_title }}"></a>
+            <a href="#" class="fas fa-question-circle p-2 red-tooltip"
+                data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ the_title }}"></a>
         </div>
     </div>
 </div>
@@ -33,10 +32,10 @@
 <!---------- Second Part ---------->
 <div class="d-lg-flex flex-row bd-highlight">
     <!---------- ballance and yellow card ---------->
-    <div class="bd-highlight mr-auto">
+    <div class="bd-highlight">
         <!-- top part -->
         <div class="d-flex">
-            <div class="pr-3">
+            <div class="pe-3">
                 <i class="bi-cash-stack"></i>
             </div>
             <div class="align-self-center">
@@ -47,29 +46,28 @@
         <!-- bottom part (card) -->
         <div class="card text-white home-card">
             <div class="card-body">
-                <h5 class="font-weight-normal text-capitalize">
-                    {% blocktrans with username=user.username %}
-                        Name: {{ username }}
-                    {% endblocktrans %}
+                <h5 class="fw-normal text-capitalize">
                     {% if is_bus == True %}
-                        <i class="fas fa-briefcase pl-2 pr-2"></i> (Business Account)
+                        {{ user.username }}'s Business Account
+                    {% else %}
+                        {{ user.username }}'s Personal Account
                     {% endif %}
                 </h5>
                 <hr>
-                {% if LANGUAGE_CODE == 'de' %}
-                    <h1 class="font-weight-normal">€{{ euro_balance }}</h1>
+                {% if currency == 'EUR' %}
+                    <h1 class="fw-normal">€{{ object.total_balance }}</h1>
                 {% else %}
-                    <h1 class="font-weight-normal">${{ object.total_balance }}</h1>
+                    <h1 class="fw-normal">${{ object.total_balance }}</h1>
                 {% endif %}
                 Current Balance
             </div>
         </div>
     </div>
-    <!---------- Interest ---------->
-    <div class="bd-highlight">
+    <!----------------- Interest -------------------->
+    <div class="bd-highlight ms-auto">
         <!-- top part -->
         <div class="d-flex pb-2">
-            <div class="pr-3">
+            <div class="pe-3">
                 <i class="bi bi-piggy-bank"></i>
             </div>
             <div class="align-self-center">
@@ -78,7 +76,7 @@
         </div>
         <!-- bottom part (counter) -->
         <div class="d-flex">
-            {% if LANGUAGE_CODE == 'de' %}
+            {% if currency == 'EUR' %}
             <div class="d-flex counter-interest">
                 <div class="">€</div>
                 <div id="counter"></div>
@@ -119,13 +117,13 @@
 <script>
     var total_bal = Number('{{ interest_list.interest|unlocalize }}');
     var interest_rate = Number('{{ interest_list.interest_rate|unlocalize }}');
-    var lang = '{{ LANGUAGE_CODE }}'
-    var euro_rate = Number('{{ euro_rate|unlocalize }}')
+    // var lang = '{{ LANGUAGE_CODE }}'
+    // var euro_rate = Number('{{ euro_rate|unlocalize }}')
     window.onload = function () {
         /* multiplying total balacne to get the euro equivalent */
-        if (lang == "de") {
-            total_bal = total_bal * euro_rate;
-        }
+        // if (lang == "de") {
+        //    total_bal = total_bal * euro_rate;
+        // }
         ctr = document.getElementById("counter");
         function incrementCounter() {
             ctr.innerHTML = interest_rate.toFixed(20);

@@ -22,23 +22,16 @@ button:link {
 .buttons-2 {
   font-size: 5rem;
 }
-h3,
-h1 {
-  color: white;
-}
 .interest-h1 {
   font-size: 24pt;
-}
-i {
-  color: #f8b119;
 }
 .list-group {
   max-width: 32rem;
 }
-.referral-copy {
-  margin-left: 0.5rem;
+.dropdown-menu {
+  max-height: 280px;
+  overflow-y: auto;
 }
-
 
 
 /********** navbar **********/
@@ -61,36 +54,6 @@ i {
 } */
 /********** end **********/
 
-/********** help text **********/
-#hint_id_email_verify_code,
-#hint_id_phone_verify_code,
-#hint_id_new_password1,
-#hint_id_username,
-#hint_id_phone_ext,
-#hint_id_phone_number,
-#hint_id_password1,
-#hint_id_password2,
-#hint_id_iban,
-#hint_id_referral_code,
-#hint_id_iban_verify_code,
-#hint_id_pag_num {
-  color: white !important;
-}
-/********** end **********/
-
-/********** Phone number **********/
-#id_phone_ext {
-  width: 110px;
-  padding-left: 1rem;
-  padding-top: 0.2rem;
-}
-#id_phone_number {
-  width: 355px;
-}
-#div_id_phone_number {
-  margin-top: 2rem;
-}
-/********** end **********/
 
 /********** Tooltip **********/    
 .bs-tooltip-auto[x-placement^="bottom"] .arrow::before,
@@ -108,35 +71,55 @@ i {
 .tooltip.top .tooltip-arrow {
   border-top-color: rgb(248, 177, 25) !important;
 }
-
 .tooltip.right .tooltip-arrow {
   border-right-color: rgb(248, 177, 25) !important;
 }
-
 .tooltip.bottom .tooltip-arrow {
   border-bottom-color: rgb(248, 177, 25) !important;
 }
-
 .tooltip.left .tooltip-arrow {
   border-left-color: #f8b119c7;
 }
+.tooltip.bs-tooltip-top .tooltip-arrow::before {
+  border-top-color: #f8b119c7;
+}
+.tooltip.bs-tooltip-bottom .tooltip-arrow::before {
+  border-bottom-color: #f8b119c7;
+}
+.tooltip.bs-tooltip-start .tooltip-arrow::before {
+  border-left-color: #f8b119c7;
+}
+.tooltip.bs-tooltip-end .tooltip-arrow::before {
+  border-right-color: #f8b119c7;
+}
 /********** end **********/
+
 
 /********** Colors and Fonts *********/
 .bi-piggy-bank,
 .bi-cash-stack {
   font-size: 3rem;
 }
+.fa-question-circle {
+  color: #f8b119c7 !important;
+}
 .bg-warning {
   background-color: #f8b119c7 !important;
 }
 hr {
   background-color: #f8b119c7 !important;
+  height: 50px;
+  opacity: 1;
+  height: 1rem;
 }
-.fa-question-circle {
-  color: #f8b119c7 !important;
+h3,h1 {
+  color: white;
+}
+i {
+  color: #f8b119;
 }
 /********* End *********/
+
 
 /********** ALL cards and navbar colors **********/
 .bg-dark { /* NAVBAR */
@@ -144,16 +127,17 @@ hr {
 }
 .zarathus-card { /* ALL CARDS */
   background-color: rgba(255, 255, 255, 0.26) !important;
-  max-width: 32rem;
+  max-width: 34rem;
 }
 .home-card {
   background-color: rgba(255, 255, 255, 0.26) !important;
-  width: 28rem;
+  width: 24rem;
 }
 .list-group-item-action { /* HISTORY CARDS */
   background-color: rgba(255, 255, 255, 0.26) !important;
 }
 /********** End **********/
+
 
 /********* Hover/zoom buttons in home.html *********/
 .zoom {
@@ -179,6 +163,7 @@ hr {
   transform: scale(1.2); 
 }
 /********* End *********/
+
 
 /********* Neon Button *********/
 :root {
@@ -313,166 +298,8 @@ button.swal2-confirm.swal2-styled:hover::after {
 }
 /************ end *********/
 
-/************ Pagination ************/
 
-.pagination > li > a
-{
-    background-color: #6c757d;
-    color: #fff;
-    border-color: rgb(185, 185, 185);
-}
-.pagination > li > a:focus,
-.pagination > li > a:hover,
-.pagination > li > span:focus,
-.pagination > li > span:hover
-{
-    color: #5a5a5a;
-    background-color: #eee;
-    border-color: #ddd;
-}
-.pagination > .active > a:hover
-{
-    background-color: #5A4181 !Important;
-    border: solid 1px #5A4181;
-}
-#myBtn {
-  display: none;
-  position: fixed;
-  bottom: 15px;
-  right: 21px;
-  z-index: 99;
-  font-size: 20px;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  padding: 1rem 1.5rem;
-  border-radius: 4px;
-}
-#myBtn:hover {
-  background-color: #555;
-}
-
-/************ end ************/
-
-/* XS */
-@media (max-width: 768px) {
-  .msg-alert {
-    margin: 1rem auto;
-    margin-bottom: 0;
-  }
-  .counter-interest {
-    font-size: 24pt;
-  }
-  .home-card {
-    background-color: rgba(255, 255, 255, 0.26) !important;
-    max-width: 100%;
-  }
-}
-/* XS */
-@media (max-width: 640px) {
-  #id_phone_number {
-    width: 100%;
-  }
-  .referral-copy {
-    margin-top: 1rem;
-    margin-left: 0;
-  }
-  .counter-interest {
-    font-size: 18pt;
-  }
-}
-/* Mobile */
-@media (max-width: 420px) {
-  #id_phone_ext {
-    width: 90px;
-    padding: 0rem 0rem 0.1rem 0rem;
-  }
-  #id_phone_number {
-    width: 150px;
-  }
-  .msg-alert {
-    margin: 1rem auto;
-    margin-bottom: 0;
-  }
-  .referral-copy {
-    position: relative;
-    left: 1rem;
-    bottom: 1.5rem;
-  }
-  .counter-interest {
-    font-size: 16pt;
-  }
-}
-/* SM */
-@media (min-width: 768px) {
-  .msg-alert {
-    margin: 1rem auto;
-    margin-bottom: 0;
-  }
-  .counter-interest {
-    font-size: 22pt;
-  }
-}
-/* MD/SM */
-@media (min-width: 836px) {
-  .msg-alert {
-    width: 800px;
-    margin: 1rem auto;
-    margin-bottom: 0;
-  }
-  .counter-interest {
-    font-size: 22pt;
-  }
-}
-/* MD */
-@media (min-width: 992px) {
-  .msg-alert {
-    width: 800px;
-    margin: 1rem auto;
-    margin-bottom: 0;
-  }
-  .counter-interest {
-    font-size: 22pt;
-  }
-}
-/* LG */
-@media (min-width: 1200px) {
-  /* alert */
-  .msg-alert {
-    width: 800px;
-    margin: 1rem auto;
-    margin-bottom: 0;
-  }
-}
-/* XL */
-@media (min-width: 1360px) {
-  .msg-alert {
-    width: 800px;
-    margin: 1rem auto;
-    margin-bottom: 0;
-  }
-  .counter-interest {
-    font-size: 30pt;
-  }
-}
-
-/* bootstrap spinner */
-/*
-.spinner-inner {
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-}
-
-.spinner-border {
-  width: 6rem;
-  height: 6rem;
-} */
-
-
+/* Spinner */
 .spinner {
   background: rgba(0, 0, 0, .4);
   overflow-y: auto;
@@ -519,4 +346,136 @@ button.swal2-confirm.swal2-styled:hover::after {
   stroke-width: 7px;
   stroke-linecap: round;
   filter:url(#shadow);
+}
+/* End */
+
+
+/************ Pagination ************/
+.pagination > li > a
+{
+    background-color: #6c757d;
+    color: #fff;
+    border-color: rgb(185, 185, 185);
+}
+.pagination > li > a:focus,
+.pagination > li > a:hover,
+.pagination > li > span:focus,
+.pagination > li > span:hover
+{
+    color: #5a5a5a;
+    background-color: #eee;
+    border-color: #ddd;
+}
+.pagination > .active > a:hover
+{
+    background-color: #5A4181 !Important;
+    border: solid 1px #5A4181;
+}
+#myBtn {
+  display: none;
+  position: fixed;
+  bottom: 15px;
+  right: 21px;
+  z-index: 99;
+  font-size: 20px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 1rem 1.5rem;
+  border-radius: 4px;
+}
+#myBtn:hover {
+  background-color: #555;
+}
+/************ end ************/
+
+/* XS */
+@media (max-width: 768px) {
+  .msg-alert {
+    margin: 1rem auto;
+    margin-bottom: 0;
+  }
+  .counter-interest {
+    font-size: 24pt;
+  }
+  .home-card {
+    background-color: rgba(255, 255, 255, 0.26) !important;
+    max-width: 100%;
+  }
+}
+/* XS */
+@media (max-width: 640px) {
+  .counter-interest {
+    font-size: 18pt;
+  }
+}
+/* Mobile */
+@media (max-width: 420px) {
+  .msg-alert {
+    margin: 1rem auto;
+    margin-bottom: 0;
+  }
+  .counter-interest {
+    font-size: 16pt;
+  }
+}
+/* SM */
+@media (min-width: 768px) {
+  .msg-alert {
+    margin: 1rem auto;
+    margin-bottom: 0;
+  }
+  .counter-interest {
+    font-size: 22pt;
+  }
+}
+/* MD/SM */
+@media (min-width: 836px) {
+  .msg-alert {
+    width: 800px;
+    margin: 1rem auto;
+    margin-bottom: 0;
+  }
+  .counter-interest {
+    font-size: 22pt;
+  }
+}
+/* MD */
+@media (min-width: 992px) {
+  .msg-alert {
+    width: 800px;
+    margin: 1rem auto;
+    margin-bottom: 0;
+  }
+  .counter-interest {
+    font-size: 22pt;
+  }
+}
+/* LG */
+@media (min-width: 1200px) {
+  /* alert */
+  .msg-alert {
+    width: 800px;
+    margin: 1rem auto;
+    margin-bottom: 0;
+  }
+  .container,
+  .container-sm,
+  .container-md,
+  .container-lg,
+  .container-xl,
+  .container-fluid {
+    max-width: 1140px;
+}
+}
+/* XL */
+@media (min-width: 1360px) {
+  .msg-alert {
+    width: 800px;
+    margin: 1rem auto;
+    margin-bottom: 0;
+  }
+  .counter-interest {
+    font-size: 30pt;
+  }
 }

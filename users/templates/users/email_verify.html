@@ -6,14 +6,19 @@
     <div class="card-body">
         <form action="" method="POST">
             {% csrf_token %}
-            <fieldset class="form-group">
-                <h3 class="font-weight-normal text-center">{% trans "Verify Your Email" %}</h3>
-                <hr>
-                {{ form|crispy }}
-            </fieldset>
-            <div class="form-group">
-                <button class="neon-button-green" type="submit">{% trans "Verify" %}</button>
+            <h3 class="fw-normal text-center">{% trans "Verify Your Email" %}</h3>
+            <hr>
+            <div id="div_id_email_verify_code" class="form-group form-floating mb-3" style="color: black;">
+                <input type="text" name="email_verify_code" class="form-control" autofocus=""
+                required="" id="id_email_verify_code" placeholder="email-verify">
+                <label for="id_email_verify_code">
+                    Code<span class="asteriskField">*</span>
+                </label>
+                <div class="form-text text-white">
+                    Please enter the email verification code
+                </div>
             </div>
+            <button class="neon-button-green my-3" type="submit">{% trans "Verify" %}</button>
         </form>
     </div>
 </div>

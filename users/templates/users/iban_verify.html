@@ -7,7 +7,7 @@
         <form action="" method="POST">
             {% csrf_token %}
             <fieldset class="form-group">
-                <h3 class="font-weight-normal text-center">{% trans "Verify Your IBAN" %}</h3>
+                <h3 class="fw-normal text-center">{% trans "Verify Your IBAN" %}</h3>
                 <hr>
                 {{ form|crispy }}
             </fieldset>

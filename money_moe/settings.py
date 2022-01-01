@@ -138,6 +138,10 @@ USE_TZ = True
 # USE_THOUSAND_SEPARATOR = True
 
 LANGUAGES = [("de", _("German")), ("en", _("English"))]
+LANGUAGE_COOKIE_NAME = "cookie_monster_lang"
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+SESSION_COOKIE_HTTPONLY = True
+
 
 LOCALE_PATHS = [os.path.join(BASE_DIR, "locale/")]
 

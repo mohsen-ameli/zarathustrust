@@ -7,7 +7,7 @@ app_name = "accounts"
 urlpatterns = [
     path("admin/", account_views.AdminRickRoll, name="admin-rick-roll"),
     path("<int:pk>/", account_views.HomeView.as_view(), name="home"),
-    path("", account_views.HomeTemplateView, name="home-new"),
+    path("", account_views.LandingPageView, name="home-new"),
     path("about/", account_views.AboutTemplateView, name="about-page"),
     path("new_dunc/", account_views.new_dunc),
     path("<int:pk>/transfer/", account_views.TransferSearchView, name="transfer-search"),

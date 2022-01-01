@@ -9,14 +9,19 @@
     <div class="card-body">
         <form method="POST" id="form-swal">
             {% csrf_token %}
-            <fieldset class="form-group">
-                <h3 class="font-weight-normal text-center">Send Money to {{ reciever_name }}</h3>
-                <hr>
-                {{ form|crispy }}
-            </fieldset>
-            <div class="form-group">
-                <button class="neon-button" type="submit" name="Transfer" value="Transfer" id="Action">{% trans "Send" %}</button>
+            <h3 class="fw-normal text-center">Send Money to {{ reciever_name }}</h3>
+            <hr>
+            <div id="div_id_money_to_send" class="form-group form-floating mb-3" style="color: black;">
+                <input type="text" name="money_to_send" placeholder="$0.0" 
+                class="textinput textInput form-control" required="" id="id_money_to_send">
+                <label for="id_money_to_send" class=" requiredField">Amount to Send<span class="asteriskField">*</span></label>
             </div>
+            <div id="div_id_purpose" class="form-group form-floating mb-3" style="color: black;">
+                <input type="text" name="purpose" placeholder="e.g. Happy Birthday Honey !" 
+                maxlength="500" class="textinput textInput form-control" id="id_purpose">
+                <label for="id_purpose" class="">Message (optional)</label>
+            </div>
+            <button class="neon-button my-3" type="submit" name="Transfer" value="Transfer" id="Action">{% trans "Send" %}</button>
         </form>
     </div>
 </div>

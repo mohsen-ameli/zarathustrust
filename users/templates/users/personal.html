@@ -11,36 +11,62 @@
     <div class="card-body">
         <form method="POST">
             {% csrf_token %}
-            <fieldset class="form-group">
-                <h3 class="font-weight-normal text-center">{% trans "Why not join now ?!" %}</h3>
-                <hr>
-                <!-- {{ form|crispy }} -->
-                {{ form.username|as_crispy_field }}
-                {{ form.email|as_crispy_field }}
-                <div class="d-flex">
-                    <!-- <div class="dropdown">
-                        <button class="btn btn-white dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">
-                            <span class="flag-icon flag-icon-ca"></span>
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            {% for id, name in form.phone_ext.field.choices %}
-                                <button type="menu" class="dropdown-item" value="{{ id }}" name="country-picker">
-                                    (+{{ id }}) <span class="flag-icon flag-icon-{{ name }}"></span>
-                                </button>
-                            {% endfor %}
-                        </div>
-                    </div> -->
-                    {{ form.phone_ext|as_crispy_field }}
-                    {{ form.phone_number|as_crispy_field }}
+            <h3 class="fw-normal text-center">{% trans "Why not join now ?!" %}</h3>
+            <hr>
+            <!-- USERNAME -->
+            <div id="div_id_username" class="form-group form-floating mb-3" style="color: black;">
+                <input type="text" name="username" maxlength="150" autofocus="" placeholder="Username"
+                class="form-control" id="id_username" required="" aria-describedby="usernameHelp">
+                <label for="id_username" class="form-label">Username<span class="asteriskField">*</span></label></label>
+                <div id="usernameHelp" class="form-text text-white">
+                    Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
                 </div>
-                {{ form.iban|as_crispy_field }}
-                {{ form.password1|as_crispy_field }}
-                {{ form.password2|as_crispy_field }}
-            </fieldset>
-            <div class="form-group">
-                <button class="neon-button-green" type="submit">{% trans "Sign Up" %}</button>
             </div>
+            <!-- EMAIL ADDRESS -->
+            <div id="div_id_email" class="form-group form-floating mb-3" style="color: black;">
+                <input type="email" name="email" class="form-control" required="" id="id_email" 
+                aria-describedby="emailHelp" placeholder="name@example.com">
+                <label for="id_email">Email address<span class="asteriskField">*</span></label>
+                <div id="emailHelp" class="form-text text-white">
+                    We will not share your email with anyone.
+                </div>
+            </div>
+            <!-- PHONE NUMBER -->
+            <div id="div_id_phone_number" class="input-group mb-3" style="color: black;">
+                <span class="input-group-text">+({{ ext }})</span>
+                <div class="form-floating form-floating-group flex-grow-1">
+                    <input type="text" name="phone_number" class="form-control" placeholder="999-999-9999"
+                    required="" id="id_phone_number" maxlength="20">
+                    <label for="phone_number">Phone Number<span class="asteriskField">*</span></label>
+                </div>
+                <div id="emailHelp" class="form-text text-white">
+                    Enter your phone number in this format 1234567890.
+                </div>
+            </div>
+            <!-- PASSWORD 1 -->
+            <div id="div_id_password1" class="form-group form-floating mb-3" style="color: black;">
+                <input type="password" name="password1" autocomplete="new-password" 
+                class="form-control" required="" id="id_password1" placeholder="Password">
+                <label for="id_password1">Password<span class="asteriskField">*</span></label>
+                <div id="emailHelp" class="form-text text-white">
+                    <ul>
+                        <li>Your password can't be too similar to your other personal information.</li>
+                        <li>Your password must contain at least 8 characters.</li>
+                        <li>Your password can't be a commonly used password.</li>
+                        <li>Your password can't be entirely numeric.</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- PASSWORD 2 -->
+            <div id="div_id_password2" class="form-group form-floating mb-3" style="color: black;">
+                <input type="password" name="password2" autocomplete="new-password" 
+                class="form-control" required="" id="id_password2" placeholder="Password2">
+                <label for="id_password2">Password confirmation<span class="asteriskField">*</span></label>
+                <div id="emailHelp" class="form-text text-white">
+                    Enter the same password as before, for verification.
+                </div>
+            </div>
+            <button class="neon-button-green my-3" type="submit">{% trans "Sign Up" %}</button>
         </form>
         <hr>
         <div class="boarder-top">

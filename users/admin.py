@@ -14,9 +14,11 @@ class CustomUserAdmin(UserAdmin):
             {
                 'fields': (
                     'country',
+                    'language',
+                    'currency',
                     'phone_ext',
                     'phone_number',
-                    'iban',
+                    # 'iban',
                     'is_business'
                 )
             }

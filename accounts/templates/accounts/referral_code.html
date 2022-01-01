@@ -3,20 +3,22 @@
 {% block content %}
 <div class="card text-white zarathus-card mx-auto">
     <div class="card-body">
-        <h3 class="font-weight-normal text-center">{% trans "Your Referral Code" %}</h3>
+        <h3 class="fw-normal text-center">{% trans "Your Referral Code" %}</h3>
         <hr>
-        {% trans "Share this code with your friends when they are registering, and you will get $1 added to your balance as well as another extra $200 to your bonus." %}
-        <br> <br>
-        <h5 class="font-weight-bold">
-            {% trans "Referral Code :" %}
-            {{ user.code.referral_code }}
-            <button class="btn btn-info referral-copy" id="Copy">{% trans "Copy" %}</button>
-        </h5>
+        <p class="card-text">
+            {% trans "Share this code with your friends when they are registering, and you will get $1 added to your balance as well as another extra $200 to your bonus." %}
+        </p>
+        <div class="d-flex">
+            <h5 class="fw-bold mt-2">
+                {% trans "Referral Code :" %}
+                {{ user.code.referral_code }}
+            </h5>
+            <button class="btn btn-info mx-2" id="Copy">{% trans "Copy" %}</button>
+        </div>
         <hr>
-        <a class="neon-button"
-            href="{% url 'accounts:home' user.account.pk %}">{% trans "Wallet" %}</a>
+        <a class="neon-button" href="{% url 'accounts:home' user.account.pk %}">{% trans "Wallet" %}</a>
+    </div>
 </div>
-
 
 <script>
     function Clipboard_CopyTo(value) {
@@ -27,8 +29,10 @@
             document.execCommand("copy");
             document.body.removeChild(tempInput);
         }
-
-        document.querySelector('#Copy').onclick = function () {
+        var tooltip = document.getElementById("Copy");
+        tooltip.onclick = function () {
+            tooltip.setAttribute("style", "color: white;");
+            tooltip.innerHTML = "Copied!"
             Clipboard_CopyTo('{{ user.code.referral_code }} ');
         }
 </script>

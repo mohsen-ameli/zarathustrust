@@ -11,9 +11,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap CSS V:4.6.1 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
-    <!-- <link rel="stylesheet" href="{% static 'accounts/bootstrap-4.6.1-dist/css/bootstrap.min.css' %}"> -->
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous"> -->
 
+    <!-- Bootstrap CSS V:5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
@@ -49,9 +50,9 @@
                     Zarathus Trust
                 </a>
             {% endif %}
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
@@ -75,27 +76,28 @@
                     </li>
                 </ul>
 
-                <ul class="navbar-nav ml-auto">
+                <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" style="color: white;" href="#" id="dropdown09" data-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false">
+                        <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             {% get_current_language as LANGUAGE_CODE %}
                             {% get_available_languages as LANGUAGES %}
                             {% get_language_info_list for LANGUAGES as languages %}
                             <i class="fas fa-globe"></i> {% trans "Language" %} <span
                                 class="flag-icon flag-icon-{{ LANGUAGE_CODE }}"></span>
                         </a>
-                        <form class="form-inline" action="{% url 'set_language' %}" method="post"> {% csrf_token %}
-                            <input name="next" type="hidden" value="{{ redirect_to }}" />
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <form class="form-inline" action="{% url 'set_language' %}" method="post"> {% csrf_token %}
+                                <input name="next" type="hidden" value="{{ redirect_to }}" />
                                 {% for language in languages %}
-                                <button class="dropdown-item" type="submit" name="language" value="{{ language.code }}"
-                                    class="{% if language.code == LANGUAGE_CODE %}selected{% endif %}">
-                                    <span class="flag-icon flag-icon-{{ language.code }}"></span> {{ language.name_local }}
-                                </button>
+                                    <li>
+                                        <button class="dropdown-item {% if language.code == LANGUAGE_CODE %}selected{% endif %}" 
+                                            type="submit" name="language" value="{{ language.code }}">
+                                            <span class="flag-icon flag-icon-{{ language.code }}"></span> {{ language.name_local }}
+                                        </button>
+                                    </li>
                                 {% endfor %}
-                            </div>
-                        </form>
+                            </form>
+                        </ul> 
                     </li>
                     {% if user.is_authenticated %}
                         <li class="nav-item">
@@ -146,10 +148,13 @@
     
 
     <!-- Bootstrap V:4.6.1 -->
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script> -->
     <!-- <script src="{% static 'accounts/bootstrap-4.6.1-dist/js/bootstrap.bundle.min.js' %}"></script> -->
 
+    <!-- Bootstrap V:5 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    
 
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/5f5fa5bcd8.js" crossorigin="anonymous"></script>
@@ -158,7 +163,12 @@
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Enable Tooltips everywhere -->
-    <script>$(function () {$('[data-toggle="tooltip"]').tooltip()})</script>
+    <script>
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
 </body>
 
 </html>

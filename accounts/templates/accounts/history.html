@@ -5,18 +5,32 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block content %}
+{% if page_obj.paginator.num_pages > 1 %}
 <div class="card mx-auto zarathus-card">
     <div class="card-body">
-        <label for="basic-url">Choose How Many Transaction to See Per Page (default is 10)</label>
         <div class="m-2 mx-auto">
             <form method="POST" class="form-inline">
                 {% csrf_token %}
-                    {{ form.pag_num|as_crispy_field  }}
-                    <button type="submit" class="btn btn-outline-success ml-sm-2 mb-sm-4 ml-xs-0 mb-xs-0">Paginate</button>
+                <label for="basic-url" class="mb-3">Choose How Many Transaction to See Per Page (default is 10)</label>
+                <div id="div_id_pag_num" class="form-group form-floating mb-3" style="color: black;">
+                    <input type="text" name="pag_num" placeholder="Enter a number" size="30" 
+                    class="textinput textInput form-control" id="id_pag_num">
+                    <label for="id_pag_num" class=" requiredField">Enter a number</label>
+                    <div id="hint_id_pag_num" class="form-text text-white">Enter the number "0" to show all transactions</div>
+                </div>
+                <!-- {{ form.pag_num|as_crispy_field  }} -->
+                <button type="submit" class="neon-button-green">Paginate</button>
             </form>
         </div>
     </div>
 </div>
+{% else %}
+    <h5 class="text-center mb-3">{% trans "sheesh, no transactions yet, make one ?" %}</h5>
+    <div class="text-center">
+        <a href="{% url 'accounts:add-money' pk=user.pk %}" class="neon-button">{% trans "Deposit" %}</a>
+    </div>
+    
+{% endif %}
 <br>
 
 {% for each in page_obj %}
@@ -64,7 +78,7 @@
                 {% endif %}
 
                 {% if each.second_person.created_by.username == user.get_username or each.method == "Deposit" or each.method == "Cash Out" %}
-                    <font class="float-right" style="color: rgb(0, 255, 0); font-size: large;">
+                    <font class="float-end" style="color: rgb(0, 255, 0); font-size: large;">
                         {% if LANGUAGE_CODE == "de" %}
                             +€{{ each.price|floatformat:1 }}
                         {% else %}
@@ -72,7 +86,7 @@
                         {% endif %}
                     </font>
                 {% else %}
-                    <font class="float-right" style="color: rgb(63, 0, 0); font-size: large;">
+                    <font class="float-end" style="color: rgb(63, 0, 0); font-size: large;">
                         {% if LANGUAGE_CODE == "de" %}
                             -€{{ each.price|floatformat:1 }}
                         {% else %}

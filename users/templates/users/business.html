@@ -7,7 +7,7 @@
         <form method="POST">
             {% csrf_token %}
             <fieldset class="form-group">
-                <h4 class="font-weight-normal">{% trans "Why not join now ?!" %}</h4>
+                <h4 class="fw-normal">{% trans "Why not join now ?!" %}</h4>
                 <hr>
                 {{ form|crispy }}
             </fieldset>

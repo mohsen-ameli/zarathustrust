@@ -9,14 +9,17 @@ app_name = "money_moe"
 urlpatterns = [
     path("", include("accounts.urls"), name="home"),
     path("g0atch33se&pizz1/", admin.site.urls, name="admin"),
+
     path("register/", users_views.register, name="register"),
-    path("register/personal/", users_views.personal, name="personal-sign-up"),
     path("register/business/", users_views.business, name="business"),
+    path("register/personal/", users_views.PersonalCountryPickSignUp, name="personal-country-pick"),
+    path("register/personal/<str:country>", users_views.PersonalSignUp, name="personal-sign-up"),
+
     path("login/<str:url1>/<str:url2>/<str:url3>/<str:url4>/", users_views.auth_view, name="login-view-pay"),
     path("login/", users_views.LoginClassView, name="login-view"),
     path("email-verify/", users_views.email_verify_view, name="verify-view"),
     path("phone-verify/", users_views.phone_verify_view, name="phone-verify-view"),
-    path("iban-verify/", users_views.iban_verify_view, name="iban-verify-view"),
+    # path("iban-verify/", users_views.iban_verify_view, name="iban-verify-view"),
     path("referral-code/", users_views.referral_verify_view, name="referral-verify-view"),
     path("logout/", auth_views.LogoutView.as_view(template_name="users/logout.html"), name="logout"),
     path("password-reset/", auth_views.PasswordResetView.as_view(template_name="users/password_reset.html"), name="password_reset"),

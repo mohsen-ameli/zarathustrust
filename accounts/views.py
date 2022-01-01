@@ -1,5 +1,6 @@
 import decimal
 import json
+from ipware import get_client_ip
 
 import requests
 from bs4 import BeautifulSoup
@@ -13,12 +14,14 @@ from django.db.models import Q
 from django.shortcuts import redirect, render
 from django.urls.base import reverse
 from django.utils.translation import gettext as _
+from django.utils import translation
 from django.views.generic import DetailView
 from requests.api import get
 from users.models import CustomUser
 from django.http import HttpResponse
-from django.http import Http404
 from django.core.paginator import Paginator
+from django.core.exceptions import ObjectDoesNotExist
+from django.conf import settings
 
 
 from .forms import AddMoneyForm, TakeMoneyForm, PaginationForm, TransferSearchForm, TransferSendForm
@@ -44,6 +47,7 @@ class HomeView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['interest_list'] = account_interest.objects.get(pk=get_current_user().pk)
         context['is_bus'] = CustomUser.objects.get(pk=get_current_user().pk).is_business
+        context['currency'] = CustomUser.objects.get(pk=get_current_user().pk).currency
 
         acc = account.objects.get(pk=get_current_user().pk)
 
@@ -58,7 +62,8 @@ class HomeView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         return context
 
 
-# Function Based Views
+##### Function Based Views
+# checking to see if the user logged in is visiting their own page
 def correct_user(pk):
     # test function to see if the user tryna see the page is allowed to do so
     if pk == get_current_user().pk:
@@ -66,17 +71,25 @@ def correct_user(pk):
     return False
 
 
+# getting the language cookie
+# def cookie_monster(request):
+    cookies = request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
+    if cookies is None:
+        print('bruh no cookies for me', cookies)
+    else:
+        print('old cookies', cookies)
+        translation.activate(cookies)
+
+
+# Admin Page
 def AdminRickRoll(lmfao):
     r = redirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley")
     return r
 
 
-def HomeTemplateView(request):
-    # if request.user.is_authenticated == False:
-    # else:
-    #     return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk}))
-    template_name = 'accounts/home_new.html'
-    return render(request, template_name)
+# Landing Page
+def LandingPageView(request):
+    return render(request, 'accounts/landing_page.html')
 
 
 @login_required
@@ -89,6 +102,7 @@ def new_dunc(request):
         return HttpResponse("<h1>How tf did u find this page ... smh ... script kiddies these days jeez</h1>")
 
 
+# Transfer Sending
 @login_required
 def TransferSendView(request, pk, reciever_name):
     if correct_user(pk):
@@ -96,62 +110,65 @@ def TransferSendView(request, pk, reciever_name):
             form = TransferSendForm(request.POST)
             if form.is_valid():
                 # Logic starts
-                purpose = form.cleaned_data.get("purpose")
-                MoneyToSend = form.cleaned_data.get("money_to_send")
-                reciever_pk = account.objects.get(created_by__username=reciever_name).pk # getting reciever's pk
-                balance = account.objects.get(pk=pk).total_balance
-                if MoneyToSend >= 1 and MoneyToSend <= balance:
+                try:
+                    reciever_pk = account.objects.get(created_by__username=reciever_name).pk # getting reciever's pk
+                    purpose = form.cleaned_data.get("purpose")
+                    MoneyToSend = form.cleaned_data.get("money_to_send")
+                    balance = account.objects.get(pk=pk).total_balance
+                    if MoneyToSend >= 1 and MoneyToSend <= balance:
 
-                    # UPDATE ACCOUNT
-                    new_total_balance = account.objects.get(pk=reciever_pk).total_balance + MoneyToSend # adding money to reciever
-                    account.objects.filter(pk=reciever_pk).update(total_balance=new_total_balance)      # updating the reciever
-                    a = account.objects.get(created_by=get_current_user()).total_balance # getting balance of the sender
-                    rmv_total_balance = a - MoneyToSend                                  # minusing balance of sender by how much thy're sending
-                    account.objects.filter(created_by=get_current_user()).update(total_balance=rmv_total_balance)      # updating the giver
+                        # UPDATE ACCOUNT
+                        new_total_balance = account.objects.get(pk=reciever_pk).total_balance + MoneyToSend # adding money to reciever
+                        account.objects.filter(pk=reciever_pk).update(total_balance=new_total_balance)      # updating the reciever
+                        a = account.objects.get(created_by=get_current_user()).total_balance # getting balance of the sender
+                        rmv_total_balance = a - MoneyToSend                                  # minusing balance of sender by how much thy're sending
+                        account.objects.filter(created_by=get_current_user()).update(total_balance=rmv_total_balance)      # updating the giver
 
-                    # UPDATE ACCOUNT INTEREST
-                    a = account_interest.objects.get(pk=reciever_pk).interest + MoneyToSend                  # adding money to reciever
-                    account_interest.objects.filter(pk=reciever_pk).update(interest=a)                       # updating reciever
-                    b = account_interest.objects.get(pk=get_current_user().pk).interest - MoneyToSend        # minusing money from giver
-                    account_interest.objects.filter(pk=get_current_user().pk).update(interest=b)             # updating giver
-                    
-                    # success message
-                    messages.success(request, _(f'${MoneyToSend} has been transfered to {reciever_name}'))
+                        # UPDATE ACCOUNT INTEREST
+                        a = account_interest.objects.get(pk=reciever_pk).interest + MoneyToSend                  # adding money to reciever
+                        account_interest.objects.filter(pk=reciever_pk).update(interest=a)                       # updating reciever
+                        b = account_interest.objects.get(pk=get_current_user().pk).interest - MoneyToSend        # minusing money from giver
+                        account_interest.objects.filter(pk=get_current_user().pk).update(interest=b)             # updating giver
+                        
+                        # success message
+                        messages.success(request, _(f'${MoneyToSend} has been transfered to {reciever_name}'))
 
-                    # emailing the reciever
-                    reciever_email = CustomUser.objects.get(pk=reciever_pk).email
-                    giver_username = CustomUser.objects.get(pk=get_current_user().pk).username
-                    giver_email = CustomUser.objects.get(pk=get_current_user().pk).email
-                    EMAIL_ID       = config.get('EMAIL_ID')
-                    msg = EmailMessage(_("ZARATHUS TRUST MONEY TRANSFER"),
-                            _(f"Dear {reciever_name}, <br> {giver_username} just transfered ${MoneyToSend} to your account ! <br> Purpose of Use : {purpose}"),
-                            f"{EMAIL_ID}",
-                            [f"{reciever_email}"]
-                    )
-                    msg.content_subtype = "html"
-                    msg.send()
+                        # emailing the reciever
+                        reciever_email = CustomUser.objects.get(pk=reciever_pk).email
+                        giver_username = CustomUser.objects.get(pk=get_current_user().pk).username
+                        giver_email = CustomUser.objects.get(pk=get_current_user().pk).email
+                        EMAIL_ID       = config.get('EMAIL_ID')
+                        msg = EmailMessage(_("ZARATHUS TRUST MONEY TRANSFER"),
+                                _(f"Dear {reciever_name}, <br> {giver_username} just transfered ${MoneyToSend} to your account ! <br> Purpose of Use : {purpose}"),
+                                f"{EMAIL_ID}",
+                                [f"{reciever_email}"]
+                        )
+                        msg.content_subtype = "html"
+                        msg.send()
 
-                    # emailing the giver
-                    msg1 = EmailMessage(_("ZARATHUS TRUST MONEY TRANSFER"),
-                            _(f"Dear {giver_username}, <br> ${MoneyToSend} has been transfered to {reciever_name} successfully ! <br> Purpose of Use : {purpose}"),
-                            f"{EMAIL_ID}",
-                            [f"{giver_email}"]
-                    )
-                    msg1.content_subtype = "html"
-                    msg1.send()
+                        # emailing the giver
+                        msg1 = EmailMessage(_("ZARATHUS TRUST MONEY TRANSFER"),
+                                _(f"Dear {giver_username}, <br> ${MoneyToSend} has been transfered to {reciever_name} successfully ! <br> Purpose of Use : {purpose}"),
+                                f"{EMAIL_ID}",
+                                [f"{giver_email}"]
+                        )
+                        msg1.content_subtype = "html"
+                        msg1.send()
 
-                    # add the transaction to the user's history
-                    person = account.objects.get(pk=get_current_user().pk)
-                    second_person = account.objects.get(pk=reciever_pk)
-                    r = transaction_history(person=person, second_person=second_person,
-                    price=MoneyToSend, purpose_of_use=purpose, method="Transfer")
-                    r.save()
+                        # add the transaction to the user's history
+                        person = account.objects.get(pk=get_current_user().pk)
+                        second_person = account.objects.get(pk=reciever_pk)
+                        r = transaction_history(person=person, second_person=second_person,
+                        price=MoneyToSend, purpose_of_use=purpose, method="Transfer")
+                        r.save()
 
-                    return redirect(reverse('accounts:home', kwargs={'pk':pk}))
-                elif MoneyToSend < 1:
-                    messages.warning(request, _(f'Please consider that the minimum amount to send is $1 !'))
-                elif MoneyToSend > balance:
-                    messages.warning(request, _(f'You have requested to transfer more than you have in your current balance !'))
+                        return redirect(reverse('accounts:home', kwargs={'pk':pk}))
+                    elif MoneyToSend < 1:
+                        messages.warning(request, _(f'Please consider that the minimum amount to send is $1 !'))
+                    elif MoneyToSend > balance:
+                        messages.warning(request, _(f'You have requested to transfer more than you have in your current balance !'))
+                except ObjectDoesNotExist:
+                    messages.warning(request, _(f'The Account You Are Trying to Send Money to Has not Finished Signing Up !'))
             context = {"form" : form}
             return render(request, "accounts/transfer_send.html", context)
         else:
@@ -162,6 +179,7 @@ def TransferSendView(request, pk, reciever_name):
         raise PermissionDenied()
 
 
+# Transfer Searching
 @login_required
 def TransferSearchView(request, pk):
     if correct_user(pk):
@@ -231,6 +249,7 @@ def cash_out(request, pk):
         raise PermissionDenied()
 
 
+# Referral Code
 @login_required
 def ReferralCodeView(request, pk):
     if correct_user(pk):
@@ -239,6 +258,7 @@ def ReferralCodeView(request, pk):
         raise PermissionDenied()
 
 
+# Add Money Form
 @login_required
 def AddMoneyUpdateView(request, pk):
     if correct_user(pk):
@@ -263,6 +283,7 @@ def AddMoneyUpdateView(request, pk):
         raise PermissionDenied()
 
 
+# Add Money Info
 @login_required
 def AddMoneyInfo(request, pk):
     if correct_user(pk):
@@ -271,6 +292,7 @@ def AddMoneyInfo(request, pk):
         raise PermissionDenied()
 
 
+# Take Money Form
 @login_required
 def TakeMoneyUpdateView(request, pk):
     if correct_user(pk):
@@ -298,17 +320,19 @@ def TakeMoneyUpdateView(request, pk):
         raise PermissionDenied()
 
 
+# About Page
 def AboutTemplateView(request):
-    context = {
-        'stuff' : _('hello hello hi hi'),
-    }
+    context = {'stuff' : _('hello hello hi hi')}
     return render(request, 'accounts/about.html', context)
 
 
+# DELTE this later
 def payment(request, url1, url2, url3, url4):
     # www.amazon.ca/CYBERPOWERPC-Xtreme-i5-10400F-GeForce-GXiVR8060A10/dp/B08FBK2DK5/
     # www.newegg.ca/abs-ali521/p/N82E16883360126/
     if request.user.is_authenticated:
+
+
         header = {
             "User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36",
             "Accept-Language" : "en"
@@ -342,8 +366,7 @@ def payment(request, url1, url2, url3, url4):
             "price" : price, "total" : total_balance, "remaining" : remaining})
     else:
         return redirect(reverse("login-view-pay", kwargs={"url1" : url1, "url2" : url2, "url3" : url3, "url4" : url4}))
-
-
+# DELTE this later
 def paying_func(shop, price, buyer_balance):
     shop_owner = account.objects.get(created_by__username=shop).created_by
     shop_balance = account.objects.get(created_by=shop_owner).total_balance
@@ -352,8 +375,7 @@ def paying_func(shop, price, buyer_balance):
 
     # subtracting the price from the buyer
     account.objects.filter(pk=get_current_user().pk).update(total_balance=buyer_balance-price)
-
-
+# DELTE this later
 @login_required
 def payment_done(request, url1, url2, url3, url4, price):
     while "," in price:
@@ -376,6 +398,7 @@ def payment_done(request, url1, url2, url3, url4, price):
         return redirect(request.META['HTTP_REFERER'])
 
 
+# Checkout Page
 @login_required
 def checkout(request, pk, shop, price):
     if correct_user(pk):
@@ -415,7 +438,8 @@ def checkout(request, pk, shop, price):
         return render(request, "accounts/checkout.html", context)
     else:
         raise PermissionDenied()
-        
+
+# History Page   
 pagination_number = 10
 @login_required
 def History(request, pk):
@@ -456,6 +480,7 @@ def History(request, pk):
         raise PermissionDenied()
 
 
+# History Detail Page
 @login_required
 def history_detail(request, pk, tran_id):
     if correct_user(pk):
