@@ -1,9 +1,11 @@
 import json
+import os
 import phonenumbers
 from pycountry import languages
 from ipware import get_client_ip
 import pycountry
 import requests
+from countryinfo import CountryInfo
 
 from accounts.models import account
 from crum import get_current_user
@@ -24,8 +26,6 @@ from .utils import phone_msg_verify
 
 with open("/etc/config.json") as config_file:
     config = json.load(config_file)
-
-
 
 
 def country_from_ip(request):
@@ -127,9 +127,19 @@ def PersonalCountryPickSignUp(request):
         return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk}))
 
 
+def get_country_lang(country_code):
+    country_code = country_code.upper()
+    project = os.path.abspath(os.path.dirname(__name__)) # root of django project
+    file = f'{project}/country_languages.json' # getting the file containing all country codes
+    with open(file, 'r') as config_file: # opening and reading the json file
+        data = json.load(config_file)
+    langs = data[country_code] # searching for our specific country code
+    lang = next(iter(langs))
+    return lang
+
 def PersonalSignUp(request, country):
-    lang = languages.get(alpha_2=country).name
-    print("lang", lang)
+    currency = CountryInfo(country).info()['currencies'][:1]
+    print(''.join(currency))
     if request.user.is_anonymous == True:
         ext = phonenumbers.country_code_for_region(country)
         if request.method == "POST":
@@ -138,6 +148,8 @@ def PersonalSignUp(request, country):
                 user = form.save()
                 username = form.cleaned_data.get("username")
                 password = form.cleaned_data.get("password1")
+                user_ = authenticate(request, username=username, password=password)
+                
                 EU = ['AT', 'BE', 'HR', 'BG', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE',
                     'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE', 'GB']
                 if country == "CA":
@@ -148,9 +160,14 @@ def PersonalSignUp(request, country):
                     currency = "EUR"
                 else:
                     currency = country
-                user_ = authenticate(request, username=username, password=password)
-                print("country == ", country)
-                lang = languages.get(alpha_2=country).name
+
+                # getting countries language
+                try:
+                    lang = CountryInfo(country).info()['languages'][:1]
+                    lang = ''.join(lang)
+                except KeyError:
+                    lang = get_country_lang(country)
+                # updating the user object to include the currency, language, and country
                 CustomUser.objects.filter(username=username).update(country=country, currency=currency, phone_ext=ext, language=lang)
                 if user_ is not None:
                     request.session["pk"] = user.pk
