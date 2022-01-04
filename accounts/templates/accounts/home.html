@@ -3,9 +3,8 @@
 {% load l10n %}
 {% load static %}
 {% block content %}
-<!-- <div class="loader"></div> -->
 <!---------- First Part ---------->
-<div class="d-lg-flex">
+<div class="d-sm-flex">
     <div class="py-2">
         <h3 class="text-capitalize">{% trans "Welcome, " %} {{ user.username }} !</h3>
     </div>
@@ -13,7 +12,7 @@
         <div class="d-flex">
             <h3>
                 {% if currency == 'EUR' %}
-                    Bonus: €{{ euro_bonus }}
+                    Bonus: €{{ object.bonus }}
                 {% else %}
                     Bonus: ${{ object.bonus }}
                 {% endif %}
@@ -30,7 +29,7 @@
 </div>
 
 <!---------- Second Part ---------->
-<div class="d-lg-flex flex-row bd-highlight">
+<div class="d-md-flex bd-highlight">
     <!---------- ballance and yellow card ---------->
     <div class="bd-highlight">
         <!-- top part -->
@@ -48,18 +47,26 @@
             <div class="card-body">
                 <h5 class="fw-normal text-capitalize">
                     {% if is_bus == True %}
-                        {{ user.username }}'s Business Account
+                        {% blocktrans with username=user.username %}
+                            {{ username }}'s Business Account
+                        {% endblocktrans %}
                     {% else %}
-                        {{ user.username }}'s Personal Account
+                        {% blocktrans with username=user.username %}
+                            {{ username }}'s Personal Account
+                        {% endblocktrans %}
                     {% endif %}
                 </h5>
                 <hr>
                 {% if currency == 'EUR' %}
                     <h1 class="fw-normal">€{{ object.total_balance }}</h1>
+                {% elif currency == 'JPY' %}
+                    <h1 class="fw-normal">¥{{ object.total_balance }}</h1>
+                {% elif currency == 'GBP' %}
+                    <h1 class="fw-normal">£{{ object.total_balance }}</h1>
                 {% else %}
                     <h1 class="fw-normal">${{ object.total_balance }}</h1>
                 {% endif %}
-                Current Balance
+                {% trans "Current Balance" %}
             </div>
         </div>
     </div>
@@ -76,17 +83,14 @@
         </div>
         <!-- bottom part (counter) -->
         <div class="d-flex">
-            {% if currency == 'EUR' %}
             <div class="d-flex counter-interest">
-                <div class="">€</div>
+                {% if currency == 'EUR' %}
+                    <div class="">€</div>
+                {% else %}
+                    <div class="">$</div>
+                {% endif %}
                 <div id="counter"></div>
             </div>
-            {% else %}
-            <div class="d-flex counter-interest">
-                <div class="">$</div>
-                <div id="counter"></div>
-            </div>
-            {% endif %}
         </div>
         <br>
         <a href="{% url 'accounts:cash-out' object.pk %}" class="neon-button ml-2">{% trans "Cash Out" %}</a>

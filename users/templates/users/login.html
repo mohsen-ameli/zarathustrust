@@ -9,18 +9,24 @@
             <div class="mb-2">
                 <h3 class="fw-normal text-center">{% trans "Log In" %}</h3>
                 <hr>
+                <!-- Username -->
                 <div id="div_id_username" class="form-group form-floating mb-3" style="color: black;">
                     <input type="text" name="username" autofocus="" autocapitalize="none" autocomplete="username" 
                     maxlength="150" class="textinput textInput form-control" required="" id="id_username" placeholder="username">
-                    <label for="id_username" class=" requiredField">Username</label>
+                    <label for="id_username" class=" requiredField">
+                        {% trans "Username" %}
+                    </label>
                 </div>
+                <!-- Password -->
                 <div id="div_id_password" class="form-group form-floating mb-3" style="color: black;"> 
                     <input type="password" name="password" autocomplete="current-password" 
                     class="textinput form-control" required="" id="id_password">
-                    <label for="id_password" class="requiredField">Password</label>
+                    <label for="id_password" class="requiredField">
+                        {% trans "Password" %}
+                    </label>
                 </div>
             </div>
-            <button class="neon-button-green my-3" type="submit">{% trans "Log In" %}</button>
+            <button class="neon-button-green my-2" type="submit">{% trans "Log In" %}</button>
         </form>
         <div class="pt-2">
             <small class="text-muted">

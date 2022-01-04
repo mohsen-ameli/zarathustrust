@@ -1,13 +1,14 @@
 import decimal
 import json
+from django.http.response import JsonResponse
 from ipware import get_client_ip
+import os
 
 import requests
 from bs4 import BeautifulSoup
 from crum import get_current_user
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.mail import send_mail, EmailMessage
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
@@ -15,16 +16,13 @@ from django.shortcuts import redirect, render
 from django.urls.base import reverse
 from django.utils.translation import gettext as _
 from django.utils import translation
-from django.views.generic import DetailView
-from requests.api import get
 from users.models import CustomUser
 from django.http import HttpResponse
 from django.core.paginator import Paginator
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 
-
-from .forms import AddMoneyForm, TakeMoneyForm, PaginationForm, TransferSearchForm, TransferSendForm
+from .forms import AddMoneyForm, TakeMoneyForm, TransferSendForm
 from .models import account, account_interest, transaction_history
 from .tasks import interest_loop
 
@@ -32,53 +30,44 @@ with open('/etc/config.json') as config_file:
     config = json.load(config_file)
 
 
-# Class Based Views
-class HomeView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
-    model = account
-    template_name = 'accounts/home.html'
-
-    def test_func(self):
-        account = self.get_object()
-        if self.request.user == account.created_by:
-            return True
-        return False
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['interest_list'] = account_interest.objects.get(pk=get_current_user().pk)
-        context['is_bus'] = CustomUser.objects.get(pk=get_current_user().pk).is_business
-        context['currency'] = CustomUser.objects.get(pk=get_current_user().pk).currency
-
-        acc = account.objects.get(pk=get_current_user().pk)
-
-        url = f'https://api.exchangerate.host/convert?from=USD&to=EUR' # 1 USD to EUR
-        response = requests.get(url) # getting a response
-        data = response.json() # getting the data
-        euro_rate = data['result'] # extracting the desired column and converting it into Decimal django field
-        context['euro_balance'] = round(decimal.Decimal(euro_rate) * acc.total_balance, 2) # set the EUR balance to euro_balance for templates
-        context['euro_rate']    = euro_rate  # passing euro_rate for 1 USD
-        context['euro_bonus']   = round(decimal.Decimal(euro_rate) * acc.bonus, 2)
-
-        return context
-
-
-##### Function Based Views
-# checking to see if the user logged in is visiting their own page
+# test function to see if the user tryna see the page is allowed to do so
 def correct_user(pk):
-    # test function to see if the user tryna see the page is allowed to do so
     if pk == get_current_user().pk:
         return True
     return False
 
 
 # getting the language cookie
-# def cookie_monster(request):
+def cookie_monster(request):
     cookies = request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
     if cookies is None:
         print('bruh no cookies for me', cookies)
     else:
         print('old cookies', cookies)
         translation.activate(cookies)
+
+
+############# Function Based Views ############
+@login_required
+def HomeView(request, pk):
+    if correct_user(pk):
+        acc = account.objects.get(pk=request.user.pk)
+        user_ = CustomUser.objects.get(pk=request.user.pk)
+        url = f'https://api.exchangerate.host/convert?from=USD&to=EUR' # 1 USD to EUR
+        response = requests.get(url) # getting a response
+        data = response.json() # getting the data
+        euro_rate = data['result']
+
+        context = {
+            'interest_list' : account_interest.objects.get(pk=request.user.pk),
+            'is_bus'        : user_.is_business,
+            'currency'      : user_.currency,
+            'euro_rate'     : euro_rate,
+            'object'        : acc
+        }
+        return render(request, 'accounts/home.html', context)
+    else:
+        raise PermissionDenied
 
 
 # Admin Page
@@ -89,7 +78,32 @@ def AdminRickRoll(lmfao):
 
 # Landing Page
 def LandingPageView(request):
-    return render(request, 'accounts/landing_page.html')
+    ip, is_routable = get_client_ip(request)
+    if ip is None:
+        code = None
+    else:
+        if is_routable:
+            url = f"https://geolocation-db.com/json/{ip}&position=true"
+            response = requests.get(url).json()
+            code = response['country_code']
+        else:
+            code = None
+
+    country = code
+    if country is None:
+        lang = 'en'
+    else:
+        country_code = country.upper()
+        project = os.path.abspath(os.path.dirname(__name__)) # root of django project
+        file = f'{project}/country_languages.json' # getting the file containing all country codes
+        with open(file, 'r') as config_file: # opening and reading the json file
+            data = json.load(config_file)
+        langs = data[country_code] # searching for our specific country code
+        lang = next(iter(langs))
+    translation.activate(lang)
+    response = render(request, 'accounts/landing_page.html')
+    response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang)
+    return response
 
 
 @login_required
@@ -183,33 +197,70 @@ def TransferSendView(request, pk, reciever_name):
 @login_required
 def TransferSearchView(request, pk):
     if correct_user(pk):
-        if request.method == "POST":
-            form = TransferSearchForm(request.POST)
-            if form.is_valid():
-                target_account = form.cleaned_data.get('target_account')
-                found_accounts = CustomUser.objects.all().filter(
-                    Q(email__icontains=target_account) | Q(phone_number__icontains=target_account) | Q(username__icontains=target_account)
-                )
-                # found_accounts = CustomUser.objects.filter(username__icontains=target_account)
-                if not found_accounts: # no accounts were found
-                    messages.warning(request, _(f'Sorry, no account with the information provided was found :('))
-                elif found_accounts == request.user.username:
-                    messages.warning(request, _(f'Sorry, but you cannot send money to yourself'))
-                else: # accounts were found
-                    checkbox = request.POST.get('checkbox')
-                    if checkbox is not None: # A target user has been aquired
-                        if str(checkbox) == str(request.user):
-                            messages.warning(request, _(f'Sorry, but you cannot send money to yourself'))
-                        else:
-                            return redirect(reverse("accounts:transfer-send", kwargs={"pk" : pk, "reciever_name" : checkbox.split(',')[0]}))
-                    context = {"form" : form, "found_accounts" : found_accounts}
-                    return render(request, "accounts/transfer_search.html", context)
-        else:
-            form = TransferSearchForm()
-        context = {"form" : form}
-        return render(request, "accounts/transfer_search.html", context)
+        return render(request, "accounts/transfer_search.html")
+        # if request.method == "POST": # target has been aquired
+        #     person = request.POST.get('search_result')
+        #     if person == request.user.username:
+        #         messages.warning(request, _(f'Sorry, but you cannot send money to yourself'))
+        #     else:
+        #         print(person)
+        #         return redirect(reverse("accounts:transfer-send", kwargs={"pk" : pk, "reciever_name" : person}))
+
+        # all_acc = CustomUser.objects.values('username')
+        # qs_json = json.dumps(list(all_acc), cls=DjangoJSONEncoder)
+        # context = {"qs_json" : qs_json}
+
+
+        # if request.method == "POST":
+        #     form = TransferSearchForm(request.POST)
+        #     if form.is_valid():
+        #         target_account = form.cleaned_data.get('target_account')
+        #         found_accounts = CustomUser.objects.all().filter(
+        #             Q(email__icontains=target_account) | Q(phone_number__icontains=target_account) | Q(username__icontains=target_account)
+        #         )
+        #         # found_accounts = CustomUser.objects.filter(username__icontains=target_account)
+        #         if not found_accounts: # no accounts were found
+        #             messages.warning(request, _(f'Sorry, no account with the information provided was found :('))
+        #         elif found_accounts == request.user.username:
+        #             messages.warning(request, _(f'Sorry, but you cannot send money to yourself'))
+        #         else: # accounts were found
+        #             checkbox = request.POST.get('checkbox')
+        #             if checkbox is not None: # A target user has been aquired
+        #                 if str(checkbox) == str(request.user):
+        #                     messages.warning(request, _(f'Sorry, but you cannot send money to yourself'))
+        #                 else:
+        #                     return redirect(reverse("accounts:transfer-send", kwargs={"pk" : pk, "reciever_name" : checkbox.split(',')[0]}))
+        #             context = {"form" : form, "found_accounts" : found_accounts, "qs_json" : qs_json}
+        #             return render(request, "accounts/transfer_search.html", context)
+        # else:
+        #     form = TransferSearchForm()
+        # context = {"form" : form}
+        # return render(request, "accounts/transfer_search.html", context)
     else:
         raise PermissionDenied()
+
+# Transfer Searching
+def search_results(request):
+    if request.is_ajax():
+        # getting the stuff that was typed in in transfer.html
+        typed = request.POST.get('person')
+        query = CustomUser.objects.all().filter(
+                    Q(email__icontains=typed) | Q(phone_number__icontains=typed) | Q(username__icontains=typed)
+                )
+        if len(query) > 0 and len(typed) > 2:
+            res = None
+            data = []
+            for obj in query:
+                item = {
+                    'pk' : obj.pk,
+                    'username' : obj.username,
+                }
+                data.append(item)
+            res = data
+        else:
+            res = "No accounts were found."
+        return JsonResponse({'data' : res})
+    return JsonResponse({})
 
 
 @login_required
@@ -407,7 +458,8 @@ def checkout(request, pk, shop, price):
         total_balance = account.objects.get(created_by=request.user).total_balance
         remaining     = round(total_balance - decimal.Decimal(float(price)), 2)
         buyer_balance = account.objects.get(pk=get_current_user().pk).total_balance
-        context = {'pk' : pk,'price' : price, 'balance' : total_balance, 'remaining' : remaining, 'shop' : shop}
+        currency = CustomUser.objects.get(pk=pk).currency
+        context = {'pk' : pk,'price' : price, 'balance' : total_balance, 'remaining' : remaining, 'shop' : shop, 'currency' : currency}
 
         while "," in price:
             translation_table = dict.fromkeys(map(ord, ','), None)
@@ -439,14 +491,11 @@ def checkout(request, pk, shop, price):
     else:
         raise PermissionDenied()
 
-# History Page   
+
 pagination_number = 10
 @login_required
 def History(request, pk):
     if correct_user(pk):
-        # setting the default value for pagination_number
-        global pagination_number
-
         # combining both query sets that have the cureently logged in user's history in them
         current_logged_user    = account.objects.get(pk=pk)
         person_history         = transaction_history.objects.filter(person=current_logged_user).order_by('date').reverse()
@@ -455,27 +504,35 @@ def History(request, pk):
         counter = Paginator(a, 1).count
 
         # getting the euro rate
-        url = f'https://api.exchangerate.host/convert?from=USD&to=EUR' # 1 USD to EUR
-        response = requests.get(url) # getting a response
-        data = response.json() # getting the data
-        euro_rate = round(decimal.Decimal(data['result']), 2)
+        # url = f'https://api.exchangerate.host/convert?from=USD&to=EUR' # 1 USD to EUR
+        # response = requests.get(url) # getting a response
+        # data = response.json() # getting the data
+        # euro_rate = round(decimal.Decimal(data['result']), 2)
 
-        form = PaginationForm(request.POST or None)
-        if form.is_valid():
-            pagination_number = form.cleaned_data.get('pag_num')
-            if pagination_number == 0:
-                pagination_number = counter
-            elif pagination_number < 0:
-                pagination_number = 10
-            form = PaginationForm()
-        
+        pagination_number = request.POST.get('paginate')
+        if pagination_number == "all":
+            pagination_number = counter
+            
+            
+        cookies_pag = request.COOKIES.get('pag')
+        print(cookies_pag)
         # paginating pages with pagination_number
-        paginator = Paginator(a, pagination_number)
+        if pagination_number is not None:
+            paginator = Paginator(a, pagination_number)
+        else:
+            if cookies_pag and cookies_pag != "None":
+                paginator = Paginator(a, cookies_pag)
+            else:
+                paginator = Paginator(a, 10)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
-        pagination_number = 10
-        context = {"euro_rate" : euro_rate, "page_obj" : page_obj, "form" : form}
-        return render(request, "accounts/history.html", context)
+
+        currency = CustomUser.objects.get(pk=pk).currency
+        context = {"page_obj" : page_obj, "currency" : currency}
+
+        response = render(request, "accounts/history.html", context)
+        response.set_cookie('pag', pagination_number)
+        return response
     else:
         raise PermissionDenied()
 
@@ -495,21 +552,33 @@ def history_detail(request, pk, tran_id):
 
 
 
-# class TransferTakeUpdateView(SuccessMessageMixin, UpdateView):
+
+
+# Class Based Views
+# class HomeView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 #     model = account
-#     fields = ['take_money']
-#     template_name = 'accounts/take_money_form.html'
-#     success_message = _("$%(take_money)s was request to be taken out")
+#     template_name = 'accounts/home.html'
 
-# @login_required
-# def TransferCreateView(request, pk):
-#     form    = TransferForm(request.POST or None)
-#     if form.is_valid():
-#         form.save()
-#         messages.success(request, _(f'${form.money_to_send} was transfered successfully'))
-#         return reverse(redirect('account:home', kwargs={'pk':get_current_user().pk}))
+#     def test_func(self):
+#         account = self.get_object()
+#         if self.request.user == account.created_by:
+#             return True
+#         return False
 
-# class TransferCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
-#     model = transfer
-#     form_class = TransferForm
-#     success_message = _("$%(money_to_send)s was transfered successfully")
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['interest_list'] = account_interest.objects.get(pk=get_current_user().pk)
+#         context['is_bus'] = CustomUser.objects.get(pk=get_current_user().pk).is_business
+#         context['currency'] = CustomUser.objects.get(pk=get_current_user().pk).currency
+
+#         acc = account.objects.get(pk=get_current_user().pk)
+
+#         url = f'https://api.exchangerate.host/convert?from=USD&to=EUR' # 1 USD to EUR
+#         response = requests.get(url) # getting a response
+#         data = response.json() # getting the data
+#         euro_rate = data['result'] # extracting the desired column and converting it into Decimal django field
+#         context['euro_balance'] = round(decimal.Decimal(euro_rate) * acc.total_balance, 2) # set the EUR balance to euro_balance for templates
+#         context['euro_rate']    = euro_rate  # passing euro_rate for 1 USD
+#         context['euro_bonus']   = round(decimal.Decimal(euro_rate) * acc.bonus, 2)
+
+#         return context

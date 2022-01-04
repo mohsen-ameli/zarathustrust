@@ -1,12 +1,25 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.utils.translation import gettext as _
-from django_countries.widgets import CountrySelectWidget
-from django_countries.fields import CountryField
-from django_countries import countries
+from crispy_bootstrap5.bootstrap5 import FloatingField
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Field
 
 from .models import CustomUser, code
 
+# iban = forms.CharField(
+#     max_length=30,
+#     label=_("IBAN (optional)"),
+#     required=False,
+#     help_text=_("For European countries only !"),
+# )
+# country_choices = [
+#     ("1", "🇨🇦(+1)"),
+#     ("1", "🇺🇸(+1)"),
+#     ("49", "🇩🇪(+49)"),
+#     ("98", "🇮🇷(+98)"),
+# ]
+# country = CountryField(blank=True)
 
 # class PhoneEnterForm(forms.ModelForm):
 #     phone_number = forms.CharField(
@@ -47,45 +60,22 @@ from .models import CustomUser, code
 
 
 class RegisterForm(UserCreationForm):
-    # country_choices = [
-    #     ("1", "🇨🇦(+1)"),
-    #     ("1", "🇺🇸(+1)"),
-    #     ("49", "🇩🇪(+49)"),
-    #     ("98", "🇮🇷(+98)"),
-    # ]
-    # country = CountryField(blank=True)
-
-    email = forms.EmailField()
-    # phone_ext = forms.ChoiceField(
-    #     choices=country_choices,
-    #     label="",
-    #     widget=forms.Select(attrs={"class": " special-ca"}),
-    # )
+    email = forms.EmailField(help_text=_("We will not share your email with anyone."))
     phone_number = forms.CharField(
         max_length=20,
         label="Phone Number",
         widget=forms.TextInput(attrs={"placeholder": "999-999-9999"}),
     )
-    # iban = forms.CharField(
-    #     max_length=30,
-    #     label=_("IBAN (optional)"),
-    #     required=False,
-    #     help_text=_("For European countries only !"),
-    # )
 
     class Meta:
         model = CustomUser
         fields = [
             "username",
             "email",
-            # "phone_ext",
             "phone_number",
             "password1",
             "password2",
-            # "iban",
-            # 'country'
         ]
-        # widgets    = {'country': CountrySelectWidget()}
 
 
 class BusinessForm(UserCreationForm):
@@ -129,6 +119,14 @@ class EmailCodeForm(forms.ModelForm):
         model = code
         fields = ["email_verify_code"]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            FloatingField("email_verify_code"),
+        )
+
 
 class PhoneCodeForm(forms.ModelForm):
     phone_verify_code = forms.CharField(
@@ -138,6 +136,14 @@ class PhoneCodeForm(forms.ModelForm):
     class Meta:
         model = code
         fields = ["phone_verify_code"]
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            FloatingField("phone_verify_code"),
+        )
 
 
 class IbanCodeForm(forms.ModelForm):
@@ -162,14 +168,11 @@ class ReferralCodeForm(forms.ModelForm):
     class Meta:
         model = code
         fields = ["referral_code"]
-
-
-# class UserProfileForm(forms.ModelForm):
-#     class Meta:
-#         model = CustomUser
-#         fields = ['phone_number']
-
-# class LoginForm(forms.ModelForm):
-#     class Meta:
-#         model   = User
-#         fields  = ['Username', 'Password1']
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            FloatingField("referral_code"),
+        )

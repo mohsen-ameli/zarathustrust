@@ -6,11 +6,12 @@ from . import views as account_views
 app_name = "accounts"
 urlpatterns = [
     path("admin/", account_views.AdminRickRoll, name="admin-rick-roll"),
-    path("<int:pk>/", account_views.HomeView.as_view(), name="home"),
+    path("<int:pk>/", account_views.HomeView, name="home"),
     path("", account_views.LandingPageView, name="home-new"),
     path("about/", account_views.AboutTemplateView, name="about-page"),
     path("new_dunc/", account_views.new_dunc),
     path("<int:pk>/transfer/", account_views.TransferSearchView, name="transfer-search"),
+    path("transfer_search/search_results/", account_views.search_results),
     path("<int:pk>/transfer/<str:reciever_name>", account_views.TransferSendView, name="transfer-send"),
     path("<int:pk>/invite-friends", account_views.ReferralCodeView, name="referral-code"),
     path("<int:pk>/add_money/", account_views.AddMoneyUpdateView, name="add-money"),

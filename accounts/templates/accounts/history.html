@@ -5,21 +5,25 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block content %}
-{% if page_obj.paginator.num_pages > 1 %}
+
+{% if page_obj.paginator.num_pages > 0 %}
 <div class="card mx-auto zarathus-card">
     <div class="card-body">
         <div class="m-2 mx-auto">
             <form method="POST" class="form-inline">
                 {% csrf_token %}
-                <label for="basic-url" class="mb-3">Choose How Many Transaction to See Per Page (default is 10)</label>
-                <div id="div_id_pag_num" class="form-group form-floating mb-3" style="color: black;">
-                    <input type="text" name="pag_num" placeholder="Enter a number" size="30" 
-                    class="textinput textInput form-control" id="id_pag_num">
-                    <label for="id_pag_num" class=" requiredField">Enter a number</label>
-                    <div id="hint_id_pag_num" class="form-text text-white">Enter the number "0" to show all transactions</div>
+                <div class="mb-3 text-center">{% trans "Choose How Many Transaction to See Per Page (default is 10)" %}</div>
+                <div class="dropdown text-center">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        Choose a number
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                      <li><button class="dropdown-item" type="submit" name="paginate" value="5" href="#">5</button></li>
+                      <li><button class="dropdown-item" type="submit" name="paginate" value="10" href="#">10</button></li>
+                      <li><button class="dropdown-item" type="submit" name="paginate" value="20" href="#">20</button></li>
+                      <li><button class="dropdown-item" type="submit" name="paginate" value="all" href="#">ALL</button></li>
+                    </ul>
                 </div>
-                <!-- {{ form.pag_num|as_crispy_field  }} -->
-                <button type="submit" class="neon-button-green">Paginate</button>
             </form>
         </div>
     </div>
@@ -29,13 +33,13 @@
     <div class="text-center">
         <a href="{% url 'accounts:add-money' pk=user.pk %}" class="neon-button">{% trans "Deposit" %}</a>
     </div>
-    
 {% endif %}
 <br>
 
 {% for each in page_obj %}
     <div class="list-group mx-auto">
-        <a href="{% url 'accounts:history-detail' pk=user.pk tran_id=each.id %}" class="list-group-item list-group-item-action flex-column align-items-start text-white">
+        <a href="{% url 'accounts:history-detail' pk=user.pk tran_id=each.id %}" 
+        class="list-group-item list-group-item-action flex-column align-items-start text-white" id="history-list">
             <div class="d-flex w-100 justify-content-between">
                 <h5 class="mb-1">{{ each.date|date:'N d, Y' }}</h5>
             </div>
@@ -79,15 +83,15 @@
 
                 {% if each.second_person.created_by.username == user.get_username or each.method == "Deposit" or each.method == "Cash Out" %}
                     <font class="float-end" style="color: rgb(0, 255, 0); font-size: large;">
-                        {% if LANGUAGE_CODE == "de" %}
-                            +€{{ each.price|floatformat:1 }}
+                        {% if currency == 'EUR' %}
+                            +€{{ each.price }}
                         {% else %}
                             +${{ each.price }}
                         {% endif %}
                     </font>
                 {% else %}
                     <font class="float-end" style="color: rgb(63, 0, 0); font-size: large;">
-                        {% if LANGUAGE_CODE == "de" %}
+                        {% if currency == 'EUR' %}
                             -€{{ each.price|floatformat:1 }}
                         {% else %}
                             -${{ each.price }}
@@ -131,9 +135,11 @@
         <a class="btn btn-secondary" href="{% url 'accounts:home' pk=user.pk %}">Home Page</a>
     </div>
 {% endif %}
+
 <!-- Up button stuff -->
-<button class="btn btn-secondary" onclick="topFunction()" id="myBtn" title="Go to top"><i class="bi bi-arrow-bar-up"></i></button>
+<button class="btn btn-secondary" onclick="topFunction()" id="myBtn" title="Go to top">
+    <i class="bi bi-arrow-bar-up" style="font-size: 20pt;"></i>
+</button>
 <script src="{% static 'accounts/js/history.js' %}"></script>
-<!-- Up button stuff -->
 
 {% endblock %}

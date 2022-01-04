@@ -1,11 +1,8 @@
 import json
 import os
 import phonenumbers
-from pycountry import languages
 from ipware import get_client_ip
-import pycountry
 import requests
-from countryinfo import CountryInfo
 
 from accounts.models import account
 from crum import get_current_user
@@ -16,7 +13,6 @@ from django.core.mail import send_mail
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext as _
-from django.utils import translation
 from django.conf import settings
 
 from .forms import (BusinessForm, EmailCodeForm, PhoneCodeForm,
@@ -55,35 +51,65 @@ def country_from_ip(request):
 
 # setting cookies 
 # def cookie_monster(request):
-    cookies = request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
-    if cookies is None: # no cookies
-        print('NEW cookies', cookies)
-        if request.user.is_authenticated == True:
-            lang = CustomUser.object.get(pk=request.user.pk).language
-            translation.activate(lang)
-        else:
-            ip, is_routable = get_client_ip(request)
-            if ip is None:
-                code = None
-            else:
-                if is_routable:
-                    url = f"https://geolocation-db.com/json/{ip}&position=true"
-                    response = requests.get(url).json()
-                    code = response['country_code']
-                else:
-                    code = None
-            EN = ['Canada', 'canada', 'CA', 'ca', 'USA', 'US', 'United States', 'United States of America', 'Australias', 'UK', 'England', 'United Kingdom', 'Jamaica']
-            if code in EN:
-                code = 'en'
-            translation.activate(code)
-    else: # cookies exist already
-        print("OLD cookies", cookies)
-        translation.activate(cookies)
+    # cookies = request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
+    # if cookies is None: # no cookies
+    #     print('NEW cookies', cookies)
+    #     if request.user.is_authenticated == True:
+    #         lang = CustomUser.object.get(pk=request.user.pk).language
+    #         translation.activate(lang)
+    #     else:
+    #         ip, is_routable = get_client_ip(request)
+    #         if ip is None:
+    #             code = None
+    #         else:
+    #             if is_routable:
+    #                 url = f"https://geolocation-db.com/json/{ip}&position=true"
+    #                 response = requests.get(url).json()
+    #                 code = response['country_code']
+    #             else:
+    #                 code = None
+    #         EN = ['Canada', 'canada', 'CA', 'ca', 'USA', 'US', 'United States', 'United States of America', 'Australias', 'UK', 'England', 'United Kingdom', 'Jamaica']
+    #         if code in EN:
+    #             code = 'en'
+    #         translation.activate(code)
+    # else: # cookies exist already
+    #     print("OLD cookies", cookies)
+    #     translation.activate(cookies)
+
+
+# getting country languages
+def get_country_lang(country_code):
+    country_code = country_code.upper()
+    project = os.path.abspath(os.path.dirname(__name__)) # root of django project
+    file = f'{project}/country_languages.json' # getting the file containing all country codes
+    with open(file, 'r') as config_file: # opening and reading the json file
+        data = json.load(config_file)
+    langs = data[country_code] # searching for our specific country code
+    lang = next(iter(langs))
+    return lang
+
+
+# getting country currency
+def get_country_currency(country_code):
+    country_code = country_code.upper()
+    project = os.path.abspath(os.path.dirname(__name__)) # root of django project
+    file = f'{project}/country_currencies.json' # getting the file containing all country codes
+    with open(file, 'r') as config_file: # opening and reading the json file
+        data = json.load(config_file)
+
+    return data[country_code]
 
 
 def register(request):
     if request.user.is_anonymous == True:
-        return render(request, "users/register.html")
+        country = country_from_ip(request)[1]
+        if country is None:
+            lang = 'en'
+        else:
+            lang = get_country_lang(country)
+        response = render(request, "users/register.html")
+        response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang)
+        return response
     else:
         return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk}))
 
@@ -100,13 +126,35 @@ def business(request):
                 if user_ is not None:
                     request.session["pk"] = user.pk
                     messages.success(request, _(f"HIIIII"))
-                    return redirect("/")
+
+                    country = country_from_ip(request)[1]
+                    if country is None:
+                        country = 'en'
+                    else:
+                        lang = get_country_lang(country)
+                    response = redirect("/")
+                    response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang)
+                    return response
                 else:
                     # Return an 'invalid login' error message.
-                    return redirect("/")
+                    country = country_from_ip(request)[1]
+                    if country is None:
+                        country = 'en'
+                    else:
+                        lang = get_country_lang(country)
+                    response = redirect("/")
+                    response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang)
+                    return response
         else:
             form = BusinessForm()
-        return render(request, "users/business.html", {"form": form})
+        country = country_from_ip(request)[1]
+        if country is None:
+            lang = 'en'
+        else:
+            lang = get_country_lang(country)
+        response = render(request, "users/business.html", {"form": form})
+        response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang)
+        return response
     else:
         return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk}))
 
@@ -115,31 +163,31 @@ def PersonalCountryPickSignUp(request):
     if request.user.is_anonymous == True:
         default_country = country_from_ip(request)
         if request.method == "POST":
-            country = request.POST.get('country-picker')
-            if country:
-                return redirect(reverse("personal-sign-up", kwargs={"country" : country}))
-            context = {"default_country" : default_country[0], "default_country_code" : default_country[1]}
-            return render(request, "users/country_pick.html", context)
+            country_code = request.POST.get('country-picker')
+            if country_code:
+                response = redirect(reverse("personal-sign-up", kwargs={"country" : country_code}))
+                response.set_cookie(settings.LANGUAGE_COOKIE_NAME, country_code)
+                return response
+            else:
+                context = {"default_country" : default_country[0], "default_country_code" : default_country[1]}
+                response = render(request, "users/country_pick.html", context)
+                response.set_cookie(settings.LANGUAGE_COOKIE_NAME, country_code)
+                return response
         else:
             context = {"default_country" : default_country[0], "default_country_code" : default_country[1]}
-            return render(request, "users/country_pick.html", context)
+            country = country_from_ip(request)[1]
+            if country is None:
+                lang = 'en'
+            else:
+                lang = get_country_lang(country)
+            response = render(request, "users/country_pick.html", context)
+            response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang)
+            return response
     else:
         return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk}))
 
 
-def get_country_lang(country_code):
-    country_code = country_code.upper()
-    project = os.path.abspath(os.path.dirname(__name__)) # root of django project
-    file = f'{project}/country_languages.json' # getting the file containing all country codes
-    with open(file, 'r') as config_file: # opening and reading the json file
-        data = json.load(config_file)
-    langs = data[country_code] # searching for our specific country code
-    lang = next(iter(langs))
-    return lang
-
 def PersonalSignUp(request, country):
-    currency = CountryInfo(country).info()['currencies'][:1]
-    print(''.join(currency))
     if request.user.is_anonymous == True:
         ext = phonenumbers.country_code_for_region(country)
         if request.method == "POST":
@@ -149,24 +197,13 @@ def PersonalSignUp(request, country):
                 username = form.cleaned_data.get("username")
                 password = form.cleaned_data.get("password1")
                 user_ = authenticate(request, username=username, password=password)
-                
-                EU = ['AT', 'BE', 'HR', 'BG', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE',
-                    'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE', 'GB']
-                if country == "CA":
-                    currency = "CAD"
-                elif country == "US":
-                    currency = "USD"
-                elif country in EU: # if country is in EU
-                    currency = "EUR"
-                else:
-                    currency = country
+
+                # getting countries currency
+                currency = get_country_currency(country)
 
                 # getting countries language
-                try:
-                    lang = CountryInfo(country).info()['languages'][:1]
-                    lang = ''.join(lang)
-                except KeyError:
-                    lang = get_country_lang(country)
+                lang = get_country_lang(country)
+                
                 # updating the user object to include the currency, language, and country
                 CustomUser.objects.filter(username=username).update(country=country, currency=currency, phone_ext=ext, language=lang)
                 if user_ is not None:
@@ -370,8 +407,6 @@ def LoginClassView(request):
                 login(request, user)
                 # Redirect to a success page.
                 user_language = CustomUser.objects.get(pk=request.user.pk).language
-                if user_language is None:
-                    user_language = 'en'
                 response = redirect(reverse("accounts:home", kwargs={"pk" : request.user.pk}))
                 response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user_language)
                 return response
@@ -385,8 +420,6 @@ def LoginClassView(request):
                 login(request, user)
                 # Redirect to a success page.
                 user_language = CustomUser.objects.get(pk=request.user.pk).language
-                if user_language is None:
-                    user_language = 'en' # change this to use location based cookies
                 response = redirect(next)
                 response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user_language)
                 return response

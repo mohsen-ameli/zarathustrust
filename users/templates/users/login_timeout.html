@@ -3,8 +3,8 @@
 {% load crispy_forms_tags %}
 {% block content %}
 <div class="alert alert-danger msg-alert text-center" role="alert">
-    {% blocktrans %}
-        Login is locked for {{cooloff_timedelta}}. Please try again later ...
+    {% blocktrans with time=cooloff_timedelta %}
+        Login is locked for {{ time }}. Please try again later ...
     {% endblocktrans %}
 </div>
 {% endblock content %}

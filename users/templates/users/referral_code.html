@@ -1,6 +1,7 @@
 {% extends "accounts/base.html" %}
 {% load i18n %}
 {% load crispy_forms_tags %}
+{% crispy referral_code %}
 {% block content %}
 <div class="card text-white zarathus-card mx-auto">
     <div class="card-body">
@@ -8,17 +9,8 @@
             {% csrf_token %}
             <h3 class="fw-normal text-center">{% trans "Verify Your Referral Code" %}</h3>
             <hr>
-            <div id="div_id_referral_code" class="form-group form-floating mb-3" style="color: black;">
-                <input type="text" name="referral_code" class="form-control" autofocus=""
-                id="id_referral_code" placeholder="refferal-code">
-                <label for="id_referral_code">
-                    Referral Code(Optional)
-                </label>
-                <div class="form-text text-white">
-                    Please enter your referral code to get grand prizes , or leave blank for no prize !
-                </div>
-            </div>
-            <button class="neon-button-green my-3" type="submit">{% trans "Verify" %}</button>
+            {% crispy form %}
+            <button class="neon-button-green my-2" type="submit">{% trans "Verify" %}</button>
         </div>
     </div>
 </div>

@@ -1,6 +1,7 @@
 {% extends "accounts/base.html" %}
 {% load i18n %}
 {% load crispy_forms_tags %}
+{% crispy EmailCodeForm %}
 {% block content %}
 <div class="card text-white zarathus-card mx-auto">
     <div class="card-body">
@@ -8,17 +9,8 @@
             {% csrf_token %}
             <h3 class="fw-normal text-center">{% trans "Verify Your Email" %}</h3>
             <hr>
-            <div id="div_id_email_verify_code" class="form-group form-floating mb-3" style="color: black;">
-                <input type="text" name="email_verify_code" class="form-control" autofocus=""
-                required="" id="id_email_verify_code" placeholder="email-verify">
-                <label for="id_email_verify_code">
-                    Code<span class="asteriskField">*</span>
-                </label>
-                <div class="form-text text-white">
-                    Please enter the email verification code
-                </div>
-            </div>
-            <button class="neon-button-green my-3" type="submit">{% trans "Verify" %}</button>
+            {% crispy form %}
+            <button class="neon-button-green my-2" type="submit">{% trans "Verify" %}</button>
         </form>
     </div>
 </div>

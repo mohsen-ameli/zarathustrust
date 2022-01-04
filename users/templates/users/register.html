@@ -6,11 +6,14 @@
     <div class="p-3 mx-auto">
         <div class="card text-white text-center zarathus-card" style="height: 20rem;">
             <div class="card-body" style="display: flex; flex-direction: column;">
-                <h3 class="fw-normal">Business Sign Up <hr></h3>
+                <h3 class="fw-normal">
+                    {% trans "Business Sign Up" %}
+                    <hr>
+                </h3>
                 <h5 class="fw-normal">{% trans "This is a business account. Sign up now to be able to use our website as a payment for you own shop. Remember, you still get interest on all your capital as well." %}</h5>
                 <div class="mt-auto">
                     <hr>
-                    <a class="neon-button-green" href="{% url 'business' %}">{% trans "Sign Up" %}</a>
+                    <a class="neon-button-green my-2" href="{% url 'business' %}">{% trans "Sign Up" %}</a>
                 </div>
             </div>
         </div>
@@ -19,11 +22,14 @@
     <div class="p-3 mx-auto">
         <div class="card text-white text-center zarathus-card" style="height: 20rem;">
             <div class="card-body" style="display: flex; flex-direction: column;">
-                <h3 class="fw-normal">Personal Sign Up <hr></h3>
+                <h3 class="fw-normal">
+                    {% trans "Personal Sign Up" %}
+                    <hr>
+                </h3>
                 <h5 class="fw-normal">{% trans "This is a normal personal account. Sign up now to start making interest on your ballance." %}</h5>
                 <div class="mt-auto">
                     <hr>
-                    <a class="neon-button-green" href="{% url 'personal-country-pick' %}">{% trans "Sign Up" %}</a>
+                    <a class="neon-button-green my-2" href="{% url 'personal-country-pick' %}">{% trans "Sign Up" %}</a>
                 </div>
             </div>
         </div>

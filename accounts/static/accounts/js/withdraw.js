@@ -1,7 +1,7 @@
 document.querySelector("#Action").addEventListener("click", function() {
     document.querySelector('#form-swal').addEventListener('submit', function(e) {
         var spin = document.querySelector("#spinnner")
-        var price = document.querySelector("#form-swal").elements[1].value
+        var price = document.querySelector("#form-swal").elements[2].value
         var form = this;
         e.preventDefault();
     

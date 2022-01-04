@@ -10,26 +10,44 @@
         <h3 class="fw-normal text-center">{% trans "Payment Page" %}</h3>
         <hr>
         <p>
-            {% blocktrans with balance=balance %}
-                Current Balance : ${{ balance }}
-            {% endblocktrans %}
+            {% if currency == 'EUR' %}
+                {% blocktrans with balance=balance %}
+                    Current Balance : €{{ balance }}
+                {% endblocktrans %}
+            {% else %}
+                {% blocktrans with balance=balance %}
+                    Current Balance : ${{ balance }}
+                {% endblocktrans %}
+            {% endif %}
         </p>
         <p style="color: rgb(255, 120, 120);">
-            {% blocktrans with price=price %}
-                Total : $<element id="price">{{ price }}</element>
-            {% endblocktrans %}
+            {% if currency == 'EUR' %}
+                {% blocktrans with price=price %}
+                    Total : €<element id="price">{{ price }}</element>
+                {% endblocktrans %}
+            {% else %}
+                {% blocktrans with price=price %}
+                    Total : $<element id="price">{{ price }}</element>
+                {% endblocktrans %}
+            {% endif %}
         </p>
         <hr style="width: 10rem; position: absolute; margin-top: .5rem;"> <br>
         <p>
-            {% blocktrans with remaining=remaining %}
-                Remaining : ${{ remaining }}
-            {% endblocktrans %}
+            {% if currency == 'EUR' %}
+                {% blocktrans with remaining=remaining %}
+                    Remaining : €{{ remaining }}
+                {% endblocktrans %}
+            {% else %}
+                {% blocktrans with remaining=remaining %}
+                    Remaining : ${{ remaining }}
+                {% endblocktrans %}
+            {% endif %}
         </p>
         <hr>
         {% if user.account %}
         <form method="POST" id="form-swal">
             {% csrf_token %}
-            <button class="neon-button-green" type="submit" id="Action">{% trans "Place Order" %}</button>
+            <button class="neon-button my-2" type="submit" id="Action">{% trans "Place Order" %}</button>
         </form>
         {% endif %}
     </div>
@@ -37,7 +55,7 @@
 
 <script type="text/javascript"> 
     var price = "{{ price }}";
- </script>
+</script>
 
 <script src="{% static 'accounts/js/checkout.js' %}"></script>
 {% endblock content %}

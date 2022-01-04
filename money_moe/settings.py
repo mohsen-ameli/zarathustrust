@@ -44,12 +44,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 INSTALLED_APPS = [
     "users.apps.UsersConfig",
     "accounts.apps.AccountsConfig",
+    "haystack",
     "crispy_forms",
     "rosetta",
     "axes",
     "mathfilters",
     "django_countries",
+    "bootstrap5",
+    "crispy_bootstrap5",
     # "django_elasticsearch_dsl",
+    "django.contrib.postgres",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -153,7 +157,8 @@ STATIC_URL = "/static/"
 # STATICFILES_DIRS = [os.path.join(BASE_DIR, 'staticfiles')]
 
 # Crispy Forms
-CRISPY_TEMPLATE_PACK = "bootstrap4"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
 # CELERY
 CELERY_BROKER_URL = config.get("BROKER_URL")
@@ -179,11 +184,13 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 LOGIN_URL = "/login/"
 # LOGIN_REDIRECT_URL = "/"
 
-# ELASTICSEARCH_DSL={
-#     'default': {
-#         'hosts': 'localhost:8000'
-#     },
-# }
+# HEYSTACK 
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+        'PATH': os.path.join(os.path.dirname(__file__), 'whoosh_index'),
+    },
+}
 
 # AXES LOGIN
 AXES_FAILURE_LIMIT = 3

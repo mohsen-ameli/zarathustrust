@@ -1,5 +1,6 @@
 {% extends "accounts/base.html" %}
 {% load crispy_forms_tags %}
+{% crispy AddMoneyForm %}
 {% load i18n %}
 {% block content %}
 <div class="card zarathus-card mx-auto">
@@ -8,14 +9,8 @@
             {% csrf_token %}
             <h3 class="fw-normal text-center">{% trans "Deposit Money From Your Account" %}</h3>
             <hr>
-            <div id="div_id_add_money" class="form-group form-floating mb-3" style="color: black;"> 
-                <input type="text" name="add_money" placeholder="$0.0" class="textinput textInput form-control" 
-                required="" id="id_add_money">
-                <label for="id_add_money" class=" requiredField">
-                    Enter Amount
-                </label> 
-            </div>
-            <button class="neon-button my-3" type="submit">{% trans "Deposit" %}</button>
+            {% crispy form %}
+            <button class="neon-button my-2" type="submit">{% trans "Deposit" %}</button>
         </form>
     </div>
 </div>
