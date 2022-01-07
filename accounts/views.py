@@ -110,7 +110,8 @@ def LandingPageView(request):
         lang = 'en'
     else:
         country_code = country.upper()
-        project = os.path.abspath(os.path.dirname(__name__)) # root of django project
+        # project = os.path.abspath(os.path.dirname(__name__)) # root of django project
+        project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         file = f'{project}/country_languages.json' # getting the file containing all country codes
         with open(file, 'r') as config_file: # opening and reading the json file
             data = json.load(config_file)

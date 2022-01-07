@@ -1,4 +1,4 @@
-#!/mnt/d/Dev/money-moe-linux-master/venv/bin/python3
+#!/home/pi/money_moe/venv/bin/python3
 # When the django-admin.py deprecation ends, remove this script.
 import warnings
 
