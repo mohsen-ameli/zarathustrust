@@ -38,30 +38,31 @@
 <body>
     <!-- NAVBAR -->
     {% block nav %}{% include 'accounts/nav.html' %}{% endblock %}
-
-    <!-- MESSAGE ALERTS -->
-    {% if messages %}
-        <div class="container mt-3">
-            {% for msg in messages|slice:":1" %}
-                {% if msg.tags == 'warning' %}
-                    <div class="alert alert-danger text-center msg-alert">
-                        {% blocktrans %}
-                        {{ msg }}
-                        {% endblocktrans %}
-                    </div>
-                {% else %}
-                    <div class="alert alert-{{ msg.tags }} text-center msg-alert">
-                        {% blocktrans %}
-                        {{ msg }}
-                        {% endblocktrans %}
-                    </div>
-                {% endif %}
-            {% endfor %}
-        </div>
-    {% endif %}
     
     <!-- MAIN CONTENT -->
     <div class="container" style="margin-top: 5rem;">
+        <!-- MESSAGE ALERTS -->
+        {% if messages %}
+            <div class="container my-3">
+                {% for msg in messages|slice:":1" %}
+                    {% if msg.tags == 'warning' %}
+                        <div class="alert alert-danger text-center msg-alert">
+                            {% blocktrans %}
+                            {{ msg }}
+                            {% endblocktrans %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-{{ msg.tags }} text-center msg-alert">
+                            {% blocktrans %}
+                            {{ msg }}
+                            {% endblocktrans %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+
         {% block content %}{% endblock %}
     </div>
     <br>
