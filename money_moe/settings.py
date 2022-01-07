@@ -44,13 +44,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 INSTALLED_APPS = [
     "users.apps.UsersConfig",
     "accounts.apps.AccountsConfig",
-    "haystack",
     "crispy_forms",
     "rosetta",
     "axes",
     "mathfilters",
     "django_countries",
-    "bootstrap5",
     "crispy_bootstrap5",
     # "django_elasticsearch_dsl",
     "django.contrib.postgres",
