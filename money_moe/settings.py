@@ -44,13 +44,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 INSTALLED_APPS = [
     "users.apps.UsersConfig",
     "accounts.apps.AccountsConfig",
-    "haystack",
     "crispy_forms",
     "rosetta",
     "axes",
     "mathfilters",
     "django_countries",
-    "bootstrap5",
     "crispy_bootstrap5",
     # "django_elasticsearch_dsl",
     "django.contrib.postgres",
@@ -183,14 +181,6 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # LOGIN
 LOGIN_URL = "/login/"
 # LOGIN_REDIRECT_URL = "/"
-
-# HEYSTACK 
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
-        'PATH': os.path.join(os.path.dirname(__file__), 'whoosh_index'),
-    },
-}
 
 # AXES LOGIN
 AXES_FAILURE_LIMIT = 3
