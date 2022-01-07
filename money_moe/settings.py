@@ -182,14 +182,6 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 LOGIN_URL = "/login/"
 # LOGIN_REDIRECT_URL = "/"
 
-# HEYSTACK 
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
-        'PATH': os.path.join(os.path.dirname(__file__), 'whoosh_index'),
-    },
-}
-
 # AXES LOGIN
 AXES_FAILURE_LIMIT = 3
 AXES_COOLOFF_TIME = timedelta(minutes=3)
