@@ -3,7 +3,7 @@ import json
 from crum import get_current_user
 from django.core.mail import send_mail
 from django.db import models
-from django.db.models.deletion import PROTECT
+from django.db.models.deletion import DO_NOTHING, PROTECT, RESTRICT
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.urls import reverse
@@ -63,8 +63,8 @@ class account_interest(models.Model):
 
 class transaction_history(models.Model):
     # prolly dont actually have to have this set as a foreign key
-    person              = models.ForeignKey(account, on_delete=PROTECT)
-    second_person       = models.ForeignKey(account, on_delete=PROTECT, null=True, blank=True, related_name="second_person")
+    person              = models.ForeignKey(account, on_delete=DO_NOTHING)
+    second_person       = models.ForeignKey(account, on_delete=DO_NOTHING, null=True, blank=True, related_name="second_person")
     date                = models.DateTimeField(auto_now_add=True)
     price               = models.DecimalField(decimal_places=1, max_digits=10)
     purpose_of_use      = models.CharField(max_length=500, null=True, blank=True, default="None")
@@ -82,6 +82,8 @@ class transaction_history(models.Model):
             return f'WITHDRAW from {self.person.created_by.username} for the amount ${self.price} at {self.date}'
         elif self.method == "Cash Out":
             return f'CASH OUT as {self.person.created_by.username} for the amount ${self.price} at {self.date}'
+
+
 
 # signal to create an account_interest, right after an account is created
 @receiver(post_save, sender=account)

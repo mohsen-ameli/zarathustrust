@@ -1,10 +1,12 @@
+import os
 import decimal
 import json
 from django.http.response import JsonResponse
 from ipware import get_client_ip
-import os
+from forex_python.converter import CurrencyCodes
 
 import requests
+from django.core.serializers.json import DjangoJSONEncoder
 from bs4 import BeautifulSoup
 from crum import get_current_user
 from django.contrib import messages
@@ -24,6 +26,7 @@ from django.conf import settings
 
 from .forms import AddMoneyForm, TakeMoneyForm, TransferSendForm
 from .models import account, account_interest, transaction_history
+from users.models import ReferralCode
 from .tasks import interest_loop
 
 with open('/etc/config.json') as config_file:
@@ -46,11 +49,23 @@ def cookie_monster(request):
         print('old cookies', cookies)
         translation.activate(cookies)
 
+from babel.numbers import get_currency_symbol, get_territory_currencies
+
+def currency_symbol(country_code):
+    try:
+        currency_code = get_territory_currencies(country_code)[0]
+        symbol = get_currency_symbol(currency_code, locale='en_US')
+    except IndexError:
+        symbol = ''
+    return symbol
+    
 
 ############# Function Based Views ############
 @login_required
 def HomeView(request, pk):
     if correct_user(pk):
+        currency = get_territory_currencies('IR')
+        print(currency)
         acc = account.objects.get(pk=request.user.pk)
         user_ = CustomUser.objects.get(pk=request.user.pk)
         url = f'https://api.exchangerate.host/convert?from=USD&to=EUR' # 1 USD to EUR
@@ -62,6 +77,7 @@ def HomeView(request, pk):
             'interest_list' : account_interest.objects.get(pk=request.user.pk),
             'is_bus'        : user_.is_business,
             'currency'      : user_.currency,
+            'currency_symbol' : currency,
             'euro_rate'     : euro_rate,
             'object'        : acc
         }
@@ -198,6 +214,7 @@ def TransferSendView(request, pk, reciever_name):
 def TransferSearchView(request, pk):
     if correct_user(pk):
         return render(request, "accounts/transfer_search.html")
+
         # if request.method == "POST": # target has been aquired
         #     person = request.POST.get('search_result')
         #     if person == request.user.username:
@@ -209,6 +226,7 @@ def TransferSearchView(request, pk):
         # all_acc = CustomUser.objects.values('username')
         # qs_json = json.dumps(list(all_acc), cls=DjangoJSONEncoder)
         # context = {"qs_json" : qs_json}
+        # return render(request, "accounts/transfer_search.html", context)
 
 
         # if request.method == "POST":
@@ -238,6 +256,7 @@ def TransferSearchView(request, pk):
         # return render(request, "accounts/transfer_search.html", context)
     else:
         raise PermissionDenied()
+
 
 # Transfer Searching
 def search_results(request):
@@ -304,7 +323,8 @@ def cash_out(request, pk):
 @login_required
 def ReferralCodeView(request, pk):
     if correct_user(pk):
-        return render(request, 'accounts/referral_code.html')
+        a = ReferralCode.objects.get(user=request.user).referral_code
+        return render(request, 'accounts/referral_code.html', {"referral_code" : a})
     else:
         raise PermissionDenied()
 
@@ -503,36 +523,27 @@ def History(request, pk):
         a = person_history | seconed_person_history
         counter = Paginator(a, 1).count
 
-        # getting the euro rate
-        # url = f'https://api.exchangerate.host/convert?from=USD&to=EUR' # 1 USD to EUR
-        # response = requests.get(url) # getting a response
-        # data = response.json() # getting the data
-        # euro_rate = round(decimal.Decimal(data['result']), 2)
-
-        pagination_number = request.POST.get('paginate')
-        if pagination_number == "all":
-            pagination_number = counter
-            
-            
-        cookies_pag = request.COOKIES.get('pag')
-        print(cookies_pag)
-        # paginating pages with pagination_number
-        if pagination_number is not None:
+        if request.GET.get("num"):
+            pagination_number = request.GET.get('num') or 10
+            if request.GET.get('num') == "all":
+                pagination_number = counter
             paginator = Paginator(a, pagination_number)
+            page_number = request.GET.get('page')
+            page_obj = paginator.get_page(page_number)
+
+            currency = CustomUser.objects.get(pk=pk).currency
+
+            context = {"page_obj" : page_obj, "currency" : currency, "pagination_number" : pagination_number, "counter" : counter}
+            return render(request, "accounts/history.html", context)
         else:
-            if cookies_pag and cookies_pag != "None":
-                paginator = Paginator(a, cookies_pag)
-            else:
-                paginator = Paginator(a, 10)
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
+            paginator = Paginator(a, 10)
+            page_number = request.GET.get('page')
+            page_obj = paginator.get_page(page_number)
 
-        currency = CustomUser.objects.get(pk=pk).currency
-        context = {"page_obj" : page_obj, "currency" : currency}
+            currency = CustomUser.objects.get(pk=pk).currency
 
-        response = render(request, "accounts/history.html", context)
-        response.set_cookie('pag', pagination_number)
-        return response
+            context = {"page_obj" : page_obj, "currency" : currency, "pagination_number" : 10, "counter" : counter}
+            return render(request, "accounts/history.html", context)
     else:
         raise PermissionDenied()
 
@@ -582,3 +593,9 @@ def history_detail(request, pk, tran_id):
 #         context['euro_bonus']   = round(decimal.Decimal(euro_rate) * acc.bonus, 2)
 
 #         return context
+
+# getting the euro rate
+# url = f'https://api.exchangerate.host/convert?from=USD&to=EUR' # 1 USD to EUR
+# response = requests.get(url) # getting a response
+# data = response.json() # getting the data
+# euro_rate = round(decimal.Decimal(data['result']), 2)

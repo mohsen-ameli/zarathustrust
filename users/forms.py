@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 from crispy_bootstrap5.bootstrap5 import FloatingField
 from crispy_forms.helper import FormHelper
@@ -76,6 +77,11 @@ class RegisterForm(UserCreationForm):
             "password1",
             "password2",
         ]
+
+    # def __init__(self, *args, **kwargs):
+    #     super(RegisterForm, self).__init__(*args, **kwargs)
+    #     self.fields['username'].widget.attrs['min'] = 5
+
 
 
 class BusinessForm(UserCreationForm):

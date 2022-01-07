@@ -44,6 +44,7 @@
             {% endif %}
             <small>{{ context.date }}</small>
         </p>
+        <a href="{% url 'accounts:history' pk=request.user.pk %}" class="neon-button my-2">Back</a>
     </div>
 </div>
 {% endblock %}

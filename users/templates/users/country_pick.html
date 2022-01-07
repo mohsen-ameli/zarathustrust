@@ -1,91 +1,55 @@
 {% extends "accounts/base.html" %}
 {% load i18n %}
-{% load countries %}
 {% load static %}
 {% load crispy_forms_tags %}
 {% block content %}
-{% get_countries as countries %}
-<link rel="stylesheet" href="{% static 'flags/sprite.css' %}">
 
 <div class="card text-white zarathus-card mx-auto">
     <div class="card-body">
         <h3 class="fw-normal text-center">{% trans "Please Choose a Country." %}</h3>
         <hr>
 
-        <form method="POST">
+        <form method="POST" autocomplete="off">
             {% csrf_token %}
-            <div class="btn-group w-100">
-                {% if default_country_code != None %}
-                    <button type="submit" class="btn btn-secondary btn-lg" value="{{ default_country_code }}" name="country-picker">
-                            <span class="flag-icon flag-icon-{{ default_country_code|lower }} me-2"></span>{{ default_country }}
-                    </button>
+            <div class="dropdown form-floating">
+                <!-- INPUT -->
+                {% if default_country != None %}
+                    <input type="text" class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
+                        placeholder="Country" onClick="this.setSelectionRange(0, this.value.length)" name="default-country-picker"
+                        id="country-input" value="{{ default_country }}" >
+                    <label for="country-input">Please choose a country</label>
                 {% else %}
-                    <button type="button" class="btn btn-secondary btn-lg" value="{{ default_country_code }}" name="country-picker">
-                        <i class="bi bi-flag m-1"></i> <span style="color: white;">
-                            {% trans "Select a Country" %}
-                        </span> 
-                    </button>
+                    <input type="text" class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
+                        placeholder="Country" onClick="this.setSelectionRange(0, this.value.length)" name="default-country-picker"
+                        id="country-input">
+                    <label for="country-input">Please choose a country</label>
                 {% endif %}
-                <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" style="max-width: 15%;" data-bs-toggle="dropdown" aria-expanded="false">
-                <span class="visually-hidden">Toggle Dropdown</span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    {% for country in countries %}
-                    <li>
-                        <button type="submit" class="dropdown-item" value="{{ country.code }}" name="country-picker">
-                            <span class="flag-icon flag-icon-{{ country.code|lower }} me-2"></span>{{ country.name }}
-                        </button>
+                <!-- LIST -->
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" id="new-country-list">
+                    <li id="country-list">
+                        {% for code, country in countries %}
+                            <a class="dropdown-item" href="/register/personal/{{ code }}" style="text-transform: capitalize;">
+                                <span class="flag-icon flag-icon-{{ code|lower }} me-2"></span>{{ country }}
+                            </a>
+                        {% endfor %}
                     </li>
-                    {% endfor %}
                 </ul>
             </div>
         </form>
 
-        <!-- <div class="btn-group">
-            <div class="form-floating mb-3" style="color: black;">
-                <input type="text" class="form-control" id="floatingInput" placeholder="name@example.com">
-                <label for="floatingInput">Select a Country</label>
-            </div>
-            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                <span class="visually-hidden">Toggle Dropdown</span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end">
-                {% for country in countries %}
-                <li>
-                    <button type="submit" class="dropdown-item" value="{{ country.code }}" name="country-picker">
-                        <span class="flag-icon flag-icon-{{ country.code|lower }} me-2"></span>{{ country.name }}
-                    </button>
-                </li>
-                {% endfor %}
-            </ul>
-        </div> -->
-        <!-- <form method="POST">
-            {% csrf_token %}
-            <div class="dropdown">
-                <button class="btn btn-secondary btn-lg dropdown-toggle w-100" type="submit" id="dropdownMenuButton" 
-                    data-bs-toggle="dropdown" aria-bs-haspopup="true" aria-bs-expanded="false">
-                    {% if default_country_code != None %}
-                        <span class="flag-icon flag-icon-{{ default_country_code|lower }} me-2"></span>{{ default_country }}
-                    {% else %}
-                        <i class="bi bi-flag m-1"></i> <span style="color: white;">Select a Country</span> 
-                    {% endif %}
-                </button>
-                
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    {% for country in countries %}
-                        <button type="submit" class="dropdown-item" value="{{ country.code }}" name="country-picker">
-                            <span class="flag-icon flag-icon-{{ country.code|lower }} me-2"></span>{{ country.name }}
-                        </button>
-                    {% endfor %}
-                </div>
-            </div>
-        </form>  -->
         <div class="d-flex text-white" style="font-size: 9.5pt;">
-            <div class="mt-3">{% trans "Already Have An Account ?" %}</div>
+            <div class="mt-3">{% trans "Already have an account ?" %}</div>
             <a class="mt-3 ms-2" href="{% url 'login-view' %}" style="color: #f8b119;">{% trans "Log In" %}</a>
         </div>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+<script>
+    const default_country = '{{ default_country }}'
+</script>
+<script src="{% static 'accounts/js/country_picker.js' %}"></script>
+
 {% endblock content %}
 <!-- <img class="m-1" src="/static/flags/{{ default_country_code|lower }}.gif" alt="" style="width: 25px; height: 15px;"><span style="color: white;">{{ default_country }}</span>  -->
 <!-- <img class="m-1" src="/static/flags/{{ country.code|lower }}.gif" alt="" style="width: 25px; height: 15px;">{{ country.name }} -->

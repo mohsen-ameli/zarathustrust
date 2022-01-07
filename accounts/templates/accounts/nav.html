@@ -1,0 +1,173 @@
+{% load i18n %}
+{% load static %}
+{% block nav %}
+
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-sm">
+        {% if user.account %}
+            <a class="navbar-brand" href="{% url 'accounts:home' pk=user.account.pk %}">
+                <img src="{% static 'accounts/images/zarathustrust.png' %}" width="60" height="26" class="d-inline-block align-text-top">
+                <span style="font-size: x-large;">Z</span>arathus<span style="font-size: x-large;">T</span>rust
+            </a>
+        {% else %}
+            <a class="navbar-brand" href="{% url 'accounts:home-new' %}">
+                <img src="{% static 'accounts/images/zarathustrust.png' %}" width="60" height="26" class="d-inline-block align-text-top">
+                Zarathus Trust
+            </a>
+        {% endif %}
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <!-- left hand side -->
+            <ul class="navbar-nav mr-auto">
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'accounts:home' user.account.pk %}">
+                            <i class="fas fa-home"></i> {% trans "Home" %}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'accounts:referral-code' user.account.pk %}">
+                            <i class="fas fa-user-check"></i> {% trans "Invite A Friend" %}
+                        </a>
+                    </li>
+                {% endif %}
+
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'accounts:about-page' %}">
+                        <i class="bi-info-circle"></i> {% trans "about" %}
+                    </a>
+                </li>
+            </ul>
+
+            <!-- right hand side -->
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        {% get_current_language as LANGUAGE_CODE %}
+                        {% get_available_languages as LANGUAGES %}
+                        {% get_language_info_list for LANGUAGES as languages %}
+                        <i class="fas fa-globe"></i> {% trans "Language" %} <span
+                            class="flag-icon flag-icon-{{ LANGUAGE_CODE }}"></span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <form class="form-inline" action="{% url 'set_language' %}" method="post"> {% csrf_token %}
+                            <input name="next" type="hidden" value="{{ redirect_to }}" />
+                            {% for language in languages %}
+                                <li>
+                                    <button class="dropdown-item {% if language.code == LANGUAGE_CODE %}selected{% endif %}" 
+                                        type="submit" name="language" value="{{ language.code }}">
+                                        <span class="flag-icon flag-icon-{{ language.code }}"></span> {{ language.name_local }}
+                                    </button>
+                                </li>
+                            {% endfor %}
+                        </form>
+                    </ul> 
+                </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'logout' %}">{% trans "Log Out" %}</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'login-view' %}">{% trans "Log In" %}</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'register' %}">{% trans "Sign Up" %}</a>
+                    </li>
+                {% endif %}
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+<!-- <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-sm">
+        {% if user.account %}
+            <a class="navbar-brand" href="{% url 'accounts:home' pk=user.account.pk %}">
+                <img src="{% static 'accounts/images/zarathustrust.png' %}" width="60" height="26" class="d-inline-block align-text-top">
+                <span style="font-size: x-large;">Z</span>arathus<span style="font-size: x-large;">T</span>rust
+            </a>
+        {% else %}
+            <a class="navbar-brand" href="{% url 'accounts:home-new' %}">
+                <img src="{% static 'accounts/images/zarathustrust.png' %}" width="60" height="26" class="d-inline-block align-text-top">
+                Zarathus Trust
+            </a>
+        {% endif %}
+      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+            <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Offcanvas</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close" style="color: white !important;"></button>
+            </div>
+        <div class="offcanvas-body">
+            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'accounts:home' user.account.pk %}">
+                            <i class="fas fa-home"></i> {% trans "Home" %}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'accounts:referral-code' user.account.pk %}">
+                            <i class="fas fa-user-check"></i> {% trans "Invite A Friend" %}
+                        </a>
+                    </li>
+                {% endif %}
+
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'accounts:about-page' %}">
+                        <i class="bi-info-circle"></i> {% trans "about" %}
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        {% get_current_language as LANGUAGE_CODE %}
+                        {% get_available_languages as LANGUAGES %}
+                        {% get_language_info_list for LANGUAGES as languages %}
+                        <i class="fas fa-globe"></i> {% trans "Language" %} <span
+                            class="flag-icon flag-icon-{{ LANGUAGE_CODE }}"></span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <form class="form-inline" action="{% url 'set_language' %}" method="post"> {% csrf_token %}
+                            <input name="next" type="hidden" value="{{ redirect_to }}" />
+                            {% for language in languages %}
+                                <li>
+                                    <button class="dropdown-item {% if language.code == LANGUAGE_CODE %}selected{% endif %}" 
+                                        type="submit" name="language" value="{{ language.code }}">
+                                        <span class="flag-icon flag-icon-{{ language.code }}"></span> {{ language.name_local }}
+                                    </button>
+                                </li>
+                            {% endfor %}
+                        </form>
+                    </ul> 
+                </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'logout' %}">{% trans "Log Out" %}</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'login-view' %}">{% trans "Log In" %}</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'register' %}">{% trans "Sign Up" %}</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+      </div>
+    </div>
+</nav> -->
+
+{% endblock %}

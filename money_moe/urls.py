@@ -13,7 +13,8 @@ urlpatterns = [
     path("register/", users_views.register, name="register"),
     path("register/business/", users_views.business, name="business"),
     path("register/personal/", users_views.PersonalCountryPickSignUp, name="personal-country-pick"),
-    path("register/personal/<str:country>", users_views.PersonalSignUp, name="personal-sign-up"),
+    path("register/personal/<str:country>/", users_views.PersonalSignUp, name="personal-sign-up"),
+    path("regiter/country_picker/", users_views.CountryPicker, name="country-picker"),
 
     path("login/<str:url1>/<str:url2>/<str:url3>/<str:url4>/", users_views.auth_view, name="login-view-pay"),
     path("login/", users_views.LoginClassView, name="login-view"),

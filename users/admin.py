@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser, code
+from .models import CustomUser, ReferralCode
 from .forms import UserRegisterForm
 
 class CustomUserAdmin(UserAdmin):
@@ -26,4 +26,4 @@ class CustomUserAdmin(UserAdmin):
     )
 
 admin.site.register(CustomUser, CustomUserAdmin)
-admin.site.register(code)
+admin.site.register(ReferralCode)

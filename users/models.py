@@ -2,10 +2,11 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext as _
 from django.db.models.deletion import CASCADE
-from django.db.models.fields import BooleanField, CharField
+from django.db.models.fields import BooleanField, CharField, PositiveIntegerField
 import random
 import string
 from django_countries.fields import CountryField
+
 
 class CustomUser(AbstractUser):
     country             = CountryField(null=True)
@@ -22,12 +23,12 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return f'{self.username}, pk: {self.pk}'
 
+
 class code(models.Model):
-    user                = models.OneToOneField(CustomUser, on_delete=CASCADE)
-    email_verify_code   = models.PositiveIntegerField(blank=True)
-    phone_verify_code   = models.PositiveIntegerField(blank=True)
-    iban_verify_code    = models.CharField(max_length=5, blank=True, null=True)
-    referral_code       = models.CharField(max_length=12, null=True, blank=True)
+    user                = CharField(max_length=15, null=True)
+    email_verify_code   = PositiveIntegerField(blank=True)
+    phone_verify_code   = PositiveIntegerField(blank=True)
+    iban_verify_code    = CharField(max_length=5, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         # Email & phone number verificaiton
@@ -57,11 +58,21 @@ class code(models.Model):
         self.iban_verify_code = code_string
         # End
 
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.user}'
+
+
+class ReferralCode(models.Model):
+    user                = models.OneToOneField(CustomUser, on_delete=CASCADE)
+    referral_code       = CharField(max_length=12, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
         # Referral Code
         code_string = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(12))
         self.referral_code = code_string
         # End
-
         super().save(*args, **kwargs)
 
     def __str__(self):

@@ -31,6 +31,7 @@ button:link {
   overflow-y: auto;
 }
 .dropdown-menu {
+  max-width: 32rem;
   max-height: 280px;
   overflow-y: auto;
 }
@@ -50,6 +51,9 @@ button:link {
   margin-right: 0.5rem;
   font-size: medium;
   text-transform: uppercase;
+}
+.bg-dark {
+  background-color: rgb(2, 28, 54) !important;
 }
 /* .navbar-dark .navbar-nav .nav-link.active,
 .navbar-dark .navbar-nav .nav-link.dropdown-toggle,
@@ -144,9 +148,6 @@ i {
 
 
 /********** ALL cards and navbar colors **********/
-.bg-dark { /* NAVBAR */
-  background-color: rgba(255, 255, 255, 0.26) !important;
-}
 .zarathus-card { /* ALL CARDS */
   background-color: rgba(255, 255, 255, 0.26) !important;
   max-width: 34rem;
@@ -404,8 +405,8 @@ button.swal2-confirm.swal2-styled:hover::after {
   border: none;
   outline: none;
   cursor: pointer;
-  padding: 1rem 1.5rem;
-  border-radius: 4px;
+  padding: .5rem 1rem;
+  border-radius: 50%;
 }
 #myBtn:hover {
   background-color: #555;
