@@ -68,7 +68,8 @@ def get_country_lang(country_code):
 # getting country currency
 def get_country_currency(country_code):
     country_code = country_code.upper()
-    project = os.path.abspath(os.path.dirname(__name__)) # root of django project
+    # project = os.path.abspath(os.path.dirname(__name__)) # root of django project
+    project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     file = f'{project}/country_currencies.json' # getting the file containing all country codes
     with open(file, 'r') as config_file: # opening and reading the json file
         data = json.load(config_file)
@@ -137,7 +138,8 @@ def business(request):
 
 # searching through the country dict
 def CountryDict(search):
-    project = os.path.abspath(os.path.dirname(__name__)) # root of django project
+    # project = os.path.abspath(os.path.dirname(__name__)) # root of django project
+    project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     file = f'{project}/country_names.json' # getting the file containing all country codes
     with open(file, 'r') as config_file: # opening and reading the json file
         data = json.load(config_file)
