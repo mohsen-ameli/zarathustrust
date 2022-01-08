@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-07 05:45-0500\n"
+"POT-Creation-Date: 2022-01-08 03:42-0500\n"
 "PO-Revision-Date: 2021-12-22 19:06-0518\n"
 "Last-Translator: mohsen ameli <mohsen.ameli83@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -83,6 +83,11 @@ msgstr "Einloggen"
 
 #: users/templates/users/country_pick.html:9
 msgid "Please Choose a Country."
+msgstr ""
+
+#: users/templates/users/country_pick.html:20
+#: users/templates/users/country_pick.html:25
+msgid "Please choose a country"
 msgstr ""
 
 #: users/templates/users/country_pick.html:41
@@ -279,11 +284,11 @@ msgid ""
 "your ballance."
 msgstr ""
 
-#: users/views.py:103
+#: users/views.py:105
 msgid "HIIIII"
 msgstr ""
 
-#: users/views.py:247
+#: users/views.py:251
 msgid ""
 "Please check your mailbox (as well as spam folder) for a verification code, "
 "and enter the 5-digit code below"
@@ -291,13 +296,13 @@ msgstr ""
 "Sehen Sie bitte in Ihrem E-Mail Postfach nach. Wir haben Ihnen eine "
 "fünfstellige Zahl zugeschickt. Geben Sie bitte diese Zahl unten ein !"
 
-#: users/views.py:267
+#: users/views.py:271
 #, fuzzy
 #| msgid "Hello {user.username}"
 msgid "Hello {user['username']}"
 msgstr "Hallo {user.username}"
 
-#: users/views.py:269
+#: users/views.py:273
 #, python-brace-format
 msgid ""
 "Your verification code is : {email_code}, you are very close to starting "
@@ -306,7 +311,7 @@ msgstr ""
 "Ihre Bestätigungscode lautet : {email_code} . Glückwunsch ! Sie sind kurz "
 "davor in den Genuss eines verzinsten Kontos zu kommen !"
 
-#: users/views.py:280
+#: users/views.py:284
 msgid ""
 "Please check your phone for verification code, and enter the 5-digit code "
 "below"
@@ -314,14 +319,14 @@ msgstr ""
 "Öffnen Sie bitte Ihre SMS-Nachrichten und geben Sie bitte unten den "
 "fünfstelligen Bestätigungscode ein !"
 
-#: users/views.py:287 users/views.py:327
+#: users/views.py:291 users/views.py:331
 msgid "You enterd the wrong verificaiton code ! Please try again"
 msgstr ""
 "Geben Sie bitte hier den genauen Betrag ein, den wir Ihnen überwiesen haben. "
 "Wenn sie z.B 12 Cents bekommen haben, dann geben Sie den Betrag so ein: 0.12 "
 "also beginnend mit null und als Komma bitte einen Punkt verwenden ! "
 
-#: users/views.py:312 users/views.py:320
+#: users/views.py:316 users/views.py:324
 msgid ""
 "Enter your friend's referral code in order for both of you to get grand "
 "prize !"
@@ -329,13 +334,13 @@ msgstr ""
 "Geben Sie bitte hier den Empfehlungscode Ihres Werbers ein, damit Sie beide "
 "von zusätzlichen Prämien profitieren können ! "
 
-#: users/views.py:370
+#: users/views.py:374
 #, fuzzy, python-brace-format
 #| msgid "Dear {giver_name} !"
 msgid "Dear {giver_name.username} !"
 msgstr "Liebe(r) {giver_name} !"
 
-#: users/views.py:372
+#: users/views.py:376
 #, fuzzy
 #| msgid ""
 #| "{user.username} just used your referral code ! You recieved $1 on your "
@@ -348,7 +353,7 @@ msgstr ""
 "deshalb €1 Gutaheb und €300 Bonus gutgeschrieben !\n"
 "Glückwunsch !"
 
-#: users/views.py:381
+#: users/views.py:385
 #, fuzzy
 #| msgid ""
 #| "You have successfully registered, {user.username}. For your prize, $200 "
@@ -367,13 +372,13 @@ msgstr ""
 "Funktionalitäten Ihres neuen Kontos bei uns unverzüglich sehen und "
 "ausprobieren können !"
 
-#: users/views.py:397
+#: users/views.py:401
 #, fuzzy
 #| msgid "You have successfully registered, {user.username} !"
 msgid "You have successfully registered, {user['username']} !"
 msgstr " Ihre Registrierung wurde erfolgreich abgeschlossen, {user.username} !"
 
-#: users/views.py:413
+#: users/views.py:417
 #, fuzzy
 #| msgid ""
 #| "Sorry, this referral code is incorrect, but you have successfully "
@@ -390,7 +395,7 @@ msgstr ""
 "Prämien nachträglich gutschreiben ! \n"
 "Herzlich willkommen bei ZarathusTrust !"
 
-#: users/views.py:441
+#: users/views.py:445
 msgid ""
 "Please enter a correct username and password. Note that both fields are case-"
 "sensitive (Pay attention to capital letters)."

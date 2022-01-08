@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-07 05:45-0500\n"
+"POT-Creation-Date: 2022-01-08 03:42-0500\n"
 "PO-Revision-Date: 2021-12-22 19:10-0518\n"
 "Last-Translator: mohsen ameli <mohsen.ameli83@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,7 +35,7 @@ msgstr ""
 msgid "e.g. Happy Birthday Honey !"
 msgstr ""
 
-#: accounts/models.py:103
+#: accounts/models.py:111
 msgid "WHAT UPP"
 msgstr ""
 
@@ -71,7 +71,7 @@ msgstr "Überweisen Sie bitte den gewünschten Betrag von Ihrem Bankkonto"
 
 #: accounts/templates/accounts/add_money_form.html:13
 #: accounts/templates/accounts/history.html:37
-#: accounts/templates/accounts/home.html:105
+#: accounts/templates/accounts/home.html:89
 msgid "Deposit"
 msgstr "Einzahlen"
 
@@ -112,13 +112,17 @@ msgstr ""
 "Kontonummer : 128739127312 <br>\n"
 "Verwendungszweck(optional) : %(username)s-%(pk)s"
 
-#: accounts/templates/accounts/base.html:48
-#: accounts/templates/accounts/base.html:54
-#, python-format
+#: accounts/templates/accounts/base.html:50
+#: accounts/templates/accounts/base.html:56
+#, fuzzy, python-format
+#| msgid ""
+#| "\n"
+#| "                        %(msg)s\n"
+#| "                        "
 msgid ""
 "\n"
-"                        %(msg)s\n"
-"                        "
+"                            %(msg)s\n"
+"                            "
 msgstr ""
 "\n"
 "%(msg)s"
@@ -333,11 +337,24 @@ msgstr ""
 msgid "Welcome, "
 msgstr ""
 
-#: accounts/templates/accounts/home.html:20
+#: accounts/templates/accounts/home.html:14
+msgid "Bonus"
+msgstr ""
+
+#: accounts/templates/accounts/home.html:16
+#, fuzzy, python-format
+#| msgid ""
+#| "\n"
+#| "                The $1000 bonus is a gift from us to every new user. It "
+#| "has no expiration date!\n"
+#| "                Every time you transfer the accumulated interest to your "
+#| "balance,\n"
+#| "                an equal amount will be taken out of your bonus.\n"
+#| "            "
 msgid ""
 "\n"
-"                The $1000 bonus is a gift from us to every new user. It has "
-"no expiration date!\n"
+"                The %(currency)s1000 bonus is a gift from us to every new "
+"user. It has no expiration date!\n"
 "                Every time you transfer the accumulated interest to your "
 "balance,\n"
 "                an equal amount will be taken out of your bonus.\n"
@@ -350,11 +367,11 @@ msgstr ""
 "übertragen, wird genauso viel von Ihrem Bonus frei und automatisch Ihrem "
 "Guthabenkonto zusätzlich gutgeschrieben. "
 
-#: accounts/templates/accounts/home.html:41
+#: accounts/templates/accounts/home.html:37
 msgid "Ballance"
 msgstr "Guthaben"
 
-#: accounts/templates/accounts/home.html:50
+#: accounts/templates/accounts/home.html:46
 #, fuzzy, python-format
 #| msgid ""
 #| "\n"
@@ -368,7 +385,7 @@ msgstr ""
 "\n"
 "+€%(price)s"
 
-#: accounts/templates/accounts/home.html:54
+#: accounts/templates/accounts/home.html:50
 #, fuzzy, python-format
 #| msgid ""
 #| "\n"
@@ -382,30 +399,30 @@ msgstr ""
 "\n"
 "+€%(price)s"
 
-#: accounts/templates/accounts/home.html:69
+#: accounts/templates/accounts/home.html:57
 #, fuzzy
 #| msgid "Ballance"
 msgid "Current Balance"
 msgstr "Guthaben"
 
-#: accounts/templates/accounts/home.html:81
+#: accounts/templates/accounts/home.html:69
 msgid "Interest"
 msgstr "Zinsen"
 
-#: accounts/templates/accounts/home.html:96
+#: accounts/templates/accounts/home.html:80
 msgid "Cash Out"
 msgstr "Zinsen auf das Guthabenkonto Übertragen"
 
-#: accounts/templates/accounts/home.html:109
+#: accounts/templates/accounts/home.html:93
 msgid "Send Money"
 msgstr "Jemandem Geld schicken"
 
-#: accounts/templates/accounts/home.html:113
+#: accounts/templates/accounts/home.html:97
 #: accounts/templates/accounts/take_money_form.html:25
 msgid "Withdraw"
 msgstr "Abbuchen"
 
-#: accounts/templates/accounts/home.html:117
+#: accounts/templates/accounts/home.html:101
 msgid "Transaction History"
 msgstr "Umsätze"
 
@@ -561,82 +578,90 @@ msgstr ""
 msgid "Send"
 msgstr ""
 
-#: accounts/views.py:164
-#, python-brace-format
-msgid "${MoneyToSend} has been transfered to {reciever_name}"
+#: accounts/views.py:167
+#, fuzzy, python-brace-format
+#| msgid "${MoneyToSend} has been transfered to {reciever_name}"
+msgid "{currency}{MoneyToSend} has been transfered to {reciever_name}"
 msgstr "€{MoneyToSend} wurden auf {target_acc} übertragen."
 
-#: accounts/views.py:171 accounts/views.py:180
+#: accounts/views.py:174 accounts/views.py:183
 msgid "ZARATHUS TRUST MONEY TRANSFER"
 msgstr ""
 
-#: accounts/views.py:172
+#: accounts/views.py:175
 #, python-brace-format
 msgid ""
-"Dear {reciever_name}, <br> {giver_username} just transfered ${MoneyToSend} "
-"to your account ! <br> Purpose of Use : {purpose}"
+"Dear {reciever_name}, <br> {giver_username} just transfered {currency}"
+"{MoneyToSend} to your account ! <br> Purpose of Use : {purpose}"
 msgstr ""
 
-#: accounts/views.py:181
+#: accounts/views.py:184
 #, python-brace-format
 msgid ""
-"Dear {giver_username}, <br> ${MoneyToSend} has been transfered to "
+"Dear {giver_username}, <br> {currency}{MoneyToSend} has been transfered to "
 "{reciever_name} successfully ! <br> Purpose of Use : {purpose}"
 msgstr ""
 
-#: accounts/views.py:197
+#: accounts/views.py:200
 msgid "Please consider that the minimum amount to send is $1 !"
 msgstr "Überweisungen müssen mindestens 1 € betragen."
 
-#: accounts/views.py:199
+#: accounts/views.py:202
 msgid ""
 "You have requested to transfer more than you have in your current balance !"
 msgstr ""
 
-#: accounts/views.py:201
+#: accounts/views.py:204
 msgid ""
 "The Account You Are Trying to Send Money to Has not Finished Signing Up !"
 msgstr ""
 
-#: accounts/views.py:298
-msgid "You have successfully cashed out ${round(interest_rate, 1) * 2}"
+#: accounts/views.py:305
+#, fuzzy
+#| msgid "You have successfully cashed out ${round(interest_rate, 1) * 2}"
+msgid ""
+"You have successfully cashed out {currency}{round(interest_rate, 1) * 2}"
 msgstr ""
 "Zinsen erfolgreich auf das Guthabenkonto übertragen! €{round(interest_rate, "
 "1) * 2}"
 
-#: accounts/views.py:309
-msgid "You have successfully cashed out ${round(interest_rate, 1) + bonus}"
+#: accounts/views.py:316
+#, fuzzy
+#| msgid "You have successfully cashed out ${round(interest_rate, 1) + bonus}"
+msgid ""
+"You have successfully cashed out {currency}{round(interest_rate, 1) + bonus}"
 msgstr ""
 "Zinsen erfolgreich auf das Guthabenkonto übertragen! €{round(interest_rate, "
 "1) + bonus}"
 
-#: accounts/views.py:316
+#: accounts/views.py:323
 msgid "You need at least $0.1 to be able to cash out ! keep going tho"
 msgstr "Für eine Übertragung müssen mindestens €0,10 an Zinsen verdient sein. "
 
-#: accounts/views.py:350 accounts/views.py:388
+#: accounts/views.py:361 accounts/views.py:403
 msgid ""
 "Please consider that the minimum amount to withdraw must be $1 or higher !"
 msgstr "Überweisungen müssen mindestens €1 betragen."
 
-#: accounts/views.py:383
-#, python-brace-format
-msgid "${take_money} was requested to be taken out"
+#: accounts/views.py:398
+#, fuzzy, python-brace-format
+#| msgid "${take_money} was requested to be taken out"
+msgid "{currency}{take_money} was requested to be taken out"
 msgstr "€{take_money} wird an Ihr Bankkonto überwiesen. "
 
-#: accounts/views.py:386
+#: accounts/views.py:401
 msgid "You have requested to take more than you have in your current balance !"
 msgstr ""
 
-#: accounts/views.py:396
+#: accounts/views.py:412
 msgid "hello hello hi hi"
 msgstr "Hallo Hallo hi hi"
 
-#: accounts/views.py:465
+#: accounts/views.py:481
 msgid "Your order was purchased successfully !"
 msgstr ""
 
-#: accounts/views.py:468 accounts/views.py:507
+#: accounts/views.py:484 accounts/views.py:523
 msgid "You do not have enough money for this order !"
 msgstr ""
 
