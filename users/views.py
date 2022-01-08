@@ -183,7 +183,7 @@ def PersonalCountryPickSignUp(request):
 
         if request.method == "POST":
             default_country_picker = request.POST.get('default-country-picker')
-            if default_country_picker != '':
+            if default_country_picker != None:
                 response = redirect(reverse("personal-sign-up", kwargs={"country" : default_country[1]}))
                 response.set_cookie(settings.LANGUAGE_COOKIE_NAME, default_country[1])
                 return response

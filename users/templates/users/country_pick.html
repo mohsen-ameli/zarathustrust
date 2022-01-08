@@ -17,12 +17,12 @@
                     <input type="text" class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
                         placeholder="Country" onClick="this.setSelectionRange(0, this.value.length)" name="default-country-picker"
                         id="country-input" value="{{ default_country }}" >
-                    <label for="country-input">Please choose a country</label>
+                    <label for="country-input">{% trans "Please choose a country" %}</label>
                 {% else %}
                     <input type="text" class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
-                        placeholder="Country" onClick="this.setSelectionRange(0, this.value.length)" name="default-country-picker"
+                        placeholder="Country" onClick="this.setSelectionRange(0, this.value.length)"
                         id="country-input">
-                    <label for="country-input">Please choose a country</label>
+                    <label for="country-input">{% trans "Please choose a country" %}</label>
                 {% endif %}
                 <!-- LIST -->
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" id="new-country-list">

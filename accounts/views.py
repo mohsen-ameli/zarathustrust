@@ -49,37 +49,35 @@ def cookie_monster(request):
         print('old cookies', cookies)
         translation.activate(cookies)
 
-from babel.numbers import get_currency_symbol, get_territory_currencies
 
 def currency_symbol(country_code):
-    try:
-        currency_code = get_territory_currencies(country_code)[0]
-        symbol = get_currency_symbol(currency_code, locale='en_US')
-    except IndexError:
-        symbol = ''
-    return symbol
+    country_code = country_code.upper()
+    project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    file = f'{project}/country_currnecy_symbols.json' # getting the file containing all country codes
+    with open(file, 'r') as config_file: # opening and reading the json file
+        data = json.load(config_file)
+
+    return data[country_code]
     
 
 ############# Function Based Views ############
 @login_required
 def HomeView(request, pk):
     if correct_user(pk):
-        currency = get_territory_currencies('IR')
-        print(currency)
         acc = account.objects.get(pk=request.user.pk)
         user_ = CustomUser.objects.get(pk=request.user.pk)
-        url = f'https://api.exchangerate.host/convert?from=USD&to=EUR' # 1 USD to EUR
-        response = requests.get(url) # getting a response
-        data = response.json() # getting the data
-        euro_rate = data['result']
+        currency = currency_symbol(user_.currency)
+        # url = f'https://api.exchangerate.host/convert?from=USD&to=EUR' # 1 USD to EUR
+        # response = requests.get(url) # getting a response
+        # data = response.json() # getting the data
+        # euro_rate = data['result']
 
         context = {
-            'interest_list' : account_interest.objects.get(pk=request.user.pk),
-            'is_bus'        : user_.is_business,
-            'currency'      : user_.currency,
-            'currency_symbol' : currency,
-            'euro_rate'     : euro_rate,
-            'object'        : acc
+            'interest_list'         : account_interest.objects.get(pk=request.user.pk),
+            'is_bus'                : user_.is_business,
+            'currency'              : user_.currency,
+            'user_currency_symbol'  : currency,
+            'object'                : acc
         }
         return render(request, 'accounts/home.html', context)
     else:
@@ -137,6 +135,10 @@ def new_dunc(request):
 @login_required
 def TransferSendView(request, pk, reciever_name):
     if correct_user(pk):
+        # getting user's currency stuff
+        user_ = CustomUser.objects.get(pk=request.user.pk)
+        currency = currency_symbol(user_.currency)
+
         if request.method == "POST":
             form = TransferSendForm(request.POST)
             if form.is_valid():
@@ -162,7 +164,7 @@ def TransferSendView(request, pk, reciever_name):
                         account_interest.objects.filter(pk=get_current_user().pk).update(interest=b)             # updating giver
                         
                         # success message
-                        messages.success(request, _(f'${MoneyToSend} has been transfered to {reciever_name}'))
+                        messages.success(request, _(f'{currency}{MoneyToSend} has been transfered to {reciever_name}'))
 
                         # emailing the reciever
                         reciever_email = CustomUser.objects.get(pk=reciever_pk).email
@@ -170,7 +172,7 @@ def TransferSendView(request, pk, reciever_name):
                         giver_email = CustomUser.objects.get(pk=get_current_user().pk).email
                         EMAIL_ID       = config.get('EMAIL_ID')
                         msg = EmailMessage(_("ZARATHUS TRUST MONEY TRANSFER"),
-                                _(f"Dear {reciever_name}, <br> {giver_username} just transfered ${MoneyToSend} to your account ! <br> Purpose of Use : {purpose}"),
+                                _(f"Dear {reciever_name}, <br> {giver_username} just transfered {currency}{MoneyToSend} to your account ! <br> Purpose of Use : {purpose}"),
                                 f"{EMAIL_ID}",
                                 [f"{reciever_email}"]
                         )
@@ -179,7 +181,7 @@ def TransferSendView(request, pk, reciever_name):
 
                         # emailing the giver
                         msg1 = EmailMessage(_("ZARATHUS TRUST MONEY TRANSFER"),
-                                _(f"Dear {giver_username}, <br> ${MoneyToSend} has been transfered to {reciever_name} successfully ! <br> Purpose of Use : {purpose}"),
+                                _(f"Dear {giver_username}, <br> {currency}{MoneyToSend} has been transfered to {reciever_name} successfully ! <br> Purpose of Use : {purpose}"),
                                 f"{EMAIL_ID}",
                                 [f"{giver_email}"]
                         )
@@ -200,11 +202,11 @@ def TransferSendView(request, pk, reciever_name):
                         messages.warning(request, _(f'You have requested to transfer more than you have in your current balance !'))
                 except ObjectDoesNotExist:
                     messages.warning(request, _(f'The Account You Are Trying to Send Money to Has not Finished Signing Up !'))
-            context = {"form" : form}
+            context = {"form" : form, 'user_currency_symbol'  : currency}
             return render(request, "accounts/transfer_send.html", context)
         else:
             form = TransferSendForm()
-            context = {"reciever_name" : reciever_name, "form" : form}
+            context = {"form" : form, "reciever_name" : reciever_name, 'user_currency_symbol'  : currency}
             return render(request, "accounts/transfer_send.html", context)
     else:
         raise PermissionDenied()
@@ -286,6 +288,10 @@ def search_results(request):
 @login_required
 def cash_out(request, pk):
     if correct_user(pk):
+        # getting user's currency stuff
+        user_ = CustomUser.objects.get(pk=request.user.pk)
+        currency = currency_symbol(user_.currency)
+        
         interest_rate     = account_interest.objects.get(pk=pk).interest_rate
         guy               = account.objects.get(pk=pk)
         bonus             = guy.bonus
@@ -296,7 +302,7 @@ def cash_out(request, pk):
                 total_balance = total_balance + (round(interest_rate, 1) * 2) 
                 account.objects.filter(pk=pk).update(total_balance=total_balance) # updating total balance
                 account_interest.objects.filter(pk=pk).update(interest=total_balance) # updating account interest
-                messages.success(request, _(f'You have successfully cashed out ${round(interest_rate, 1) * 2}'))
+                messages.success(request, _(f'You have successfully cashed out {currency}{round(interest_rate, 1) * 2}'))
                 account_interest.objects.filter(pk=pk).update(interest_rate=0)
                 account.objects.filter(pk=pk).update(bonus=bonus-round(interest_rate, 1)) # updating bonus
                 r = transaction_history(person=guy, price=round(interest_rate, 1) * 2, method="Cash Out")
@@ -307,7 +313,7 @@ def cash_out(request, pk):
                 total_balance = total_balance + bonus + interest_rate
                 account.objects.filter(pk=pk).update(total_balance=total_balance) # updating total balance
                 account_interest.objects.filter(pk=pk).update(interest=total_balance) # updating account interest
-                messages.success(request, _(f'You have successfully cashed out ${round(interest_rate, 1) + bonus}'))
+                messages.success(request, _(f'You have successfully cashed out {currency}{round(interest_rate, 1) + bonus}'))
                 account_interest.objects.filter(pk=pk).update(interest_rate=0)
                 account.objects.filter(pk=pk).update(bonus=0) # updating bonus 
                 r = transaction_history(person=guy, price=round(interest_rate, 1) + bonus, method="Cash Out")
@@ -334,6 +340,10 @@ def ReferralCodeView(request, pk):
 @login_required
 def AddMoneyUpdateView(request, pk):
     if correct_user(pk):
+        # getting user's currency stuff
+        user_ = CustomUser.objects.get(pk=request.user.pk)
+        currency = currency_symbol(user_.currency)
+
         form                    = AddMoneyForm(request.POST or None)
         if form.is_valid():
             add_money           = form.cleaned_data.get('add_money')
@@ -341,7 +351,7 @@ def AddMoneyUpdateView(request, pk):
                 EMAIL_ID        = config.get('EMAIL_ID')
                 EMAIL_ID_MAIN   = config.get('EMAIL_ID_MAIN')
                 send_mail(f'{get_current_user()}', 
-                        f'{get_current_user()} with account number : {pk} has requested to deposit ${add_money}',
+                        f'{get_current_user()} with account number : {pk} has requested to deposit {currency}{add_money}',
                         f'{EMAIL_ID}',
                         [f'{EMAIL_ID_MAIN}'],)
                 account.objects.filter(pk=pk).update(add_money=0)
@@ -368,6 +378,10 @@ def AddMoneyInfo(request, pk):
 @login_required
 def TakeMoneyUpdateView(request, pk):
     if correct_user(pk):
+        # getting user's currency stuff
+        user_ = CustomUser.objects.get(pk=request.user.pk)
+        currency = currency_symbol(user_.currency)
+
         form                    = TakeMoneyForm(request.POST or None)
         if form.is_valid():
             take_money          = form.cleaned_data.get('take_money')
@@ -377,17 +391,18 @@ def TakeMoneyUpdateView(request, pk):
                 EMAIL_ID_MAIN   = config.get('EMAIL_ID_MAIN')
                 MOE_EMAIL       = config.get('MOE_EMAIL')
                 send_mail(f'{get_current_user()}', 
-                        f'{get_current_user()} with account number : {get_current_user().pk} has requested to withdraw ${take_money}',
+                        f'{get_current_user()} with account number : {get_current_user().pk} has requested to withdraw {currency}{take_money}',
                         f'{EMAIL_ID}',
                         [f'{EMAIL_ID_MAIN}'],)
                 account.objects.filter(pk=pk).update(take_money=0)
-                messages.success(request, _(f"${take_money} was requested to be taken out"))
+                messages.success(request, _(f"{currency}{take_money} was requested to be taken out"))
                 return redirect(reverse('accounts:home', kwargs={'pk':pk}))
             elif take_money > balance:
                 messages.warning(request, _("You have requested to take more than you have in your current balance !"))
             elif take_money < 1:
                 messages.warning(request, _("Please consider that the minimum amount to withdraw must be $1 or higher !"))
-        return render(request, 'accounts/take_money_form.html', {'form' : form})
+        context = {'form' : form, 'user_currency_symbol'  : currency}
+        return render(request, 'accounts/take_money_form.html', context)
     else:
         raise PermissionDenied()
 
@@ -517,6 +532,10 @@ pagination_number = 10
 @login_required
 def History(request, pk):
     if correct_user(pk):
+        # getting user's currency stuff
+        currency               = CustomUser.objects.get(pk=pk).currency
+        user_currency_symbol   = currency_symbol(currency)
+
         # combining both query sets that have the cureently logged in user's history in them
         current_logged_user    = account.objects.get(pk=pk)
         person_history         = transaction_history.objects.filter(person=current_logged_user).order_by('date').reverse()
@@ -528,22 +547,30 @@ def History(request, pk):
             pagination_number = request.GET.get('num') or 10
             if request.GET.get('num') == "all":
                 pagination_number = counter
-            paginator = Paginator(a, pagination_number)
+            paginator   = Paginator(a, pagination_number)
             page_number = request.GET.get('page')
-            page_obj = paginator.get_page(page_number)
+            page_obj    = paginator.get_page(page_number)
 
-            currency = CustomUser.objects.get(pk=pk).currency
-
-            context = {"page_obj" : page_obj, "currency" : currency, "pagination_number" : pagination_number, "counter" : counter}
+            context = {
+                "page_obj"             : page_obj, 
+                "currency"             : currency, 
+                "pagination_number"    : pagination_number, 
+                "counter"              : counter,
+                "user_currency_symbol" : user_currency_symbol
+            }
             return render(request, "accounts/history.html", context)
         else:
-            paginator = Paginator(a, 10)
+            paginator   = Paginator(a, 10)
             page_number = request.GET.get('page')
-            page_obj = paginator.get_page(page_number)
+            page_obj    = paginator.get_page(page_number)
 
-            currency = CustomUser.objects.get(pk=pk).currency
-
-            context = {"page_obj" : page_obj, "currency" : currency, "pagination_number" : 10, "counter" : counter}
+            context = {
+                "page_obj"             : page_obj, 
+                "currency"             : currency, 
+                "pagination_number"    : 10, 
+                "counter"              : counter,
+                "user_currency_symbol" : user_currency_symbol
+            }
             return render(request, "accounts/history.html", context)
     else:
         raise PermissionDenied()

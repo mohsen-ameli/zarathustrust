@@ -63,8 +63,8 @@ class account_interest(models.Model):
 
 class transaction_history(models.Model):
     # prolly dont actually have to have this set as a foreign key
-    person              = models.ForeignKey(account, on_delete=DO_NOTHING)
-    second_person       = models.ForeignKey(account, on_delete=DO_NOTHING, null=True, blank=True, related_name="second_person")
+    person              = models.ForeignKey(account, on_delete=models.SET_NULL, null=True, blank=True)
+    second_person       = models.ForeignKey(account, on_delete=models.SET_NULL, null=True, blank=True, related_name="second_person")
     date                = models.DateTimeField(auto_now_add=True)
     price               = models.DecimalField(decimal_places=1, max_digits=10)
     purpose_of_use      = models.CharField(max_length=500, null=True, blank=True, default="None")
@@ -72,16 +72,24 @@ class transaction_history(models.Model):
 
     def __str__(self):
         price = round(self.price)
+        try:
+            person = self.person.created_by.username
+        except AttributeError:
+            person = "Anonymous"
+        try:
+            second_person = self.second_person.created_by.username
+        except AttributeError:
+            second_person = "Anonymous"
         if self.method == "Transfer":
-            return f'TRANSFER from {self.person.created_by.username} to {self.second_person.created_by.username} for the amount ${price} at {self.date}'
+            return f'TRANSFER from {person} to {second_person} for the amount ${price} at {self.date}'
         elif self.method == "Payment":
-            return f'PAYMENT from {self.person.created_by.username} to {self.second_person.created_by.username} for the amount ${price} at {self.date}'
+            return f'PAYMENT from {person} to {second_person} for the amount ${price} at {self.date}'
         elif self.method == "Deposit":
-            return f'DEPOSIT from {self.person.created_by.username} for the amount ${self.price} at {self.date}'
+            return f'DEPOSIT from {person} for the amount ${self.price} at {self.date}'
         elif self.method == "Withdraw":
-            return f'WITHDRAW from {self.person.created_by.username} for the amount ${self.price} at {self.date}'
+            return f'WITHDRAW from {person} for the amount ${self.price} at {self.date}'
         elif self.method == "Cash Out":
-            return f'CASH OUT as {self.person.created_by.username} for the amount ${self.price} at {self.date}'
+            return f'CASH OUT as {person} for the amount ${self.price} at {self.date}'
 
 
 

@@ -11,14 +11,10 @@
     <div class="py-2 ms-auto">
         <div class="d-flex">
             <h3>
-                {% if currency == 'EUR' %}
-                    Bonus: €{{ object.bonus }}
-                {% else %}
-                    Bonus: ${{ object.bonus }}
-                {% endif %}
+                {% trans "Bonus" %}: {{ user_currency_symbol }}{{ object.bonus }}
             </h3>
-            {% blocktrans asvar the_title %}
-                The $1000 bonus is a gift from us to every new user. It has no expiration date!
+            {% blocktrans asvar the_title with currency=user_currency_symbol %}
+                The {{currency}}1000 bonus is a gift from us to every new user. It has no expiration date!
                 Every time you transfer the accumulated interest to your balance,
                 an equal amount will be taken out of your bonus.
             {% endblocktrans %}
@@ -57,15 +53,7 @@
                     {% endif %}
                 </h5>
                 <hr>
-                {% if currency == 'EUR' %}
-                    <h1 class="fw-normal">€{{ object.total_balance }}</h1>
-                {% elif currency == 'JPY' %}
-                    <h1 class="fw-normal">¥{{ object.total_balance }}</h1>
-                {% elif currency == 'GBP' %}
-                    <h1 class="fw-normal">£{{ object.total_balance }}</h1>
-                {% else %}
-                    <h1 class="fw-normal">${{ object.total_balance }}</h1>
-                {% endif %}
+                <h1 class="fw-normal">{{ user_currency_symbol }}{{ object.total_balance }}</h1>
                 {% trans "Current Balance" %}
             </div>
         </div>
@@ -84,11 +72,7 @@
         <!-- bottom part (counter) -->
         <div class="d-flex">
             <div class="d-flex counter-interest">
-                {% if currency == 'EUR' %}
-                    <div class="">€</div>
-                {% else %}
-                    <div class="">$</div>
-                {% endif %}
+                <div>{{ user_currency_symbol }}</div>
                 <div id="counter"></div>
             </div>
         </div>
@@ -121,13 +105,7 @@
 <script>
     var total_bal = Number('{{ interest_list.interest|unlocalize }}');
     var interest_rate = Number('{{ interest_list.interest_rate|unlocalize }}');
-    // var lang = '{{ LANGUAGE_CODE }}'
-    // var euro_rate = Number('{{ euro_rate|unlocalize }}')
     window.onload = function () {
-        /* multiplying total balacne to get the euro equivalent */
-        // if (lang == "de") {
-        //    total_bal = total_bal * euro_rate;
-        // }
         ctr = document.getElementById("counter");
         function incrementCounter() {
             ctr.innerHTML = interest_rate.toFixed(20);
@@ -148,5 +126,4 @@
     }
 </script>
 
-<!-- <img class="img-fluid" src="{% static 'accounts/images/new-live.gif' %}" alt=""> -->
 {% endblock %}

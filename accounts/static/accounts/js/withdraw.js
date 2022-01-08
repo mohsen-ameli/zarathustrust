@@ -7,7 +7,7 @@ document.querySelector("#Action").addEventListener("click", function() {
     
         Swal.fire({
             title: 'Confirm actions ?',
-            text: `You are about to withdraw $${price}`,
+            text: `You are about to withdraw ${currency}${price}`,
             icon: 'warning',
             width: "20rem",
             cancelButtonText: "Change",
