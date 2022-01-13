@@ -44,6 +44,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 INSTALLED_APPS = [
     "users.apps.UsersConfig",
     "accounts.apps.AccountsConfig",
+    
     "crispy_forms",
     "rosetta",
     "axes",
@@ -51,7 +52,7 @@ INSTALLED_APPS = [
     "django_countries",
     "crispy_bootstrap5",
     "django_htmx",
-    # "django_elasticsearch_dsl",
+
     "django.contrib.postgres",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -121,8 +122,8 @@ DATABASES = {
 #         "NAME": config.get("db_name"),
 #         "USER": config.get("db_user"),
 #         "PASSWORD": config.get("db_pass"),
-#         "HOST": config.get("db_host"),
-#         "PORT": config.get("db_port"),
+#         "HOST": "localhost",
+#         "PORT": "",
 #     }
 # }
 
@@ -180,8 +181,8 @@ CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_BAKCEND = "amqp://"
 CELERY_TIMEZONE = "EST"
 CELERY_TASK_TRACK_STARTED = True
-# CELERY_TASK_TIME_LIMIT = 30 * 60
 CELERYD_PREFETCH_MULTIPLIER = 1
+# CELERY_TASK_TIME_LIMIT = 30 * 60
 
 # EMAIL
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -214,54 +215,3 @@ if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     X_FRAME_OPTIONS = "DENY"
 
-# Linod staticfiles
-"""DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
-LINODE_BUCKET = config.get('LINODE_BUCKET')
-LINODE_BUCKET_REGION = config.get('LINODE_BUCKET_REGION')
-LINODE_BUCKET_ACCESS_KEY = config.get('LINODE_BUCKET_ACCESS_KEY')
-LINODE_BUCKET_SECRET_KEY = config.get('LINODE_BUCKET_SECRET_KEY') 
-
-
-AWS_S3_ENDPOINT_URL = f'https://{LINODE_BUCKET_REGION}.linodeobjects.com'
-AWS_ACCESS_KEY_ID = LINODE_BUCKET_ACCESS_KEY
-AWS_SECRET_ACCESS_KEY = LINODE_BUCKET_SECRET_KEY
-AWS_S3_REGION_NAME = LINODE_BUCKET_REGION
-AWS_S3_USE_SSL = True
-AWS_STORAGE_BUCKET_NAME = LINODE_BUCKET
-"""
-
-# debug = false debugging
-"""LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
-            'datefmt' : "%d/%b/%Y %H:%M:%S"
-        },
-        'simple': {
-            'format': '%(levelname)s %(message)s'
-        },
-    },
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'mysite.log',
-            'formatter': 'verbose'
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers':['file'],
-            'propagate': True,
-            'level':'DEBUG',
-        },
-        'MYAPP': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-        },
-    }
-} """
