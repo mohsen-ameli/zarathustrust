@@ -97,7 +97,7 @@
                 {% else %}
                     {% if each.second_person.created_by.username == user.get_username %}
                         <font class="float-end" style="color: rgb(0, 255, 0); font-size: large;">
-                            +{{ user_currency_symbol }}{{ each.ex_price }}
+                            +{{ user_currency_symbol }}{{ each.price }}
                         </font>
                     {% else %}
                         <font class="float-end" style="color: rgb(255, 74, 74); font-size: large;">
