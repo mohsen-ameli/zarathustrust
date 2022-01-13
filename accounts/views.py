@@ -88,19 +88,19 @@ def HomeView(request, pk):
                 'wallets'               : zip(other_wallets),
             }
             return render(request, 'accounts/home.html', context)
+        else:
+            wallets = BranchAccounts.objects.filter(main_account=acc)
 
-        wallets = BranchAccounts.objects.filter(main_account=acc)
-
-        context = {
-            'interest_list'         : account_interest.objects.get(pk=pk),
-            'is_bus'                : user_.is_business,
-            'currency'              : user_.currency,
-            'total_balance'         : acc.total_balance,
-            'user_currency_symbol'  : currency,
-            'object'                : acc,
-            'wallets'               : wallets
-        }
-        return render(request, 'accounts/home.html', context)
+            context = {
+                'interest_list'         : account_interest.objects.get(pk=pk),
+                'is_bus'                : user_.is_business,
+                'currency'              : user_.currency,
+                'total_balance'         : acc.total_balance,
+                'user_currency_symbol'  : currency,
+                'object'                : acc,
+                'wallets'               : wallets
+            }
+            return render(request, 'accounts/home.html', context)
     else:
         raise PermissionDenied
 
