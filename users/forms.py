@@ -1,3 +1,5 @@
+import phonenumbers
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
@@ -67,6 +69,17 @@ class RegisterForm(UserCreationForm):
         label="Phone Number",
         widget=forms.TextInput(attrs={"placeholder": "999-999-9999"}),
     )
+
+    def clean(self):
+        cleaned_data = super(RegisterForm, self).clean()
+
+        # checking to see if username has at least 5 characters
+        username = cleaned_data.get('username')
+        if len(username) < 5:
+            self.add_error('username', _("Please choose a username with at least 5 characters."))
+
+        return cleaned_data
+
 
     class Meta:
         model = CustomUser

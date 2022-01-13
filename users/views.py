@@ -181,9 +181,15 @@ def PersonalCountryPickSignUp(request):
 
         all_countries = data.items()
 
+
+        # if request.htmx:
+        #     return render(request, "users/partials/forms.html", context)
+
         if request.method == "POST":
+            # default_submit = request.POST.get('default-submit')
+            # print(request.POST)
             default_country_picker = request.POST.get('default-country-picker')
-            if default_country_picker != None:
+            if default_country_picker != None: 
                 response = redirect(reverse("personal-sign-up", kwargs={"country" : default_country[1]}))
                 response.set_cookie(settings.LANGUAGE_COOKIE_NAME, default_country[1])
                 return response
@@ -224,6 +230,14 @@ def PersonalSignUp(request, country):
         ext = phonenumbers.country_code_for_region(country)
         if request.method == "POST":
             form = RegisterForm(request.POST)
+
+            # phone number checking
+            phone_num = request.POST.get('phone_number')
+            phone_number = phonenumbers.is_valid_number(phonenumbers.parse(f'+{ext}{phone_num}'))
+            # print(f'+{ext}{phone_num}')
+            if phone_number is False:
+                form.add_error('phone_number', _('Please enter a correct phone number'))
+                
             if form.is_valid():
                 user = {
                     'username'      : form.cleaned_data.get("username"),
@@ -357,7 +371,7 @@ def referral_verify_view(request, backend='django.contrib.auth.backends.ModelBac
                 user_.save()
                 login(request, user_, backend)
 
-                account.objects.create(created_by=user_, bonus=1200, pk=user_.pk)
+                account.objects.create(created_by=user_, bonus=1200, main_currency=currency, pk=user_.pk)
 
                 giver_name = ReferralCode.objects.get(referral_code=enterd_code).user
                 new_bal = account.objects.get(created_by=giver_name).total_balance
@@ -395,7 +409,7 @@ def referral_verify_view(request, backend='django.contrib.auth.backends.ModelBac
                 print(user_.pk)
                 login(request, user_, backend)
 
-                account.objects.create(created_by=user_, pk=user_.pk)
+                account.objects.create(created_by=user_, main_currency=currency, pk=user_.pk)
 
                 messages.success(
                     request, _(f"You have successfully registered, {user['username']} !")
@@ -409,7 +423,7 @@ def referral_verify_view(request, backend='django.contrib.auth.backends.ModelBac
                 user_.save()
                 login(request, user_, backend)
 
-                account.objects.create(created_by=user_, pk=user_.pk)
+                account.objects.create(created_by=user_, main_currency=currency, pk=user_.pk)
                 
                 messages.success(
                     request,

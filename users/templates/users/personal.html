@@ -28,7 +28,7 @@
                     {% endfor %}
                 {% endif %}
                 <div id="usernameHelp" class="form-text text-white">
-                    {% trans "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only." %}
+                    {% blocktrans with help=form.username.help_text %} {{ help }} {% endblocktrans %}
                 </div>
             </div>
             {% else %}
@@ -39,7 +39,7 @@
                     {% trans "Username" %}<span class="asteriskField">*</span>
                 </label>
                 <div id="usernameHelp" class="form-text text-white">
-                    {% trans "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only." %}
+                    {% blocktrans with help=form.username.help_text %} {{ help }} {% endblocktrans %}
                 </div>
             </div>
             {% endif %}

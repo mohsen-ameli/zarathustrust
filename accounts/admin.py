@@ -1,13 +1,21 @@
 from django.contrib import admin
-from .models import account, account_interest, transaction_history
+from django.db.models import fields
+from . import models
 from users.models import CustomUser
 
 class detailsAdmin(admin.ModelAdmin):
-    model = account
+    model = models.account
 
-    fields=('created_by',  'total_balance', ('add_money', 'take_money'), 'bonus')
+    fields=('created_by', 'main_currency', 'total_balance', ('add_money', 'take_money'), 'bonus')
 
 
-admin.site.register(account, detailsAdmin)
-admin.site.register(account_interest)
-admin.site.register(transaction_history)
+class detailsTransactions(admin.ModelAdmin):
+    model = models.transaction_history
+
+    fields = ('person', 'second_person', ('price', 'ex_rate', 'ex_price'), 'purpose_of_use', 'method')
+
+
+admin.site.register(models.account, detailsAdmin)
+admin.site.register(models.BranchAccounts)
+admin.site.register(models.account_interest)
+admin.site.register(models.transaction_history, detailsTransactions)

@@ -37,7 +37,24 @@
                 <h1>{% trans "Ballance" %}</h1>
             </div>
         </div>
-        <br>
+        <div class="mb-4">
+            <!-- <a class="neon-button" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                Wallets
+            </a>
+
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                {% for wallet in wallets %}
+                    <li>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <button type="submit" name="wallet-currency" value="{{ wallet.0 }}{{ wallet.currency }}" class="dropdown-item">
+                                {{ wallet.0 }}{{ wallet.currency }}
+                            </button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul> -->
+        </div>
         <!-- bottom part (card) -->
         <div class="card text-white home-card">
             <div class="card-body">
@@ -53,8 +70,14 @@
                     {% endif %}
                 </h5>
                 <hr>
-                <h1 class="fw-normal">{{ user_currency_symbol }}{{ object.total_balance }}</h1>
-                {% trans "Current Balance" %}
+                <h1 class="fw-normal">
+                    {% if wallet_symbol %}
+                        {{ wallet_symbol }}{{ total_balance }}
+                    {% else %}
+                        {{ user_currency_symbol }}{{ total_balance }}
+                    {% endif %}
+                </h1>
+                {% trans "Current Balance" %} ({{ currency }})
             </div>
         </div>
     </div>

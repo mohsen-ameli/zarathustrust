@@ -84,14 +84,26 @@
                     </font>
                 {% endif %}
 
-                {% if each.second_person.created_by.username == user.get_username or each.method == "Deposit" or each.method == "Cash Out" %}
-                    <font class="float-end" style="color: rgb(0, 255, 0); font-size: large;">
-                        +{{ user_currency_symbol }}{{ each.price }}
-                    </font>
+                {% if each.method != "Transfer" %}
+                    {% if each.second_person.created_by.username == user.get_username or each.method == "Deposit" or each.method == "Cash Out" %}
+                        <font class="float-end" style="color: rgb(0, 255, 0); font-size: large;">
+                            +{{ user_currency_symbol }}{{ each.price }}
+                        </font>
+                    {% else %}
+                        <font class="float-end" style="color: rgb(255, 74, 74); font-size: large;">
+                            -{{ user_currency_symbol }}{{ each.price|floatformat:1 }}
+                        </font>
+                    {% endif %}
                 {% else %}
-                    <font class="float-end" style="color: rgb(255, 74, 74); font-size: large;">
-                        -{{ user_currency_symbol }}{{ each.price|floatformat:1 }}
-                    </font>
+                    {% if each.second_person.created_by.username == user.get_username %}
+                        <font class="float-end" style="color: rgb(0, 255, 0); font-size: large;">
+                            +{{ user_currency_symbol }}{{ each.ex_price }}
+                        </font>
+                    {% else %}
+                        <font class="float-end" style="color: rgb(255, 74, 74); font-size: large;">
+                            -{{ user_currency_symbol }}{{ each.price|floatformat:1 }}
+                        </font>
+                    {% endif %}
                 {% endif %}
             </p>
             <small style="color: rgba(255, 255, 255, 0.7);">{{ each.date|date:'l \a\t g:iA' }} • {{ each.method }}</small>

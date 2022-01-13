@@ -23,6 +23,7 @@ class account(models.Model):
     bonus             = models.DecimalField(decimal_places=1, max_digits=10, null=True, default=1000)
     target_account    = models.CharField(max_length=30, null=True, blank=True)
     money_to_send     = models.PositiveIntegerField(null=True, default=0)
+    main_currency     = models.CharField(max_length=6, null=True)
 
     def save(self, *args, **kwargs):
         if self.add_money:
@@ -46,11 +47,22 @@ class account(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.created_by}, {self.pk}'
+        return f'Username : {self.created_by}, Currency : {self.main_currency}'
 
     def get_absolute_url(self):
         # return '%s/account_profile/' % 18
         return reverse('accounts:account-profile', kwargs={'pk':self.pk})
+
+
+class BranchAccounts(models.Model):
+    main_account    = models.ForeignKey(account, on_delete=models.SET_NULL, null=True, blank=True)
+    total_balance   = models.DecimalField(decimal_places=2, max_digits=10, null=True, default=0)
+    add_money       = models.DecimalField(decimal_places=1, max_digits=10, null=True, blank=True)
+    take_money      = models.DecimalField(decimal_places=1, max_digits=10, null=True, blank=True)
+    currency        = models.CharField(max_length=6, null=True)
+
+    def __str__(self):
+        return f'Username : {self.main_account.created_by}, Currency : {self.currency}'
 
 
 class account_interest(models.Model):
@@ -63,10 +75,12 @@ class account_interest(models.Model):
 
 class transaction_history(models.Model):
     # prolly dont actually have to have this set as a foreign key
-    person              = models.ForeignKey(account, on_delete=models.SET_NULL, null=True, blank=True)
+    person              = models.ForeignKey(account, on_delete=models.SET_NULL, null=True)
     second_person       = models.ForeignKey(account, on_delete=models.SET_NULL, null=True, blank=True, related_name="second_person")
     date                = models.DateTimeField(auto_now_add=True)
     price               = models.DecimalField(decimal_places=1, max_digits=10)
+    ex_rate             = models.DecimalField(decimal_places=4, max_digits=10, null=True, blank=True, default=0)
+    ex_price            = models.DecimalField(decimal_places=1, max_digits=10, null=True, blank=True, default=0)
     purpose_of_use      = models.CharField(max_length=500, null=True, blank=True, default="None")
     method              = models.CharField(max_length=100, default="None")   
 

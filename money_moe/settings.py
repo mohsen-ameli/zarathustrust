@@ -29,7 +29,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = config.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 if not DEBUG:
     ALLOWED_HOSTS = ['99.240.225.244', 'www.zarathustrust.com']
@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "mathfilters",
     "django_countries",
     "crispy_bootstrap5",
+    "django_htmx",
     # "django_elasticsearch_dsl",
     "django.contrib.postgres",
     "django.contrib.admin",
@@ -71,6 +72,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "axes.middleware.AxesMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -104,12 +106,25 @@ WSGI_APPLICATION = "money_moe.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+# SQLITE3
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     }
 }
+
+# POSTGRESQL
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql_psycopg2",
+#         "NAME": config.get("db_name"),
+#         "USER": config.get("db_user"),
+#         "PASSWORD": config.get("db_pass"),
+#         "HOST": config.get("db_host"),
+#         "PORT": config.get("db_port"),
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

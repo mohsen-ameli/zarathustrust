@@ -24,6 +24,12 @@ class CustomUser(AbstractUser):
         return f'{self.username}, pk: {self.pk}'
 
 
+CustomUser._meta.get_field('username').max_length = 15
+CustomUser._meta.get_field('username').help_text = _(
+    'Required. 5-15 characters allowed. Letters, digits and @/./+/-/_ only.')
+
+
+
 class code(models.Model):
     user                = CharField(max_length=15, null=True)
     email_verify_code   = PositiveIntegerField(blank=True)
