@@ -39,6 +39,9 @@ searchInput.addEventListener('keyup', e=>{
     if (resultsBox.classList.contains('not-visible')) {
         resultsBox.classList.remove('not-visible')
     }
-
-    sendSearchData(e.target.value)
+    if (e.target.value.length >= 5){
+        sendSearchData(e.target.value)
+    } else {
+        resultsBox.innerHTML = `<div class="list-group-item"><b>No accounts were found.</b></div>`
+    }
 })
