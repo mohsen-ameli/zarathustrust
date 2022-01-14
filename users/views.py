@@ -57,7 +57,7 @@ def get_country_lang(country_code):
     country_code = country_code.upper()
     # project = os.path.abspath(os.path.dirname(__name__)) # root of django project
     project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    file = f'{project}/country_languages.json' # getting the file containing all country codes
+    file = f'{project}/json/country_languages.json' # getting the file containing all country codes
     with open(file, 'r') as config_file: # opening and reading the json file
         data = json.load(config_file)
     langs = data[country_code] # searching for our specific country code
@@ -70,7 +70,7 @@ def get_country_currency(country_code):
     country_code = country_code.upper()
     # project = os.path.abspath(os.path.dirname(__name__)) # root of django project
     project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    file = f'{project}/country_currencies.json' # getting the file containing all country codes
+    file = f'{project}/json/country_currencies.json' # getting the file containing all country codes
     with open(file, 'r') as config_file: # opening and reading the json file
         data = json.load(config_file)
 
@@ -140,7 +140,7 @@ def business(request):
 def CountryDict(search):
     # project = os.path.abspath(os.path.dirname(__name__)) # root of django project
     project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    file = f'{project}/country_names.json' # getting the file containing all country codes
+    file = f'{project}/json/country_names.json' # getting the file containing all country codes
     with open(file, 'r') as config_file: # opening and reading the json file
         data = json.load(config_file)
 
@@ -175,7 +175,7 @@ def PersonalCountryPickSignUp(request):
 
         # project = os.path.abspath(os.path.dirname(__name__)) # root of django project
         project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        file = f'{project}/country_names.json' # getting the file containing all country codes
+        file = f'{project}/json/country_names.json' # getting the file containing all country codes
         with open(file, 'r') as config_file: # opening and reading the json file
             data = json.load(config_file)
 

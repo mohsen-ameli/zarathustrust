@@ -53,7 +53,7 @@ def cookie_monster(request):
 def currency_symbol(country_code):
     country_code = country_code.upper()
     project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    file = f'{project}/currencies_symbols.json' # getting the file containing all country codes
+    file = f'{project}/json/currencies_symbols.json' # getting the file containing all country codes
     with open(file, 'r') as config_file: # opening and reading the json file
         data = json.load(config_file)
 
@@ -131,7 +131,7 @@ def LandingPageView(request):
         country_code = country.upper()
         # project = os.path.abspath(os.path.dirname(__name__)) # root of django project
         project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        file = f'{project}/country_languages.json' # getting the file containing all country codes
+        file = f'{project}/json/country_languages.json' # getting the file containing all country codes
         with open(file, 'r') as config_file: # opening and reading the json file
             data = json.load(config_file)
         langs = data[country_code] # searching for our specific country code
