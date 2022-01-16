@@ -51,9 +51,6 @@ searchInput.addEventListener('keyup', e=>{
     if (e.target.value.length >= 5){
         sendSearchData(e.target.value)
     } else {
-<<<<<<< HEAD
-        resultsBox.innerHTML = `<div class="list-group-item"><b>No accounts were found.</b></div>`
-=======
         resultsBox.innerHTML = `
             <li>
                 <a class="dropdown-item disabled" style="text-transform: capitalize; color: black;">
@@ -61,6 +58,5 @@ searchInput.addEventListener('keyup', e=>{
                 </a>
             </li>
         `
->>>>>>> 0a7e173a5d74791019f1e720f747ffd1375407c9
     }
 })
