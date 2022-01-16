@@ -17,13 +17,22 @@ const sendSearchData = (typed) => {
                 resultsBox.innerHTML = ""
                 result.forEach(person=>{
                     resultsBox.innerHTML += `
-                    <a href="${person.username}" class="list-group-item list-group-item-action list-group-item-light">
-                    <b>${person.username}</b>
-                    </a>`
+                    <li>
+                        <a class="dropdown-item" href="${person.username}" style="text-transform: capitalize;">
+                        ${person.username}
+                        </a>
+                    </li>
+                `
                 })
             } else { // we didn't find any accounts
                 if (searchInput.value.length > 0) {
-                    resultsBox.innerHTML = `<div class="list-group-item"><b>${result}</b></div>`
+                    resultsBox.innerHTML = `
+                        <li>
+                            <a class="dropdown-item disabled" style="text-transform: capitalize; color: black;">
+                                <b>${result}</b>
+                            </a>
+                        </li>
+                    `
                 } else {
                     resultsBox.classList.add('not-visible')
                 }
@@ -42,6 +51,12 @@ searchInput.addEventListener('keyup', e=>{
     if (e.target.value.length >= 5){
         sendSearchData(e.target.value)
     } else {
-        resultsBox.innerHTML = `<div class="list-group-item"><b>No accounts were found.</b></div>`
+        resultsBox.innerHTML = `
+            <li>
+                <a class="dropdown-item disabled" style="text-transform: capitalize; color: black;">
+                    <b>{% trans "No accounts were found." %}</b>
+                </a>
+            </li>
+        `
     }
 })

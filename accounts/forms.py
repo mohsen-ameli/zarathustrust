@@ -1,13 +1,13 @@
 from django import forms
-from django.forms import ModelForm
 from django.utils.translation import ugettext_lazy as _
 from .models import account
+from users.models import CustomUser
 from crispy_bootstrap5.bootstrap5 import FloatingField
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout
 
 
-class AddMoneyForm(ModelForm):
+class AddMoneyForm(forms.ModelForm):
     add_money  = forms.DecimalField(label=_('Enter Amount'),
         widget = forms.TextInput(attrs={'placeholder': '$0.0'}))
 
@@ -24,7 +24,7 @@ class AddMoneyForm(ModelForm):
         )
 
 
-class TakeMoneyForm(ModelForm):
+class TakeMoneyForm(forms.ModelForm):
     take_money = forms.DecimalField(label=_('Enter Amount'), 
         widget = forms.TextInput(attrs={'placeholder': '$0.0'}))
 
@@ -59,3 +59,9 @@ class TransferSendForm(forms.ModelForm):
             FloatingField("money_to_send"),
             FloatingField("purpose"),
         )
+
+
+# class SettingsForm(forms.ModelForm):
+    
+#     class Meta:
+#         model = CustomUser

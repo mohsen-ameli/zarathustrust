@@ -1,0 +1,341 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed&display=swap');
+
+
+body {
+    overflow-x: hidden;
+    font-family: 'Roboto Condensed', sans-serif;
+}
+.offset:before {
+    height: 4rem;
+    margin-top: -4rem;
+    content: "";
+    display: block;
+}
+.offset-card:before {
+    height: 6rem;
+    margin-top: -6rem;
+    content: "";
+    display: block;
+}
+.padding {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+/*============= COURSE SECTION =============*/
+.narrow {
+    width: 75%;
+    margin: 1.5rem auto;
+    padding-top: 2rem;
+}
+.btn-secondary {
+    border-width: medium;
+    border-radius: 0;
+    padding: .6rem 1.2rem;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    margin: 1rem;
+    border-color: #1EBBA3;
+    background-color: #1EBBA3;
+    color: white;
+}
+.btn-secondary:hover,
+.btn-secondary:focus {
+    border-color: #189582;
+    background-color: #189582;
+    color: white;
+}
+/*============= Video Backgoround ================*/
+.video-wrap {
+    clip: rect(0, auto, auto, 0);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+#video {
+    position: fixed;
+    display: block;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center center;
+    -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+    will-change: transform;
+    z-index: -1000;
+}
+video { 
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -100;
+    transform: translateX(-50%) translateY(-50%);
+    background: url('') no-repeat;
+    background-size: cover;
+    transition: 1s opacity;
+}
+.video-background {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+.video-background1 {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+/*=============  ================*/
+
+
+
+/*==== Image Slider =====*/
+.carousel-item :active {
+    transition: transform 2s ease;
+}
+.carousel-item img {
+    height: 100%;
+    width: 100%;
+}
+.carousel-caption {
+    position: absolute;
+    top: 40%;
+    text-transform: uppercase;
+}
+.carousel-caption h3 {
+    font-weight: 600;
+    font-size: 1.5cm;
+}
+.carousel-caption p {
+    font-size: 5.5mm;
+}
+.carousel-caption button {
+    color: white;
+    background-color: rgba(0, 0, 0, 0);
+    border: 2px solid rgb(226, 226, 226);
+    text-transform: uppercase;
+}
+.carousel-caption button:hover {
+    color: #1ebba3;
+    background-color: rgba(255, 255, 255, 0);
+    border: 2px solid #1ebba3;
+}
+.carousel-caption button:active {
+    background-color: #1ebba3;
+    color: white;
+    border: 2px solid #1ebba3;
+}
+
+/*==== Portfolio ====*/
+.jumbotron {
+    padding-bottom: 2rem;
+}
+.jumbo1 {
+    margin-bottom: 0rem;
+}
+.jumbo-h3 {
+    font-size: 12mm;
+    font-weight: 500;
+}
+.special-hr {
+    width: 5rem;
+    border-top: 3px solid #1ebba3;
+}
+.portfolio img {
+    max-width: 100%;
+    max-height: 100%;
+    opacity: 0.9;
+    transition: transform 0.5s ease;
+}
+.portfolio img:hover {
+    transform: scale(1.1);
+    cursor: zoom-in;
+}
+.portfolio {
+    overflow: hidden;
+}
+.btn-outline-info {
+    border: 2px solid rgb(0, 0, 0);
+    border-radius: 0mm;
+    color: black;
+    margin-right: 1.5rem;
+}
+.btn-outline-info:hover {
+    border: 2px solid #1ebba3;
+    background-color: rgba(0, 0, 0, 0);
+    color: #1ebba3;
+}
+.btn-outline-info:active {
+    border: 2px solid #1ebba3;
+    background-color: #1ebba3;
+    color: white;
+}
+.narrow.text-center h2{
+    padding-bottom: 2rem;
+}
+
+/*==== Fixed Background ====*/
+.fixed {
+    background-image: url(../../../media/Nuno_img/mac.png);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    z-index: -1;
+    width: 100%;
+    height: 800px;
+}
+
+/*==== Client ====*/
+.jumbo2 {
+    margin-bottom: 0;
+}
+.quote-img {
+    width: 10rem;
+    height: 10rem;
+    border-radius: 20rem;
+}
+.fa-quote-left {
+    font-size: 2rem;
+    color: #1ebba3;
+    margin: 1rem;
+}
+.quote-hr {
+    border-top: 1px solid #1ebba3;
+}
+
+/*==== Footer ====*/
+footer {
+    background: rgb(58, 58, 58);
+    color: white;
+    padding: 2rem 0 2rem;
+}
+.col-md-5 h3 {
+    padding: 1rem;
+}
+.socket {
+    width: 100%;
+    border-top: 2px solid #1ebba3;
+}
+#social a {
+    color: white;
+    font-size: 2.5em;
+    padding: 1rem 1rem 0;
+}
+#social a:hover {
+    color: #1ebba3;
+}
+
+
+/*==== Media Queries ====*/
+
+
+@media (max-width: 992px) {
+.btn-outline-info {
+    margin-bottom: 1rem;
+    background-color: rgba(0, 0, 0, 0);
+}
+/* Image Slider */
+.carousel-caption {
+    position: absolute;
+    top: 30%;
+    text-transform: uppercase;
+}
+.carousel-caption h3 {
+    font-weight: 400;
+    font-size: 1.5cm;
+}
+/* Clients */
+.quote-img {
+    width: 8rem;
+    height: 8rem;
+    border-radius: 20rem;
+}
+}
+@media (max-width: 768px) {
+
+.btn-outline-info {
+    margin-bottom: 1rem;
+    background-color: rgba(0, 0, 0, 0);
+}
+/* Image Slider */
+.carousel-caption {
+    position: absolute;
+    top: 20%;
+    text-transform: uppercase;
+}
+.carousel-caption h3 {
+    font-weight: 300;
+    font-size: 1cm;
+}
+.carousel-caption p {
+    font-size: 4.5mm;
+}
+.carousel-caption button {
+    font-size: 1rem;
+}
+/* Clients */
+.quote-img {
+    display: block;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    width: 15rem;
+    height: 15rem;
+    border-radius: 20rem;
+}
+.quote-client {
+    text-align: center;
+    margin-top: 2rem;
+}
+}
+@media (max-width: 576px) {
+    .btn-outline-info {
+    margin-bottom: 1rem;
+    background-color: rgba(0, 0, 0, 0);
+}
+/* Image Slider */
+.carousel-caption {
+    position: absolute;
+    top: 20%;
+    text-transform: uppercase;
+}
+.carousel-caption h3 {
+    font-weight: 300;
+    font-size: 8mm;
+}
+.carousel-caption p {
+    font-size: 4mm;
+}
+.carousel-caption button {
+    font-size: 1rem;
+}
+}
+
+/*============ BOOTSTRAP BREAK POINTS:
+
+MAX-WIDTH is from that pixel point and below, 
+MIN-WIDTH is from that pixel point and above
+
+Extra small (xs) devices (portrait phones, less than 576px)
+No media query since this is the default in Bootstrap
+
+Small (sm) devices (landscape phones, 576px and up)
+@media (min-width: 576px) { ... }
+
+Medium (md) devices (tablets, 768px and up)
+@media (min-width: 768px) { ... }
+
+Large (lg) devices (desktops, 992px and up)
+@media (min-width: 992px) { ... }
+
+Extra (xl) large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) { ... }
+
+=============*/

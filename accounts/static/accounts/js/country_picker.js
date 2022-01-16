@@ -16,21 +16,22 @@ const country_selector = (typed) => {
         },
         success : (response) =>{
             const incoming = response.data
-            if (Array.isArray(incoming)) {
-                NewCountryList.innerHTML = ""
+            if (Array.isArray(incoming)) { // if response is an array
                 incoming.forEach(country => {
-                    NewCountryList.innerHTML += `
-                    <li>
-                        <a class="dropdown-item" href="/register/personal/${country[1]}" style="text-transform: capitalize;">
-                            <span class="flag-icon flag-icon-${country[1].toLowerCase()} me-2"></span>${country[0]}
-                        </a>
-                    </li>
-                    `
+                    if (country[0].startsWith(typed)) {
+                        NewCountryList.innerHTML += `
+                        <li>
+                            <a class="dropdown-item" href="/register/personal/${country[1]}" style="text-transform: capitalize;">
+                                <span class="flag-icon flag-icon-${country[1].toLowerCase()} me-2"></span>${country[0]}
+                            </a>
+                        </li>
+                        `
+                    }
                 })
             } else {
                 NewCountryList.innerHTML = `
                 <li class="dropdown-item disabled" style="color: black;">
-                    <b>No countries were found.</b>
+                    <b>{% trans "No countries were found." %}</b>
                 </li>
                 `
             }
@@ -42,6 +43,15 @@ const country_selector = (typed) => {
 }
 
 FormInput.addEventListener('keyup', e=>{
-    FormList.style.display = 'none'
-    country_selector(e.target.value)
+    NewCountryList.innerHTML = ""
+    if (e.target.value.length > 0 && e.target.value != '') {
+        FormList.style.display = 'none'
+        country_selector(e.target.value)
+    } else {
+        NewCountryList.innerHTML = `
+            <li class="dropdown-item disabled" style="color: black;">
+                <b>{% trans "No countries were found." %}</b>
+            </li>
+        `
+    }
 })
