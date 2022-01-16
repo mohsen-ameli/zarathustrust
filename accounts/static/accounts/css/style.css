@@ -63,6 +63,14 @@ button:link {
 } */
 /********** end **********/
 
+/* carousel */
+.carousel-caption {
+  position: absolute;
+  top: 45%;
+  text-transform: uppercase;
+}
+/* end */
+
 
 /********** Tooltip **********/    
 .bs-tooltip-auto[x-placement^="bottom"] .arrow::before,
@@ -375,25 +383,22 @@ button.swal2-confirm.swal2-styled:hover::after {
 
 
 /************ Pagination ************/
-.pagination > li > a
-{
-    background-color: #6c757d;
-    color: #fff;
-    border-color: rgb(185, 185, 185);
+.pagination > li > a {
+  background-color: #6c757d;
+  color: #fff;
+  border-color: rgb(185, 185, 185);
 }
 .pagination > li > a:focus,
 .pagination > li > a:hover,
 .pagination > li > span:focus,
-.pagination > li > span:hover
-{
-    color: #5a5a5a;
-    background-color: #eee;
-    border-color: #ddd;
+.pagination > li > span:hover {
+  color: #5a5a5a;
+  background-color: #eee;
+  border-color: #ddd;
 }
-.pagination > .active > a:hover
-{
-    background-color: #5A4181 !Important;
-    border: solid 1px #5A4181;
+.pagination > .active > a:hover {
+  background-color: #5A4181 !Important;
+  border: solid 1px #5A4181;
 }
 #myBtn {
   display: none;
@@ -415,7 +420,8 @@ button.swal2-confirm.swal2-styled:hover::after {
 
 /* XXS */
 @media (max-width: 450px) {
-  .list-group {
+  #new-country-list,
+  #results-box {
     width: 20rem;
   }
   .counter-interest {
@@ -432,7 +438,8 @@ button.swal2-confirm.swal2-styled:hover::after {
 }
 /* XS */
 @media (min-width: 450px) {
-  .list-group {
+  #new-country-list,
+  #results-box {
     width: 26rem;
   }
   .counter-interest {
@@ -449,7 +456,8 @@ button.swal2-confirm.swal2-styled:hover::after {
 }
 /* SM */
 @media (min-width: 576px) {
-  .list-group {
+  #new-country-list,
+  #results-box {
     width: 30rem;
   }
   .counter-interest {
@@ -466,7 +474,8 @@ button.swal2-confirm.swal2-styled:hover::after {
 }
 /* MD */
 @media (min-width: 768px) {
-  .list-group {
+  #new-country-list,
+  #results-box {
     width: 32rem;
   }
   .counter-interest {
@@ -518,9 +527,6 @@ button.swal2-confirm.swal2-styled:hover::after {
   .counter-interest {
     font-size: 30pt;
   }
-  .home-card {
-    min-width: 24rem;
-  }
   .container,
   .container-sm,
   .container-md,
@@ -538,9 +544,6 @@ button.swal2-confirm.swal2-styled:hover::after {
 @media (min-width: 1600px) {
   .msg-alert {
     width: 1000px !important;
-  }
-  .home-card {
-    min-width: 24rem;
   }
   .container,
   .container-sm,

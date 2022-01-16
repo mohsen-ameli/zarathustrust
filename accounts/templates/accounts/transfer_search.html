@@ -12,12 +12,24 @@
 
             <form id="search-form" autocomplete="off" spellcheck="false">
                 {% csrf_token %}
-                <div class="form-group form-floating">
-                    <input type="text" id="search-input" class="form-control" placeholder="Type">
-                    <label for="search-input">Username or Email or Phone Number</label>
+
+
+                <div class="dropdown form-floating">
+                    <!-- INPUT -->
+                    <input type="text" id="search-input" class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
+                        placeholder="Country">
+                    <label for="search-input">{% trans "Username or Email or Phone Number" %}</label>
+                    <!-- LIST -->
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" id="results-box">
+                        <li id="country-list">
+                            <a class="dropdown-item disabled" style="text-transform: capitalize; color: black;">
+                                <b>No accounts were found.</b>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
+
             </form>
-            <div class="list-group shadow bg-body not-visible align-self-center" style="color: black; position: absolute;" id="results-box"></div>
         </form>
     </div>
 </div>

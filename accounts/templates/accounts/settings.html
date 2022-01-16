@@ -1,0 +1,36 @@
+{% extends "accounts/base.html" %}
+{% load i18n %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+<!-- spinner -->
+<div id="spinnner"></div>
+
+<div class="card text-white zarathus-card mx-auto">
+    <div class="card-body" style="padding: 1.5rem;">
+        <form method="POST" id="form-swal">
+            {% csrf_token %}
+            <h3 class="fw-normal text-center">{% trans "Settings" %}</h3>
+            <hr>
+
+            <a class="neon-button my-3" href="{% url 'accounts:settings-country' pk=user.pk %}">Change the default country</a>
+            <br>
+            <a class="neon-button my-3" href="">Change the default language</a>
+            <br>
+            <a class="neon-button my-3" href="">Transfer to a business account</a>
+
+            <!-- <div class="d-flex mb-3 mt-4">
+                <button class="neon-button-green me-4" type="submit" id="Action">{% trans "Save Changes" %}</button>
+                <button class="neon-button" type="submit" id="Action">{% trans "Back to Home" %}</button>
+            </div> -->
+        </form>
+    </div>
+</div>
+
+<script>
+    var currency = '{{ user_currency_symbol }}'
+</script>
+
+<script src="{% static 'accounts/js/withdraw.js' %}"></script>
+
+{% endblock content %}

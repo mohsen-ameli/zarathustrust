@@ -33,6 +33,7 @@ with open('/etc/config.json') as config_file:
     config = json.load(config_file)
 
 
+
 # test function to see if the user tryna see the page is allowed to do so
 def correct_user(pk):
     if pk == get_current_user().pk:
@@ -59,6 +60,7 @@ def currency_symbol(country_code):
 
     return data[country_code]
     
+
 
 ############# Function Based Views ############
 @login_required
@@ -150,6 +152,28 @@ def new_dunc(request):
         return render(request, 'accounts/new_dunc.html')
     else:
         return HttpResponse("<h1>How tf did u find this page ... smh ... script kiddies these days jeez</h1>")
+
+
+# Settings
+def Settings(request, pk):
+    context = {
+        "pk" : pk
+    }
+    return render(request, "accounts/settings.html", context)
+
+
+def SettingsCountry(request, pk):
+    # project = os.path.abspath(os.path.dirname(__name__)) # root of django project
+    project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    file = f'{project}/json/country_names.json' # getting the file containing all country codes
+    with open(file, 'r') as config_file: # opening and reading the json file
+        data = json.load(config_file)
+
+    all_countries = data.items()
+    context = {
+        "countries" : all_countries
+    }
+    return render(request, "accounts/settings_country.html", context)
 
 
 # Transfer Sending

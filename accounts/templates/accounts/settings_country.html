@@ -1,0 +1,52 @@
+{% extends "accounts/base.html" %}
+{% load i18n %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="card text-white zarathus-card mx-auto">
+    <div class="card-body">
+        <h3 class="fw-normal text-center">{% trans "Please Choose a Country" %}</h3>
+        <hr>
+
+        <form method="POST" autocomplete="off">
+            {% csrf_token %}
+
+            <div class="dropdown form-floating">
+                <!-- INPUT -->
+                {% if default_country != None %}
+                    <input type="text" class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
+                        placeholder="Country" onClick="this.setSelectionRange(0, this.value.length)" name="default-country-picker"
+                        id="country-input" value="{{ default_country }}" >
+                    <label for="country-input">{% trans "Please choose a country" %}</label>
+                    <button type="submit" class="neon-button my-3" name="default-submit" value="{{ default_country }}">{% trans "Next" %}</button>
+                {% else %}
+                    <input type="text" class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
+                        placeholder="Country" onClick="this.setSelectionRange(0, this.value.length)"
+                        id="country-input">
+                    <label for="country-input">{% trans "Please choose a country" %}</label>
+                    <button type="submit" class="neon-button my-3" name="default-submit" value="canada">{% trans "Next" %}</button>
+                {% endif %}
+                <!-- LIST -->
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" id="new-country-list">
+                    <li id="country-list">
+                        {% for code, country in countries %}
+                            <a class="dropdown-item" href="/register/personal/{{ code }}" style="text-transform: capitalize;">
+                                <span class="flag-icon flag-icon-{{ code|lower }} me-2"></span>{{ country }}
+                            </a>
+                        {% endfor %}
+                    </li>
+                </ul>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+<script>
+    const default_country = '{{ default_country }}'
+</script>
+<script src="{% static 'accounts/js/country_picker.js' %}"></script>
+
+{% endblock content %}
