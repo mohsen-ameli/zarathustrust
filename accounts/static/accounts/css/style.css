@@ -422,6 +422,9 @@ button.swal2-confirm.swal2-styled:hover::after {
 @media (max-width: 450px) {
   #new-country-list,
   #results-box {
+    width: 18rem;
+  }
+  .list-group {
     width: 20rem;
   }
   .counter-interest {
@@ -442,6 +445,9 @@ button.swal2-confirm.swal2-styled:hover::after {
   #results-box {
     width: 26rem;
   }
+  .list-group {
+    width: 26rem;
+  }
   .counter-interest {
     font-size: 20pt;
   }
@@ -460,6 +466,9 @@ button.swal2-confirm.swal2-styled:hover::after {
   #results-box {
     width: 30rem;
   }
+  .list-group {
+    width: 30rem;
+  }
   .counter-interest {
     font-size: 20pt;
   }
@@ -476,6 +485,9 @@ button.swal2-confirm.swal2-styled:hover::after {
 @media (min-width: 768px) {
   #new-country-list,
   #results-box {
+    width: 32rem;
+  }
+  .list-group {
     width: 32rem;
   }
   .counter-interest {
