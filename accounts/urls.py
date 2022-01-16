@@ -12,6 +12,7 @@ urlpatterns = [
     path("new_dunc/", account_views.new_dunc),
     path("<int:pk>/settings/", account_views.Settings, name="settings"),
     path("<int:pk>/settings/country", account_views.SettingsCountry, name="settings-country"),
+    path("<int:pk>/settings/country/<str:country>", account_views.SettingsCountryConfirm, name="settings-country-confirm"),
     path("<int:pk>/transfer/", account_views.TransferSearchView, name="transfer-search"),
     path("transfer_search/search_results/", account_views.search_results),
     path("<int:pk>/transfer/<str:reciever_name>", account_views.TransferSendView, name="transfer-send"),

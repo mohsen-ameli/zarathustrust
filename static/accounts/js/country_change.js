@@ -21,7 +21,7 @@ const country_selector = (typed) => {
                     if (country[0].startsWith(typed)) {
                         NewCountryList.innerHTML += `
                         <li>
-                            <a class="dropdown-item" href="/register/personal/${country[1]}" style="text-transform: capitalize;">
+                            <a class="dropdown-item" href="/${pk}/settings/country/${country[1]}" style="text-transform: capitalize;">
                                 <span class="flag-icon flag-icon-${country[1].toLowerCase()} me-2"></span>${country[0]}
                             </a>
                         </li>
@@ -31,7 +31,7 @@ const country_selector = (typed) => {
             } else {
                 NewCountryList.innerHTML = `
                 <li class="dropdown-item disabled" style="color: black;">
-                    <b>{% trans "No countries were found." %}</b>
+                    <b>No countries were found.</b>
                 </li>
                 `
             }
@@ -50,7 +50,7 @@ FormInput.addEventListener('keyup', e=>{
     } else {
         NewCountryList.innerHTML = `
             <li class="dropdown-item disabled" style="color: black;">
-                <b>{% trans "No countries were found." %}</b>
+                <b>No countries were found.</b>
             </li>
         `
     }

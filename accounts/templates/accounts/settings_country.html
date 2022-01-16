@@ -31,7 +31,7 @@
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" id="new-country-list">
                     <li id="country-list">
                         {% for code, country in countries %}
-                            <a class="dropdown-item" href="/register/personal/{{ code }}" style="text-transform: capitalize;">
+                            <a class="dropdown-item" href="{% url 'accounts:settings-country-confirm' pk=user.pk country=code %}" style="text-transform: capitalize;">
                                 <span class="flag-icon flag-icon-{{ code|lower }} me-2"></span>{{ country }}
                             </a>
                         {% endfor %}
@@ -46,7 +46,8 @@
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 <script>
     const default_country = '{{ default_country }}'
+    const pk = '{{ user.pk }}'
 </script>
-<script src="{% static 'accounts/js/country_picker.js' %}"></script>
+<script src="{% static 'accounts/js/country_change.js' %}"></script>
 
 {% endblock content %}

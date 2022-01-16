@@ -19,7 +19,7 @@ const sendSearchData = (typed) => {
                     resultsBox.innerHTML += `
                     <li>
                         <a class="dropdown-item" href="${person.username}" style="text-transform: capitalize;">
-                        ${person.username}
+                            ${person.username}
                         </a>
                     </li>
                 `
@@ -48,13 +48,13 @@ searchInput.addEventListener('keyup', e=>{
     if (resultsBox.classList.contains('not-visible')) {
         resultsBox.classList.remove('not-visible')
     }
-    if (e.target.value.length >= 5){
+    if (e.target.value.length >= 3){
         sendSearchData(e.target.value)
     } else {
         resultsBox.innerHTML = `
             <li>
                 <a class="dropdown-item disabled" style="text-transform: capitalize; color: black;">
-                    <b>{% trans "No accounts were found." %}</b>
+                    <b>No accounts were found.</b>
                 </a>
             </li>
         `

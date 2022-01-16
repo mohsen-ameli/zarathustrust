@@ -154,6 +154,7 @@ def new_dunc(request):
         return HttpResponse("<h1>How tf did u find this page ... smh ... script kiddies these days jeez</h1>")
 
 
+@login_required
 # Settings
 def Settings(request, pk):
     context = {
@@ -162,8 +163,8 @@ def Settings(request, pk):
     return render(request, "accounts/settings.html", context)
 
 
+@login_required
 def SettingsCountry(request, pk):
-    # project = os.path.abspath(os.path.dirname(__name__)) # root of django project
     project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     file = f'{project}/json/country_names.json' # getting the file containing all country codes
     with open(file, 'r') as config_file: # opening and reading the json file
@@ -174,6 +175,18 @@ def SettingsCountry(request, pk):
         "countries" : all_countries
     }
     return render(request, "accounts/settings_country.html", context)
+
+
+@login_required
+def SettingsCountryConfirm(request, pk, country):
+    if request.method == "POST":
+        CustomUser.objects.filter(pk=pk).update(country=country)
+        messages.success(request, _("You have successfully updated your country !"))
+        return redirect(reverse('accounts:home', kwargs={"pk" : pk}))
+    context = {
+        "country" : country
+    }
+    return render(request, "accounts/settings_country_confirm.html", context)
 
 
 # Transfer Sending
@@ -331,7 +344,7 @@ def search_results(request):
         # getting the stuff that was typed in in transfer.html
         typed = request.POST.get('person')
         query = CustomUser.objects.all().filter(
-                    Q(email__icontains=typed) | Q(phone_number__icontains=typed) | Q(username__icontains=typed)
+                    Q(email__iexact=typed) | Q(phone_number__iexact=typed) | Q(username__iexact=typed)
                 )
         if len(query) > 0 and len(typed) > 2:
             res = None

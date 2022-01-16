@@ -13,16 +13,21 @@
             <h3 class="fw-normal text-center">{% trans "Settings" %}</h3>
             <hr>
 
-            <a class="neon-button my-3" href="{% url 'accounts:settings-country' pk=user.pk %}">Change the default country</a>
+            <a class="neon-button my-3" href="{% url 'accounts:settings-country' pk=user.pk %}">
+                {% trans "Change Your Default Country" %}
+            </a>
             <br>
-            <a class="neon-button my-3" href="">Change the default language</a>
+            <!-- <a class="neon-button my-3" href="#">
+                {% trans "Change Your Default Language" %}
+            </a>
             <br>
-            <a class="neon-button my-3" href="">Transfer to a business account</a>
-
-            <!-- <div class="d-flex mb-3 mt-4">
-                <button class="neon-button-green me-4" type="submit" id="Action">{% trans "Save Changes" %}</button>
-                <button class="neon-button" type="submit" id="Action">{% trans "Back to Home" %}</button>
-            </div> -->
+            <a class="neon-button my-3" href="#">
+                {% trans "Transfer To a Business Account" %}
+            </a>
+            <br> -->
+            <a class="neon-button my-3" href="{% url 'accounts:referral-code' user.account.pk %}">
+                {% trans "Invite a Friend" %}
+            </a>
         </form>
     </div>
 </div>
