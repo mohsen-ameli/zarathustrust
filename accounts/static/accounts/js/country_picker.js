@@ -31,7 +31,7 @@ const country_selector = (typed) => {
             } else {
                 NewCountryList.innerHTML = `
                 <li class="dropdown-item disabled" style="color: black;">
-                    <b>No countries were found.</b>
+                    <b>{% trans "No countries were found." %}</b>
                 </li>
                 `
             }
@@ -50,7 +50,7 @@ FormInput.addEventListener('keyup', e=>{
     } else {
         NewCountryList.innerHTML = `
             <li class="dropdown-item disabled" style="color: black;">
-                <b>No countries were found.</b>
+                <b>{% trans "No countries were found." %}</b>
             </li>
         `
     }

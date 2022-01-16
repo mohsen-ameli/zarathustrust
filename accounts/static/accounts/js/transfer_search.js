@@ -54,7 +54,7 @@ searchInput.addEventListener('keyup', e=>{
         resultsBox.innerHTML = `
             <li>
                 <a class="dropdown-item disabled" style="text-transform: capitalize; color: black;">
-                    <b>No accounts were found.</b>
+                    <b>{% trans "No accounts were found." %}</b>
                 </a>
             </li>
         `
