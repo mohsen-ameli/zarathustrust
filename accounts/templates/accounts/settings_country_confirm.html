@@ -9,7 +9,7 @@
             {% csrf_token %}
             <div class="d-flex mb-3 mt-4 justify-content-center">
                 <button class="neon-button-green me-4" type="submit" id="Action">{% trans "Save Changes" %}</button>
-                <button class="neon-button" type="submit" id="Action">{% trans "Back to Home" %}</button>
+                <a href="{% url 'accounts:home' pk=user.pk %}" class="neon-button">{% trans "Back to Home" %}</a>
             </div>
         </form>
     </div>

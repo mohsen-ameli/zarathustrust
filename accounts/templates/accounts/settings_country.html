@@ -14,19 +14,9 @@
 
             <div class="dropdown form-floating">
                 <!-- INPUT -->
-                {% if default_country != None %}
-                    <input type="text" class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
-                        placeholder="Country" onClick="this.setSelectionRange(0, this.value.length)" name="default-country-picker"
-                        id="country-input" value="{{ default_country }}" >
-                    <label for="country-input">{% trans "Please choose a country" %}</label>
-                    <button type="submit" class="neon-button my-3" name="default-submit" value="{{ default_country }}">{% trans "Next" %}</button>
-                {% else %}
-                    <input type="text" class="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
-                        placeholder="Country" onClick="this.setSelectionRange(0, this.value.length)"
-                        id="country-input">
-                    <label for="country-input">{% trans "Please choose a country" %}</label>
-                    <button type="submit" class="neon-button my-3" name="default-submit" value="canada">{% trans "Next" %}</button>
-                {% endif %}
+                <input type="text" id="country-input" class="form-control dropdown-toggle" 
+                data-bs-toggle="dropdown" aria-expanded="false" placeholder="Country">
+                <label for="country-input">{% trans "Please choose a country" %}</label>
                 <!-- LIST -->
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" id="new-country-list">
                     <li id="country-list">
