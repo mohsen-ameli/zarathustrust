@@ -1,6 +1,89 @@
 {% extends "accounts/base.html" %}
 {% load i18n %}
+{% load static %}
 {% block content %}
+<style>
+    .animated {
+        position:absolute;
+        top:0px;
+        right:0px;
+        bottom:0px;
+        left:0px;
+        background-color: #f8b119;
+        background-position: left top;
+        -webkit-animation-duration: 3s; animation-duration: 3s;
+        -webkit-animation-fill-mode: both;animation-fill-mode: both;
+    }
+    @-webkit-keyframes fadeOut {
+        0% {opacity: 1;}
+        100% {opacity: 0;}
+    }
+    @keyframes fadeOut {
+        0% {opacity: 1;}
+        100% {opacity: 0;}
+    }
+    .fadeOut {
+        -webkit-animation-name: fadeOut;
+        animation-name: fadeOut;
+    }
+ </style>
+
+<!-- <div class="animated fadeOut"></div> -->
+
+
+<style>
+    .elem {
+        position: absolute;
+        background-color: #f8b119;
+        top : 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        
+        animation-name: shrink;
+        animation-duration: 4s;
+        animation-iteration-count: 1;
+        animation-timing-function: linear;
+    }
+    @keyframes shrink {
+        from {
+            transform: scale(1);
+        }
+        to {
+            transform: translate(225px, 45%);
+        }
+    }
+    .test-animation {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
+        animation: test 7s;
+    }
+    .test-animation::after {
+        position: relative;
+    }
+    @keyframes test {
+        from {
+            z-index: 10000;
+            background-color: #f8b119;
+        }
+        to {
+            transform: scale(0.045);
+            background-image: url("../../static/accounts/images/zarathustrust_new.png");
+            background-repeat: no-repeat;
+            left: -65.5%;
+            top: -87.5%;
+            z-index: 10000;
+        }
+    }
+</style>
+
+<div class="test-animation"></div>
+
+
+
 <h3 class="text-capitalize text-center">{% trans "we pay you 2% interest on your balance !" %}</h5>
 <!---------- 2 buttons ---------->
 <div class="row text-center">
