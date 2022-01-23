@@ -138,6 +138,10 @@
             {% endif %}
         </ul>
     </nav>
+{% endif %}
+
+<!-- The home button at the bottom -->
+{% if counter > 0 %}
     <div class="text-center">
         <a class="neon-button" href="{% url 'accounts:home' pk=user.pk %}">Home</a>
     </div>
