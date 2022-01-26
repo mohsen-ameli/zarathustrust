@@ -59,29 +59,10 @@
         right: 0px;
         bottom: 0px;
         left: 0px;
-        animation: test 7s;
-    }
-    .test-animation::after {
-        position: relative;
-    }
-    @keyframes test {
-        from {
-            z-index: 10000;
-            background-color: #f8b119;
-        }
-        to {
-            transform: scale(0.045);
-            background-image: url("../../static/accounts/images/zarathustrust_new.png");
-            background-repeat: no-repeat;
-            left: -65.5%;
-            top: -87.5%;
-            z-index: 10000;
-        }
     }
 </style>
 
-<div class="test-animation"></div>
-
+<div class="test-animation" id="ani"></div>
 
 
 <h3 class="text-capitalize text-center">{% trans "we pay you 2% interest on your balance !" %}</h5>
@@ -95,5 +76,12 @@
         <i class="fas fa-sign-in-alt buttons-2 p-2"></i>
         <h1 style="font-size: 2.5rem;">{% trans "Login" %}</h1>
     </a>
-</div> 
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js" 
+integrity="sha512-H6cPm97FAsgIKmlBA4s774vqoN24V5gSQL4yBTDOY2su2DeXZVhQPxFK4P6GPdnZqM9fg1G3cMv5wD7e6cFLZQ==" 
+crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script src="{% static 'accounts/js/landing_page.js' %}"></script>
+
 {% endblock %}
