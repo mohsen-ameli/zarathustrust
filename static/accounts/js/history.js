@@ -17,3 +17,8 @@ function topFunction() {
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
 }
+
+// import smoothscroll from 'smoothscroll-polyfill';
+
+// // kick off the polyfill!
+// smoothscroll.polyfill();
