@@ -148,6 +148,9 @@ h3,h1 {
 i {
   color: #f8b119;
 }
+.invalid-feedback {
+  color: #ff4a59;
+}
 /********* End *********/
 
 /********** help text **********/
