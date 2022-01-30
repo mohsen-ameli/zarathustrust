@@ -39,6 +39,13 @@ button:link {
   margin: 1rem auto;
   margin-bottom: 0;
 }
+.test-animation {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+}
 
 /********** navbar **********/
 .navbar {

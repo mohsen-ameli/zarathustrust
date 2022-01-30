@@ -36,6 +36,3 @@ urlpatterns += i18n_patterns(path("i18n/", include("django.conf.urls.i18n")))
 
 if "rosetta" in settings.INSTALLED_APPS:
     urlpatterns += [re_path(r"^rosetta/", include("rosetta.urls"))]
-
-
-# path("login/", users_views.LoginClassView.as_view(redirect_authenticated_user=True), name="login-view"),

@@ -87,21 +87,21 @@
                 {% if each.method != "Transfer" %}
                     {% if each.second_person.created_by.username == user.get_username or each.method == "Deposit" or each.method == "Cash Out" %}
                         <font class="float-end" style="color: rgb(0, 255, 0); font-size: large;">
-                            +{{ user_currency_symbol }}{{ each.price }}
+                            +{{ user_currency_symbol }}{{ each.ex_price }}
                         </font>
                     {% else %}
-                        <font class="float-end" style="color: rgb(255, 74, 74); font-size: large;">
-                            -{{ user_currency_symbol }}{{ each.price|floatformat:1 }}
+                        <font class="float-end" style="color: #ff4a4a; font-size: large;">
+                            -{{ user_currency_symbol }}{{ each.ex_price|floatformat:1 }}
                         </font>
                     {% endif %}
                 {% else %}
                     {% if each.second_person.created_by.username == user.get_username %}
                         <font class="float-end" style="color: rgb(0, 255, 0); font-size: large;">
-                            +{{ user_currency_symbol }}{{ each.price }}
+                            +{{ user_currency_symbol }}{{ each.ex_price }}
                         </font>
                     {% else %}
                         <font class="float-end" style="color: rgb(255, 74, 74); font-size: large;">
-                            -{{ user_currency_symbol }}{{ each.price|floatformat:1 }}
+                            -{{ user_currency_symbol }}{{ each.ex_price|floatformat:1 }}
                         </font>
                     {% endif %}
                 {% endif %}
@@ -152,5 +152,8 @@
     <i class="bi bi-arrow-bar-up" style="font-size: 20pt;"></i>
 </button>
 <script src="{% static 'accounts/js/history.js' %}"></script>
+
+<!-- Smooth Scroll -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/smoothscroll-polyfill@0.4.4/dist/smoothscroll.min.js"></script> -->
 
 {% endblock %}

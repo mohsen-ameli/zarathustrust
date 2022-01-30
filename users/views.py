@@ -27,6 +27,9 @@ with open("/etc/config.json") as config_file:
     config = json.load(config_file)
 
 
+################ Functions ###############
+
+# Function to get the country of the user from their ip address
 def country_from_ip(request):
     # getting the visitors country, ip address
     ip, is_routable = get_client_ip(request)
@@ -77,6 +80,25 @@ def get_country_currency(country_code):
     return data[country_code]
 
 
+# searching through the country dict
+def CountryDict(search):
+    # project = os.path.abspath(os.path.dirname(__name__)) # root of django project
+    project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    file = f'{project}/json/country_names.json' # getting the file containing all country codes
+    with open(file, 'r') as config_file: # opening and reading the json file
+        data = json.load(config_file)
+
+    values = []
+    for value in data.values():
+        if search in value: # found countries
+            values.append([value, countries.by_name(value)])
+    
+    return values
+
+
+################ Views ###############
+
+# Initial Register Page
 def register(request):
     if request.user.is_anonymous == True:
         country = country_from_ip(request)[1]
@@ -91,6 +113,7 @@ def register(request):
         return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk}))
 
 
+# Business Register
 def business(request):
     if request.user.is_anonymous == True:
         if request.method == "POST":
@@ -134,22 +157,6 @@ def business(request):
         return response
     else:
         return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk}))
-
-
-# searching through the country dict
-def CountryDict(search):
-    # project = os.path.abspath(os.path.dirname(__name__)) # root of django project
-    project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    file = f'{project}/json/country_names.json' # getting the file containing all country codes
-    with open(file, 'r') as config_file: # opening and reading the json file
-        data = json.load(config_file)
-
-    values = []
-    for value in data.values():
-        if search in value: # found countries
-            values.append([value, countries.by_name(value)])
-    
-    return values
 
 
 # ajax search through countries
@@ -225,6 +232,7 @@ def PersonalCountryPickSignUp(request):
         return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk}))
 
 
+# Personal Register
 def PersonalSignUp(request, country):
     if request.user.is_anonymous == True:
         ext = phonenumbers.country_code_for_region(country)
@@ -273,6 +281,7 @@ def PersonalSignUp(request, country):
         return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk}))
 
 
+# Email Verify 
 def email_verify_view(request):
     if request.user.is_anonymous == True:
         user = request.session.get('user')
@@ -309,6 +318,7 @@ def email_verify_view(request):
         return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk}))
 
 
+# Phone Verify
 def phone_verify_view(request):
     if request.user.is_anonymous == True:
         user = request.session.get('user')
@@ -349,6 +359,7 @@ def phone_verify_view(request):
         return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk}))
 
 
+# Referral Verify
 def referral_verify_view(request, backend='django.contrib.auth.backends.ModelBackend'):
     if request.user.is_anonymous == True:
         # getting stuff to sign up the user
@@ -439,12 +450,13 @@ def referral_verify_view(request, backend='django.contrib.auth.backends.ModelBac
         return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk}))
 
 
+# Login Page
 def LoginClassView(request):
     if request.user.is_anonymous == True:
         form = AuthenticationForm()
         template_name = "users/login.html"
         next = request.GET.get('next')
-        if request.method == 'POST' and next is None:
+        if request.method == 'POST':
             username = request.POST['username']
             password = request.POST['password']
             user = authenticate(request, username=username, password=password)
@@ -452,27 +464,22 @@ def LoginClassView(request):
                 login(request, user)
                 # Redirect to a success page.
                 user_language = CustomUser.objects.get(pk=request.user.pk).language
-                response = redirect(reverse("accounts:home", kwargs={"pk" : request.user.pk}))
-                response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user_language)
-                return response
+                if next is None:
+                    response = redirect(reverse("accounts:home", kwargs={"pk" : request.user.pk}))
+                    response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user_language)
+                    return response
+                else:
+                    response = redirect(next)
+                    response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user_language)
+                    return response
             else:
                 messages.warning(request, _("Please enter a correct username and password. Note that both fields are case-sensitive (Pay attention to capital letters)."))
-        elif request.method == 'POST' and next is not None:
-            username = request.POST['username']
-            password = request.POST['password']
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                # Redirect to a success page.
-                user_language = CustomUser.objects.get(pk=request.user.pk).language
-                response = redirect(next)
-                response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user_language)
-                return response
         return render(request, template_name, {'form' : form})
     else:
         return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk}))
 
 
+#  DELETE LATER
 def auth_view(request, url1, url2, url3, url4):
     if request.user.is_anonymous == True:
         form = AuthenticationForm()

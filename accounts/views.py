@@ -34,6 +34,8 @@ with open('/etc/config.json') as config_file:
 
 
 
+################ Functions ###############
+
 # test function to see if the user tryna see the page is allowed to do so
 def correct_user(pk):
     if pk == get_current_user().pk:
@@ -51,6 +53,7 @@ def cookie_monster(request):
         translation.activate(cookies)
 
 
+# returns the currency's symbol
 def currency_symbol(country_code):
     country_code = country_code.upper()
     project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -59,10 +62,20 @@ def currency_symbol(country_code):
         data = json.load(config_file)
 
     return data[country_code]
+
+
+# returns the most recent $1 in that currency
+def currency_min(currency):
+    currency = currency.upper()
+    project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    file = f'{project}/json/currency_min.json' # getting the file containing all country codes
+    with open(file, 'r') as config_file: # opening and reading the json file
+        data = json.load(config_file)
+
+    return data[currency]
     
 
-
-############# Function Based Views ############
+################ Views ###############
 @login_required
 def HomeView(request, pk):
     if correct_user(pk):
@@ -189,13 +202,14 @@ def SettingsCountryConfirm(request, pk, country):
     return render(request, "accounts/settings_country_confirm.html", context)
 
 
-# Transfer Sending
+# Money Send Sending
 @login_required
 def TransferSendView(request, pk, reciever_name):
     if correct_user(pk):
         # getting user's currency stuff
         user_ = CustomUser.objects.get(pk=request.user.pk)
         currency = currency_symbol(user_.currency)
+        min_currency = currency_min(user_.currency)
 
         if request.method == "POST":
             form = TransferSendForm(request.POST)
@@ -274,12 +288,12 @@ def TransferSendView(request, pk, reciever_name):
 
                         return redirect(reverse('accounts:home', kwargs={'pk':pk}))
                     elif MoneyToSend < 1:
-                        messages.warning(request, _(f'Please consider that the minimum amount to send is $1 !'))
+                        messages.warning(request, _(f'Please consider that the minimum amount to send is {currency}{min_currency} !'))
                     elif MoneyToSend > balance:
                         messages.warning(request, _(f'You have requested to transfer more than you have in your current balance !'))
                 except ObjectDoesNotExist:
                     messages.warning(request, _(f'The account you are trying to send money to has not finished signing up !'))
-            context = {"form" : form, 'user_currency_symbol'  : currency}
+            context = {"form" : form, "reciever_name" : reciever_name, 'user_currency_symbol'  : currency}
             return render(request, "accounts/transfer_send.html", context)
         else:
             form = TransferSendForm()
@@ -289,7 +303,7 @@ def TransferSendView(request, pk, reciever_name):
         raise PermissionDenied()
 
 
-# Transfer Searching
+# Money Send Searching
 @login_required
 def TransferSearchView(request, pk):
     if correct_user(pk):
@@ -338,7 +352,7 @@ def TransferSearchView(request, pk):
         raise PermissionDenied()
 
 
-# Transfer Searching
+# Money Send Searching Results
 def search_results(request):
     if request.is_ajax():
         # getting the stuff that was typed in in transfer.html
@@ -362,6 +376,7 @@ def search_results(request):
     return JsonResponse({})
 
 
+# Cash Out
 @login_required
 def cash_out(request, pk):
     if correct_user(pk):
@@ -420,6 +435,7 @@ def AddMoneyUpdateView(request, pk):
         # getting user's currency stuff
         user_ = CustomUser.objects.get(pk=request.user.pk)
         currency = currency_symbol(user_.currency)
+        min_currency = currency_min(user_.currency)
 
         form                    = AddMoneyForm(request.POST or None)
         if form.is_valid():
@@ -435,7 +451,7 @@ def AddMoneyUpdateView(request, pk):
                 # messages.success(request, _(f"${add_money} was requested to be put into your account"))
                 return redirect(reverse('accounts:add-money-info', kwargs={'pk':pk}))
             else:
-                messages.warning(request, _("Please consider that the minimum amount to withdraw must be $1 or higher !"))
+                messages.warning(request, _(f"Please consider that the minimum amount to withdraw must be {currency}{min_currency} or higher !"))
                 return redirect(reverse('accounts:add-money', kwargs={'pk':pk}))
         return render(request, 'accounts/add_money_form.html', {'form' : form})
     else:
@@ -458,6 +474,7 @@ def TakeMoneyUpdateView(request, pk):
         # getting user's currency stuff
         user_ = CustomUser.objects.get(pk=request.user.pk)
         currency = currency_symbol(user_.currency)
+        min_currency = currency_min(user_.currency)
 
         form                    = TakeMoneyForm(request.POST or None)
         if form.is_valid():
@@ -477,7 +494,7 @@ def TakeMoneyUpdateView(request, pk):
             elif take_money > balance:
                 messages.warning(request, _("You have requested to take more than you have in your current balance !"))
             elif take_money < 1:
-                messages.warning(request, _("Please consider that the minimum amount to withdraw must be $1 or higher !"))
+                messages.warning(request, _(f"Please consider that the minimum amount to withdraw must be {currency}{min_currency} or higher !"))
         context = {'form' : form, 'user_currency_symbol'  : currency}
         return render(request, 'accounts/take_money_form.html', context)
     else:
@@ -564,48 +581,46 @@ def payment_done(request, url1, url2, url3, url4, price):
 
 # Checkout Page
 @login_required
-def checkout(request, pk, shop, price):
-    if correct_user(pk):
-        if "$" in price:
-            price = price.replace("$", '')
-        total_balance = account.objects.get(created_by=request.user).total_balance
-        remaining     = round(total_balance - decimal.Decimal(float(price)), 2)
-        buyer_balance = account.objects.get(pk=get_current_user().pk).total_balance
-        currency = CustomUser.objects.get(pk=pk).currency
-        context = {'pk' : pk,'price' : price, 'balance' : total_balance, 'remaining' : remaining, 'shop' : shop, 'currency' : currency}
+def checkout(request, shop, price):
+    pk = request.user.pk
+    if "$" in price:
+        price = price.replace("$", '')
+    total_balance = account.objects.get(created_by=request.user).total_balance
+    remaining     = round(total_balance - decimal.Decimal(float(price)), 2)
+    buyer_balance = account.objects.get(pk=get_current_user().pk).total_balance
+    currency = CustomUser.objects.get(pk=pk).currency
+    context = {'pk' : pk,'price' : price, 'balance' : total_balance, 'remaining' : remaining, 'shop' : shop, 'currency' : currency}
 
-        while "," in price:
-            translation_table = dict.fromkeys(map(ord, ','), None)
-            price = price.translate(translation_table)
-        price = decimal.Decimal(float(price)) # compatibilizing str price to decimalField in models 
-        if request.method == "POST":
-            if buyer_balance >= round(price, 2):
-                shop_balance = account.objects.get(created_by__username=shop).total_balance
-                # adding price to the shop owner
-                account.objects.filter(created_by__username=shop).update(total_balance=shop_balance + price)
-                # subtracting price from buyer
-                account.objects.filter(pk=get_current_user().pk).update(total_balance=buyer_balance - price)
+    while "," in price:
+        translation_table = dict.fromkeys(map(ord, ','), None)
+        price = price.translate(translation_table)
+    price = decimal.Decimal(float(price)) # compatibilizing str price to decimalField in models 
+    if request.method == "POST":
+        if buyer_balance >= round(price, 2):
+            shop_balance = account.objects.get(created_by__username=shop).total_balance
+            # adding price to the shop owner
+            account.objects.filter(created_by__username=shop).update(total_balance=shop_balance + price)
+            # subtracting price from buyer
+            account.objects.filter(pk=get_current_user().pk).update(total_balance=buyer_balance - price)
 
-                # add the transaction to the user's history
-                person = account.objects.get(pk=get_current_user().pk)
-                second_person = account.objects.get(created_by__username=shop)
-                r = transaction_history(person=person, second_person=second_person,
-                price=price, method="Payment")
-                r.save()
+            # add the transaction to the user's history
+            person = account.objects.get(pk=get_current_user().pk)
+            second_person = account.objects.get(created_by__username=shop)
+            r = transaction_history(person=person, second_person=second_person,
+            price=price, method="Payment")
+            r.save()
 
-                # messages.success(request, _("Your order was purchased successfully !"))
-                return HttpResponse('<script type="text/javascript">window.close();</script>')
-                # return redirect(reverse("accounts:home", kwargs={"pk" : get_current_user().pk}))
-            else:
-                messages.warning(request, _("You do not have enough money for this order !"))
-                return redirect(reverse("accounts:add-money", kwargs={"pk" : get_current_user().pk}))
+            # messages.success(request, _("Your order was purchased successfully !"))
+            return HttpResponse('<script type="text/javascript">window.close();</script>')
+            # return redirect(reverse("accounts:home", kwargs={"pk" : get_current_user().pk}))
+        else:
+            messages.warning(request, _("You do not have enough money for this order !"))
+            return redirect(reverse("accounts:add-money", kwargs={"pk" : get_current_user().pk}))
 
-        return render(request, "accounts/checkout.html", context)
-    else:
-        raise PermissionDenied()
+    return render(request, "accounts/checkout.html", context)
 
 
-pagination_number = 10
+# History Page
 @login_required
 def History(request, pk):
     if correct_user(pk):
@@ -711,11 +726,4 @@ def history_detail(request, pk, tran_id):
 #         context['euro_bonus']   = round(decimal.Decimal(euro_rate) * acc.bonus, 2)
 
 #         return context
-
-# getting the euro rate
-# url = f'https://api.exchangerate.host/convert?from=USD&to=EUR' # 1 USD to EUR
-# response = requests.get(url) # getting a response
-# data = response.json() # getting the data
-# euro_rate = round(decimal.Decimal(data['result']), 2)
-# euro_rate = data['result']
         
