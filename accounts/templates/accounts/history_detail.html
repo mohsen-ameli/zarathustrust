@@ -16,7 +16,7 @@
                     {% if object.person.main_currency != object.second_person.main_currency %}
                         1{{ incoming_currency }} = {{ object.ex_rate }}{{ my_currency }}
                         <br>
-                        {{incoming_currency_symbol}}{{ object.price }} = {{ user_currency_symbol }}{{ object.price|mul:object.ex_rate|floatformat:"2g" }}
+                        {{ object.price }}{{ incoming_currency }} = {{ object.price|mul:object.ex_rate|floatformat:"2g" }}{{ my_currency }}
                     {% endif %}
                 {% else %} <!-- outgoing money -->
                     {% blocktrans with price=object.price second_person=object.second_person.created_by.username %}

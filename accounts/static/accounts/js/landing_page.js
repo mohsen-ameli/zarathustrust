@@ -20,7 +20,7 @@ setTimeout(()=>{
 
     tl.fromTo(ani, animationTime, {
         zIndex: 10000,
-        backgroundColor: "#f8b119"
+        backgroundColor: "#f8b119",
     }, {
         scale: navImgWidth / width,
         backgroundColor: "transparent",
@@ -28,14 +28,11 @@ setTimeout(()=>{
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
 
-        // x: -(width/2) + rect.left + 30,
         left: "-100%",
         x: rect.left + 30,
 
-        // top: "-92%",
         top: "-100%",
         y: rect.top + 13,
-
 
         zIndex: 10000,
         ease: Power2.easeInOut

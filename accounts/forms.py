@@ -44,7 +44,7 @@ class TakeMoneyForm(forms.ModelForm):
 class TransferSendForm(forms.ModelForm):
     money_to_send  = forms.DecimalField(label=_('Amount to Send'),
         widget     = forms.TextInput(attrs={'placeholder': '$0.0'}))
-    purpose        = forms.CharField(max_length=500, required=False, label=_('Message (optional)'),
+    purpose        = forms.CharField(max_length=200, required=False, label=_('Message (optional)'),
             widget     = forms.TextInput(attrs={'placeholder': _('e.g. Happy Birthday Honey !')}))
 
     class Meta:

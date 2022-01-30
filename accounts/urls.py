@@ -1,6 +1,4 @@
 from django.urls import path
-from django.conf import settings
-from django.conf.urls.static import static
 from . import views as account_views
 
 app_name = "accounts"
@@ -23,9 +21,7 @@ urlpatterns = [
     path("<int:pk>/history/", account_views.History, name="history"),
     path("<int:pk>/history/<int:tran_id>", account_views.history_detail, name="history-detail"),
     path("<int:pk>/cash_out/", account_views.cash_out, name="cash-out"),
-    path("<int:pk>/checkout/<str:shop>/<str:price>/", account_views.checkout, name="checkout"),
+    path("checkout/<str:shop>/<str:price>/", account_views.checkout, name="checkout"),
     # path("payment/<str:url1>/<str:url2>/<str:url3>/<str:url4>/", account_views.payment, name="payment"),
     # path("payment/<str:url1>/<str:url2>/<str:url3>/<str:url4>/<str:price>/payment_done/", account_views.payment_done, name="payment-done"),
 ]
-
-# urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
