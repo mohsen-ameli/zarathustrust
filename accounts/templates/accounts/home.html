@@ -36,6 +36,24 @@
             <div class="align-self-center">
                 <h1>{% trans "Ballance" %}</h1>
             </div>
+            <div class="align-self-center ms-3">
+                <a class="neon-button" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                    Wallets
+                </a>
+            
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    {% for wallet in wallets %}
+                        <li>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <button type="submit" name="wallet-currency" value="{{ wallet.0 }}{{ wallet.currency }}" class="dropdown-item">
+                                    {{ wallet.0 }}{{ wallet.currency }}
+                                </button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
         <div class="mb-4">
             <!-- <a class="neon-button" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
