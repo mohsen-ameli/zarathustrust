@@ -9,7 +9,7 @@
 
 <div class="card text-white zarathus-card mx-auto">
     <div class="card-body" style="padding: 1.5rem;">
-        <form method="POST" id="form-swal">
+        <form method="POST" id="form-swal" autocomplete="off">
             {% csrf_token %}
             <h3 class="fw-normal text-center">{% trans "Withdraw Money From Your Account" %}</h3>
             <hr>
@@ -27,9 +27,8 @@
     </div>
 </div>
 
-<script>
-    var currency = '{{ user_currency_symbol }}'
-</script>
+{{ min_currency|json_script:"min_currency" }}
+{{ user_currency_symbol|json_script:"user_currency_symbol" }}
 
 <script src="{% static 'accounts/js/withdraw.js' %}"></script>
 

@@ -1,17 +1,24 @@
 {% extends "accounts/base.html" %}
 {% load crispy_forms_tags %}
 {% crispy AddMoneyForm %}
+{% load static %}
 {% load i18n %}
 {% block content %}
 <div class="card zarathus-card mx-auto">
     <div class="card-body">
-        <form method="POST">
+        <form method="POST" id="deposit-form" autocomplete="off">
             {% csrf_token %}
             <h3 class="fw-normal text-center">{% trans "Deposit Money From Your Account" %}</h3>
             <hr>
             {% crispy form %}
-            <button class="neon-button my-2" type="submit">{% trans "Deposit" %}</button>
+            <button class="neon-button my-2" type="submit" id="Action">{% trans "Deposit" %}</button>
         </form>
     </div>
 </div>
+
+{{ min_currency|json_script:"min_currency" }}
+{{ user_currency_symbol|json_script:"user_currency_symbol" }}
+
+<script src="{% static 'accounts/js/deposit.js' %}"></script>
+
 {% endblock content %}

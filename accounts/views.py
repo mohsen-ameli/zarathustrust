@@ -72,7 +72,7 @@ def currency_min(currency):
     with open(file, 'r') as config_file: # opening and reading the json file
         data = json.load(config_file)
 
-    return data[currency]
+    return int(data[currency])
     
 
 ################ Views ###############
@@ -219,85 +219,88 @@ def TransferSendView(request, pk, reciever_name):
                     reciever = account.objects.get(created_by__username=reciever_name) # getting reciever's pk
                     person = account.objects.get(pk=pk)
                     second_person = account.objects.get(pk=reciever.pk)
-                    person_interest = account_interest.objects.get(pk=pk)
-                    second_person_interest = account_interest.objects.get(pk=reciever.pk)
-                    
-                    purpose = form.cleaned_data.get("purpose")
-                    MoneyToSend = form.cleaned_data.get("money_to_send")
-                    balance = person.total_balance
-
-                    # checking to see if the sender and reciever's currencies are the same or not
-                    person_currency = person.main_currency
-                    second_person_currency = second_person.main_currency
-                    if person_currency != second_person_currency:
-                        url = f'https://api.exchangerate.host/convert?from={person_currency}&to={second_person_currency}'
-                        response = requests.get(url) # getting a response
-                        data = response.json() # getting the data
-                        ex_rate = round(decimal.Decimal(data['result']), 4)
-                        reciever_amount = ex_rate * MoneyToSend
-                        person_currency = currency_symbol(person.main_currency)
-                        second_person_currency = currency_symbol(second_person.main_currency)
-                    else:
-                        reciever_amount = MoneyToSend
-                        ex_rate = 1
-                        person_currency = currency_symbol(person.main_currency)
-                        second_person_currency = currency_symbol(second_person.main_currency)
-
-                    if MoneyToSend >= 1 and MoneyToSend <= balance:
-                        # UPDATE ACCOUNT
-                        new_total_balance = second_person.total_balance + reciever_amount # adding money to reciever
-                        account.objects.filter(pk=second_person.pk).update(total_balance=new_total_balance)      # updating the reciever
-                        rmv_total_balance = balance - MoneyToSend                                  # minusing balance of sender by how much thy're sending
-                        account.objects.filter(pk=pk).update(total_balance=rmv_total_balance)      # updating the giver
-
-                        # UPDATE ACCOUNT INTEREST
-                        a = second_person_interest.interest + reciever_amount                  # adding money to reciever
-                        account_interest.objects.filter(pk=second_person.pk).update(interest=a)                       # updating reciever
-                        b = person_interest.interest - MoneyToSend        # minusing money from giver
-                        account_interest.objects.filter(pk=pk).update(interest=b)             # updating giver
+                    if person != second_person:
+                        person_interest = account_interest.objects.get(pk=pk)
+                        second_person_interest = account_interest.objects.get(pk=reciever.pk)
                         
-                        # success message
-                        messages.success(request, _(f'{person_currency}{MoneyToSend} has been transfered to {reciever_name}'))
+                        purpose = form.cleaned_data.get("purpose")
+                        MoneyToSend = form.cleaned_data.get("money_to_send")
+                        balance = person.total_balance
 
-                        # emailing the reciever
-                        reciever_email = CustomUser.objects.get(pk=second_person.pk).email
-                        giver_username = CustomUser.objects.get(pk=pk).username
-                        giver_email = CustomUser.objects.get(pk=pk).email
-                        EMAIL_ID       = config.get('EMAIL_ID')
-                        msg = EmailMessage(_("ZARATHUSTRUST MONEY TRANSFER"),
-                                _(f"Dear {reciever_name}, <br> {giver_username} just transfered {second_person_currency}{round(reciever_amount, 1)} to your account ! <br> Purpose of Use : {purpose}"),
-                                f"{EMAIL_ID}",
-                                [f"{reciever_email}"]
-                        )
-                        msg.content_subtype = "html"
-                        msg.send()
+                        # checking to see if the sender and reciever's currencies are the same or not
+                        person_currency = person.main_currency
+                        second_person_currency = second_person.main_currency
+                        if person_currency != second_person_currency:
+                            url = f'https://api.exchangerate.host/convert?from={person_currency}&to={second_person_currency}'
+                            response = requests.get(url) # getting a response
+                            data = response.json() # getting the data
+                            ex_rate = round(decimal.Decimal(data['result']), 4)
+                            reciever_amount = ex_rate * MoneyToSend
+                            person_currency = currency_symbol(person.main_currency)
+                            second_person_currency = currency_symbol(second_person.main_currency)
+                        else:
+                            reciever_amount = MoneyToSend
+                            ex_rate = 1
+                            person_currency = currency_symbol(person.main_currency)
+                            second_person_currency = currency_symbol(second_person.main_currency)
 
-                        # emailing the giver
-                        msg1 = EmailMessage(_("ZARATHUSTRUST MONEY TRANSFER"),
-                                _(f"Dear {giver_username}, <br> {person_currency}{round(MoneyToSend, 1)} has been transfered to {reciever_name} successfully ! <br> Purpose of Use : {purpose}"),
-                                f"{EMAIL_ID}",
-                                [f"{giver_email}"]
-                        )
-                        msg1.content_subtype = "html"
-                        msg1.send()
+                        if MoneyToSend >= min_currency and MoneyToSend <= balance:
+                            # UPDATE ACCOUNT
+                            new_total_balance = second_person.total_balance + reciever_amount # adding money to reciever
+                            account.objects.filter(pk=second_person.pk).update(total_balance=new_total_balance)      # updating the reciever
+                            rmv_total_balance = balance - MoneyToSend                                  # minusing balance of sender by how much thy're sending
+                            account.objects.filter(pk=pk).update(total_balance=rmv_total_balance)      # updating the giver
 
-                        # add the transaction to the user's history
-                        r = transaction_history(person=person, second_person=second_person,
-                        price=MoneyToSend, ex_rate=ex_rate, ex_price=reciever_amount, purpose_of_use=purpose, method="Transfer")
-                        r.save()
+                            # UPDATE ACCOUNT INTEREST
+                            a = second_person_interest.interest + reciever_amount                  # adding money to reciever
+                            account_interest.objects.filter(pk=second_person.pk).update(interest=a)                       # updating reciever
+                            b = person_interest.interest - MoneyToSend        # minusing money from giver
+                            account_interest.objects.filter(pk=pk).update(interest=b)             # updating giver
+                            
+                            # success message
+                            messages.success(request, _(f'{person_currency}{MoneyToSend} has been transfered to {reciever_name}'))
 
-                        return redirect(reverse('accounts:home', kwargs={'pk':pk}))
-                    elif MoneyToSend < 1:
-                        messages.warning(request, _(f'Please consider that the minimum amount to send is {currency}{min_currency} !'))
-                    elif MoneyToSend > balance:
-                        messages.warning(request, _(f'You have requested to transfer more than you have in your current balance !'))
+                            # emailing the reciever
+                            reciever_email = CustomUser.objects.get(pk=second_person.pk).email
+                            giver_username = CustomUser.objects.get(pk=pk).username
+                            giver_email = CustomUser.objects.get(pk=pk).email
+                            EMAIL_ID       = config.get('EMAIL_ID')
+                            msg = EmailMessage(_("ZARATHUSTRUST MONEY TRANSFER"),
+                                    _(f"Dear {reciever_name}, <br> {giver_username} just transfered {second_person_currency}{round(reciever_amount, 1)} to your account ! <br> Purpose of Use : {purpose}"),
+                                    f"{EMAIL_ID}",
+                                    [f"{reciever_email}"]
+                            )
+                            msg.content_subtype = "html"
+                            msg.send()
+
+                            # emailing the giver
+                            msg1 = EmailMessage(_("ZARATHUSTRUST MONEY TRANSFER"),
+                                    _(f"Dear {giver_username}, <br> {person_currency}{round(MoneyToSend, 1)} has been transfered to {reciever_name} successfully ! <br> Purpose of Use : {purpose}"),
+                                    f"{EMAIL_ID}",
+                                    [f"{giver_email}"]
+                            )
+                            msg1.content_subtype = "html"
+                            msg1.send()
+
+                            # add the transaction to the user's history
+                            r = transaction_history(person=person, second_person=second_person,
+                            price=MoneyToSend, ex_rate=ex_rate, ex_price=reciever_amount, purpose_of_use=purpose, method="Transfer")
+                            r.save()
+
+                            return redirect(reverse('accounts:home', kwargs={'pk':pk}))
+                        elif MoneyToSend < min_currency:
+                            messages.warning(request, _(f'Please consider that the minimum amount to send is {currency}{min_currency} !'))
+                        elif MoneyToSend > balance:
+                            messages.warning(request, _(f'You have requested to transfer more than you have in your current balance !'))
+                    else:
+                        messages.warning(request, _(f'You cannot send money to yourself.'))
                 except ObjectDoesNotExist:
                     messages.warning(request, _(f'The account you are trying to send money to has not finished signing up !'))
-            context = {"form" : form, "reciever_name" : reciever_name, 'user_currency_symbol'  : currency}
+            context = {"form" : form, "reciever_name" : reciever_name, 'user_currency_symbol'  : currency, "min_currency" : min_currency}
             return render(request, "accounts/transfer_send.html", context)
         else:
             form = TransferSendForm()
-            context = {"form" : form, "reciever_name" : reciever_name, 'user_currency_symbol'  : currency}
+            context = {"form" : form, "reciever_name" : reciever_name, 'user_currency_symbol'  : currency, "min_currency" : min_currency}
             return render(request, "accounts/transfer_send.html", context)
     else:
         raise PermissionDenied()
@@ -440,7 +443,7 @@ def AddMoneyUpdateView(request, pk):
         form                    = AddMoneyForm(request.POST or None)
         if form.is_valid():
             add_money           = form.cleaned_data.get('add_money')
-            if add_money >= 1:
+            if add_money >= min_currency:
                 EMAIL_ID        = config.get('EMAIL_ID')
                 EMAIL_ID_MAIN   = config.get('EMAIL_ID_MAIN')
                 send_mail(f'{get_current_user()}', 
@@ -453,7 +456,7 @@ def AddMoneyUpdateView(request, pk):
             else:
                 messages.warning(request, _(f"Please consider that the minimum amount to withdraw must be {currency}{min_currency} or higher !"))
                 return redirect(reverse('accounts:add-money', kwargs={'pk':pk}))
-        return render(request, 'accounts/add_money_form.html', {'form' : form})
+        return render(request, 'accounts/add_money_form.html', {'form' : form, 'min_currency' : min_currency, 'user_currency_symbol' : currency})
     else:
         raise PermissionDenied()
 
@@ -480,7 +483,7 @@ def TakeMoneyUpdateView(request, pk):
         if form.is_valid():
             take_money          = form.cleaned_data.get('take_money')
             balance             = account.objects.get(pk=pk).total_balance
-            if take_money >= 1 and take_money <= balance:
+            if take_money >= min_currency and take_money <= balance:
                 EMAIL_ID        = config.get('EMAIL_ID')
                 EMAIL_ID_MAIN   = config.get('EMAIL_ID_MAIN')
                 MOE_EMAIL       = config.get('MOE_EMAIL')
@@ -493,9 +496,9 @@ def TakeMoneyUpdateView(request, pk):
                 return redirect(reverse('accounts:home', kwargs={'pk':pk}))
             elif take_money > balance:
                 messages.warning(request, _("You have requested to take more than you have in your current balance !"))
-            elif take_money < 1:
+            else:
                 messages.warning(request, _(f"Please consider that the minimum amount to withdraw must be {currency}{min_currency} or higher !"))
-        context = {'form' : form, 'user_currency_symbol'  : currency}
+        context = {'form' : form, 'min_currency' : min_currency, 'user_currency_symbol' : currency}
         return render(request, 'accounts/take_money_form.html', context)
     else:
         raise PermissionDenied()
