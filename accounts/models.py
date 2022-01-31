@@ -20,7 +20,7 @@ class account(models.Model):
     total_balance     = models.DecimalField(decimal_places=2, max_digits=10, null=True, default=0)
     add_money         = models.DecimalField(decimal_places=1, max_digits=10, null=True, blank=True)
     take_money        = models.DecimalField(decimal_places=1, max_digits=10, null=True, blank=True)
-    bonus             = models.DecimalField(decimal_places=1, max_digits=10, null=True, default=1000)
+    bonus             = models.DecimalField(decimal_places=1, max_digits=10, null=True) # remove this default
     target_account    = models.CharField(max_length=30, null=True, blank=True)
     money_to_send     = models.PositiveIntegerField(null=True, default=0)
     main_currency     = models.CharField(max_length=6, null=True)

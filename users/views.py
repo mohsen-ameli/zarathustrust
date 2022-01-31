@@ -22,6 +22,7 @@ from .forms import (BusinessForm, EmailCodeForm, PhoneCodeForm,
                     ReferralCodeForm, RegisterForm)
 from .models import CustomUser, code, ReferralCode
 from .utils import phone_msg_verify
+from accounts.views import currency_min, currency_symbol
 
 with open("/etc/config.json") as config_file:
     config = json.load(config_file)
@@ -362,6 +363,9 @@ def phone_verify_view(request):
 # Referral Verify
 def referral_verify_view(request, backend='django.contrib.auth.backends.ModelBackend'):
     if request.user.is_anonymous == True:
+        # the amount in which new user's bonus will get
+        extra_bonus_value = 200
+
         # getting stuff to sign up the user
         user = request.session.get('user')
         username = user['username']
@@ -373,78 +377,93 @@ def referral_verify_view(request, backend='django.contrib.auth.backends.ModelBac
         language = get_country_lang(country)
 
         form = ReferralCodeForm(request.POST or None)
+
         if form.is_valid():
             enterd_code = form.cleaned_data.get("referral_code")
-            friend_code = ReferralCode.objects.all().filter(referral_code=enterd_code)
+            friend_code = ReferralCode.objects.filter(referral_code=enterd_code)
+
             if friend_code:  # referral code exists
+                # creating a user
                 user_ = CustomUser.objects.create(username=username, password=make_password(password), phone_number=phone_number, country=country,
                 phone_ext=phone_ext, currency=currency, language=language)
                 user_.save()
                 login(request, user_, backend)
 
-                account.objects.create(created_by=user_, bonus=1200, main_currency=currency, pk=user_.pk)
+                # getting current user's stuff
+                user_currency           = user_.currency
+                user_currency_symbol    = currency_symbol(user_currency) # their currency symbol
+                user_currency_min       = currency_min(user_currency)
+                user_extra_bonus        = user_currency_min * extra_bonus_value
 
-                giver_name = ReferralCode.objects.get(referral_code=enterd_code).user
-                new_bal = account.objects.get(created_by=giver_name).total_balance
-                ref = account.objects.get(created_by=giver_name).bonus
-                account.objects.filter(created_by=giver_name).update(
-                    total_balance = new_bal + 1
+                # creating an account for the user
+                bonus                   = (user_currency_min * 1000) + user_extra_bonus
+                user_account = account.objects.create(created_by=user_, bonus=bonus, main_currency=currency, pk=user_.pk)
+                user_account.save()
+
+                # updating the user's bonus
+                account.objects.filter(created_by=user_).update(bonus = user_extra_bonus + user_currency_min * 1000)
+
+                # getting the some info from the user whose referral code was used
+                giver_user = ReferralCode.objects.get(referral_code=enterd_code).user # their name
+                giver_account           = account.objects.get(created_by=giver_user) # their account
+                giver_balance           = giver_account.total_balance # their balance
+                giver_bonus             = giver_account.bonus # their bonus
+                giver_currency          = giver_account.main_currency # their currency in iso-3 format
+                giver_currency_min      = currency_min(giver_currency) # $1 in their currency
+                giver_extra_bonus       = giver_currency_min * extra_bonus_value
+                giver_currency_symbol   = currency_symbol(giver_currency) # their currency symbol
+
+                # updating the giver user's bonus
+                account.objects.filter(created_by=giver_user).update(
+                    bonus = giver_bonus + giver_extra_bonus,
+                    total_balance = giver_balance + giver_currency_min
                 )
-                account.objects.filter(created_by=giver_name).update(bonus=ref + 200)
 
                 # send email to the person whose referral code was just used
                 EMAIL_ID = config.get("EMAIL_ID")
-                GIVER_EMAIL = giver_name.email
+                GIVER_EMAIL = giver_user.email
                 send_mail(
-                    _(f"Dear {giver_name.username} !"),
+                    _(f"Dear {giver_user.username} !"),
                     _(
-                        f"{user['username']} just used your referral code ! You recieved $1 on your balance, and $200 added to your bonus !"
+                        f"{user['username']} just used your referral code ! You recieved {giver_currency_symbol}{giver_currency_min} on your balance, and {giver_currency_symbol}{giver_extra_bonus} added to your bonus !"
                     ),
                     f"{EMAIL_ID}",
                     [f"{GIVER_EMAIL}"],
                 )
 
-                messages.success(
-                    request,
-                    _(
-                        f"You have successfully registered, {user['username']}. For your prize, $200 will be transfered to your bonus !"
-                    ),
+                # success message
+                messages.success(request,
+                    _(f"You have successfully registered, {user['username']}. For your prize, {user_currency_symbol}{user_extra_bonus} has been transfered to your bonus !")
                 )
-                return redirect(
-                    reverse("accounts:home", kwargs={"pk": user_.pk})
-                )
-            elif enterd_code == "":  # referral code not submitted
-                user_ = CustomUser.objects.create(username=username, password=make_password(password), phone_number=phone_number, country=country,
-                phone_ext=phone_ext, currency=currency, language=language)
-                user_.save()
-                print(user_.pk)
-                login(request, user_, backend)
 
-                account.objects.create(created_by=user_, main_currency=currency, pk=user_.pk)
+                # redirect to the new user's home page
+                return redirect(reverse("accounts:home", kwargs={"pk": user_.pk}))
 
-                messages.success(
-                    request, _(f"You have successfully registered, {user['username']} !")
-                )
-                return redirect(
-                    reverse("accounts:home", kwargs={"pk": user_.pk})
-                )
-            else:  # referral code incorrect
+            else:  # referral code not entered
+                # creating a user
                 user_ = CustomUser.objects.create(username=username, password=make_password(password), phone_number=phone_number, country=country,
                 phone_ext=phone_ext, currency=currency, language=language)
                 user_.save()
                 login(request, user_, backend)
 
-                account.objects.create(created_by=user_, main_currency=currency, pk=user_.pk)
+                # creating an account for the user
+                user_currency_min       = currency_min(user_.currency)
+                bonus                   = user_currency_min * 1000
+                account.objects.create(created_by=user_, bonus=bonus, main_currency=currency, pk=user_.pk)
                 
-                messages.success(
-                    request,
-                    _(
-                        f"Sorry, this referral code is incorrect, but you have successfully registered, {user['username']} !"
-                    ),
-                )
-                return redirect(
-                    reverse("accounts:home", kwargs={"pk": user_.pk})
-                )
+                # success message
+                if enterd_code == "":  # referral code not submitted
+                    messages.success(request,
+                        _(f"You have successfully registered, {user['username']} !")
+                    )
+                else: # referral code was wrong
+                    messages.success(request,
+                        _(f"Sorry, this referral code is incorrect, but you have successfully registered, {user['username']} !")
+                    )
+                
+                # redirect to the new user's home page
+                return redirect(reverse("accounts:home", kwargs={"pk": user_.pk}))
+        
         return render(request, "users/referral_code.html", {"form": form})
     else:
         return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk}))
