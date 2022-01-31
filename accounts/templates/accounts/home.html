@@ -13,8 +13,8 @@
             <h3>
                 {% trans "Bonus" %}: {{ user_currency_symbol }}{{ object.bonus }}
             </h3>
-            {% blocktrans asvar the_title with currency=user_currency_symbol %}
-                The {{currency}}1000 bonus is a gift from us to every new user. It has no expiration date!
+            {% blocktrans asvar the_title with currency=user_currency_symbol bonus=object.bonus %}
+                The {{currency}}{{bonus}} bonus is a gift from us to every new user. It has no expiration date!
                 Every time you transfer the accumulated interest to your balance,
                 an equal amount will be taken out of your bonus.
             {% endblocktrans %}

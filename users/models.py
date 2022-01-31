@@ -26,7 +26,8 @@ class CustomUser(AbstractUser):
 
 CustomUser._meta.get_field('username').max_length = 15
 CustomUser._meta.get_field('username').help_text = _(
-    'Required. 5-15 characters allowed. Letters, digits and @/./+/-/_ only.')
+    'Required. 5-15 characters allowed. Letters, digits and @/./+/-/_ only.'
+)
 
 
 

@@ -34,7 +34,7 @@ with open('/etc/config.json') as config_file:
 
 
 
-################ Functions ###############
+################ Functions ################
 
 # test function to see if the user tryna see the page is allowed to do so
 def correct_user(pk):
@@ -75,7 +75,7 @@ def currency_min(currency):
     return int(data[currency])
     
 
-################ Views ###############
+################ Views ################
 @login_required
 def HomeView(request, pk):
     if correct_user(pk):
