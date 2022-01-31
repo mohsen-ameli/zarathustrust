@@ -18,97 +18,15 @@
             </h3>
             <hr>
             {% crispy form %}
-            <div id="msgCounter" class="form-text text-white mx-2 my-2"></div>
+            <div id="msgCounter" class="form-text text-white my-2"></div>
             <button class="neon-button my-2" type="submit" name="Transfer" value="Transfer" id="Action">{% trans "Send" %}</button>
         </form>
     </div>
 </div>
 
-<script>
-    const parentMsgDiv = document.querySelector("#div_id_purpose")
-    const msgCounter = document.querySelector("#msgCounter")
-    const msgInput = document.querySelector("#id_purpose")
-    const max = 4
-
-    let div3 = document.createElement("div")
-    div3.classList.add("invalid-feedback")
-    div3.classList.add("my-2")
-    div3.style.display = "none"
-    div3.innerHTML = `Maximum number of characters reached ! (${max}/${max})`
-    parentMsgDiv.appendChild(div3)
-
-    msgInput.addEventListener('keyup', e=>{
-        var len = e.target.value.length
-        console.log(len)
-
-        if (len <= max) { // if characters entered were less than maximum
-            msgInput.classList.remove("is-invalid")
-            if (len == 0){ // if the number of characters entered counted 0
-                msgCounter.style.display = "none"
-            } else { // normal behaviour
-                msgCounter.style.display = ""
-                msgCounter.innerHTML = `Maximum characters (${len}/${max})`
-            }
-        } else { // limit reached
-            msgCounter.style.display = "none"
-            div3.style.display = ""
-            msgInput.classList.add("is-invalid")
-            // submitBtn.classList.add("disabled")
-        }
-    })
-
-</script>
-
-<script>
-    const parentDiv = document.querySelector('#div_id_money_to_send')
-    const input = document.querySelector("#id_money_to_send")
-    const submitBtn = document.querySelector("#Action")
-
-    let div = document.createElement("div")
-    div.classList.add("invalid-feedback")
-    div.classList.add("my-2")
-    div.style.display = "none"
-    let divText = document.createTextNode('Please consider that the minimum amount to send is $1 !')
-    div.appendChild(divText)
-
-    let div2 = document.createElement("div")
-    div2.classList.add("invalid-feedback")
-    div2.classList.add("my-2")
-    div2.style.display = "none"
-    let div2Text = document.createTextNode('Please enter a number !')
-    div2.appendChild(div2Text)
-
-    parentDiv.appendChild(div)
-    parentDiv.appendChild(div2)
-
-
-    input.addEventListener('keyup', e=>{
-        let money = e.target.value
-
-        if (money < 1 && money != "") { // user entered value below min point
-            div.style.display = ""
-            input.classList.add("is-invalid")
-            submitBtn.style.display = "none"
-            e.preventDefault();
-        } else if (isNaN(money) == true) { // user entered characters instead of numbers
-            div.style.display = "none"
-            div2.style.display = ""
-            input.classList.add("is-invalid")
-            submitBtn.style.display = "none"
-            e.preventDefault();
-        } else {
-            input.classList.remove("is-invalid")
-            div.style.display = "none"
-            div2.style.display = "none"
-            submitBtn.style.display = ""
-        }
-    })
-</script>
-
-<script>
-    var person = '{{ reciever_name }}'
-    var currency = '{{ user_currency_symbol }}'
-</script>
+{{ reciever_name|json_script:"reciever_name" }}
+{{ min_currency|json_script:"min_currency" }}
+{{ user_currency_symbol|json_script:"user_currency_symbol" }}
 
 <script src="{% static 'accounts/js/transfer.js' %}" defer></script>
 {% endblock content %}

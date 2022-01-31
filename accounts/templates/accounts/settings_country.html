@@ -34,10 +34,10 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
-<script>
-    const default_country = '{{ default_country }}'
-    const pk = '{{ user.pk }}'
-</script>
+
+{{ user.pk|json_script:"pk" }}
+{{ default_country|json_script:"default_country" }}
+
 <script src="{% static 'accounts/js/country_change.js' %}"></script>
 
 {% endblock content %}
