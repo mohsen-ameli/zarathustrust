@@ -47,9 +47,11 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
-<script>
-    const default_country = '{{ default_country }}'
-</script>
+
+{{ data|json_script:"data" }}
+{{ default_country|json_script:"default_country" }}
+{{ request.user.pk|json_script:"pk" }}
+
 <script src="{% static 'accounts/js/country_picker.js' %}"></script>
 
 {% endblock content %}

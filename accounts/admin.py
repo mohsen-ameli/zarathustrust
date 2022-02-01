@@ -16,6 +16,5 @@ class detailsTransactions(admin.ModelAdmin):
 
 
 admin.site.register(models.account, detailsAdmin)
-admin.site.register(models.BranchAccounts)
 admin.site.register(models.account_interest)
 admin.site.register(models.transaction_history, detailsTransactions)

@@ -181,7 +181,6 @@ def PersonalCountryPickSignUp(request):
     if request.user.is_anonymous == True:
         default_country = country_from_ip(request)
 
-        # project = os.path.abspath(os.path.dirname(__name__)) # root of django project
         project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         file = f'{project}/json/country_names.json' # getting the file containing all country codes
         with open(file, 'r') as config_file: # opening and reading the json file
@@ -189,13 +188,7 @@ def PersonalCountryPickSignUp(request):
 
         all_countries = data.items()
 
-
-        # if request.htmx:
-        #     return render(request, "users/partials/forms.html", context)
-
         if request.method == "POST":
-            # default_submit = request.POST.get('default-submit')
-            # print(request.POST)
             default_country_picker = request.POST.get('default-country-picker')
             if default_country_picker != None: 
                 response = redirect(reverse("personal-sign-up", kwargs={"country" : default_country[1]}))
@@ -219,7 +212,8 @@ def PersonalCountryPickSignUp(request):
             context = {
                 "default_country" : default_country[0], 
                 "default_country_code" : default_country[1], 
-                "countries" : all_countries
+                "countries" : all_countries,
+                "data" : data
             }
             country = country_from_ip(request)[1]
             if country is None:
