@@ -4,7 +4,7 @@
 <div class="card text-white zarathus-card mx-auto">
     <div class="card-body">
         <h3 class="fw-normal text-center">{% trans "Your Referral Code" %}</h3>
-        <hr>
+        <hr class="zarathus-hr">
         <p class="card-text">
             {% trans "Share this code with your friends when they are registering, and you will get $1 added to your balance as well as another extra $200 to your bonus." %}
         </p>
@@ -15,7 +15,7 @@
             </h5>
             <button class="btn btn-info mx-2" id="Copy">{% trans "Copy" %}</button>
         </div>
-        <hr>
+        <hr class="zarathus-hr">
         <a class="neon-button my-2" href="{% url 'accounts:home' user.account.pk %}">{% trans "Home" %}</a>
     </div>
 </div>

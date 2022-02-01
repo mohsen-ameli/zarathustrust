@@ -1,3 +1,4 @@
+from multiprocessing import context
 import os
 import decimal
 import json
@@ -85,9 +86,9 @@ def HomeView(request, pk):
 
         wallet_currency = request.POST.get("wallet-currency")
         if wallet_currency and wallet_currency != user_.currency:
-            wallets             = BranchAccounts.objects.get(main_account=acc, currency=wallet_currency)
-            wallet_symbol     = currency_symbol(wallets.currency)
-            wallet_currency_list       = BranchAccounts.objects.filter(main_account=acc).exclude(currency=wallets.currency)
+            wallets                     = BranchAccounts.objects.get(main_account=acc, currency=wallet_currency)
+            wallet_symbol               = currency_symbol(wallets.currency)
+            wallet_currency_list        = BranchAccounts.objects.filter(main_account=acc).exclude(currency=wallets.currency)
             other_wallets = [user_.currency]
             for i in wallet_currency_list:
                 other_wallets.append(i.currency)
@@ -118,6 +119,13 @@ def HomeView(request, pk):
             return render(request, 'accounts/home.html', context)
     else:
         raise PermissionDenied
+
+
+def NewWallet(request, pk):
+    context = {
+        "pk" : pk,
+    }
+    return render(request, "accounts/new_wallet.html", context)
 
 
 # Admin Page
@@ -185,7 +193,8 @@ def SettingsCountry(request, pk):
 
     all_countries = data.items()
     context = {
-        "countries" : all_countries
+        "countries" : all_countries,
+        "data" : data
     }
     return render(request, "accounts/settings_country.html", context)
 

@@ -4,7 +4,7 @@
 <div class="card text-white zarathus-card mx-auto">
     <div class="card-body">
         <h3 class="fw-normal text-center">{% trans "Payment Page" %}</h3>
-        <hr>
+        <hr class="zarathus-hr">
         <p>
             {% blocktrans with bonus=total %}
                 Current Balance : ${{ total }}
@@ -15,13 +15,13 @@
                 Total : ${{ price }}
             {% endblocktrans %}
         </p>
-        <hr style="width: 10rem; position: absolute; margin-top: .5rem;"> <br>
+        <hr class="zarathus-hr" style="width: 10rem; position: absolute; margin-top: .5rem;"> <br>
         <p>
             {% blocktrans with remaining=remaining %}
                 Remaining : ${{ remaining }}
             {% endblocktrans %}
         </p>
-        <hr>
+        <hr class="zarathus-hr">
         {% if user.account %}
             <a class="btn btn-success" href="{% url 'accounts:payment-done' url1=url1 url2=url2 url3=url3 url4=url4 price=price %}">
                 {% trans "Place Order" %}
