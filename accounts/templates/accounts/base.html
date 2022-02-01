@@ -110,8 +110,8 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
     
     {{ debug }}
-    {% if not debug %}
-        <h1>not debug</h1>
+    {% if debug != True %}
+        <h1>debug == false</h1>
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-FRK5F8TZKR"></script>
         <script>
             window.dataLayer = window.dataLayer || [];
@@ -120,6 +120,8 @@
         
             gtag('config', 'G-FRK5F8TZKR');
         </script>
+    {% else %}
+    <h1>debug == true</h1>
     {% endif %}
 </body>
 
