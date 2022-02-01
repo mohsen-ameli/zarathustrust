@@ -9,6 +9,7 @@ app_name = "money_moe"
 urlpatterns = [
     path("", include("accounts.urls"), name="home"),
     path("", include("wallets.urls"), name="wallets"),
+    path("cookie-policy/", users_views.CookiePolicy, name="cookie-policy"),
     path("g0atch33se&pizz1/", admin.site.urls, name="admin"),
 
     path("register/", users_views.register, name="register"),
