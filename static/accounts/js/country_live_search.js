@@ -6,14 +6,14 @@
     const FormInput = document.getElementById('country-input');
 
     FormInput.addEventListener('keyup', e=>{
+        var typed = e.target.value.toLowerCase()
         NewCountryList.innerHTML = ""
 
-        if (e.target.value.length > 0 && e.target.value != '') {
+        if (e.target.value.length > 0 && typed != '') {
             FormList.style.display = 'none'
 
             for (const [key, value] of Object.entries(all_countries)) {
-                if (value.startsWith(e.target.value)){
-                    console.log(value.startsWith(e.target.value).length)
+                if (value.startsWith(typed)){
                     NewCountryList.innerHTML += `
                         <li>
                             <a class="dropdown-item" href="/${pk}/settings/country/${key}" style="text-transform: capitalize;">
