@@ -15,7 +15,7 @@ a:link,
 button:link {
   text-decoration: none;
 }
-.buttons-4 {
+.buttons-5 {
   font-size: 4rem; 
   color: #f8b119;
 }
@@ -136,7 +136,7 @@ button:link {
 .form-floating {
   color: black;
 }
-hr {
+.zarathus-hr {
   background-color: #f8b119c7 !important;
   height: 50px;
   opacity: 1;
