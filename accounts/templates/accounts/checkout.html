@@ -8,7 +8,7 @@
 <div class="card text-white zarathus-card mx-auto">
     <div class="card-body">
         <h3 class="fw-normal text-center">{% trans "Payment Page" %}</h3>
-        <hr>
+        <hr class="zarathus-hr">
         <p>
             {% if currency == 'EUR' %}
                 {% blocktrans with balance=balance %}
@@ -31,7 +31,7 @@
                 {% endblocktrans %}
             {% endif %}
         </p>
-        <hr style="width: 10rem; position: absolute; margin-top: .5rem;"> <br>
+        <hr class="zarathus-hr" style="width: 10rem; position: absolute; margin-top: .5rem;"> <br>
         <p>
             {% if currency == 'EUR' %}
                 {% blocktrans with remaining=remaining %}
@@ -43,7 +43,7 @@
                 {% endblocktrans %}
             {% endif %}
         </p>
-        <hr>
+        <hr class="zarathus-hr">
         {% if user.account %}
         <form method="POST" id="form-swal">
             {% csrf_token %}

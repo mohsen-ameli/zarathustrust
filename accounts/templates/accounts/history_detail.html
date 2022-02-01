@@ -5,7 +5,7 @@
 <div class="card text-white zarathus-card mx-auto">
     <div class="card-body">
         <h3 class="fw-normal text-center">{% trans "Transaction Details" %}</h3>
-        <hr>
+        <hr class="zarathus-hr">
         <p style="font-size: large;">
             {% if object.method == "Transfer" %}
                 {% if object.person.created_by.username != user.username %} <!-- incoming money -->

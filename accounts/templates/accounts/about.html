@@ -4,11 +4,11 @@
 <div class="card text-white zarathus-card mx-auto">
     <div class="card-body">
         <h3 class="fw-normal text-center">{% trans "This is the about page" %}</h3>
-        <hr>
+        <hr class="zarathus-hr">
         <h5 class="fw-normal">
             {% trans "We Pay You 2% Interest On Your Balance ! Share our website with your friends to get extra prizes." %}
         </h5>
-        <hr>
+        <hr class="zarathus-hr">
         {% if user.account %}
             <a class="neon-button" href="{% url 'accounts:home' user.account.pk %}">
                 {% trans "Home" %}</a>

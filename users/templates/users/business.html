@@ -8,14 +8,14 @@
             {% csrf_token %}
             <fieldset class="form-group">
                 <h4 class="fw-normal">{% trans "Why not join now ?!" %}</h4>
-                <hr>
+                <hr class="zarathus-hr">
                 {{ form|crispy }}
             </fieldset>
             <div class="form-group">
                 <button class="neon-button-green my-2" type="submit">{% trans "Sign Up" %}</button>
             </div>
         </form>
-        <hr>
+        <hr class="zarathus-hr">
         <div class="boarder-top">
             <small class="text-white" style="font-size: 9.5pt;">
                 {% trans "Already Have An Acount ?" %}

@@ -8,7 +8,7 @@
         <form action="" method="POST">
             {% csrf_token %}
             <h3 class="fw-normal text-center">{% trans "Verify Your Email" %}</h3>
-            <hr>
+            <hr class="zarathus-hr">
             {% crispy form %}
             <button class="neon-button-green my-2" type="submit">{% trans "Verify" %}</button>
         </form>

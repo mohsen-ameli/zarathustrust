@@ -11,7 +11,7 @@
         <form method="POST" class="needs-validation" novalidate>
             {% csrf_token %}
             <h3 class="fw-normal text-center">{% trans "Why not join now ?!" %}</h3>
-            <hr>
+            <hr class="zarathus-hr">
             <!-- USERNAME -->
             {% if form.errors.username %}
             <div id="div_id_username" class="form-group form-floating mb-3" style="color: black;">
@@ -174,7 +174,7 @@
 
             <button class="neon-button-green my-2" type="submit">{% trans "Sign Up" %}</button>
         </form>
-        <hr>
+        <hr class="zarathus-hr">
         <div class="boarder-top">
             <small class="text-white" style="font-size: 9.5pt;">
                 {% trans "Already Have An Acount ?" %} 

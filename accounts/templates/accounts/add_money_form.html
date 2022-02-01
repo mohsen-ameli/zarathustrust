@@ -9,7 +9,7 @@
         <form method="POST" id="deposit-form" autocomplete="off">
             {% csrf_token %}
             <h3 class="fw-normal text-center">{% trans "Deposit Money From Your Account" %}</h3>
-            <hr>
+            <hr class="zarathus-hr"
             {% crispy form %}
             <button class="neon-button my-2" type="submit" id="Action">{% trans "Deposit" %}</button>
         </form>

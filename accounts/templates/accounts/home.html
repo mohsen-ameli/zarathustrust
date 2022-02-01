@@ -29,7 +29,7 @@
     <!---------- ballance and yellow card ---------->
     <div class="bd-highlight">
         <!-- top part -->
-        <div class="d-flex">
+        <div class="d-flex mb-4">
             <div class="pe-3">
                 <i class="bi-cash-stack"></i>
             </div>
@@ -38,40 +38,24 @@
             </div>
             <div class="align-self-center ms-3">
                 <a class="neon-button" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                    Wallets
+                    Wallets <i class="fas fa-caret-down"></i>
                 </a>
             
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <li><a class="dropdown-item" href="{% url 'accounts:new-wallet' pk=object.pk %}">Make a New Wallet</a></li>
+                    <li><hr class="dropdown-divider"></li>
                     {% for wallet in wallets %}
                         <li>
                             <form method="POST">
                                 {% csrf_token %}
                                 <button type="submit" name="wallet-currency" value="{{ wallet.0 }}{{ wallet.currency }}" class="dropdown-item">
-                                    {{ wallet.0 }}{{ wallet.currency }}
+                                    <span class="flag-icon flag-icon-eu me-2"></span>{{ wallet.0 }}{{ wallet.currency }}
                                 </button>
                             </form>
                         </li>
                     {% endfor %}
                 </ul>
             </div>
-        </div>
-        <div class="mb-4">
-            <!-- <a class="neon-button" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                Wallets
-            </a>
-
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                {% for wallet in wallets %}
-                    <li>
-                        <form method="POST">
-                            {% csrf_token %}
-                            <button type="submit" name="wallet-currency" value="{{ wallet.0 }}{{ wallet.currency }}" class="dropdown-item">
-                                {{ wallet.0 }}{{ wallet.currency }}
-                            </button>
-                        </form>
-                    </li>
-                {% endfor %}
-            </ul> -->
         </div>
         <!-- bottom part (card) -->
         <div class="card text-white home-card">
@@ -87,7 +71,7 @@
                         {% endblocktrans %}
                     {% endif %}
                 </h5>
-                <hr>
+                <hr class="zarathus-hr">
                 <h1 class="fw-normal">
                     {% if wallet_symbol %}
                         {{ wallet_symbol }}{{ total_balance }}
@@ -123,22 +107,26 @@
 </div>
 <br>
 
-<!---------- 4 buttons ---------->
+<!---------- 5 buttons ---------->
 <div class="row text-center">
     <a href="{% url 'accounts:add-money' pk=object.pk %}" class="col-md zoom">
-        <i class="bi bi-download buttons-4"></i>
+        <i class="bi bi-download buttons-5"></i>
         <h3>{% trans "Deposit" %}</h3>
     </a>
     <a href="{% url 'accounts:transfer-search' pk=object.pk %}" class="col-md zoom" >
-        <i class="bi bi-send-check buttons-4"></i>
+        <i class="bi bi-send-check buttons-5"></i>
         <h3>{% trans "Send Money" %}</h3>
     </a>
     <a href="{% url 'accounts:take-money' pk=object.pk %}" class="col-md zoom">
-        <i class="bi bi-upload buttons-4"></i>
+        <i class="bi bi-upload buttons-5"></i>
         <h3>{% trans "Withdraw" %}</h3>
     </a>
+    <a href="#" class="col-md zoom">
+        <i class="bi bi-currency-exchange buttons-5"></i>
+        <h3>{% trans "Currency Exchange" %}</h3>
+    </a>
     <a href="{% url 'accounts:history' pk=object.pk %}" class="col-md zoom">
-        <i class="bi bi-book-half buttons-4"></i>
+        <i class="bi bi-book-half buttons-5"></i>
         <h3>{% trans "Transaction History" %}</h3>
     </a>
 </div>
