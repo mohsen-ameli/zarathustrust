@@ -9,27 +9,22 @@
         <h3 class="fw-normal text-center">{% trans "Please Choose a Country" %}</h3>
         <hr class="zarathus-hr">
 
-        <form method="POST" autocomplete="off">
-            {% csrf_token %}
-
-            <div class="dropdown form-floating">
-                <!-- INPUT -->
-                <input type="text" id="country-input" class="form-control dropdown-toggle" 
-                data-bs-toggle="dropdown" aria-expanded="false" placeholder="Country">
-                <label for="country-input">{% trans "Please choose a country" %}</label>
-                <!-- LIST -->
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" id="new-country-list">
-                    <li id="country-list">
-                        {% for code, country in countries %}
-                            <a class="dropdown-item" href="{% url 'accounts:settings-country-confirm' pk=user.pk country=code %}" style="text-transform: capitalize;">
-                                <span class="flag-icon flag-icon-{{ code|lower }} me-2"></span>{{ country }}
-                            </a>
-                        {% endfor %}
-                    </li>
-                </ul>
-            </div>
-
-        </form>
+        <div class="dropdown form-floating">
+            <!-- INPUT -->
+            <input type="text" id="country-input" class="form-control dropdown-toggle" autocomplete="off"
+            data-bs-toggle="dropdown" aria-expanded="false" placeholder="Country">
+            <label for="country-input">{% trans "Please choose a country" %}</label>
+            <!-- LIST -->
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" id="new-country-list">
+                <li id="country-list">
+                    {% for code, country in countries %}
+                        <a class="dropdown-item" href="{% url 'accounts:settings-country-confirm' pk=user.pk country=code %}" style="text-transform: capitalize;">
+                            <span class="flag-icon flag-icon-{{ code|lower }} me-2"></span>{{ country }}
+                        </a>
+                    {% endfor %}
+                </li>
+            </ul>
+        </div>
     </div>
 </div>
 

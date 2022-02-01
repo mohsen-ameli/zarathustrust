@@ -9,11 +9,11 @@
 <h3 class="text-capitalize text-center">{% trans "we pay you 2% interest on your balance !" %}</h5>
 <!---------- 2 buttons ---------->
 <div class="row text-center">
-    <a href="{% url 'register' %}" class="zoom-login">
+    <a href="{% url 'users:register' %}" class="zoom-login">
         <i class="fas fa-user-plus buttons-2 p-2"></i>
         <h1 style="font-size: 2.5rem;">{% trans "Sign Up" %}</h1>
     </a>
-    <a href="{% url 'login-view' %}" class="zoom-login">
+    <a href="{% url 'users:login-view' %}" class="zoom-login">
         <i class="fas fa-sign-in-alt buttons-2 p-2"></i>
         <h1 style="font-size: 2.5rem;">{% trans "Login" %}</h1>
     </a>

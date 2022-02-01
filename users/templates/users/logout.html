@@ -6,7 +6,7 @@
     <div class="card-body">
         <h3 class="fw-normal text-center">{% trans "You have been logged out !" %}</h3>
         <hr class="zarathus-hr">
-        <a class="neon-button-green my-2" href="{% url 'login-view' %}">{% trans "Log In Again" %}</a>
+        <a class="neon-button-green my-2" href="{% url 'users:login-view' %}">{% trans "Log In Again" %}</a>
     </div>
 </div>
 {% endblock content %}

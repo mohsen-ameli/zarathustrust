@@ -13,7 +13,7 @@
                 <h5 class="fw-normal">{% trans "This is a business account. Sign up now to be able to use our website as a payment for you own shop. Remember, you still get interest on all your capital as well." %}</h5>
                 <div class="mt-auto">
                     <hr class="zarathus-hr">
-                    <a class="neon-button-green fixed-bottom" href="{% url 'business' %}">{% trans "Sign Up" %}</a>
+                    <a class="neon-button-green fixed-bottom" href="{% url 'users:business' %}">{% trans "Sign Up" %}</a>
                 </div>
             </div>
         </div>
@@ -29,7 +29,7 @@
                 <h5 class="fw-normal">{% trans "This is a normal personal account. Sign up now to start making interest on your ballance." %}</h5>
                 <div class="mt-auto">
                     <hr class="zarathus-hr">
-                    <a class="neon-button-green fixed-bottom" href="{% url 'personal-country-pick' %}">{% trans "Sign Up" %}</a>
+                    <a class="neon-button-green fixed-bottom" href="{% url 'users:personal-country-pick' %}">{% trans "Sign Up" %}</a>
                 </div>
             </div>
         </div>
