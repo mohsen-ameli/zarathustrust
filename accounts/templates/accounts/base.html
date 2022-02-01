@@ -33,6 +33,8 @@
     <!-- Font Awesome LOCAL -->
     <link rel="stylesheet" href="{% static 'accounts/fontawesome-6.0.0/css/all.css' %}">
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Wruczek/Bootstrap-Cookie-Alert@gh-pages/cookiealert.css">
+
     <title>Home Page</title>
 </head>
 
@@ -79,7 +81,7 @@
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- HTMX -->
-    <script src="https://unpkg.com/htmx.org@1.6.1" integrity="sha384-tvG/2mnCFmGQzYC1Oh3qxQ7CkQ9kMzYjWZSNtrRZygHPDDqottzEJsqS4oUVodhW" crossorigin="anonymous"></script>
+    <!-- <script src="https://unpkg.com/htmx.org@1.6.1" integrity="sha384-tvG/2mnCFmGQzYC1Oh3qxQ7CkQ9kMzYjWZSNtrRZygHPDDqottzEJsqS4oUVodhW" crossorigin="anonymous"></script> -->
 
     <!-- Enable Tooltips everywhere -->
     <script>
@@ -89,15 +91,33 @@
         })
     </script>
 
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FRK5F8TZKR"></script>
-    <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+    <!-- Cookie banner -->
+    <div class="alert text-center cookiealert" role="alert">
+        <b>Do you like cookies?</b> &#x1F36A; We use cookies to ensure you get the best experience on our website.
+        <a href="{% url 'cookie-policy' %}" target="_blank">Learn more</a>
 
-    gtag('config', 'G-FRK5F8TZKR');
-    </script>
+        <button type="button" class="neon-button acceptcookies">I agree</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/gh/Wruczek/Bootstrap-Cookie-Alert@gh-pages/cookiealert.js"></script>
+
+    <!-- <script>
+        window.addEventListener("cookieAlertAccept", function() {
+            alert("cookies accepted")
+        })
+    </script> -->
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    {% if debug == False %}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-FRK5F8TZKR"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+        
+            gtag('config', 'G-FRK5F8TZKR');
+        </script>
+    {% endif %}
 </body>
 
 </html>

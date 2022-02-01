@@ -513,6 +513,11 @@ def auth_view(request, url1, url2, url3, url4):
         return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk}))
 
 
+# cookie policy page
+def CookiePolicy(request):
+    return render(request, "users/cookie_policy.html")
+
+
 # class LoginClassView(LoginView):
     # template_name = "users/login.html"
 

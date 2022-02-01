@@ -36,6 +36,10 @@ if not DEBUG:
 else:
     ALLOWED_HOSTS = ["*"]
 
+INTERNAL_IPS = (
+    '127.0.0.1'
+)
+
 # models primary key
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
