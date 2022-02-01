@@ -9,7 +9,7 @@
         <h3 class="fw-normal text-center">{% trans "Please Choose a Country" %}</h3>
         <hr class="zarathus-hr">
 
-        <form method="POST" autocomplete="off">
+        <form method="POST" autocomplete="off" id="form">
             {% csrf_token %}
             <div class="dropdown form-floating">
                 <!-- INPUT -->
@@ -41,7 +41,7 @@
 
         <div class="d-flex text-white" style="font-size: 9.5pt;">
             <div class="mt-3">{% trans "Already have an account ?" %}</div>
-            <a class="mt-3 ms-2" href="{% url 'login-view' %}" style="color: #f8b119;">{% trans "Log In" %}</a>
+            <a class="mt-3 ms-2" href="{% url 'users:login-view' %}" style="color: #f8b119;">{% trans "Log In" %}</a>
         </div>
     </div>
 </div>
@@ -52,7 +52,7 @@
 {{ default_country|json_script:"default_country" }}
 {{ request.user.pk|json_script:"pk" }}
 
-<script src="{% static 'accounts/js/country_picker.js' %}"></script>
+<script src="{% static 'users/js/country_picker.js' %}"></script>
 
 {% endblock content %}
 <!-- <img class="m-1" src="/static/flags/{{ default_country_code|lower }}.gif" alt="" style="width: 25px; height: 15px;"><span style="color: white;">{{ default_country }}</span>  -->

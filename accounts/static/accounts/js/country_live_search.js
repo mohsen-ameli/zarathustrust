@@ -1,9 +1,8 @@
 (function() {
-    const all_countries = JSON.parse(document.getElementById('data').textContent);
-    const pk = JSON.parse(document.getElementById('pk').textContent);
-    const NewCountryList = document.getElementById('new-country-list');
-    // const FormList = document.getElementById('country-list');
-    const FormInput = document.getElementById('country-input');
+    const all_countries = JSON.parse(document.getElementById('data').textContent)
+    const pk = JSON.parse(document.getElementById('pk').textContent)
+    const NewCountryList = document.getElementById('new-country-list')
+    const FormInput = document.getElementById('country-input')
 
     FormInput.addEventListener('keyup', e=>{
         var typed = e.target.value.toLowerCase()

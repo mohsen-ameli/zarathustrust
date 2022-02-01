@@ -1,15 +1,12 @@
-from multiprocessing import context
 import os
 import decimal
 import json
+import requests
+
 from django.http.response import JsonResponse
 from ipware import get_client_ip
-from forex_python.converter import CurrencyCodes
-
-import requests
-from django.core.serializers.json import DjangoJSONEncoder
-from bs4 import BeautifulSoup
 from crum import get_current_user
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail, EmailMessage
@@ -27,57 +24,72 @@ from django.conf import settings
 
 from .forms import AddMoneyForm, TakeMoneyForm, TransferSendForm
 from .models import account, account_interest, transaction_history
-from wallets.models import BranchAccounts
-from users.models import ReferralCode
 from .tasks import interest_loop
+from .functions import currency_symbol, currency_min, correct_user
+from users.models import ReferralCode
+from wallets.models import BranchAccounts
 
 with open('/etc/config.json') as config_file:
     config = json.load(config_file)
 
 
-
-################ Functions ################
-
-# test function to see if the user tryna see the page is allowed to do so
-def correct_user(pk):
-    if pk == get_current_user().pk:
-        return True
-    return False
-
-
-# getting the language cookie
-def cookie_monster(request):
-    cookies = request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
-    if cookies is None:
-        print('bruh no cookies for me', cookies)
-    else:
-        print('old cookies', cookies)
-        translation.activate(cookies)
-
-
-# returns the currency's symbol
-def currency_symbol(country_code):
-    country_code = country_code.upper()
-    project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    file = f'{project}/json/currencies_symbols.json' # getting the file containing all country codes
-    with open(file, 'r') as config_file: # opening and reading the json file
-        data = json.load(config_file)
-
-    return data[country_code]
-
-
-# returns the most recent $1 in that currency
-def currency_min(currency):
-    currency = currency.upper()
-    project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    file = f'{project}/json/currency_min.json' # getting the file containing all country codes
-    with open(file, 'r') as config_file: # opening and reading the json file
-        data = json.load(config_file)
-
-    return int(data[currency])
-    
-
 ################ Views ################
+
+# Admin Page
+def AdminRickRoll(lmfao):
+    r = redirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley")
+    return r
+
+
+# Landing Page
+def LandingPageView(request):
+    ip, is_routable = get_client_ip(request)
+    if ip is None:
+        code = None
+    else:
+        if is_routable:
+            url = f"https://geolocation-db.com/json/{ip}&position=true"
+            response = requests.get(url).json()
+            code = response['country_code']
+        else:
+            code = None
+
+    country = code
+    if country is None:
+        lang = 'en'
+    else:
+        country_code = country.upper()
+        # project = os.path.abspath(os.path.dirname(__name__)) # root of django project
+        project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        file = f'{project}/json/country_languages.json' # getting the file containing all country codes
+        with open(file, 'r') as config_file: # opening and reading the json file
+            data = json.load(config_file)
+        langs = data[country_code] # searching for our specific country code
+        lang = next(iter(langs))
+    translation.activate(lang)
+    response = render(request, 'accounts/landing_page.html')
+    response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang)
+    return response
+
+
+# About Page
+def AboutTemplateView(request):
+    context = {'stuff' : _('hello hello hi hi')}
+    return render(request, 'accounts/about.html', context)
+
+
+# Celery hard start
+@login_required
+def new_dunc(request):
+    if request.user.id == 1:
+        # # # celery -A money_moe worker -l info --pool=solo
+        interest_loop.delay()
+        return render(request, 'accounts/new_dunc.html')
+    else:
+        return HttpResponse("<h1>How tf did u find this page ... smh ... script kiddies these days jeez</h1>")
+
+
+# Home Page
 @login_required
 def HomeView(request, pk):
     if correct_user(pk):
@@ -122,55 +134,8 @@ def HomeView(request, pk):
         raise PermissionDenied
 
 
-# Admin Page
-def AdminRickRoll(lmfao):
-    r = redirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley")
-    return r
-
-
-# Landing Page
-def LandingPageView(request):
-    ip, is_routable = get_client_ip(request)
-    if ip is None:
-        code = None
-    else:
-        if is_routable:
-            url = f"https://geolocation-db.com/json/{ip}&position=true"
-            response = requests.get(url).json()
-            code = response['country_code']
-        else:
-            code = None
-
-    country = code
-    if country is None:
-        lang = 'en'
-    else:
-        country_code = country.upper()
-        # project = os.path.abspath(os.path.dirname(__name__)) # root of django project
-        project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        file = f'{project}/json/country_languages.json' # getting the file containing all country codes
-        with open(file, 'r') as config_file: # opening and reading the json file
-            data = json.load(config_file)
-        langs = data[country_code] # searching for our specific country code
-        lang = next(iter(langs))
-    translation.activate(lang)
-    response = render(request, 'accounts/landing_page.html')
-    response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang)
-    return response
-
-
-@login_required
-def new_dunc(request):
-    if request.user.id == 1:
-        # # # celery -A money_moe worker -l info --pool=solo
-        interest_loop.delay()
-        return render(request, 'accounts/new_dunc.html')
-    else:
-        return HttpResponse("<h1>How tf did u find this page ... smh ... script kiddies these days jeez</h1>")
-
-
-@login_required
 # Settings
+@login_required
 def Settings(request, pk):
     context = {
         "pk" : pk
@@ -178,6 +143,7 @@ def Settings(request, pk):
     return render(request, "accounts/settings.html", context)
 
 
+# Settings Country search
 @login_required
 def SettingsCountry(request, pk):
     project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -193,6 +159,7 @@ def SettingsCountry(request, pk):
     return render(request, "accounts/settings_country.html", context)
 
 
+# Settings Country Confirm
 @login_required
 def SettingsCountryConfirm(request, pk, country):
     if request.method == "POST":
@@ -358,7 +325,7 @@ def TransferSearchView(request, pk):
         raise PermissionDenied()
 
 
-# Money Send Searching Results
+# Transfer Searching Results
 def search_results(request):
     if request.is_ajax():
         # getting the stuff that was typed in in transfer.html
@@ -507,84 +474,6 @@ def TakeMoneyUpdateView(request, pk):
         raise PermissionDenied()
 
 
-# About Page
-def AboutTemplateView(request):
-    context = {'stuff' : _('hello hello hi hi')}
-    return render(request, 'accounts/about.html', context)
-
-
-# DELTE this later
-def payment(request, url1, url2, url3, url4):
-    # www.amazon.ca/CYBERPOWERPC-Xtreme-i5-10400F-GeForce-GXiVR8060A10/dp/B08FBK2DK5/
-    # www.newegg.ca/abs-ali521/p/N82E16883360126/
-    if request.user.is_authenticated:
-
-
-        header = {
-            "User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36",
-            "Accept-Language" : "en"
-        }
-        url = f"https://{url1}/{url2}/{url3}/{url4}"
-        r = requests.get(url, headers=header)
-
-        if "amazon" in url1:
-            soup = BeautifulSoup(r.text, "lxml")
-            try:
-                price = soup.select_one('#price_inside_buybox').getText().strip()
-            except AttributeError:
-                price = soup.select_one('#priceblock_ourprice').getText().strip()
-            if '$' not in price:
-                price = price[:-1]
-                price = price.replace(",", ".")
-            else:
-                price = price[1:]
-        elif "newegg" in url1:
-            soup = BeautifulSoup(r.content, "lxml")
-            price = soup.select_one('.price-current').getText()
-            price = price[1:]
-
-        total_balance = account.objects.get(created_by=request.user).total_balance
-        translation_table = dict.fromkeys(map(ord, ','), None)
-        price = price.translate(translation_table)
-        remaining     = round(total_balance - decimal.Decimal(float(price)), 2)
-
-        return render(request, 'accounts/payment.html', 
-            {"url1" : url1, "url2" : url2, "url3" : url3, "url4" : url4, 
-            "price" : price, "total" : total_balance, "remaining" : remaining})
-    else:
-        return redirect(reverse("login-view-pay", kwargs={"url1" : url1, "url2" : url2, "url3" : url3, "url4" : url4}))
-# DELTE this later
-def paying_func(shop, price, buyer_balance):
-    shop_owner = account.objects.get(created_by__username=shop).created_by
-    shop_balance = account.objects.get(created_by=shop_owner).total_balance
-    new_balance = shop_balance + price
-    account.objects.filter(created_by=shop_owner).update(total_balance = new_balance)
-
-    # subtracting the price from the buyer
-    account.objects.filter(pk=get_current_user().pk).update(total_balance=buyer_balance-price)
-# DELTE this later
-@login_required
-def payment_done(request, url1, url2, url3, url4, price):
-    while "," in price:
-        translation_table = dict.fromkeys(map(ord, ','), None)
-        price = price.translate(translation_table)
-    price = decimal.Decimal(float(price)) # compatibilizing str price to decimalField in models 
-
-    # Checking to see if the buyer has enough money
-    buyer_balance = account.objects.get(pk=get_current_user().pk).total_balance
-    if buyer_balance >= round(price, 2):
-        # adding the price to the shop owner
-        if "amazon" in url1:
-            paying_func("amazon", price, buyer_balance)
-        elif "newegg" in url1:
-            paying_func("newegg", price, buyer_balance)
-        messages.success(request, _("Your order was purchased successfully !"))
-        return redirect(reverse("accounts:home", kwargs={"pk" : get_current_user().pk}))
-    else:
-        messages.warning(request, _("You do not have enough money for this order !"))
-        return redirect(request.META['HTTP_REFERER'])
-
-
 # Checkout Page
 @login_required
 def checkout(request, shop, price):
@@ -702,34 +591,104 @@ def history_detail(request, pk, tran_id):
 
 
 
+'''# DELETE this later
+def payment(request, url1, url2, url3, url4):
+    # www.amazon.ca/CYBERPOWERPC-Xtreme-i5-10400F-GeForce-GXiVR8060A10/dp/B08FBK2DK5/
+    # www.newegg.ca/abs-ali521/p/N82E16883360126/
+    if request.user.is_authenticated:
 
 
-# Class Based Views
-# class HomeView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
-#     model = account
-#     template_name = 'accounts/home.html'
+        header = {
+            "User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36",
+            "Accept-Language" : "en"
+        }
+        url = f"https://{url1}/{url2}/{url3}/{url4}"
+        r = requests.get(url, headers=header)
 
-#     def test_func(self):
-#         account = self.get_object()
-#         if self.request.user == account.created_by:
-#             return True
-#         return False
+        if "amazon" in url1:
+            soup = BeautifulSoup(r.text, "lxml")
+            try:
+                price = soup.select_one('#price_inside_buybox').getText().strip()
+            except AttributeError:
+                price = soup.select_one('#priceblock_ourprice').getText().strip()
+            if '$' not in price:
+                price = price[:-1]
+                price = price.replace(",", ".")
+            else:
+                price = price[1:]
+        elif "newegg" in url1:
+            soup = BeautifulSoup(r.content, "lxml")
+            price = soup.select_one('.price-current').getText()
+            price = price[1:]
 
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['interest_list'] = account_interest.objects.get(pk=get_current_user().pk)
-#         context['is_bus'] = CustomUser.objects.get(pk=get_current_user().pk).is_business
-#         context['currency'] = CustomUser.objects.get(pk=get_current_user().pk).currency
+        total_balance = account.objects.get(created_by=request.user).total_balance
+        translation_table = dict.fromkeys(map(ord, ','), None)
+        price = price.translate(translation_table)
+        remaining     = round(total_balance - decimal.Decimal(float(price)), 2)
 
-#         acc = account.objects.get(pk=get_current_user().pk)
+        return render(request, 'accounts/payment.html', 
+            {"url1" : url1, "url2" : url2, "url3" : url3, "url4" : url4, 
+            "price" : price, "total" : total_balance, "remaining" : remaining})
+    else:
+        return redirect(reverse("login-view-pay", kwargs={"url1" : url1, "url2" : url2, "url3" : url3, "url4" : url4}))
+# DELETE this later
+def paying_func(shop, price, buyer_balance):
+    shop_owner = account.objects.get(created_by__username=shop).created_by
+    shop_balance = account.objects.get(created_by=shop_owner).total_balance
+    new_balance = shop_balance + price
+    account.objects.filter(created_by=shop_owner).update(total_balance = new_balance)
 
-#         url = f'https://api.exchangerate.host/convert?from=USD&to=EUR' # 1 USD to EUR
-#         response = requests.get(url) # getting a response
-#         data = response.json() # getting the data
-#         euro_rate = data['result'] # extracting the desired column and converting it into Decimal django field
-#         context['euro_balance'] = round(decimal.Decimal(euro_rate) * acc.total_balance, 2) # set the EUR balance to euro_balance for templates
-#         context['euro_rate']    = euro_rate  # passing euro_rate for 1 USD
-#         context['euro_bonus']   = round(decimal.Decimal(euro_rate) * acc.bonus, 2)
+    # subtracting the price from the buyer
+    account.objects.filter(pk=get_current_user().pk).update(total_balance=buyer_balance-price)
+# DELETE this later
+@login_required
+def payment_done(request, url1, url2, url3, url4, price):
+    while "," in price:
+        translation_table = dict.fromkeys(map(ord, ','), None)
+        price = price.translate(translation_table)
+    price = decimal.Decimal(float(price)) # compatibilizing str price to decimalField in models 
 
-#         return context
+    # Checking to see if the buyer has enough money
+    buyer_balance = account.objects.get(pk=get_current_user().pk).total_balance
+    if buyer_balance >= round(price, 2):
+        # adding the price to the shop owner
+        if "amazon" in url1:
+            paying_func("amazon", price, buyer_balance)
+        elif "newegg" in url1:
+            paying_func("newegg", price, buyer_balance)
+        messages.success(request, _("Your order was purchased successfully !"))
+        return redirect(reverse("accounts:home", kwargs={"pk" : get_current_user().pk}))
+    else:
+        messages.warning(request, _("You do not have enough money for this order !"))
+        return redirect(request.META['HTTP_REFERER']) '''
+
+
+'''# Class Based Views
+class HomeView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+    model = account
+    template_name = 'accounts/home.html'
+
+    def test_func(self):
+        account = self.get_object()
+        if self.request.user == account.created_by:
+            return True
+        return False
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['interest_list'] = account_interest.objects.get(pk=get_current_user().pk)
+        context['is_bus'] = CustomUser.objects.get(pk=get_current_user().pk).is_business
+        context['currency'] = CustomUser.objects.get(pk=get_current_user().pk).currency
+
+        acc = account.objects.get(pk=get_current_user().pk)
+
+        url = f'https://api.exchangerate.host/convert?from=USD&to=EUR' # 1 USD to EUR
+        response = requests.get(url) # getting a response
+        data = response.json() # getting the data
+        euro_rate = data['result'] # extracting the desired column and converting it into Decimal django field
+        context['euro_balance'] = round(decimal.Decimal(euro_rate) * acc.total_balance, 2) # set the EUR balance to euro_balance for templates
+        context['euro_rate']    = euro_rate  # passing euro_rate for 1 USD
+        context['euro_bonus']   = round(decimal.Decimal(euro_rate) * acc.bonus, 2)
+
+        return context '''
         

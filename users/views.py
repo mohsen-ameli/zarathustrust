@@ -1,8 +1,6 @@
 import json
 import os
 import phonenumbers
-from ipware import get_client_ip
-import requests
 
 from accounts.models import account
 from crum import get_current_user
@@ -16,85 +14,17 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from django.conf import settings
-from django_countries import countries
+
 
 from .forms import (BusinessForm, EmailCodeForm, PhoneCodeForm,
                     ReferralCodeForm, RegisterForm)
 from .models import CustomUser, code, ReferralCode
 from .utils import phone_msg_verify
+from .functions import country_from_ip, get_country_lang, get_country_currency
 from accounts.views import currency_min, currency_symbol
 
 with open("/etc/config.json") as config_file:
     config = json.load(config_file)
-
-
-################ Functions ###############
-
-# Function to get the country of the user from their ip address
-def country_from_ip(request):
-    # getting the visitors country, ip address
-    ip, is_routable = get_client_ip(request)
-    if ip is None:
-        # Unable to get the client's IP address
-        name = None
-        code = None
-        return name, code
-    else:
-        # We got the client's IP address
-        if is_routable:
-            # The client's IP address is publicly routable on the Internet
-            url = f"https://geolocation-db.com/json/{ip}&position=true"
-            response = requests.get(url).json()
-            # print(response)
-            name = response['country_name']
-            code = response['country_code']
-            return name, code
-        else:
-            # The client's IP address is private
-            name = None
-            code = None
-            return name, code
-
-
-# getting country languages
-def get_country_lang(country_code):
-    country_code = country_code.upper()
-    # project = os.path.abspath(os.path.dirname(__name__)) # root of django project
-    project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    file = f'{project}/json/country_languages.json' # getting the file containing all country codes
-    with open(file, 'r') as config_file: # opening and reading the json file
-        data = json.load(config_file)
-    langs = data[country_code] # searching for our specific country code
-    lang = next(iter(langs))
-    return lang
-
-
-# getting country currency
-def get_country_currency(country_code):
-    country_code = country_code.upper()
-    # project = os.path.abspath(os.path.dirname(__name__)) # root of django project
-    project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    file = f'{project}/json/country_currencies.json' # getting the file containing all country codes
-    with open(file, 'r') as config_file: # opening and reading the json file
-        data = json.load(config_file)
-
-    return data[country_code]
-
-
-# searching through the country dict
-def CountryDict(search):
-    # project = os.path.abspath(os.path.dirname(__name__)) # root of django project
-    project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    file = f'{project}/json/country_names.json' # getting the file containing all country codes
-    with open(file, 'r') as config_file: # opening and reading the json file
-        data = json.load(config_file)
-
-    values = []
-    for value in data.values():
-        if search in value: # found countries
-            values.append([value, countries.by_name(value)])
-    
-    return values
 
 
 ################ Views ###############
@@ -160,22 +90,6 @@ def business(request):
         return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk}))
 
 
-# ajax search through countries
-def CountryPicker(request):
-    if request.is_ajax():
-        typed = request.POST.get('typed')
-        
-        values = CountryDict(typed.lower())
-
-        if len(values) > 0:
-            response = values
-        else: # didnt find any countries
-            response = "No countries were found."
-
-        return JsonResponse({"data" : response})
-    return JsonResponse({})
-
-
 # view to handle the country picking
 def PersonalCountryPickSignUp(request):
     if request.user.is_anonymous == True:
@@ -191,19 +105,20 @@ def PersonalCountryPickSignUp(request):
         if request.method == "POST":
             default_country_picker = request.POST.get('default-country-picker')
             if default_country_picker != None: 
-                response = redirect(reverse("personal-sign-up", kwargs={"country" : default_country[1]}))
+                response = redirect(reverse("users:personal-sign-up", kwargs={"country" : default_country[1]}))
                 response.set_cookie(settings.LANGUAGE_COOKIE_NAME, default_country[1])
                 return response
             country_code = request.POST.get('country-picker')
             if country_code:
                 country_code = country_code.upper()
-                response = redirect(reverse("personal-sign-up", kwargs={"country" : country_code}))
+                response = redirect(reverse("users:personal-sign-up", kwargs={"country" : country_code}))
                 response.set_cookie(settings.LANGUAGE_COOKIE_NAME, country_code)
                 return response
             context = {
                 "default_country" : default_country[0], 
                 "default_country_code" : default_country[1], 
-                "countries" : all_countries
+                "countries" : all_countries,
+                "data" : data
             }
             response = render(request, "users/country_pick.html", context)
             response.set_cookie(settings.LANGUAGE_COOKIE_NAME, country_code)
@@ -268,7 +183,7 @@ def PersonalSignUp(request, country):
                         f"Please check your mailbox (as well as spam folder) for a verification code, and enter the 5-digit code below"
                     ),
                 )
-                return redirect("verify-view")
+                return redirect("users:verify-view")
         else:
             form = RegisterForm()
         return render(request, "users/personal.html", {"form": form, "ext" : ext})
@@ -302,7 +217,7 @@ def email_verify_view(request):
                         f"Please check your phone for verification code, and enter the 5-digit code below"
                     ),
                 )
-                return redirect("phone-verify-view")
+                return redirect("users:phone-verify-view")
             else:
                 messages.warning(
                     request,
@@ -335,7 +250,7 @@ def phone_verify_view(request):
                             f"Enter your friend's referral code in order for both of you to get grand prize !"
                         ),
                     )
-                    return redirect("referral-verify-view")
+                    return redirect("users:referral-verify-view")
                 else:
                     messages.success(
                         request,
@@ -343,7 +258,7 @@ def phone_verify_view(request):
                             f"Enter your friend's referral code in order for both of you to get grand prize !"
                         ),
                     )
-                    return redirect("referral-verify-view")
+                    return redirect("users:referral-verify-view")
             else:
                 messages.warning(
                     request,
@@ -492,7 +407,12 @@ def LoginClassView(request):
         return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk}))
 
 
-#  DELETE LATER
+# cookie policy page
+def CookiePolicy(request):
+    return render(request, "users/cookie_policy.html")
+
+
+'''#  DELETE LATER
 def auth_view(request, url1, url2, url3, url4):
     if request.user.is_anonymous == True:
         form = AuthenticationForm()
@@ -510,92 +430,100 @@ def auth_view(request, url1, url2, url3, url4):
                 )
         return render(request, "users/login.html", {"form": form})
     else:
+        return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk})) '''
+
+''' # ajax search through countries
+def CountryPicker(request):
+    if request.is_ajax():
+        typed = request.POST.get('typed')
+        
+        values = CountryDict(typed.lower())
+
+        if len(values) > 0:
+            response = values
+        else: # didnt find any countries
+            response = "No countries were found."
+
+        return JsonResponse({"data" : response})
+    return JsonResponse({}) '''
+
+''' class LoginClassView(LoginView):
+    template_name = "users/login.html"
+
+    I commented this out, becuase I want users to be able to be redirected to their specific
+    pages after they log in. eg: say someone comes from a shop to /checkout then they have to 
+    first login, then be immidietly redirected to that checkout page, by using the login_required 
+    decorator, but if i have this get_success_url then it will overwrite the ?next parameter and
+    mess up the proccess.
+
+    def get_success_url(self):
+        # url = self.get_redirect_url()
+        return reverse_lazy(
+            "accounts:home", kwargs={"pk": get_current_user().account.pk}
+        )'''
+
+''' def iban_verify_view(request):
+    if request.user.is_anonymous == True:
+        form = IbanCodeForm(request.POST or None)
+        pk = request.session.get("pk")
+        if pk:
+            user = CustomUser.objects.get(pk=pk)
+            iban_code = user.code.iban_verify_code
+            if not request.POST:
+                # send email
+                # iban_number = CustomUser.objects.get(pk=pk).iban
+                EMAIL_ID = config.get("EMAIL_ID")
+                MOE_EMAIL = config.get("MOE_EMAIL")
+                send_mail(
+                    f"IBAN verficication code for {user.username}",
+                    f"The IBAN verification code for user : {user.username} is : {iban_code}",
+                    f"{EMAIL_ID}",
+                    [f"{MOE_EMAIL}"],
+                )
+            if form.is_valid():
+                num = form.cleaned_data.get("iban_verify_code")
+                if str(iban_code) == num:
+                    messages.success(
+                        request,
+                        _(
+                            f"Enter your friend's referral code in order for both of you to get grand prize !"
+                        ),
+                    )
+                    return redirect("referral-verify-view")
+        return render(request, "users/iban_verify.html", {"form": form})
+    else:
         return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk}))
+messages.success(
+    request,
+    _(
+        f"Please wait for our support team to send you a pre-decided amount of money. Check your bank account and then enter the small amount bellow."
+    ),
+)
+return redirect("iban-verify-view") '''
 
-
-# cookie policy page
-def CookiePolicy(request):
-    return render(request, "users/cookie_policy.html")
-
-
-# class LoginClassView(LoginView):
-    # template_name = "users/login.html"
-
-    # I commented this out, becuase I want users to be able to be redirected to their specific
-    # pages after they log in. eg: say someone comes from a shop to /checkout then they have to 
-    # first login, then be immidietly redirected to that checkout page, by using the login_required 
-    # decorator, but if i have this get_success_url then it will overwrite the ?next parameter and
-    # mess up the proccess.
-
-    # def get_success_url(self):
-    #     # url = self.get_redirect_url()
-    #     return reverse_lazy(
-    #         "accounts:home", kwargs={"pk": get_current_user().account.pk}
-    #     )
-
-
-# def iban_verify_view(request):
-#     if request.user.is_anonymous == True:
-#         form = IbanCodeForm(request.POST or None)
-#         pk = request.session.get("pk")
-#         if pk:
-#             user = CustomUser.objects.get(pk=pk)
-#             iban_code = user.code.iban_verify_code
-#             if not request.POST:
-#                 # send email
-#                 # iban_number = CustomUser.objects.get(pk=pk).iban
-#                 EMAIL_ID = config.get("EMAIL_ID")
-#                 MOE_EMAIL = config.get("MOE_EMAIL")
-#                 send_mail(
-#                     f"IBAN verficication code for {user.username}",
-#                     f"The IBAN verification code for user : {user.username} is : {iban_code}",
-#                     f"{EMAIL_ID}",
-#                     [f"{MOE_EMAIL}"],
-#                 )
-#             if form.is_valid():
-#                 num = form.cleaned_data.get("iban_verify_code")
-#                 if str(iban_code) == num:
-#                     messages.success(
-#                         request,
-#                         _(
-#                             f"Enter your friend's referral code in order for both of you to get grand prize !"
-#                         ),
-#                     )
-#                     return redirect("referral-verify-view")
-#         return render(request, "users/iban_verify.html", {"form": form})
-#     else:
-#         return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk}))
-# messages.success(
-#     request,
-#     _(
-#         f"Please wait for our support team to send you a pre-decided amount of money. Check your bank account and then enter the small amount bellow."
-#     ),
-# )
-# return redirect("iban-verify-view")
-
-# setting cookies 
-# def cookie_monster(request):
-    # cookies = request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
-    # if cookies is None: # no cookies
-    #     print('NEW cookies', cookies)
-    #     if request.user.is_authenticated == True:
-    #         lang = CustomUser.object.get(pk=request.user.pk).language
-    #         translation.activate(lang)
-    #     else:
-    #         ip, is_routable = get_client_ip(request)
-    #         if ip is None:
-    #             code = None
-    #         else:
-    #             if is_routable:
-    #                 url = f"https://geolocation-db.com/json/{ip}&position=true"
-    #                 response = requests.get(url).json()
-    #                 code = response['country_code']
-    #             else:
-    #                 code = None
-    #         EN = ['Canada', 'canada', 'CA', 'ca', 'USA', 'US', 'United States', 'United States of America', 'Australias', 'UK', 'England', 'United Kingdom', 'Jamaica']
-    #         if code in EN:
-    #             code = 'en'
-    #         translation.activate(code)
-    # else: # cookies exist already
-    #     print("OLD cookies", cookies)
-    #     translation.activate(cookies)
+''' # setting cookies 
+def cookie_monster(request):
+    cookies = request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
+    if cookies is None: # no cookies
+        print('NEW cookies', cookies)
+        if request.user.is_authenticated == True:
+            lang = CustomUser.object.get(pk=request.user.pk).language
+            translation.activate(lang)
+        else:
+            ip, is_routable = get_client_ip(request)
+            if ip is None:
+                code = None
+            else:
+                if is_routable:
+                    url = f"https://geolocation-db.com/json/{ip}&position=true"
+                    response = requests.get(url).json()
+                    code = response['country_code']
+                else:
+                    code = None
+            EN = ['Canada', 'canada', 'CA', 'ca', 'USA', 'US', 'United States', 'United States of America', 'Australias', 'UK', 'England', 'United Kingdom', 'Jamaica']
+            if code in EN:
+                code = 'en'
+            translation.activate(code)
+    else: # cookies exist already
+        print("OLD cookies", cookies)
+        translation.activate(cookies) '''
