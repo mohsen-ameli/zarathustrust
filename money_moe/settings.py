@@ -44,6 +44,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 INSTALLED_APPS = [
     "users.apps.UsersConfig",
     "accounts.apps.AccountsConfig",
+    "wallets",
     
     "crispy_forms",
     "rosetta",

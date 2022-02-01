@@ -1,53 +1,35 @@
 (function() {
-    const FormInput = document.getElementById('country-input')
-    const FormList = document.getElementById('country-list');
-    const NewCountryList = document.getElementById('new-country-list')
-    const data = '{{ countries }}'
-    const countries = (data.replace(/&#x27;/g, '"').replace(/&quot;/g, '"'))
-    const csrf = document.getElementsByName('csrfmiddlewaretoken')[0].value
-    const rdata = JSON.parse("true")
+    const all_countries = JSON.parse(document.getElementById('data').textContent);
+    const NewCountryList = document.getElementById('new-country-list');
+    const FormInput = document.getElementById('country-input');
+    // const pk = JSON.parse(document.getElementById('pk').textContent);
+    // const FormList = document.getElementById('country-list');
 
-    const country_selector = (typed) => {
-        $.ajax({
-            type: 'POST',
-            url:'/regiter/country_picker/',
-            data : {
-                'csrfmiddlewaretoken' : csrf,
-                'typed' : typed,
-            },
-            success : (response) =>{
-                const incoming = response.data
-                if (Array.isArray(incoming)) { // if response is an array
-                    incoming.forEach(country => {
-                        if (country[0].startsWith(typed)) {
-                            NewCountryList.innerHTML += `
-                            <li>
-                                <a class="dropdown-item" href="/register/personal/${country[1]}" style="text-transform: capitalize;">
-                                    <span class="flag-icon flag-icon-${country[1].toLowerCase()} me-2"></span>${country[0]}
-                                </a>
-                            </li>
-                            `
-                        }
-                    })
-                } else {
-                    NewCountryList.innerHTML = `
+    FormInput.addEventListener('keyup', e=>{
+        var typed = e.target.value.toLowerCase()
+        NewCountryList.innerHTML = ""
+
+        if (e.target.value.length > 0 && typed != '') {
+            var i=0
+            for (const [key, value] of Object.entries(all_countries)) {
+                if (value.startsWith(typed)){
+                    i++
+                    NewCountryList.innerHTML += `
+                        <li>
+                            <a class="dropdown-item" href="/register/personal/${key}" style="text-transform: capitalize;">
+                                <span class="flag-icon flag-icon-${key.toLowerCase()} me-2"></span>${value}
+                            </a>
+                        </li>
+                    `
+                }
+            }
+            if (i <= 0) {
+                NewCountryList.innerHTML = `
                     <li class="dropdown-item disabled" style="color: black;">
                         <b>No countries were found.</b>
                     </li>
-                    `
-                }
-            },
-            error : (response) => {
-                console.log("ERROR", response)
+                `
             }
-        })
-    }
-
-    FormInput.addEventListener('keyup', e=>{
-        NewCountryList.innerHTML = ""
-        if (e.target.value.length > 0 && e.target.value != '') {
-            FormList.style.display = 'none'
-            country_selector(e.target.value)
         } else {
             NewCountryList.innerHTML = `
                 <li class="dropdown-item disabled" style="color: black;">

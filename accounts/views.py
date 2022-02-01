@@ -26,7 +26,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 
 from .forms import AddMoneyForm, TakeMoneyForm, TransferSendForm
-from .models import account, account_interest, transaction_history, BranchAccounts
+from .models import account, account_interest, transaction_history
+from wallets.models import BranchAccounts
 from users.models import ReferralCode
 from .tasks import interest_loop
 
@@ -119,13 +120,6 @@ def HomeView(request, pk):
             return render(request, 'accounts/home.html', context)
     else:
         raise PermissionDenied
-
-
-def NewWallet(request, pk):
-    context = {
-        "pk" : pk,
-    }
-    return render(request, "accounts/new_wallet.html", context)
 
 
 # Admin Page

@@ -42,7 +42,7 @@
                 </a>
             
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                    <li><a class="dropdown-item" href="{% url 'accounts:new-wallet' pk=object.pk %}">Make a New Wallet</a></li>
+                    <li><a class="dropdown-item" href="{% url 'wallets:new-wallet' pk=object.pk %}">Make a New Wallet</a></li>
                     <li><hr class="dropdown-divider"></li>
                     {% for wallet in wallets %}
                         <li>
@@ -121,7 +121,7 @@
         <i class="bi bi-upload buttons-5"></i>
         <h3>{% trans "Withdraw" %}</h3>
     </a>
-    <a href="#" class="col-md zoom">
+    <a href="{% url 'wallets:currency-exchange' pk=object.pk %}" class="col-md zoom">
         <i class="bi bi-currency-exchange buttons-5"></i>
         <h3>{% trans "Currency Exchange" %}</h3>
     </a>

@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from . import views as account_views
 
 app_name = "accounts"
@@ -22,7 +22,6 @@ urlpatterns = [
     path("<int:pk>/history/<int:tran_id>", account_views.history_detail, name="history-detail"),
     path("<int:pk>/cash_out/", account_views.cash_out, name="cash-out"),
     path("checkout/<str:shop>/<str:price>/", account_views.checkout, name="checkout"),
-    path("<int:pk>/new_wallet/", account_views.NewWallet, name="new-wallet"),
     # path("payment/<str:url1>/<str:url2>/<str:url3>/<str:url4>/", account_views.payment, name="payment"),
     # path("payment/<str:url1>/<str:url2>/<str:url3>/<str:url4>/<str:price>/payment_done/", account_views.payment_done, name="payment-done"),
 ]
