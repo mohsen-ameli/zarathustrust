@@ -108,7 +108,9 @@
     </script> -->
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    {% if debug == False %}
+    
+    {{ debug }}
+    {% if not debug %}
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-FRK5F8TZKR"></script>
         <script>
             window.dataLayer = window.dataLayer || [];
