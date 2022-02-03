@@ -93,43 +93,61 @@ def new_dunc(request):
 @login_required
 def HomeView(request, pk):
     if correct_user(pk):
-        acc         = account.objects.get(pk=pk)
-        user_       = CustomUser.objects.get(pk=pk)
-        currency    = currency_symbol(user_.currency)
+        project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        file = f'{project}/json/country_currencies_clean.json' # getting the file containing all country codes
+        with open(file, 'r') as config_file: # opening and reading the json file
+            data = json.load(config_file)
 
-        wallet_currency = request.POST.get("wallet-currency")
-        if wallet_currency and wallet_currency != user_.currency:
-            wallets                     = BranchAccounts.objects.get(main_account=acc, currency=wallet_currency)
-            wallet_symbol               = currency_symbol(wallets.currency)
-            wallet_currency_list        = BranchAccounts.objects.filter(main_account=acc).exclude(currency=wallets.currency)
-            other_wallets = [user_.currency]
-            for i in wallet_currency_list:
-                other_wallets.append(i.currency)
+        acc         = account.objects.get(pk=pk) # user's account
+        user_       = CustomUser.objects.get(pk=pk) # user's model
+        currency    = currency_symbol(user_.currency) # user model's currency
 
-            context = {
-                'interest_list'         : account_interest.objects.get(pk=pk),
-                'is_bus'                : user_.is_business,
-                'currency'              : wallets.currency,
-                'total_balance'         : wallets.total_balance,
-                'user_currency_symbol'  : currency,
-                'wallet_symbol'         : wallet_symbol,
-                'object'                : acc,
-                'wallets'               : zip(other_wallets),
-            }
-            return render(request, 'accounts/home.html', context)
+        # list = (country_iso2, currency, symbol, balance)
+        wallets = []
+
+        # putting the first element of the list as the user's main currency
+        for a in data:
+            if data[a] == acc.main_currency:
+                wallets.append((a, acc.main_currency, currency, acc.total_balance))
+
+        # getting user's wallets
+        branch_acc = BranchAccounts.objects.filter(main_account__pk=pk)
+
+        # attaching every wallet to our list
+        for item in branch_acc:
+            for i in data:
+                if data[i] == item.currency:
+                    wallets.append((i, item.currency ,currency_symbol(item.currency), item.total_balance))
+
+        if request.method == "POST":
+            # show users their desired wallet
+            wallet_post = request.POST.get("wallet-post")
+            for i in wallets:
+                if i[1] == wallet_post:
+                    wallet_iso       = i[0]
+                    wallet_currency  = i[1]
+                    wallet_symbol    = i[2]
+                    wallet_balance   = i[3]
         else:
-            wallets = BranchAccounts.objects.filter(main_account=acc)
+            # show users their default wallet
+            wallet_iso       = wallets[0][0]
+            wallet_currency  = wallets[0][1]
+            wallet_symbol    = wallets[0][2]
+            wallet_balance   = wallets[0][3]
 
-            context = {
-                'interest_list'         : account_interest.objects.get(pk=pk),
-                'is_bus'                : user_.is_business,
-                'currency'              : user_.currency,
-                'total_balance'         : acc.total_balance,
-                'user_currency_symbol'  : currency,
-                'object'                : acc,
-                'wallets'               : wallets
-            }
-            return render(request, 'accounts/home.html', context)
+        context = {
+            'interest_list'         : account_interest.objects.get(pk=pk),
+            'object'                : acc,
+            'is_bus'                : user_.is_business,
+            'currency'              : currency,
+
+            'wallet_iso'            : wallet_iso,
+            'wallet_currency'       : wallet_currency,
+            'wallet_symbol'         : wallet_symbol,
+            'wallet_balance'         : wallet_balance,
+            'wallets'               : zip(wallets),
+        }
+        return render(request, 'accounts/home.html', context)
     else:
         raise PermissionDenied
 

@@ -11,9 +11,9 @@
     <div class="py-2 ms-auto">
         <div class="d-flex">
             <h3>
-                {% trans "Bonus" %}: {{ user_currency_symbol }}{{ object.bonus }}
+                {% trans "Bonus" %}: {{ currency }}{{ object.bonus }}
             </h3>
-            {% blocktrans asvar the_title with currency=user_currency_symbol bonus=object.bonus %}
+            {% blocktrans asvar the_title with currency=currency bonus=object.bonus %}
                 The {{currency}}{{bonus}} bonus is a gift from us to every new user. It has no expiration date!
                 Every time you transfer the accumulated interest to your balance,
                 an equal amount will be taken out of your bonus.
@@ -37,19 +37,20 @@
                 <h1>{% trans "Ballance" %}</h1>
             </div>
             <div class="align-self-center ms-3">
-                <a class="neon-button" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                <a class="neon-button" href="#" role="button" onmouseover="mouseOver()" onmouseout="mouseOut()"
+                id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                     Wallets <i class="fas fa-caret-down"></i>
                 </a>
             
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                    <li><a class="dropdown-item" href="{% url 'wallets:new-wallet' pk=object.pk %}">Make a New Wallet</a></li>
+                    <li><a class="dropdown-item" href="{% url 'wallets:wallet-search' pk=object.pk %}">Make a New Wallet</a></li>
                     <li><hr class="dropdown-divider"></li>
                     {% for wallet in wallets %}
                         <li>
                             <form method="POST">
                                 {% csrf_token %}
-                                <button type="submit" name="wallet-currency" value="{{ wallet.0 }}{{ wallet.currency }}" class="dropdown-item">
-                                    <span class="flag-icon flag-icon-eu me-2"></span>{{ wallet.0 }}{{ wallet.currency }}
+                                <button type="submit" name="wallet-post" value="{{ wallet.0.1 }}" class="dropdown-item">
+                                    <span class="flag-icon flag-icon-{{ wallet.0.0|lower }} me-2"></span>{{wallet.0.0}} ({{wallet.0.2}})
                                 </button>
                             </form>
                         </li>
@@ -73,13 +74,9 @@
                 </h5>
                 <hr class="zarathus-hr">
                 <h1 class="fw-normal">
-                    {% if wallet_symbol %}
-                        {{ wallet_symbol }}{{ total_balance }}
-                    {% else %}
-                        {{ user_currency_symbol }}{{ total_balance }}
-                    {% endif %}
+                    {{ wallet_symbol }}{{ wallet_balance }}
                 </h1>
-                {% trans "Current Balance" %} ({{ currency }})
+                {% trans "Current Balance" %} ({{ wallet_currency }})
             </div>
         </div>
     </div>
@@ -97,7 +94,7 @@
         <!-- bottom part (counter) -->
         <div class="d-flex">
             <div class="d-flex counter-interest">
-                <div>{{ user_currency_symbol }}</div>
+                <div>{{ currency }}</div>
                 <div id="counter"></div>
             </div>
         </div>
@@ -135,5 +132,16 @@
 {{ interest_list.interest_rate|unlocalize|json_script:"interest_rate" }}
 
 <script src="{% static 'accounts/js/interest_counter.js' %}"></script>
+
+<script async>
+    const link = document.querySelector("#dropdownMenuLink");
+    const i = document.querySelector("#dropdownMenuLink > i")
+    function mouseOver(){
+        i.style.color = "black"
+    }
+    function mouseOut(){
+        i.style.color = "#f8b119c7"
+    }
+</script>
 
 {% endblock %}

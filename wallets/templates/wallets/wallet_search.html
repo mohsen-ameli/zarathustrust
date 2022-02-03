@@ -1,0 +1,39 @@
+{% extends "accounts/base.html" %}
+{% load i18n %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="card text-white zarathus-card mx-auto">
+    <div class="card-body">
+        <h3 class="fw-normal text-center">{% trans "You can have up to 10 wallets with different currencies" %}</h3>
+        <hr class="zarathus-hr">
+
+        <div class="dropdown form-floating">
+            <!-- INPUT -->
+            <input type="text" id="country-input" class="form-control dropdown-toggle" autocomplete="off"
+            data-bs-toggle="dropdown" aria-expanded="false" placeholder="Country">
+            <label for="country-input">{% trans "Please choose a currency" %}</label>
+            <!-- LIST -->
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" id="new-country-list">
+                <li id="country-list">
+                    {% for code, currency in all_currencies %}
+                        <a class="dropdown-item" href="{% url 'wallets:new-wallet' pk=pk currency=currency %}" style="text-transform: capitalize;">
+                            <span class="flag-icon flag-icon-{{ code|lower }} me-2"></span>{{ currency }}
+                        </a>
+                    {% endfor %}
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+
+{{ user.pk|json_script:"pk" }}
+{{ data|json_script:"data" }}
+
+<script src="{% static 'wallets/js/currency_search.js' %}"></script>
+
+{% endblock content %}
