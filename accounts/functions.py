@@ -21,7 +21,6 @@ def cookie_monster(request):
         translation.activate(cookies)
 
 
-
 # returns the currency's symbol
 def currency_symbol(country_code):
     country_code = country_code.upper()

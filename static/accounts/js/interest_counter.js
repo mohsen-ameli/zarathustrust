@@ -1,7 +1,6 @@
 (function() {
     var total_bal = Number(JSON.parse(document.getElementById('total_bal').textContent));
     var interest_rate = Number(JSON.parse(document.getElementById('interest_rate').textContent));
-    console.log(interest_rate)
 
     window.onload = function () {
         ctr = document.getElementById("counter");
