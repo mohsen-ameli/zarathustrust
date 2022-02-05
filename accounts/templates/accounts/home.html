@@ -44,17 +44,19 @@
             
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                     <li><a class="dropdown-item" href="{% url 'wallets:wallet-search' pk=object.pk %}">Make a New Wallet</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    {% for wallet in wallets %}
-                        <li>
-                            <form method="POST">
-                                {% csrf_token %}
-                                <button type="submit" name="wallet-post" value="{{ wallet.0.1 }}" class="dropdown-item">
-                                    <span class="flag-icon flag-icon-{{ wallet.0.0|lower }} me-2"></span>{{wallet.0.0}} ({{wallet.0.2}})
-                                </button>
-                            </form>
-                        </li>
-                    {% endfor %}
+                    {% if wallets_count > 0 %}
+                        <li><hr class="dropdown-divider"></li>
+                        {% for wallet in wallets %}
+                            <li>
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <a href="?wallet-name={{ wallet.0.1 }}" name="wallet-post" value="{{ wallet.0.1 }}" class="dropdown-item">
+                                        <span class="flag-icon flag-icon-{{ wallet.0.0|lower }} me-2"></span>{{wallet.0.1}} ({{wallet.0.2}})
+                                    </a>
+                                </form>
+                            </li>
+                        {% endfor %}
+                    {% endif %}
                 </ul>
             </div>
         </div>

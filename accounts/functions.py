@@ -23,24 +23,30 @@ def cookie_monster(request):
 
 # returns the currency's symbol
 def currency_symbol(country_code):
-    country_code = country_code.upper()
-    project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    file = f'{project}/json/currencies_symbols.json' # getting the file containing all country codes
-    with open(file, 'r') as config_file: # opening and reading the json file
-        data = json.load(config_file)
+    try:
+        country_code = country_code.upper()
+        project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        file = f'{project}/json/currencies_symbols.json' # getting the file containing all country codes
+        with open(file, 'r') as config_file: # opening and reading the json file
+            data = json.load(config_file)
 
-    return data[country_code]
+        return data[country_code]
+    except:
+        return None
 
 
 # returns the most recent $1 in that currency
 def currency_min(currency):
-    currency = currency.upper()
-    project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    file = f'{project}/json/currency_min.json' # getting the file containing all country codes
-    with open(file, 'r') as config_file: # opening and reading the json file
-        data = json.load(config_file)
+    try:
+        currency = currency.upper()
+        project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        file = f'{project}/json/currency_min.json' # getting the file containing all country codes
+        with open(file, 'r') as config_file: # opening and reading the json file
+            data = json.load(config_file)
 
-    return int(data[currency])
+        return int(data[currency])
+    except:
+        return None
 
 
 def currency_min_generator():

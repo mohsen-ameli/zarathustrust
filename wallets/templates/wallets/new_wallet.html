@@ -6,15 +6,21 @@
         <h3 class="fw-normal text-center">{% trans "Are you sure ?" %}</h3>
         <hr class="zarathus-hr">
         
-        <h4>You can choose up to 10 wallets with different currencies.</h4>
-        <p>Your currenct wallets are:</p>
-        <ul>
-            {% for wallet in wallets %}
-                <li>{{ wallet.currency }}</li>
-            {% endfor %}
-        </ul>
+        <h4>{% trans "You can choose up to 10 wallets with different currencies." %}</h4>
+        {% if wallets|length > 0 %}
+            <p>{% trans "Your currenct wallets are:" %}</p>
+            <ul>
+                {% for wallet in wallets %}
+                    <li>{{ wallet.currency }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         <hr>
-        <p>You are about to make the currency "{{ currency }}" as one of your wallets.</p>
+        <p>
+            {% blocktrans with currency=currency %} 
+            You are about to make the currency "{{ currency }}" as one of your wallets.
+            {% endblocktrans %}
+        </p>
         
         <form method="POST">
             {% csrf_token %}

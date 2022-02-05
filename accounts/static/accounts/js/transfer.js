@@ -14,7 +14,7 @@
     const parentMsgDiv = document.querySelector("#div_id_purpose")
     const msgCounter = document.querySelector("#msgCounter")
     const msgInput = document.querySelector("#id_purpose")
-    var max = 10
+    var max = 200
     var healthy = true
 
 

@@ -37,8 +37,7 @@ with open('/etc/config.json') as config_file:
 
 # Admin Page
 def AdminRickRoll(lmfao):
-    r = redirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley")
-    return r
+    return redirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley") 
 
 
 # Landing Page
@@ -93,47 +92,68 @@ def new_dunc(request):
 @login_required
 def HomeView(request, pk):
     if correct_user(pk):
-        project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        file = f'{project}/json/country_currencies_clean.json' # getting the file containing all country codes
-        with open(file, 'r') as config_file: # opening and reading the json file
-            data = json.load(config_file)
-
         acc         = account.objects.get(pk=pk) # user's account
         user_       = CustomUser.objects.get(pk=pk) # user's model
         currency    = currency_symbol(user_.currency) # user model's currency
+        branch_acc  = BranchAccounts.objects.filter(main_account__pk=pk) # getting user's wallets
 
-        # list = (country_iso2, currency, symbol, balance)
-        wallets = []
+        # loading the country currencies clean json file
+        project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        file = f'{project}/json/country_currencies_clean.json'
+        with open(file, 'r') as config_file:
+            data = json.load(config_file)
 
-        # putting the first element of the list as the user's main currency
-        for a in data:
-            if data[a] == acc.main_currency:
-                wallets.append((a, acc.main_currency, currency, acc.total_balance))
+        # if user selected a country
+        wallet_name = request.GET.get("wallet-name")
+        if wallet_name:
+            wallet_name = wallet_name.upper()
+            # testing to see if the entered GET arg actually exists in the user's wallet currency column
+            test = branch_acc.filter(currency=wallet_name).exists()
+            if test is not False or user_.currency == wallet_name:
 
-        # getting user's wallets
-        branch_acc = BranchAccounts.objects.filter(main_account__pk=pk)
+                # list = (country_iso2, currency, symbol, balance)
+                wallets = []
 
-        # attaching every wallet to our list
-        for item in branch_acc:
-            for i in data:
-                if data[i] == item.currency:
-                    wallets.append((i, item.currency ,currency_symbol(item.currency), item.total_balance))
+                # putting the first element of the list as the user's main currency
+                if acc.main_currency != wallet_name:
+                    for a in data:
+                        if data[a] == acc.main_currency:
+                            wallets.append((a, acc.main_currency, currency, acc.total_balance))
 
-        if request.method == "POST":
-            # show users their desired wallet
-            wallet_post = request.POST.get("wallet-post")
-            for i in wallets:
-                if i[1] == wallet_post:
-                    wallet_iso       = i[0]
-                    wallet_currency  = i[1]
-                    wallet_symbol    = i[2]
-                    wallet_balance   = i[3]
-        else:
+                # attaching every wallet to our list
+                for item in branch_acc.exclude(currency=wallet_name):
+                    for i in data:
+                        if data[i] == item.currency:
+                            wallets.append((i, item.currency, currency_symbol(item.currency), item.total_balance))
+
+                # setting variables for our context
+                for i in data:
+                    if data[i] == wallet_name:
+                        wallet_iso       = i
+                        wallet_currency  = data[i]
+                        wallet_symbol    = currency_symbol(data[i])
+                        try:
+                            wallet_balance   = branch_acc.get(currency=data[i]).total_balance
+                        except:
+                            wallet_balance = acc.total_balance
+            else:
+                wallet_name = None
+        
+        # default view of the user's account
+        if wallet_name is None:
             # show users their default wallet
-            wallet_iso       = wallets[0][0]
-            wallet_currency  = wallets[0][1]
-            wallet_symbol    = wallets[0][2]
-            wallet_balance   = wallets[0][3]
+            for i in data:
+                if data[i] == acc.main_currency:
+                    wallet_iso       = i
+                    wallet_currency  = data[i]
+                    wallet_symbol    = currency_symbol(data[i])
+                    wallet_balance   = acc.total_balance
+
+            wallets = []
+            for wallet in branch_acc:
+                for a in data:
+                    if data[a] == wallet.currency:
+                        wallets.append((a ,wallet.currency, currency_symbol(wallet.currency)))
 
         context = {
             'interest_list'         : account_interest.objects.get(pk=pk),
@@ -144,8 +164,9 @@ def HomeView(request, pk):
             'wallet_iso'            : wallet_iso,
             'wallet_currency'       : wallet_currency,
             'wallet_symbol'         : wallet_symbol,
-            'wallet_balance'         : wallet_balance,
+            'wallet_balance'        : wallet_balance,
             'wallets'               : zip(wallets),
+            'wallets_count'         : len(wallets),
         }
         return render(request, 'accounts/home.html', context)
     else:
@@ -424,27 +445,51 @@ def ReferralCodeView(request, pk):
 def AddMoneyUpdateView(request, pk):
     if correct_user(pk):
         # getting user's currency stuff
-        user_ = CustomUser.objects.get(pk=request.user.pk)
-        currency = currency_symbol(user_.currency)
-        min_currency = currency_min(user_.currency)
+        user_               = CustomUser.objects.get(pk=request.user.pk)
+        currency_name       = user_.currency
+        currency_symbol_    = currency_symbol(currency_name)
+        min_currency        = currency_min(currency_name)
+        currency_options    = [(currency_name, currency_symbol_)] # currencies that will be showed as options
 
-        form                    = AddMoneyForm(request.POST or None)
+        if request.GET.get("currency"):
+            currency_GET        = request.GET.get("currency").upper()
+            # testing to see if the entered GET arg actually exists in the user's wallet currency column
+            test = BranchAccounts.objects.filter(main_account__pk=pk).filter(currency=currency_GET).exists()
+            if test is not False:
+                currency_symbol_    = currency_symbol(currency_GET)
+                currency_name       = currency_GET
+                min_currency        = currency_min(currency_name)
+
+        branch_acc = BranchAccounts.objects.filter(main_account__pk=pk)
+        for wallet in branch_acc:
+            currency_options.append((wallet.currency, currency_symbol(wallet.currency)))
+
+
+        form = AddMoneyForm(request.POST or None)
         if form.is_valid():
             add_money           = form.cleaned_data.get('add_money')
             if add_money >= min_currency:
                 EMAIL_ID        = config.get('EMAIL_ID')
                 EMAIL_ID_MAIN   = config.get('EMAIL_ID_MAIN')
                 send_mail(f'{get_current_user()}', 
-                        f'{get_current_user()} with account number : {pk} has requested to deposit {currency}{add_money}',
+                        f'{get_current_user()} with account number : {pk} has requested to deposit {currency_symbol_}{add_money}',
                         f'{EMAIL_ID}',
                         [f'{EMAIL_ID_MAIN}'],)
                 account.objects.filter(pk=pk).update(add_money=0)
                 # messages.success(request, _(f"${add_money} was requested to be put into your account"))
                 return redirect(reverse('accounts:add-money-info', kwargs={'pk':pk}))
             else:
-                messages.warning(request, _(f"Please consider that the minimum amount to withdraw must be {currency}{min_currency} or higher !"))
+                messages.warning(request, _(f"Please consider that the minimum amount to withdraw must be {currency_symbol_}{min_currency} or higher !"))
                 return redirect(reverse('accounts:add-money', kwargs={'pk':pk}))
-        return render(request, 'accounts/add_money_form.html', {'form' : form, 'min_currency' : min_currency, 'user_currency_symbol' : currency})
+        
+        context = {
+            'form'                  : form, 
+            'min_currency'          : min_currency,
+            'currency'              : currency_name,
+            'user_currency_symbol'  : currency_symbol_,
+            'currency_options'      : currency_options,
+        }
+        return render(request, 'accounts/add_money_form.html', context)
     else:
         raise PermissionDenied()
 
@@ -463,9 +508,27 @@ def AddMoneyInfo(request, pk):
 def TakeMoneyUpdateView(request, pk):
     if correct_user(pk):
         # getting user's currency stuff
-        user_ = CustomUser.objects.get(pk=request.user.pk)
-        currency = currency_symbol(user_.currency)
-        min_currency = currency_min(user_.currency)
+        user_               = CustomUser.objects.get(pk=request.user.pk)
+        currency_name       = user_.currency
+        currency_symbol_    = currency_symbol(currency_name)
+        min_currency        = currency_min(currency_name)
+
+        # currencies that will be showed as options
+        currency_options    = [(currency_name, currency_symbol_)]
+
+        if request.GET.get("currency"):
+            currency_GET        = request.GET.get("currency").upper()
+            # testing to see if the entered GET arg actually exists in the user's wallet currency column
+            test = BranchAccounts.objects.filter(main_account__pk=pk).filter(currency=currency_GET).exists()
+            if test is not False:
+                currency_symbol_    = currency_symbol(currency_GET)
+                currency_name       = currency_GET
+                min_currency        = currency_min(currency_name)
+
+        branch_acc = BranchAccounts.objects.filter(main_account__pk=pk)
+
+        for wallet in branch_acc:
+            currency_options.append((wallet.currency, currency_symbol(wallet.currency)))
 
         form                    = TakeMoneyForm(request.POST or None)
         if form.is_valid():
@@ -476,17 +539,25 @@ def TakeMoneyUpdateView(request, pk):
                 EMAIL_ID_MAIN   = config.get('EMAIL_ID_MAIN')
                 MOE_EMAIL       = config.get('MOE_EMAIL')
                 send_mail(f'{get_current_user()}', 
-                        f'{get_current_user()} with account number : {get_current_user().pk} has requested to withdraw {currency}{take_money}',
+                        f'{get_current_user()} with account number : {get_current_user().pk} has requested to withdraw {currency_symbol_}{take_money}',
                         f'{EMAIL_ID}',
                         [f'{EMAIL_ID_MAIN}'],)
                 account.objects.filter(pk=pk).update(take_money=0)
-                messages.success(request, _(f"{currency}{take_money} was requested to be taken out"))
+                messages.success(request, _(f"{currency_symbol_}{take_money} was requested to be taken out"))
                 return redirect(reverse('accounts:home', kwargs={'pk':pk}))
             elif take_money > balance:
                 messages.warning(request, _("You have requested to take more than you have in your current balance !"))
             else:
-                messages.warning(request, _(f"Please consider that the minimum amount to withdraw must be {currency}{min_currency} or higher !"))
-        context = {'form' : form, 'min_currency' : min_currency, 'user_currency_symbol' : currency}
+                messages.warning(request, _(f"Please consider that the minimum amount to withdraw must be {currency_symbol_}{min_currency} or higher !"))
+        
+        context = {
+            'form'                  : form,
+            'min_currency'          : min_currency,
+            'currency'              : currency_name,
+            'user_currency_symbol'  : currency_symbol_,
+            'user_currency_symbol'  : currency_symbol_,
+            'currency_options'      : currency_options
+        }
         return render(request, 'accounts/take_money_form.html', context)
     else:
         raise PermissionDenied()
