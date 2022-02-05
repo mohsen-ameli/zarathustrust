@@ -9,8 +9,32 @@
         <form method="POST" id="deposit-form" autocomplete="off">
             {% csrf_token %}
             <h3 class="fw-normal text-center">{% trans "Deposit Money From Your Account" %}</h3>
-            <hr class="zarathus-hr"
-            {% crispy form %}
+            <hr class="zarathus-hr">
+
+            <div class="d-flex mb-3">
+                {% if currency_options|length > 1 %}
+                    <div class="dropdown">
+                        <button style="min-height: 3.65rem;"
+                        class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ currency }} ({{ user_currency_symbol }})
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            {% for item in currency_options %}
+                                <li><a class="dropdown-item" href="?currency={{ item.0|upper }}">{{ item.0 }} ({{ item.1 }})</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                <div id="div_id_add_money" class="form-floating form-floating-group flex-grow-1">
+                    <input type="text" name="add_money" placeholder="$0.0 add_money" class="form-control" 
+                    required="" id="id_add_money">
+                    <label for="id_add_money">
+                        {% trans "Enter Amount" %}
+                    </label>
+                </div>
+                <div class="invalid-feedback my-2">{% trans "Please consider that the minimum amount to send is $1 !" %}</div>
+            </div>
+
             <button class="neon-button my-2" type="submit" id="Action">{% trans "Deposit" %}</button>
         </form>
     </div>

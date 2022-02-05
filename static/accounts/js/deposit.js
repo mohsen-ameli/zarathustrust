@@ -2,7 +2,6 @@
     // amount to send section vars
     const minCurrency = JSON.parse(document.getElementById('min_currency').textContent);
     const userCurrencySymbol = JSON.parse(document.getElementById('user_currency_symbol').textContent);
-    console.log(userCurrencySymbol)
     const form = document.querySelector("#deposit-form")
     const parentDiv = document.querySelector('#div_id_add_money')
     const input = document.querySelector("#id_add_money")
@@ -11,7 +10,7 @@
     // creating the first div for minimum amount error
     let div = document.createElement("div")
     div.classList.add("invalid-feedback")
-    div.classList.add("my-2")
+    div.classList.add("mt-2")
     div.style.display = "none"
     let divText = document.createTextNode(`Please consider that the minimum amount to send is ${userCurrencySymbol}${minCurrency} !`)
     div.appendChild(divText)
@@ -19,7 +18,7 @@
     // creating the second div for not a number error
     let div2 = document.createElement("div")
     div2.classList.add("invalid-feedback")
-    div2.classList.add("my-2")
+    div2.classList.add("mt-2")
     div2.style.display = "none"
     let div2Text = document.createTextNode('Please enter a number !')
     div2.appendChild(div2Text)

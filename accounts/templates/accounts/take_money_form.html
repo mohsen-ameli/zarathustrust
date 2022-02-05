@@ -21,7 +21,34 @@
                 {% endblocktrans %}
             </h5> 
             <br>
-            {% crispy form %}
+
+            <div class="d-flex mb-3">
+                {% if currency_options|length > 1 %}
+                    <div class="dropdown">
+                        <button style="min-height: 3.65rem;"
+                        class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ currency }} ({{ user_currency_symbol }})
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            {% for item in currency_options %}
+                                <li><a class="dropdown-item" href="?currency={{ item.0|upper }}">{{ item.0 }} ({{ item.1 }})</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                <div id="div_id_take_money" class="form-floating form-floating-group flex-grow-1">
+                    <input type="text" name="take_money" placeholder="$0.0 take_money" class="textinput form-control" 
+                    required="" id="id_take_money">
+                    <label for="id_take_money">{% trans "Enter Amount" %}</label>
+                    <div class="invalid-feedback my-2" style="display: none;">
+                        {% trans "Please consider that the minimum amount to send is $1 !" %}
+                    </div>
+                    <div class="invalid-feedback my-2" style="display: none;">
+                        {% trans "Please enter a number !" %}
+                    </div>
+                </div>
+            </div>
+
             <button class="neon-button my-2" type="submit" id="Action">{% trans "Withdraw" %}</button>
         </form>
     </div>
