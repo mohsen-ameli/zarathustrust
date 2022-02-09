@@ -204,7 +204,7 @@ def SettingsCountryConfirm(request, pk, country):
     if request.method == "POST":
         CustomUser.objects.filter(pk=pk).update(country=country)
         messages.success(request, _("You have successfully updated your country !"))
-        return redirect(reverse('accounts:home', kwargs={"pk" : pk}))
+        return redirect('accounts:home', pk=pk)
     context = {
         "country" : country
     }
@@ -216,66 +216,137 @@ def SettingsCountryConfirm(request, pk, country):
 def TransferSendView(request, pk, reciever_name):
     if correct_user(pk):
         # getting user's currency stuff
-        user_ = CustomUser.objects.get(pk=request.user.pk)
-        currency = currency_symbol(user_.currency)
-        min_currency = currency_min(user_.currency)
+        User                = CustomUser.objects.get(pk=request.user.pk)
+        currency_name       = User.currency
+        currency_symbol_    = currency_symbol(currency_name)
+        min_currency        = currency_min(currency_name)
 
+        # getting giver/reciever stuff
+        giver                    = account.objects.get(pk=pk)
+        reciever                 = account.objects.get(created_by__username=reciever_name)
+        giver_wallet             = BranchAccounts.objects.filter(main_account=giver)
+        balance                  = giver.total_balance
+        giver_currency           = giver.main_currency
+        reciever_currency        = reciever.main_currency
+
+        # making the array for currency options
+        currency_options    = [(currency_name, currency_symbol_)]
+        if request.GET.get("currency"):
+            currency_GET        = request.GET.get("currency").upper()
+            # testing to see if the entered GET arg actually exists in the user's wallet currency column
+            test = BranchAccounts.objects.filter(main_account__pk=pk).filter(currency=currency_GET).exists()
+            if test is not False:
+                currency_symbol_    = currency_symbol(currency_GET)
+                currency_name       = currency_GET
+                min_currency        = currency_min(currency_name)
+                balance             = giver_wallet.get(currency=currency_GET).total_balance
+        
+        branch_acc = BranchAccounts.objects.filter(main_account__pk=pk)
+        for wallet in branch_acc:
+            currency_options.append((wallet.currency, currency_symbol(wallet.currency)))
+        
         if request.method == "POST":
             form = TransferSendForm(request.POST)
             if form.is_valid():
                 # Logic starts
                 try:
-                    reciever = account.objects.get(created_by__username=reciever_name) # getting reciever's pk
-                    person = account.objects.get(pk=pk)
-                    second_person = account.objects.get(pk=reciever.pk)
-                    if person != second_person:
-                        person_interest = account_interest.objects.get(pk=pk)
-                        second_person_interest = account_interest.objects.get(pk=reciever.pk)
-                        
-                        purpose = form.cleaned_data.get("purpose")
+                    if giver != reciever: # making sure the user isn't sending money to themselves
+                        giver_interest      = account_interest.objects.get(pk=pk)
+                        reciever_interest   = account_interest.objects.get(pk=reciever.pk)
+
+                        # form variables
+                        purpose     = form.cleaned_data.get("purpose")
                         MoneyToSend = form.cleaned_data.get("money_to_send")
-                        balance = person.total_balance
 
-                        # checking to see if the sender and reciever's currencies are the same or not
-                        person_currency = person.main_currency
-                        second_person_currency = second_person.main_currency
-                        if person_currency != second_person_currency:
-                            url = f'https://api.exchangerate.host/convert?from={person_currency}&to={second_person_currency}'
-                            response = requests.get(url) # getting a response
-                            data = response.json() # getting the data
-                            ex_rate = round(decimal.Decimal(data['result']), 4)
-                            reciever_amount = ex_rate * MoneyToSend
-                            person_currency = currency_symbol(person.main_currency)
-                            second_person_currency = currency_symbol(second_person.main_currency)
-                        else:
-                            reciever_amount = MoneyToSend
-                            ex_rate = 1
-                            person_currency = currency_symbol(person.main_currency)
-                            second_person_currency = currency_symbol(second_person.main_currency)
-
+                        # if user has entered the bare minimum, and if has enough money
                         if MoneyToSend >= min_currency and MoneyToSend <= balance:
-                            # UPDATE ACCOUNT
-                            new_total_balance = second_person.total_balance + reciever_amount # adding money to reciever
-                            account.objects.filter(pk=second_person.pk).update(total_balance=new_total_balance)      # updating the reciever
-                            rmv_total_balance = balance - MoneyToSend                                  # minusing balance of sender by how much thy're sending
-                            account.objects.filter(pk=pk).update(total_balance=rmv_total_balance)      # updating the giver
-
-                            # UPDATE ACCOUNT INTEREST
-                            a = second_person_interest.interest + reciever_amount                  # adding money to reciever
-                            account_interest.objects.filter(pk=second_person.pk).update(interest=a)                       # updating reciever
-                            b = person_interest.interest - MoneyToSend        # minusing money from giver
-                            account_interest.objects.filter(pk=pk).update(interest=b)             # updating giver
+  
+                            ######## SETTING VARIABLES FOR THE UPDATE ########
+                            reciever_wallet = BranchAccounts.objects.filter(main_account=reciever)
+                            # reciever and giver's accounts do not have the same currency
+                            if giver_currency == currency_name:
+                                # account-to-somthing
+                                giver_total_balance = balance
+                                giver_update = account.objects.filter(pk=pk)
+                                if reciever_wallet.filter(currency=currency_name).exists():
+                                    # account-to-wallet
+                                    print("account-to-wallet")
+                                    reciever_total_balance = reciever_wallet.filter(currency=currency_name).values("total_balance")[0]['total_balance']
+                                    reciever_update = reciever_wallet.filter(currency=currency_name)
+                                    update_interest_rate = False
+                                elif giver_currency == reciever_currency and currency_name:
+                                    # account-to-account
+                                    print("account-to-account")
+                                    reciever_total_balance = reciever.total_balance
+                                    reciever_update = account.objects.filter(created_by__username=reciever_name)
+                                    update_interest_rate = True
+                                else:
+                                    # account-to-newWallet
+                                    print("account-to-newWallet")
+                                    # creating a new wallet for reciever
+                                    BranchAccounts.objects.create(main_account=reciever, currency=giver_currency)
+                                    reciever_total_balance = 0
+                                    reciever_update = BranchAccounts.objects.filter(main_account=reciever)
+                                    update_interest_rate = False
+                            else:
+                                # wallet-to-something
+                                giver_total_balance = giver_wallet.filter(currency=currency_name).values("total_balance")[0]['total_balance']
+                                giver_update = giver_wallet.filter(currency=currency_name)
+                                giver_wallet.filter(currency=currency_name)
+                                if reciever_wallet.filter(currency=currency_name).exists():
+                                    # wallet-to-wallet
+                                    print("wallet-to-wallet")
+                                    reciever_total_balance = reciever_wallet.filter(currency=currency_name).values("total_balance")[0]['total_balance']
+                                    reciever_update = reciever_wallet.filter(currency=currency_name)
+                                    update_interest_rate = False
+                                elif reciever.main_currency == currency_name:
+                                    # wallet-to-account
+                                    print("wallet-to-account")
+                                    reciever_total_balance = reciever.total_balance
+                                    reciever_update = account.objects.filter(created_by__username=reciever_name)
+                                    update_interest_rate = True
+                                else:
+                                    # wallet-to-newWallet
+                                    print("wallet-to-newWallet")
+                                    # creating a new wallet for reciever
+                                    BranchAccounts.objects.create(main_account=reciever, currency=currency_name)
+                                    reciever_total_balance = 0
+                                    reciever_update = BranchAccounts.objects.filter(main_account=reciever)
+                                    update_interest_rate = False
                             
+                            ######## UPDATING ########
+                            # adding money to reciever
+                            new_total_balance = reciever_total_balance + MoneyToSend
+                            # updating the reciever
+                            reciever_update.update(total_balance=new_total_balance)
+                            # taking money from giver
+                            rmv_total_balance = giver_total_balance - MoneyToSend
+                            # updating the giver
+                            giver_update.update(total_balance=rmv_total_balance)
+
+                            ######## UPDATE ACCOUNT INTEREST ########
+                            if update_interest_rate is True:
+                                # adding money to reciever
+                                a = reciever_interest.interest + MoneyToSend
+                                # updating reciever
+                                account_interest.objects.filter(pk=reciever.pk).update(interest=a)
+                            # taking money from giver
+                            b = giver_interest.interest - MoneyToSend
+                            # updating giver
+                            account_interest.objects.filter(pk=pk).update(interest=b)
+
+
+
                             # success message
-                            messages.success(request, _(f'{person_currency}{MoneyToSend} has been transfered to {reciever_name}'))
+                            messages.success(request, _(f'{currency_symbol_}{MoneyToSend} has been transfered to {reciever_name}'))
 
                             # emailing the reciever
-                            reciever_email = CustomUser.objects.get(pk=second_person.pk).email
+                            reciever_email = CustomUser.objects.get(pk=reciever.pk).email
                             giver_username = CustomUser.objects.get(pk=pk).username
                             giver_email = CustomUser.objects.get(pk=pk).email
                             EMAIL_ID       = config.get('EMAIL_ID')
                             msg = EmailMessage(_("ZARATHUSTRUST MONEY TRANSFER"),
-                                    _(f"Dear {reciever_name}, <br> {giver_username} just transfered {second_person_currency}{round(reciever_amount, 1)} to your account ! <br> Purpose of Use : {purpose}"),
+                                    _(f"Dear {reciever_name}, <br> {giver_username} just transfered {currency_symbol_}{round(MoneyToSend, 1)} to your account ! <br> Purpose of Use : {purpose}"),
                                     f"{EMAIL_ID}",
                                     [f"{reciever_email}"]
                             )
@@ -284,7 +355,7 @@ def TransferSendView(request, pk, reciever_name):
 
                             # emailing the giver
                             msg1 = EmailMessage(_("ZARATHUSTRUST MONEY TRANSFER"),
-                                    _(f"Dear {giver_username}, <br> {person_currency}{round(MoneyToSend, 1)} has been transfered to {reciever_name} successfully ! <br> Purpose of Use : {purpose}"),
+                                    _(f"Dear {giver_username}, <br> {currency_symbol_}{round(MoneyToSend, 1)} has been transfered to {reciever_name} successfully ! <br> Purpose of Use : {purpose}"),
                                     f"{EMAIL_ID}",
                                     [f"{giver_email}"]
                             )
@@ -292,25 +363,31 @@ def TransferSendView(request, pk, reciever_name):
                             msg1.send()
 
                             # add the transaction to the user's history
-                            r = transaction_history(person=person, second_person=second_person,
-                            price=MoneyToSend, ex_rate=ex_rate, ex_price=reciever_amount, purpose_of_use=purpose, method="Transfer")
-                            r.save()
+                            # r = transaction_history(person=giver, second_person=reciever,
+                            # price=MoneyToSend, ex_rate=ex_rate, ex_price=reciever_amount, purpose_of_use=purpose, method="Transfer")
+                            # r.save()
 
                             return redirect(reverse('accounts:home', kwargs={'pk':pk}))
                         elif MoneyToSend < min_currency:
-                            messages.warning(request, _(f'Please consider that the minimum amount to send is {currency}{min_currency} !'))
+                            messages.warning(request, _(f'Please consider that the minimum amount to send is {currency_symbol_}{min_currency} !'))
                         elif MoneyToSend > balance:
                             messages.warning(request, _(f'You have requested to transfer more than you have in your current balance !'))
                     else:
                         messages.warning(request, _(f'You cannot send money to yourself.'))
                 except ObjectDoesNotExist:
                     messages.warning(request, _(f'The account you are trying to send money to has not finished signing up !'))
-            context = {"form" : form, "reciever_name" : reciever_name, 'user_currency_symbol'  : currency, "min_currency" : min_currency}
-            return render(request, "accounts/transfer_send.html", context)
         else:
             form = TransferSendForm()
-            context = {"form" : form, "reciever_name" : reciever_name, 'user_currency_symbol'  : currency, "min_currency" : min_currency}
-            return render(request, "accounts/transfer_send.html", context)
+        
+        context = {
+            'form'                  : form,
+            'reciever_name'         : reciever_name,
+            'user_currency_symbol'  : currency_symbol_,
+            'currency'              : currency_name,
+            'min_currency'          : min_currency,
+            'currency_options'      : currency_options,
+        }
+        return render(request, "accounts/transfer_send.html", context)
     else:
         raise PermissionDenied()
 
@@ -320,46 +397,6 @@ def TransferSendView(request, pk, reciever_name):
 def TransferSearchView(request, pk):
     if correct_user(pk):
         return render(request, "accounts/transfer_search.html")
-
-        # if request.method == "POST": # target has been aquired
-        #     person = request.POST.get('search_result')
-        #     if person == request.user.username:
-        #         messages.warning(request, _(f'Sorry, but you cannot send money to yourself'))
-        #     else:
-        #         print(person)
-        #         return redirect(reverse("accounts:transfer-send", kwargs={"pk" : pk, "reciever_name" : person}))
-
-        # all_acc = CustomUser.objects.values('username')
-        # qs_json = json.dumps(list(all_acc), cls=DjangoJSONEncoder)
-        # context = {"qs_json" : qs_json}
-        # return render(request, "accounts/transfer_search.html", context)
-
-
-        # if request.method == "POST":
-        #     form = TransferSearchForm(request.POST)
-        #     if form.is_valid():
-        #         target_account = form.cleaned_data.get('target_account')
-        #         found_accounts = CustomUser.objects.all().filter(
-        #             Q(email__icontains=target_account) | Q(phone_number__icontains=target_account) | Q(username__icontains=target_account)
-        #         )
-        #         # found_accounts = CustomUser.objects.filter(username__icontains=target_account)
-        #         if not found_accounts: # no accounts were found
-        #             messages.warning(request, _(f'Sorry, no account with the information provided was found :('))
-        #         elif found_accounts == request.user.username:
-        #             messages.warning(request, _(f'Sorry, but you cannot send money to yourself'))
-        #         else: # accounts were found
-        #             checkbox = request.POST.get('checkbox')
-        #             if checkbox is not None: # A target user has been aquired
-        #                 if str(checkbox) == str(request.user):
-        #                     messages.warning(request, _(f'Sorry, but you cannot send money to yourself'))
-        #                 else:
-        #                     return redirect(reverse("accounts:transfer-send", kwargs={"pk" : pk, "reciever_name" : checkbox.split(',')[0]}))
-        #             context = {"form" : form, "found_accounts" : found_accounts, "qs_json" : qs_json}
-        #             return render(request, "accounts/transfer_search.html", context)
-        # else:
-        #     form = TransferSearchForm()
-        # context = {"form" : form}
-        # return render(request, "accounts/transfer_search.html", context)
     else:
         raise PermissionDenied()
 
@@ -383,7 +420,7 @@ def search_results(request):
                 data.append(item)
             res = data
         else:
-            res = "No accounts were found."
+            res = _("No accounts were found.")
         return JsonResponse({'data' : res})
     return JsonResponse({})
 
@@ -411,7 +448,7 @@ def cash_out(request, pk):
                 account.objects.filter(pk=pk).update(bonus=bonus-round(interest_rate, 1)) # updating bonus
                 r = transaction_history(person=guy, price=round(interest_rate, 1) * 2, method="Cash Out")
                 r.save()
-                return redirect(reverse('accounts:home', kwargs={'pk':pk}))
+                return redirect('accounts:home', pk=pk)
             else:
                 total_balance = account.objects.get(pk=pk).total_balance # getting total balance
                 total_balance = total_balance + bonus + interest_rate
@@ -422,10 +459,10 @@ def cash_out(request, pk):
                 account.objects.filter(pk=pk).update(bonus=0) # updating bonus 
                 r = transaction_history(person=guy, price=round(interest_rate, 1) + bonus, method="Cash Out")
                 r.save()
-                return redirect(reverse('accounts:home', kwargs={'pk':pk}))
+                return redirect('accounts:home', pk=pk)
         elif interest_rate < 0.1:
             messages.warning(request, _(f'You need at least $0.1 to be able to cash out ! keep going tho'))
-            return redirect(reverse('accounts:home', kwargs={'pk':pk}))
+            return redirect('accounts:home', pk=pk)
     else:
         raise PermissionDenied()
 
@@ -477,10 +514,10 @@ def AddMoneyUpdateView(request, pk):
                         [f'{EMAIL_ID_MAIN}'],)
                 account.objects.filter(pk=pk).update(add_money=0)
                 # messages.success(request, _(f"${add_money} was requested to be put into your account"))
-                return redirect(reverse('accounts:add-money-info', kwargs={'pk':pk}))
+                return redirect('accounts:add-money-info', pk=pk)
             else:
                 messages.warning(request, _(f"Please consider that the minimum amount to withdraw must be {currency_symbol_}{min_currency} or higher !"))
-                return redirect(reverse('accounts:add-money', kwargs={'pk':pk}))
+                return redirect('accounts:add-money', pk=pk)
         
         context = {
             'form'                  : form, 
@@ -512,6 +549,8 @@ def TakeMoneyUpdateView(request, pk):
         currency_name       = user_.currency
         currency_symbol_    = currency_symbol(currency_name)
         min_currency        = currency_min(currency_name)
+        balance             = account.objects.get(pk=pk).total_balance
+        branch_acc          = BranchAccounts.objects.filter(main_account__pk=pk)
 
         # currencies that will be showed as options
         currency_options    = [(currency_name, currency_symbol_)]
@@ -524,8 +563,7 @@ def TakeMoneyUpdateView(request, pk):
                 currency_symbol_    = currency_symbol(currency_GET)
                 currency_name       = currency_GET
                 min_currency        = currency_min(currency_name)
-
-        branch_acc = BranchAccounts.objects.filter(main_account__pk=pk)
+                balance             = branch_acc.get(currency=currency_GET).total_balance
 
         for wallet in branch_acc:
             currency_options.append((wallet.currency, currency_symbol(wallet.currency)))
@@ -533,7 +571,6 @@ def TakeMoneyUpdateView(request, pk):
         form                    = TakeMoneyForm(request.POST or None)
         if form.is_valid():
             take_money          = form.cleaned_data.get('take_money')
-            balance             = account.objects.get(pk=pk).total_balance
             if take_money >= min_currency and take_money <= balance:
                 EMAIL_ID        = config.get('EMAIL_ID')
                 EMAIL_ID_MAIN   = config.get('EMAIL_ID_MAIN')
@@ -544,7 +581,7 @@ def TakeMoneyUpdateView(request, pk):
                         [f'{EMAIL_ID_MAIN}'],)
                 account.objects.filter(pk=pk).update(take_money=0)
                 messages.success(request, _(f"{currency_symbol_}{take_money} was requested to be taken out"))
-                return redirect(reverse('accounts:home', kwargs={'pk':pk}))
+                return redirect('accounts:home', pk=pk)
             elif take_money > balance:
                 messages.warning(request, _("You have requested to take more than you have in your current balance !"))
             else:
@@ -781,3 +818,18 @@ class HomeView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 
         return context '''
         
+
+''' # checking to see if the sender and reciever's currencies are the same or not
+if giver_currency != reciever_currency:
+    url = f'https://api.exchangerate.host/convert?from={giver_currency}&to={reciever_currency}'
+    response = requests.get(url) # getting a response
+    data = response.json() # getting the data
+    ex_rate = round(decimal.Decimal(data['result']), 4)
+    reciever_amount = ex_rate * MoneyToSend
+    giver_currency = currency_symbol(giver.main_currency)
+    reciever_currency = currency_symbol(reciever.main_currency)
+else:
+    reciever_amount = MoneyToSend
+    ex_rate = 1
+    giver_currency = currency_symbol(giver.main_currency)
+    reciever_currency = currency_symbol(reciever.main_currency)'''

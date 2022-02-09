@@ -41,7 +41,7 @@ def register(request):
         response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang)
         return response
     else:
-        return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk}))
+        return redirect("accounts:home", pk=request.user.pk)
 
 
 # Business Register
@@ -87,7 +87,7 @@ def business(request):
         response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang)
         return response
     else:
-        return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk}))
+        return redirect("accounts:home", pk=request.user.pk)
 
 
 # view to handle the country picking
@@ -105,13 +105,13 @@ def PersonalCountryPickSignUp(request):
         if request.method == "POST":
             default_country_picker = request.POST.get('default-country-picker')
             if default_country_picker != None: 
-                response = redirect(reverse("users:personal-sign-up", kwargs={"country" : default_country[1]}))
+                response = redirect("users:personal-sign-up", country = default_country)
                 response.set_cookie(settings.LANGUAGE_COOKIE_NAME, default_country[1])
                 return response
             country_code = request.POST.get('country-picker')
             if country_code:
                 country_code = country_code.upper()
-                response = redirect(reverse("users:personal-sign-up", kwargs={"country" : country_code}))
+                response = redirect("users:personal-sign-up", country = country_code)
                 response.set_cookie(settings.LANGUAGE_COOKIE_NAME, country_code)
                 return response
             context = {
@@ -139,7 +139,7 @@ def PersonalCountryPickSignUp(request):
             response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang)
             return response
     else:
-        return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk}))
+        return redirect("accounts:home", pk=request.user.pk)
 
 
 # Personal Register
@@ -188,7 +188,7 @@ def PersonalSignUp(request, country):
             form = RegisterForm()
         return render(request, "users/personal.html", {"form": form, "ext" : ext})
     else:
-        return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk}))
+        return redirect("accounts:home", pk=request.user.pk)
 
 
 # Email Verify 
@@ -225,7 +225,7 @@ def email_verify_view(request):
                 )
         return render(request, "users/email_verify.html", {"form": form})
     else:
-        return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk}))
+        return redirect("accounts:home", pk=request.user.pk)
 
 
 # Phone Verify
@@ -266,7 +266,7 @@ def phone_verify_view(request):
                 )
         return render(request, "users/phone_verify.html", {"form": form})
     else:
-        return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk}))
+        return redirect("accounts:home", pk=request.user.pk)
 
 
 # Referral Verify
@@ -346,7 +346,7 @@ def referral_verify_view(request, backend='django.contrib.auth.backends.ModelBac
                 )
 
                 # redirect to the new user's home page
-                return redirect(reverse("accounts:home", kwargs={"pk": user_.pk}))
+                return redirect("accounts:home", pk=user_.pk)
 
             else:  # referral code not entered
                 # creating a user
@@ -371,11 +371,11 @@ def referral_verify_view(request, backend='django.contrib.auth.backends.ModelBac
                     )
                 
                 # redirect to the new user's home page
-                return redirect(reverse("accounts:home", kwargs={"pk": user_.pk}))
+                return redirect("accounts:home", pk=user_.pk)
         
         return render(request, "users/referral_code.html", {"form": form})
     else:
-        return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk}))
+        return redirect("accounts:home", pk=request.user.pk)
 
 
 # Login Page
@@ -393,7 +393,7 @@ def LoginClassView(request):
                 # Redirect to a success page.
                 user_language = CustomUser.objects.get(pk=request.user.pk).language
                 if next is None:
-                    response = redirect(reverse("accounts:home", kwargs={"pk" : request.user.pk}))
+                    response = redirect("accounts:home", pk=request.user.pk)
                     response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user_language)
                     return response
                 else:
@@ -404,7 +404,7 @@ def LoginClassView(request):
                 messages.warning(request, _("Please enter a correct username and password. Note that both fields are case-sensitive (Pay attention to capital letters)."))
         return render(request, template_name, {'form' : form})
     else:
-        return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk}))
+        return redirect("accounts:home", pk=request.user.pk)
 
 
 # cookie policy page
@@ -430,7 +430,7 @@ def auth_view(request, url1, url2, url3, url4):
                 )
         return render(request, "users/login.html", {"form": form})
     else:
-        return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk})) '''
+        return redirect("accounts:home", pk=pk request.user.pk})) '''
 
 ''' # ajax search through countries
 def CountryPicker(request):
@@ -492,7 +492,7 @@ def CountryPicker(request):
                     return redirect("referral-verify-view")
         return render(request, "users/iban_verify.html", {"form": form})
     else:
-        return redirect(reverse("accounts:home", kwargs={'pk' : request.user.pk}))
+        return redirect("accounts:home", pk=pk request.user.pk}))
 messages.success(
     request,
     _(

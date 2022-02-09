@@ -17,7 +17,40 @@
                 {% endblocktrans %}
             </h3>
             <hr class="zarathus-hr">
-            {% crispy form %}
+
+
+            <div class="d-flex mb-3">
+                {% if currency_options|length > 1 %}
+                    <div class="dropdown">
+                        <button style="min-height: 3.65rem;"
+                        class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ currency }} ({{ user_currency_symbol }})
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            {% for item in currency_options %}
+                                <li><a class="dropdown-item" href="?currency={{ item.0|upper }}">{{ item.0 }} ({{ item.1 }})</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                <div id="div_id_money_to_send" class="form-floating flex-grow-1"> 
+                    <input type="text" name="money_to_send" placeholder="$0.0 money_to_send" class="textinput form-control" 
+                    required="" id="id_money_to_send"> 
+                    <label for="id_money_to_send">{% trans "Amount to Send" %}</label>
+                </div>
+            </div>
+
+
+            <div id="div_id_purpose" class="form-floating mb-3">
+                <input type="text" name="purpose" placeholder="e.g. Happy Birthday Honey ! purpose" maxlength="200" 
+                class="textinput form-control" id="id_purpose">
+                <label for="id_purpose">{% trans "Message (optional)" %}</label>
+            </div>
+
+
+
+
+
             <div id="msgCounter" class="form-text text-white my-2"></div>
             <button class="neon-button my-2" type="submit" name="Transfer" value="Transfer" id="Action">{% trans "Send" %}</button>
         </form>

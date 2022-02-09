@@ -1,0 +1,28 @@
+{% extends "accounts/base.html" %}
+{% load i18n %}
+{% load mathfilters %}
+{% block content %}
+<div class="card text-white zarathus-card mx-auto">
+    <div class="card-body">
+        <h3 class="fw-normal text-center">{% trans "Exchange Currency Confirmation" %}</h3>
+        <hr class="zarathus-hr">
+        <h3 style="color: #f8b119c7;">{% trans "We have a 0% fee for any currency exchange transaction" %}</h3>
+        <br>
+        <p style="font-size: large;">
+            {% blocktrans with from_symbol=from_symbol amount=amount to_symbol=to_symbol ex_rate=ex_rate|mul:amount|floatformat:2 %}
+                You are about to exchange {{ from_symbol }}{{ amount }} to {{ to_symbol }}{{ ex_rate }}
+            {% endblocktrans %}
+
+            <br>
+            
+            {% trans "Exchange Rate :" %}<br>
+            1{{ from }} = {{ ex_rate }}{{ to }}
+        </p>
+
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="neon-button my-3">Exchange</button>
+        </form>
+    </div>
+</div>
+{% endblock content %}
