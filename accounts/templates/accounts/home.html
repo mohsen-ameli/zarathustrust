@@ -39,11 +39,11 @@
             <div class="align-self-center ms-3">
                 <a class="neon-button" href="#" role="button" onmouseover="mouseOver()" onmouseout="mouseOut()"
                 id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                    Wallets <i class="fas fa-caret-down"></i>
+                    {% trans "Wallets" %} <i class="fas fa-caret-down"></i>
                 </a>
             
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                    <li><a class="dropdown-item" href="{% url 'wallets:wallet-search' pk=object.pk %}">Make a New Wallet</a></li>
+                    <li><a class="dropdown-item" href="{% url 'wallets:wallet-search' pk=object.pk %}">{% trans "Make a New Wallet" %}</a></li>
                     {% if wallets_count > 0 %}
                         <li><hr class="dropdown-divider"></li>
                         {% for wallet in wallets %}

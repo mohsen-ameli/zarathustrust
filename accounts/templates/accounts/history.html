@@ -14,10 +14,14 @@
                 {% csrf_token %}
                 <div class="mb-3 text-center">{% trans "Choose How Many Transaction to See Per Page (default is 10)" %}</div>
                 <div class="mb-3 text-center">{% trans "Total Transactions: " %} {{ counter }}</div>
-                <div class="dropdown text-center">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                        Choose a number
-                    </button>
+                
+
+                <div class="align-self-center ms-3 text-center">
+                    <a class="neon-button" href="#" role="button" onmouseover="mouseOver()" onmouseout="mouseOut()"
+                    id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                        {% trans "Choose a number" %} <i class="fas fa-caret-down"></i>
+                    </a>
+                
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                         <li><a href="?num=1" class="dropdown-item" type="submit" name="paginate" value="1" href="#">1</a></li>
                         <li><a href="?num=2" class="dropdown-item" type="submit" name="paginate" value="2" href="#">2</a></li>
@@ -27,6 +31,7 @@
                         <li><a href="?num=all" class="dropdown-item" type="submit" name="paginate" value="all" href="#">ALL</a></li>
                     </ul>
                 </div>
+
             </form>
         </div>
     </div>
@@ -155,5 +160,16 @@
 
 <!-- Smooth Scroll -->
 <!-- <script src="https://cdn.jsdelivr.net/npm/smoothscroll-polyfill@0.4.4/dist/smoothscroll.min.js"></script> -->
+
+<script async>
+    const link = document.querySelector("#dropdownMenuLink");
+    const i = document.querySelector("#dropdownMenuLink > i")
+    function mouseOver(){
+        i.style.color = "black"
+    }
+    function mouseOut(){
+        i.style.color = "#f8b119c7"
+    }
+</script>
 
 {% endblock %}

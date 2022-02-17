@@ -12,7 +12,13 @@ class detailsAdmin(admin.ModelAdmin):
 class detailsTransactions(admin.ModelAdmin):
     model = models.transaction_history
 
-    fields = ('person', 'second_person', ('price', 'ex_rate', 'ex_price'), 'purpose_of_use', 'method')
+    fields = (
+        ('person', 'wallet'), 
+        ('second_person', 'second_wallet'), 
+        ('price', 'ex_rate', 'ex_price'), 
+        'purpose_of_use', 
+        'method'
+    )
 
 
 admin.site.register(models.account, detailsAdmin)

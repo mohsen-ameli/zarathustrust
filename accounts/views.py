@@ -11,7 +11,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail, EmailMessage
 from django.core.exceptions import PermissionDenied
-from django.db.models import Q
+from django.db.models import Q, F
 from django.shortcuts import redirect, render
 from django.urls.base import reverse
 from django.utils.translation import gettext as _
@@ -271,12 +271,20 @@ def TransferSendView(request, pk, reciever_name):
                                 if reciever_wallet.filter(currency=currency_name).exists():
                                     # account-to-wallet
                                     print("account-to-wallet")
+                                    # recording the transaction
+                                    r = transaction_history(person=giver, second_wallet=BranchAccounts.objects.get(main_account=reciever),
+                                    price=MoneyToSend, purpose_of_use=purpose, method="Transfer")
+
                                     reciever_total_balance = reciever_wallet.filter(currency=currency_name).values("total_balance")[0]['total_balance']
                                     reciever_update = reciever_wallet.filter(currency=currency_name)
                                     update_interest_rate = False
                                 elif giver_currency == reciever_currency and currency_name:
                                     # account-to-account
                                     print("account-to-account")
+                                    # recording the transaction
+                                    r = transaction_history(person=giver, second_person=reciever,
+                                    price=MoneyToSend, purpose_of_use=purpose, method="Transfer")
+
                                     reciever_total_balance = reciever.total_balance
                                     reciever_update = account.objects.filter(created_by__username=reciever_name)
                                     update_interest_rate = True
@@ -284,10 +292,15 @@ def TransferSendView(request, pk, reciever_name):
                                     # account-to-newWallet
                                     print("account-to-newWallet")
                                     # creating a new wallet for reciever
-                                    BranchAccounts.objects.create(main_account=reciever, currency=giver_currency)
+                                    new = BranchAccounts(main_account=reciever, currency=giver_currency)
+                                    new.save()
                                     reciever_total_balance = 0
                                     reciever_update = BranchAccounts.objects.filter(main_account=reciever)
                                     update_interest_rate = False
+
+                                    # recording the transaction
+                                    r = transaction_history(person=giver, second_wallet=new,
+                                    price=MoneyToSend, purpose_of_use=purpose, method="Transfer")
                             else:
                                 # wallet-to-something
                                 giver_total_balance = giver_wallet.filter(currency=currency_name).values("total_balance")[0]['total_balance']
@@ -299,6 +312,10 @@ def TransferSendView(request, pk, reciever_name):
                                     reciever_total_balance = reciever_wallet.filter(currency=currency_name).values("total_balance")[0]['total_balance']
                                     reciever_update = reciever_wallet.filter(currency=currency_name)
                                     update_interest_rate = False
+
+                                    # recording the transaction
+                                    r = transaction_history(wallet=reciever_wallet, second_wallet=new,
+                                    price=MoneyToSend, purpose_of_use=purpose, method="Transfer")
                                 elif reciever.main_currency == currency_name:
                                     # wallet-to-account
                                     print("wallet-to-account")
@@ -363,9 +380,7 @@ def TransferSendView(request, pk, reciever_name):
                             msg1.send()
 
                             # add the transaction to the user's history
-                            # r = transaction_history(person=giver, second_person=reciever,
-                            # price=MoneyToSend, ex_rate=ex_rate, ex_price=reciever_amount, purpose_of_use=purpose, method="Transfer")
-                            # r.save()
+                            r.save()
 
                             return redirect(reverse('accounts:home', kwargs={'pk':pk}))
                         elif MoneyToSend < min_currency:
@@ -479,7 +494,7 @@ def ReferralCodeView(request, pk):
 
 # Add Money Form
 @login_required
-def AddMoneyUpdateView(request, pk):
+def DepositUpdateView(request, pk):
     if correct_user(pk):
         # getting user's currency stuff
         user_               = CustomUser.objects.get(pk=request.user.pk)
@@ -533,7 +548,7 @@ def AddMoneyUpdateView(request, pk):
 
 # Add Money Info
 @login_required
-def AddMoneyInfo(request, pk):
+def DepositInfo(request, pk):
     if correct_user(pk):
         return render(request, 'accounts/add_money_info.html')
     else:
@@ -542,15 +557,16 @@ def AddMoneyInfo(request, pk):
 
 # Take Money Form
 @login_required
-def TakeMoneyUpdateView(request, pk):
+def WithdrawUpdateView(request, pk):
     if correct_user(pk):
-        # getting user's currency stuff
+        # some vars
         user_               = CustomUser.objects.get(pk=request.user.pk)
+        acc                 = account.objects.get(pk=pk)
+        branch_acc          = BranchAccounts.objects.filter(main_account__pk=pk)
         currency_name       = user_.currency
+        balance             = acc.total_balance
         currency_symbol_    = currency_symbol(currency_name)
         min_currency        = currency_min(currency_name)
-        balance             = account.objects.get(pk=pk).total_balance
-        branch_acc          = BranchAccounts.objects.filter(main_account__pk=pk)
 
         # currencies that will be showed as options
         currency_options    = [(currency_name, currency_symbol_)]
@@ -572,14 +588,21 @@ def TakeMoneyUpdateView(request, pk):
         if form.is_valid():
             take_money          = form.cleaned_data.get('take_money')
             if take_money >= min_currency and take_money <= balance:
+
+                # sending email to the admins
                 EMAIL_ID        = config.get('EMAIL_ID')
                 EMAIL_ID_MAIN   = config.get('EMAIL_ID_MAIN')
                 MOE_EMAIL       = config.get('MOE_EMAIL')
-                send_mail(f'{get_current_user()}', 
-                        f'{get_current_user()} with account number : {get_current_user().pk} has requested to withdraw {currency_symbol_}{take_money}',
+                send_mail(f'Withdraw for {user_.username}', 
+                        f'{user_.username} with account number "{pk}" has requested to withdraw {currency_symbol_}{take_money}',
                         f'{EMAIL_ID}',
                         [f'{EMAIL_ID_MAIN}'],)
-                account.objects.filter(pk=pk).update(take_money=0)
+                        
+                # updating user's account
+                acc.take_money = 0
+                acc.total_balance = F('total_balance') - take_money
+                acc.save()
+
                 messages.success(request, _(f"{currency_symbol_}{take_money} was requested to be taken out"))
                 return redirect('accounts:home', pk=pk)
             elif take_money > balance:

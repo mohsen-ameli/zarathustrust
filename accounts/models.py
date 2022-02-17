@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 from users.models import CustomUser
 from users.utils import new_user
+from .functions import currency_symbol
 
 with open('/etc/config.json') as config_file:
     config = json.load(config_file)
@@ -63,9 +64,10 @@ class account_interest(models.Model):
 
 
 class transaction_history(models.Model):
-    # prolly dont actually have to have this set as a foreign key
-    person              = models.ForeignKey(account, on_delete=models.SET_NULL, null=True)
+    person              = models.ForeignKey(account, on_delete=models.SET_NULL, null=True, blank=True)
+    wallet              = models.ForeignKey("wallets.BranchAccounts", on_delete=models.SET_NULL, null=True, blank=True, related_name="wallet")
     second_person       = models.ForeignKey(account, on_delete=models.SET_NULL, null=True, blank=True, related_name="second_person")
+    second_wallet       = models.ForeignKey("wallets.BranchAccounts", on_delete=models.SET_NULL, null=True, blank=True, related_name="second_wallet")
     date                = models.DateTimeField(auto_now_add=True)
     price               = models.DecimalField(decimal_places=1, max_digits=10)
     ex_rate             = models.DecimalField(decimal_places=4, max_digits=10, null=True, blank=True, default=0)
@@ -75,6 +77,7 @@ class transaction_history(models.Model):
 
     def __str__(self):
         price = round(self.price)
+
         try:
             person = self.person.created_by.username
         except AttributeError:
@@ -83,16 +86,23 @@ class transaction_history(models.Model):
             second_person = self.second_person.created_by.username
         except AttributeError:
             second_person = "Anonymous"
+        
+        if not self.person:
+            person = self.wallet.main_account.created_by.username
+            symbol = currency_symbol(self.wallet.currency)
+        else:
+            symbol = currency_symbol(self.person.created_by.currency)
+        
         if self.method == "Transfer":
-            return f'TRANSFER from {person} to {second_person} for the amount ${price} at {self.date}'
+            return f'TRANSFER from {person} to {second_person} for the amount {symbol}{price} at {self.date}'
         elif self.method == "Payment":
-            return f'PAYMENT from {person} to {second_person} for the amount ${price} at {self.date}'
+            return f'PAYMENT from {person} to {second_person} for the amount {symbol}{price} at {self.date}'
         elif self.method == "Deposit":
-            return f'DEPOSIT from {person} for the amount ${self.price} at {self.date}'
+            return f'DEPOSIT from {person} for the amount {symbol}{self.price} at {self.date}'
         elif self.method == "Withdraw":
-            return f'WITHDRAW from {person} for the amount ${self.price} at {self.date}'
+            return f'WITHDRAW from {person} for the amount {symbol}{self.price} at {self.date}'
         elif self.method == "Cash Out":
-            return f'CASH OUT as {person} for the amount ${self.price} at {self.date}'
+            return f'CASH OUT as {person} for the amount {symbol}{self.price} at {self.date}'
 
 
 
