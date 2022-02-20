@@ -15,6 +15,34 @@
     var currency_symbol = ""
     var currency_min = ""
 
+    
+    // Page Resize STUFF
+    const arrow = document.getElementById("arrow")
+    const dflex = document.getElementById("dflex")
+
+    function screen_change() {
+        if ($(window).width() < 450) {
+            dflex.classList.remove("d-flex")
+            arrow.classList.remove("bi-arrow-right")
+            arrow.classList.add("bi-arrow-down")
+    
+            dflex.style = "width: 100%; text-align: center;"
+            arrow.style = "display: inline-block;"
+    
+            toDropdownMenu.style = "min-height: 3.65rem; width: 100%;"
+        } else {
+            dflex.classList.add("d-flex")
+            arrow.classList.add("bi-arrow-right")
+            arrow.classList.remove("bi-arrow-down")
+        }
+    }
+    screen_change();
+
+    $(window).resize(() => {
+        screen_change();
+    });
+    // END
+
 
     // creating the first div for minimum amount error
     let div = document.createElement("div")
@@ -22,8 +50,6 @@
     div.classList.add("my-2")
     div.classList.add("position-absolute")
     div.style.display = "none"
-    // let divText = document.createTextNode(`Please consider that the minimum amount to send is !`)
-    // div.appendChild(divText)
 
     // creating the second div for not a number error
     let div2 = document.createElement("div")
@@ -93,17 +119,21 @@
                 input.classList.add("is-invalid")
                 div.style.display = ""
                 div2.style.display = "none"
+                if ($(window).width() < 450) {arrow.style = "display: inline-block; margin-top: 2rem;"}
                 post = false;
             } else if (isNaN(typed) == true){ // user inputed characters
                 input.classList.add("is-invalid")
                 div.style.display = "none"
                 div2.style.display = ""
+                if ($(window).width() < 450) {arrow.style = "display: inline-block; margin-top: 1rem;"}
                 post = false;
             } else {
                 input.classList.remove("is-invalid")
+                arrow.style = "display: inline-block;"
                 post = true;
             }
         } else {
+            arrow.style = "display: inline-block;"
             input.classList.remove("is-invalid")
         }
     })

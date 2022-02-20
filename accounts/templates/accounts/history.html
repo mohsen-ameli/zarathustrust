@@ -6,44 +6,88 @@
 {% load crispy_forms_tags %}
 {% block content %}
 
-{% if counter > 0 %}
+<!-- Top Part -->
 <div class="card mx-auto zarathus-card">
     <div class="card-body">
         <div class="m-2 mx-auto">
-            <form method="POST" class="form-inline">
-                {% csrf_token %}
-                <div class="mb-3 text-center">{% trans "Choose How Many Transaction to See Per Page (default is 10)" %}</div>
-                <div class="mb-3 text-center">{% trans "Total Transactions: " %} {{ counter }}</div>
-                
+            {% if counter > 0 %}
+            <!-- total transactions -->
+            <div class="mb-3 text-center">{% trans "Choose How Many Transaction to See Per Page (default is 10)" %}</div>
+            <div class="mb-3 text-center">{% trans "Total Transactions: " %} {{ counter }}</div>
+            <div class="align-self-center ms-3 text-center">
+                <a class="neon-button" href="#" role="button" onmouseover="mouseOver()" onmouseout="mouseOut()"
+                id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                    {% trans "Choose a number" %} <i class="fas fa-caret-down"></i>
+                </a>
+            
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li><a href="?wallet-name={{wallet}}&num=1" class="dropdown-item" type="submit" name="paginate" value="1" href="#">1</a></li>
+                    <li><a href="?wallet-name={{wallet}}&num=2" class="dropdown-item" type="submit" name="paginate" value="2" href="#">2</a></li>
+                    <li><a href="?wallet-name={{wallet}}&num=5" class="dropdown-item" type="submit" name="paginate" value="5" href="#">5</a></li>
+                    <li><a href="?wallet-name={{wallet}}&num=10" class="dropdown-item" type="submit" name="paginate" value="10" href="#">10</a></li>
+                    <li><a href="?wallet-name={{wallet}}&num=20" class="dropdown-item" type="submit" name="paginate" value="20" href="#">20</a></li>
+                    <li><a href="?wallet-name={{wallet}}&num=all" class="dropdown-item" type="submit" name="paginate" value="all" href="#">ALL</a></li>
+                </ul>
+            </div>
 
-                <div class="align-self-center ms-3 text-center">
-                    <a class="neon-button" href="#" role="button" onmouseover="mouseOver()" onmouseout="mouseOut()"
-                    id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                        {% trans "Choose a number" %} <i class="fas fa-caret-down"></i>
-                    </a>
-                
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><a href="?num=1" class="dropdown-item" type="submit" name="paginate" value="1" href="#">1</a></li>
-                        <li><a href="?num=2" class="dropdown-item" type="submit" name="paginate" value="2" href="#">2</a></li>
-                        <li><a href="?num=5" class="dropdown-item" type="submit" name="paginate" value="5" href="#">5</a></li>
-                        <li><a href="?num=10" class="dropdown-item" type="submit" name="paginate" value="10" href="#">10</a></li>
-                        <li><a href="?num=20" class="dropdown-item" type="submit" name="paginate" value="20" href="#">20</a></li>
-                        <li><a href="?num=all" class="dropdown-item" type="submit" name="paginate" value="all" href="#">ALL</a></li>
-                    </ul>
+            <hr>
+            <!-- selecting a wallet -->
+            <div class="align-self-center ms-3 text-center">
+                <a class="neon-button" href="#" role="button"
+                id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                    {% trans "Wallets" %} <i class="fas fa-caret-down"></i>
+                </a>
+            
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    {% for wallet in wallets %}
+                        <li>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <a href="?wallet-name={{ wallet.0.1 }}" name="wallet-post" value="{{ wallet.0.1 }}" class="dropdown-item">
+                                    <span class="flag-icon flag-icon-{{ wallet.0.0|lower }} me-2"></span>{{wallet.0.1}} ({{wallet.0.2}})
+                                </a>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            {% else %}
+                <!-- user has no account history -->
+                <h5 class="text-center mb-3">{% trans "sheesh, no transactions yet, make one ?" %}</h5>
+                <div class="text-center">
+                    <a href="{% url 'accounts:add-money' pk=user.pk %}" class="neon-button">{% trans "Deposit" %}</a>
                 </div>
 
-            </form>
+                <hr>
+                <!-- selecting a wallet -->
+                <div class="align-self-center ms-3 text-center">
+                    <a class="neon-button" href="#" role="button"
+                    id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                        {% trans "Wallets" %} <i class="fas fa-caret-down"></i>
+                    </a>
+                
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        {% for wallet in wallets %}
+                            <li>
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <a href="?wallet-name={{ wallet.0.1 }}" name="wallet-post" value="{{ wallet.0.1 }}" class="dropdown-item">
+                                        <span class="flag-icon flag-icon-{{ wallet.0.0|lower }} me-2"></span>{{wallet.0.1}} ({{wallet.0.2}})
+                                    </a>
+                                </form>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
-{% else %}
-    <h5 class="text-center mb-3">{% trans "sheesh, no transactions yet, make one ?" %}</h5>
-    <div class="text-center">
-        <a href="{% url 'accounts:add-money' pk=user.pk %}" class="neon-button">{% trans "Deposit" %}</a>
-    </div>
-{% endif %}
+
 <br>
 
+<!-- Transaction Cards -->
 {% for each in page_obj %}
     <div class="list-group mx-auto">
         <a href="{% url 'accounts:history-detail' pk=user.pk tran_id=each.id %}" 
@@ -51,66 +95,68 @@
             <div class="d-flex w-100 justify-content-between">
                 <h5 class="mb-1">{{ each.date|date:'N d, Y' }}</h5>
             </div>
-            <p class="mb-1">
+
+            <p class="mb-1" id="history-card-text">
                 {% if each.method == "Payment" %}
                     <i class="bi bi-cart4 float-none" style="font-size: 1.5rem;"></i>
-                    <font class="float-none" style="margin-left: 1rem;">
-                        {% blocktrans with person=each.person.created_by.username|capfirst second_person=each.second_person.created_by.username|capfirst %}
-                            Payment from {{ person }} to {{ second_person }}
+                    <span class="float-none" style="margin-left: 1rem;">
+                        {% blocktrans with person=each.person.created_by.username|capfirst wallet=each.wallet.main_account.created_by.username|capfirst second_person=each.second_person.created_by.username|capfirst second_wallet=each.second_wallet.main_account.created_by.username|capfirst %}
+                            Payment from {{ person }}{{wallet}} to {{ second_person }}{{ second_wallet }}
                         {% endblocktrans %}
-                    </font>
+                    </span>
                 {% elif each.method == "Transfer" %}
                     <i class="bi bi-send-check float-none" style="font-size: 1.5rem;"></i>
-                    <font class="float-none" style="margin-left: 1rem;">
-                        {% blocktrans with person=each.person.created_by.username|capfirst second_person=each.second_person.created_by.username|capfirst %}
-                            Transfer from {{ person }} to {{ second_person }}
+                    <span class="float-none" style="margin-left: 1rem;">
+                        {% blocktrans with person=each.person.created_by.username|capfirst wallet=each.wallet.main_account.created_by.username|capfirst second_person=each.second_person.created_by.username|capfirst second_wallet=each.second_wallet.main_account.created_by.username|capfirst %}
+                            Transfer from {{ person }}{{wallet}} to {{ second_person }}{{ second_wallet }}
                         {% endblocktrans %}
-                    </font>
+                    </span>
                 {% elif each.method == "Deposit" %}
                     <i class="bi bi-download float-none" style="font-size: 1.5rem;"></i>
-                    <font class="float-none" style="margin-left: 1rem;">
-                        {% blocktrans with person=each.person.created_by.username|capfirst %}
-                            Deposit to {{ person }}
+                    <span class="float-none" style="margin-left: 1rem;">
+                        {% blocktrans with person=each.person.created_by.username|capfirst wallet=each.wallet.main_account.created_by.username|capfirst %}
+                            Deposit to {{ person }}{{wallet}}
                         {% endblocktrans %}
-                    </font>
+                    </span>
                 {% elif each.method == "Withdraw" %}
                     <i class="bi bi-upload float-none" style="font-size: 1.5rem;"></i>
-                    <font class="float-none" style="margin-left: 1rem;">
-                        {% blocktrans with person=each.person.created_by.username|capfirst %}
-                            Withdraw from {{ person }}
+                    <span class="float-none" style="margin-left: 1rem;">
+                        {% blocktrans with person=each.person.created_by.username|capfirst wallet=each.wallet.main_account.created_by.username|capfirst %}
+                            Withdraw from {{ person }}{{wallet}}
                         {% endblocktrans %}
-                    </font>
+                    </span>
                 {% elif each.method == "Cash Out" %}
                     <i class="fas fa-hand-holding-usd" style="font-size: 1.5rem; padding: 5px 0 5px 5px;"></i>
-                    <font class="float-none">
-                        {% blocktrans with person=each.person.created_by.username|capfirst %}
-                            Cash Out for {{ person }}
+                    <span class="float-none">
+                        {% blocktrans with person=each.person.created_by.username|capfirst wallet=each.wallet.main_account.created_by.username|capfirst %}
+                            Cash Out for {{ person }}{{wallet}}
                         {% endblocktrans %}
-                    </font>
+                    </span>
                 {% endif %}
 
                 {% if each.method != "Transfer" %}
                     {% if each.second_person.created_by.username == user.get_username or each.method == "Deposit" or each.method == "Cash Out" %}
-                        <font class="float-end" style="color: rgb(0, 255, 0); font-size: large;">
-                            +{{ user_currency_symbol }}{{ each.price }}
-                        </font>
+                        <span class="float-end" style="color: rgb(0, 255, 0); font-size: large;">
+                            +{{ currency_symbol }}{{ each.price }}
+                        </span>
                     {% else %}
-                        <font class="float-end" style="color: #ff4a4a; font-size: large;">
-                            -{{ user_currency_symbol }}{{ each.price|floatformat:1 }}
-                        </font>
+                        <span class="float-end" style="color: #ff4a4a; font-size: large;">
+                            -{{ currency_symbol }}{{ each.price|floatformat:1 }}
+                        </span>
                     {% endif %}
                 {% else %}
-                    {% if each.second_person.created_by.username == user.get_username %}
-                        <font class="float-end" style="color: rgb(0, 255, 0); font-size: large;">
-                            +{{ user_currency_symbol }}{{ each.ex_price }}
-                        </font>
+                    {% if each.second_person.created_by.username == user.get_username or each.second_wallet.main_account.created_by.username == user.get_username %}
+                        <span class="float-end" style="color: rgb(0, 255, 0); font-size: large;">
+                            +{{ currency_symbol }}{{ each.price|floatformat:1 }}
+                        </span>
                     {% else %}
-                        <font class="float-end" style="color: rgb(255, 74, 74); font-size: large;">
-                            -{{ user_currency_symbol }}{{ each.price|floatformat:1 }}
-                        </font>
+                        <span class="float-end" style="color: rgb(255, 74, 74); font-size: large;">
+                            -{{ currency_symbol }}{{ each.price|floatformat:1 }}
+                        </span>
                     {% endif %}
                 {% endif %}
             </p>
+
             <small style="color: rgba(255, 255, 255, 0.7);">{{ each.date|date:'l \a\t g:iA' }} • {{ each.method }}</small>
         </a>
     </div>
@@ -122,15 +168,15 @@
     <nav aria-label="Page navigation">
         <ul class="pagination justify-content-center">
             {% if page_obj.has_previous %}
-                <li class="page-item"><a class="page-link" href="?page=1&num={{ pagination_number }}">&laquo;</a></li>
-                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&num={{ pagination_number }}">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="?wallet-name={{wallet}}&page=1&num={{ pagination_number }}">&laquo;</a></li>
+                <li class="page-item"><a class="page-link" href="?wallet-name={{wallet}}&page={{ page_obj.previous_page_number }}&num={{ pagination_number }}">Previous</a></li>
             {% endif %}
 
             <li class="page-item disabled"><a href="#" class="page-link">
                 Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
             </a></li>
 
-            <!-- This is for 1-n button -->
+            <!-- numbered button pagination (1  2  3  4) -->
             <!-- {% for num in page_obj.paginator.page_range %}
                 <li class="page-item">
                     <a class="page-link" href="?page={{ num }}">{{ num }}</a>
@@ -138,8 +184,8 @@
             {% endfor %} -->
 
             {% if page_obj.has_next %}
-                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&num={{ pagination_number }}">Next</a></li>
-                <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&num={{ pagination_number }}">&raquo;</a></li>
+                <li class="page-item"><a class="page-link" href="?wallet-name={{wallet}}&page={{ page_obj.next_page_number }}&num={{ pagination_number }}">Next</a></li>
+                <li class="page-item"><a class="page-link" href="?wallet-name={{wallet}}&page={{ page_obj.paginator.num_pages }}&num={{ pagination_number }}">&raquo;</a></li>
             {% endif %}
         </ul>
     </nav>

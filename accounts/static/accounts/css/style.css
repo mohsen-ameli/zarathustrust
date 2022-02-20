@@ -148,6 +148,9 @@ h3,h1 {
 i {
   color: #f8b119;
 }
+#arrow {
+  font-size: 3rem;
+}
 .invalid-feedback {
   color: #ff4a59;
 }
@@ -447,6 +450,9 @@ button.swal2-confirm.swal2-styled:hover::after {
   .container-xl,
   .container-fluid {
     max-width: 100%;
+  }
+  #history-card-text {
+    font-size: 11pt;
   }
 }
 /* XS */

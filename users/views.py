@@ -21,7 +21,7 @@ from .forms import (BusinessForm, EmailCodeForm, PhoneCodeForm,
 from .models import CustomUser, code, ReferralCode
 from .utils import phone_msg_verify
 from .functions import country_from_ip, get_country_lang, get_country_currency
-from accounts.views import currency_min, currency_symbol
+from accounts.views import currency_min, get_currency_symbol
 
 with open("/etc/config.json") as config_file:
     config = json.load(config_file)
@@ -300,7 +300,7 @@ def referral_verify_view(request, backend='django.contrib.auth.backends.ModelBac
 
                 # getting current user's stuff
                 user_currency           = user_.currency
-                user_currency_symbol    = currency_symbol(user_currency) # their currency symbol
+                user_currency_symbol    = get_currency_symbol(user_currency) # their currency symbol
                 user_currency_min       = currency_min(user_currency)
                 user_extra_bonus        = user_currency_min * extra_bonus_value
 
@@ -320,7 +320,7 @@ def referral_verify_view(request, backend='django.contrib.auth.backends.ModelBac
                 giver_currency          = giver_account.main_currency # their currency in iso-3 format
                 giver_currency_min      = currency_min(giver_currency) # $1 in their currency
                 giver_extra_bonus       = giver_currency_min * extra_bonus_value
-                giver_currency_symbol   = currency_symbol(giver_currency) # their currency symbol
+                giver_currency_symbol   = get_currency_symbol(giver_currency) # their currency symbol
 
                 # updating the giver user's bonus
                 account.objects.filter(created_by=giver_user).update(

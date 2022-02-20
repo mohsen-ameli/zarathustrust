@@ -17,8 +17,6 @@ class BranchAccounts(models.Model):
 
             self.add_money = 0
         elif self.take_money:
-            self.total_balance = self.total_balance - self.take_money
-
             r = transaction_history(wallet=self, method="Withdraw", price=self.take_money)
             r.save()
 

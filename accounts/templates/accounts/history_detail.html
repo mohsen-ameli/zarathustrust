@@ -7,53 +7,49 @@
         <h3 class="fw-normal text-center">{% trans "Transaction Details" %}</h3>
         <hr class="zarathus-hr">
         <p style="font-size: large;">
-            {% if object.method == "Transfer" %}
-                {% if object.person.created_by.username != user.username %} <!-- incoming money -->
-                    {% blocktrans with price=object.price person=object.person.created_by.username %}
-                        {{ incoming_currency_symbol }}{{ price }} has been transfered to you, by {{ person }}
+            {% if transaction.method == "Transfer" %}
+                <!-- incoming transferance -->
+                {% if incoming == 1 %}
+                    {% blocktrans with price=transaction.price transactor=transactor %}
+                        {{ currency_symbol }}{{ price }} has been transfered to you, by {{ transactor }}
                     {% endblocktrans %}
-                    <br>
-                    {% if object.person.main_currency != object.second_person.main_currency %}
-                        1{{ incoming_currency }} = {{ object.ex_rate }}{{ my_currency }}
-                        <br>
-                        {{ object.price }}{{ incoming_currency }} = {{ object.price|mul:object.ex_rate|floatformat:"2g" }}{{ my_currency }}
-                    {% endif %}
-                {% else %} <!-- outgoing money -->
-                    {% blocktrans with price=object.price second_person=object.second_person.created_by.username %}
-                        You have transfered {{ user_currency_symbol }}{{ price }} to {{ second_person }}
+                <!-- outgoing transferance -->
+                {% else %}
+                    {% blocktrans with price=transaction.price transactor=transactor %}
+                        You have transfered {{ currency_symbol }}{{ price }} to {{ transactor }}
                     {% endblocktrans %}
                 {% endif %}
 
-            {% elif object.method == "Deposit" %}
-                {% blocktrans with price=object.price person=object.person.created_by.username %}
-                    Deposit to {{ person }}, for the amount {{ user_currency_symbol }}{{ price }}
+            {% elif transaction.method == "Deposit" %}
+                {% blocktrans with price=transaction.price person=transaction.person.created_by.username wallet=transaction.wallet.main_account.created_by.username %}
+                    Deposit to {{ person }}{{ wallet }}, for the amount {{ currency_symbol }}{{ price }}
                 {% endblocktrans %}
 
-            {% elif object.method == "Withdraw" %}
-                {% blocktrans with price=object.price person=object.person.created_by.username %}
-                    Withdraw from {{ person }}, for the amount {{ user_currency_symbol }}{{ price }}
+            {% elif transaction.method == "Withdraw" %}
+                {% blocktrans with price=transaction.price person=transaction.person.created_by.username wallet=transaction.wallet.main_account.created_by.username %}
+                    Withdraw from {{ person }}{{ wallet }}, for the amount {{ currency_symbol }}{{ price }}
                 {% endblocktrans %}
                 
-            {% elif object.method == "Cash Out" %}
-                {% blocktrans with price=object.price %}
-                    You have cashed out {{ user_currency_symbol }}{{ price }}
+            {% elif transaction.method == "Cash Out" %}
+                {% blocktrans with price=transaction.price %}
+                    You have cashed out {{ currency_symbol }}{{ price }}
                 {% endblocktrans %}
 
             {% else %}
-                {% blocktrans with price=object.price second_person=object.second_person.created_by.username %}
-                    You have paid {{ second_person }}, for a total of {{ user_currency_symbol }}{{ price }}
+                {% blocktrans with price=transaction.price second_person=transaction.second_person.created_by.username second_wallet=transaction.second_wallet.main_account.created_by.username %}
+                    You have paid {{ second_person }}{{ second_wallet }}, for a total of {{ currency_symbol }}{{ price }}
                 {% endblocktrans %}
             {% endif %}
             <br>
             <br>
-            {% if object.purpose_of_use != "" %}
-                {% blocktrans with purpose=object.purpose_of_use %}
+            {% if transaction.message %}
+                {% blocktrans with purpose=transaction.message %}
                     Purpose Of Use : {{ purpose }}
                 {% endblocktrans %}
                 <br>
                 <br>
             {% endif %}
-            <small>{{ object.date }}</small>
+            <small>{{ transaction.date }}</small>
         </p>
         <a href="{% url 'accounts:history' pk=request.user.pk %}" class="neon-button my-2">Back</a>
     </div>

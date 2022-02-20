@@ -10,7 +10,7 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 from users.models import CustomUser
 from users.utils import new_user
-from .functions import currency_symbol
+from .functions import get_currency_symbol
 
 with open('/etc/config.json') as config_file:
     config = json.load(config_file)
@@ -39,7 +39,6 @@ class account(models.Model):
         elif self.take_money:
             b = account_interest.objects.get(pk=self.pk).interest - self.take_money
             account_interest.objects.filter(pk=self.pk).update(interest=b)
-            self.total_balance = self.total_balance - self.take_money
 
             r = transaction_history(person=self, method="Withdraw", price=self.take_money)
             r.save()
@@ -70,10 +69,13 @@ class transaction_history(models.Model):
     second_wallet       = models.ForeignKey("wallets.BranchAccounts", on_delete=models.SET_NULL, null=True, blank=True, related_name="second_wallet")
     date                = models.DateTimeField(auto_now_add=True)
     price               = models.DecimalField(decimal_places=1, max_digits=10)
-    ex_rate             = models.DecimalField(decimal_places=4, max_digits=10, null=True, blank=True, default=0)
-    ex_price            = models.DecimalField(decimal_places=1, max_digits=10, null=True, blank=True, default=0)
-    purpose_of_use      = models.CharField(max_length=500, null=True, blank=True, default="None")
+    purpose_of_use      = models.CharField(max_length=500, null=True, blank=True)
     method              = models.CharField(max_length=100, default="None")   
+
+    def message(self):
+        if not self.purpose_of_use:
+            return
+        return ''.join(self.purpose_of_use)
 
     def __str__(self):
         price = round(self.price)
@@ -89,9 +91,9 @@ class transaction_history(models.Model):
         
         if not self.person:
             person = self.wallet.main_account.created_by.username
-            symbol = currency_symbol(self.wallet.currency)
+            symbol = get_currency_symbol(self.wallet.currency)
         else:
-            symbol = currency_symbol(self.person.created_by.currency)
+            symbol = get_currency_symbol(self.person.created_by.currency)
         
         if self.method == "Transfer":
             return f'TRANSFER from {person} to {second_person} for the amount {symbol}{price} at {self.date}'
