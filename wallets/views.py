@@ -12,7 +12,7 @@ from django.utils.translation import gettext as _
 
 from .models import BranchAccounts
 from accounts.models import account, CustomUser
-from accounts.functions import correct_user, currency_symbol, currency_min
+from accounts.functions import correct_user, get_currency_symbol, currency_min
 
 @login_required
 def WalletSearch(request, pk):
@@ -90,14 +90,14 @@ def CurrencyExchange(request, pk):
         # getting user's currency stuff
         User                = CustomUser.objects.get(pk=request.user.pk)
         currency_name       = User.currency
-        currency_symbol_    = currency_symbol(currency_name)
+        currency_symbol_    = get_currency_symbol(currency_name)
         currency_min_       = currency_min(currency_name)
         currency_options    = [(currency_name, currency_symbol_, currency_min_)]
 
 
         branch_acc = BranchAccounts.objects.filter(main_account__pk=pk)
         for wallet in branch_acc:
-            currency_options.append((wallet.currency, currency_symbol(wallet.currency), currency_min(wallet.currency)))
+            currency_options.append((wallet.currency, get_currency_symbol(wallet.currency), currency_min(wallet.currency)))
         
         context = {
             "pk"                    : pk,
@@ -175,9 +175,9 @@ def CurrencyExchangeConfirm(request, pk, from_, amount, to):
 
         context = {
             "from"          : from_,
-            "from_symbol"   : currency_symbol(from_),
+            "from_symbol"   : get_currency_symbol(from_),
             "to"            : to,
-            "to_symbol"     : currency_symbol(to),
+            "to_symbol"     : get_currency_symbol(to),
             "amount"        : amount,
             "ex_rate"       : ex_rate,
         }

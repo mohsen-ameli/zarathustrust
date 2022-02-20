@@ -48,16 +48,18 @@
             <div class="container my-3">
                 {% for msg in messages|slice:":1" %}
                     {% if msg.tags == 'warning' %}
-                        <div class="alert alert-danger text-center msg-alert">
+                        <div class="alert alert-warning text-center msg-alert alert-dismissible fade show" role="alert">
                             {% blocktrans %}
                             {{ msg }}
                             {% endblocktrans %}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     {% else %}
-                        <div class="alert alert-{{ msg.tags }} text-center msg-alert">
+                        <div class="alert alert-{{ msg.tags }} text-center msg-alert alert-dismissible fade show" role="alert">
                             {% blocktrans %}
                             {{ msg }}
                             {% endblocktrans %}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     {% endif %}
                 {% endfor %}
@@ -66,7 +68,7 @@
 
         {% block content %}{% endblock %}
     </div>
-    <!-- <div style="font-size: 11pt;">Still Under Development</div> -->
+    <div class="pt-3" style="font-size: 11pt;">Still Under Development</div>
     <br>
     
     <!-- Bootstrap V:5 CDN -->

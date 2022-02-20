@@ -40,7 +40,7 @@
                 }
             },
             error: (response) => {
-                console.log(response)
+                
             },
         })
     }
