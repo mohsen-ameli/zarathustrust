@@ -151,9 +151,11 @@ def PersonalSignUp(request, country):
 
             # phone number checking
             phone_num = request.POST.get('phone_number')
-            phone_number = phonenumbers.is_valid_number(phonenumbers.parse(f'+{ext}{phone_num}'))
-            # print(f'+{ext}{phone_num}')
-            if phone_number is False:
+            if phone_num.isnumeric():
+                phone_number = phonenumbers.is_valid_number(phonenumbers.parse(f'+{ext}{phone_num}'))
+                if phone_number is False:
+                    form.add_error('phone_number', _('Please enter a correct phone number'))
+            else:
                 form.add_error('phone_number', _('Please enter a correct phone number'))
                 
             if form.is_valid():

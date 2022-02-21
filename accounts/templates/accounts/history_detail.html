@@ -51,7 +51,7 @@
             {% endif %}
             <small>{{ transaction.date }}</small>
         </p>
-        <a href="{% url 'accounts:history' pk=request.user.pk %}" class="neon-button my-2">Back</a>
+        <a href="javascript:history.back()" class="neon-button my-2">Back</a>
     </div>
 </div>
 {% endblock %}

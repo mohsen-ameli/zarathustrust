@@ -75,7 +75,7 @@ class RegisterForm(UserCreationForm):
 
         # checking to see if username has at least 5 characters
         username = cleaned_data.get('username')
-        if len(username) < 5:
+        if username and len(username) < 5:
             self.add_error('username', _("Please choose a username with at least 5 characters."))
 
         return cleaned_data

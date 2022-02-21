@@ -118,6 +118,7 @@ def CurrencyExchangeConfirm(request, pk, from_, amount, to):
         acc = account.objects.get(pk=pk)
         min_to = currency_min(to)
         min_from = currency_min(from_)
+
         # confirming a few things
         if min_to is None or min_from is None:
             messages.warning(request, _("You cannot exchange with the specified currencies !"))
@@ -141,6 +142,9 @@ def CurrencyExchangeConfirm(request, pk, from_, amount, to):
         response = requests.get(url) # getting a response
         data = response.json() # getting the data
         ex_rate = round(decimal.Decimal(data['result']), 4)
+
+        # idk why django gives an error without this line smh
+        wallet = BranchAccounts.objects.filter(main_account__pk=pk)
 
         if request.method == "POST":
             # updating the user's wallet
