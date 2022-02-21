@@ -14,7 +14,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     
     <!-- My own css -->
     <link rel="stylesheet" type="text/css" href="{% static 'accounts/css/style.css' %}">
@@ -32,13 +32,14 @@
     <!-- Bootstrap Cookie CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Wruczek/Bootstrap-Cookie-Alert@gh-pages/cookiealert.css">
 
-    <title>Home Page</title>
+    <title>{% trans "ZarathusTrust" %}</title>
 </head>
 
 <body>
     <!-- NAVBAR -->
     {% block nav %}{% include 'accounts/nav.html' %}{% endblock %}
 
+    <!-- landing page -->
     {% block landing_page %}{% endblock %}
 
     <!-- MAIN CONTENT -->
@@ -68,8 +69,9 @@
 
         {% block content %}{% endblock %}
     </div>
-    <div class="pt-3" style="font-size: 11pt;">Still Under Development</div>
-    <br>
+
+    <!-- under dev -->
+    <div class="py-3" style="font-size: 11pt;">{% trans "Still Under Development" %}</div>
     
     <!-- Bootstrap V:5 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
@@ -93,10 +95,10 @@
 
     <!-- Cookie banner -->
     <div class="alert text-center cookiealert" role="alert">
-        <b>Do you like cookies?</b> &#x1F36A; We use cookies to ensure you get the best experience on our website.
-        <a href="{% url 'users:cookie-policy' %}" target="_blank">Learn more</a>
+        <b>{% trans "Do you like cookies?</b> &#x1F36A; We use cookies to ensure you get the best experience on our website." %}"
+        <a href="{% url 'users:cookie-policy' %}" target="_blank">{% trans "Learn more" %}</a>
 
-        <button type="button" class="neon-button acceptcookies">I agree</button>
+        <button type="button" class="neon-button acceptcookies">{% trans "I agree" %}</button>
     </div>
 
     <script src="https://cdn.jsdelivr.net/gh/Wruczek/Bootstrap-Cookie-Alert@gh-pages/cookiealert.js"></script>

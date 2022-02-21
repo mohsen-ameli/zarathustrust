@@ -120,8 +120,7 @@ button:link {
 
 
 /********** Colors and Fonts *********/
-.bi-piggy-bank,
-.bi-cash-stack {
+.home-icon-top {
   font-size: 3rem;
 }
 .fa-question-circle {
@@ -147,6 +146,9 @@ h3,h1 {
 }
 i {
   color: #f8b119;
+}
+.social-icons {
+  font-size: 3rem;
 }
 #arrow {
   font-size: 3rem;
@@ -413,6 +415,9 @@ button.swal2-confirm.swal2-styled:hover::after {
   background-color: #5A4181 !Important;
   border: solid 1px #5A4181;
 }
+/* .upBtnHistory {
+  
+} */
 #myBtn {
   display: none;
   position: fixed;

@@ -1,28 +1,195 @@
 {% extends "accounts/base.html" %}
 {% load i18n %}
 {% load static %}
-{% block content %}
+{% block landing_page %}
+<link rel="stylesheet" href="{% static 'accounts/css/features.css' %}">
+<link rel="stylesheet" href="{% static 'accounts/css/fixed_bg.css' %}">
+
 <!-- Starting Page Animation -->
 <div class="test-animation" id="ani"></div>
 
+<!-- Up button stuff -->
+<button class="btn btn-secondary" onclick="topFunction()" id="myBtn" title="Go to top">
+    <i class="bi bi-arrow-bar-up" style="font-size: 20pt;"></i>
+</button>
+<script src="{% static 'accounts/js/history.js' %}"></script>
 
-<h3 class="text-capitalize text-center">{% trans "we pay you 2% interest on your balance !" %}</h5>
-<!---------- 2 buttons ---------->
-<div class="row text-center">
-    <a href="{% url 'users:register' %}" class="zoom-login">
-        <i class="fas fa-user-plus buttons-2 p-2"></i>
-        <h1 style="font-size: 2.5rem;">{% trans "Sign Up" %}</h1>
-    </a>
-    <a href="{% url 'users:login-view' %}" class="zoom-login">
-        <i class="fas fa-sign-in-alt buttons-2 p-2"></i>
-        <h1 style="font-size: 2.5rem;">{% trans "Login" %}</h1>
-    </a>
+<!-- Carousel -->
+<div id="carouselExampleIndicators" class="carousel slide h-25" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active" data-bs-interval="7000">
+            <img src="{% static 'accounts/images/zarathus-1.jpg' %}" class="d-block w-100" alt="...">
+            <div class="carousel-caption">
+                <h1 class="fw-bold">We Pay You 2% Interest On Your Balance !</h1>
+                <p>Join us now to start your money making process without headach</p>
+            </div>
+        </div>
+        <div class="carousel-item" data-bs-interval="4000">
+            <img src="{% static 'accounts/images/zarathus-2.jpg' %}" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item" data-bs-interval="4000">
+            <img src="{% static 'accounts/images/zarathus-3.jpg' %}" class="d-block w-100" alt="...">
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
 </div>
+<!-- Carousel -->
 
+<!-- USP -->
+<div class="container my-5">
+    <!-- Three columns of text below the carousel -->
+    <div class="row text-center">
+        <div class="col-lg-4 my-2">
+            <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 140x140" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#777"></rect><text x="50%" y="50%" fill="#777" dy=".3em">140x140</text></svg>
+
+            <h2 class="m-2">Free For All</h2>
+            <p>We are and always will be free to use for all users around the globe, with absolutly zero advertisements.</p>
+            <p><a class="neon-button" href="#">View details »</a></p>
+        </div><!-- /.col-lg-4 -->
+        <div class="col-lg-4 my-2">
+            <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 140x140" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#777"></rect><text x="50%" y="50%" fill="#777" dy=".3em">140x140</text></svg>
+
+            <h2 class="m-2">+2% Interest</h2>
+            <p>Another exciting bit of representative placeholder content. This time, we've moved on to the second column.</p>
+            <p><a class="neon-button" href="#">View details »</a></p>
+        </div><!-- /.col-lg-4 -->
+        <div class="col-lg-4 my-2">
+            <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 140x140" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#777"></rect><text x="50%" y="50%" fill="#777" dy=".3em">140x140</text></svg>
+
+            <h2 class="m-2">Shopping</h2>
+            <p>And lastly this, the third column of representative placeholder content.</p>
+            <p><a class="neon-button" href="#">View details »</a></p>
+        </div><!-- /.col-lg-4 -->
+    </div><!-- /.row -->
+</div>
+<!-- USP -->
+
+<!-- Join us now -->
+<div class="container text-center my-5">
+    <h1 class="display-3">Join us today to start making interest !</h1>
+    <hr>
+    <!---------- 2 buttons ---------->
+    <div class="row text-center">
+        <a href="{% url 'users:register' %}" class="zoom-login">
+            <i class="fas fa-user-plus buttons-2 p-2"></i>
+            <h1 style="font-size: 2.5rem;">{% trans "Sign Up" %}</h1>
+        </a>
+        <a href="{% url 'users:login-view' %}" class="zoom-login">
+            <i class="fas fa-sign-in-alt buttons-2 p-2"></i>
+            <h1 style="font-size: 2.5rem;">{% trans "Login" %}</h1>
+        </a>
+    </div>
+</div>
+<!-- Join us now -->
+
+<!-- Fixed Background Image -->
+<div class="landing">
+    <div class="fixed-wrap">
+        <div class="fixed">
+            <img src="{% static 'accounts/images/rocks.jpg' %}">
+        </div>
+    </div>
+</div>
+<!-- Fixed Background Image -->
+
+<!-- USP -->
+<div class="container px-4 py-5 text-center" id="featured-3">
+    <h2 class="pb-2 border-bottom">Columns with icons</h2>
+    <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+        <div class="feature col">
+            <div class="feature-icon bg-primary bg-gradient">
+                <i class="bi bi-app-indicator"></i>
+            </div>
+            <h2>Free For All</h2>
+            <p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and probably just keep going until we run out of words.</p>
+            <a href="https://getbootstrap.com/docs/5.1/examples/features/#" class="icon-link">
+                Call to action
+                <svg class="bi" width="1em" height="1em"><use xlink:href="#chevron-right"></use></svg>
+            </a>
+        </div>
+        <div class="feature col">
+            <div class="feature-icon bg-primary bg-gradient">
+                <i class="bi bi-coin"></i>
+            </div>
+            <h2>+2% Interest</h2>
+            <p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and probably just keep going until we run out of words.</p>
+            <a href="https://getbootstrap.com/docs/5.1/examples/features/#" class="icon-link">
+                Call to action
+                <svg class="bi" width="1em" height="1em"><use xlink:href="#chevron-right"></use></svg>
+            </a>
+        </div>
+        <div class="feature col">
+            <div class="feature-icon bg-primary bg-gradient">
+                <i class="bi bi-bag-check"></i>
+            </div>
+            <h2>Shopping</h2>
+            <p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and probably just keep going until we run out of words.</p>
+            <a href="https://getbootstrap.com/docs/5.1/examples/features/#" class="icon-link">
+                Call to action
+                <svg class="bi" width="1em" height="1em"><use xlink:href="#chevron-right"></use></svg>
+            </a>
+        </div>
+    </div>
+</div>
+<!-- USP -->
+
+
+<!-- Socials -->
+<div class="container text-center">
+    <h1 class="display-3">Socials</h1>
+    <hr class="w-75" style="display: inline-flex;">
+    <div class="row">
+        <div class="col-lg-4">
+            <a href="#"><i class="bi bi-instagram social-icons"></i></a>
+        </div>
+        <div class="col-lg-4">
+            <a href="#"><i class="bi bi-twitter social-icons"></i></a>
+        </div>
+        <div class="col-lg-4">
+            <a href="#"><i class="bi bi-youtube social-icons"></i></a>
+        </div>
+    </div>
+</div>
+<!-- Socials -->
+
+<!-- Footer -->
+<div class="container">
+    <hr class="zarathus-hr">
+    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4">
+      <p class="col-md-4 mb-0 text-muted">© 2022 ZarathusTrust</p>
+  
+      <a href="#" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+        <img src="{% static 'accounts/images/zarathustrust_new.png' %}" class="bi me-2" width="60" height="26">
+      </a>
+  
+      <ul class="nav col-md-4 justify-content-end">
+        <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Home</a></li>
+        <li class="nav-item"><a href="{% url 'users:login-view' %}" class="nav-link px-2 text-muted">Log in</a></li>
+        <li class="nav-item"><a href="{% url 'users:register' %}" class="nav-link px-2 text-muted">Register</a></li>
+        <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">FAQs</a></li>
+        <li class="nav-item"><a href="{% url 'accounts:about-page' %}" class="nav-link px-2 text-muted">About</a></li>
+      </ul>
+    </footer>
+</div>
+<!-- Footer  -->
+
+
+<!-- animation -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js" 
 integrity="sha512-H6cPm97FAsgIKmlBA4s774vqoN24V5gSQL4yBTDOY2su2DeXZVhQPxFK4P6GPdnZqM9fg1G3cMv5wD7e6cFLZQ==" 
 crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script src="{% static 'accounts/js/landing_page.js' %}"></script>
-
 {% endblock %}
