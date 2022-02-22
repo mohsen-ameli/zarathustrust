@@ -20,7 +20,7 @@ button:link {
   color: #f8b119;
 }
 .buttons-2 {
-  font-size: 5rem;
+  font-size: 4rem;
 }
 .interest-h1 {
   font-size: 24pt;
@@ -73,8 +73,19 @@ button:link {
 /* carousel */
 .carousel-caption {
   position: absolute;
-  top: 45%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 85%;
   text-transform: uppercase;
+  /* background-color: rgba(255, 255, 255, 0.225); */
+  height: 7rem;
+}
+.carousel-caption {
+  font-weight: 700;
+}
+.carousel-caption h1 {
+  font-weight: 400;
 }
 /* end */
 
@@ -415,9 +426,9 @@ button.swal2-confirm.swal2-styled:hover::after {
   background-color: #5A4181 !Important;
   border: solid 1px #5A4181;
 }
-/* .upBtnHistory {
-  
-} */
+/************ end ************/
+
+/************* Up button *************/
 #myBtn {
   display: none;
   position: fixed;
@@ -434,7 +445,14 @@ button.swal2-confirm.swal2-styled:hover::after {
 #myBtn:hover {
   background-color: #555;
 }
-/************ end ************/
+/************ end *************/
+
+/************ footer /************/
+#footer {
+  background-color: rgb(2, 28, 54);
+  height: 10rem;
+}
+/************ footer /************/
 
 /* XXS */
 @media (max-width: 450px) {
@@ -459,6 +477,12 @@ button.swal2-confirm.swal2-styled:hover::after {
   #history-card-text {
     font-size: 11pt;
   }
+  .carousel-caption {
+    font-size: 8pt;
+  }
+  .carousel-caption h1 {
+    font-size: 1.5rem;
+  }
 }
 /* XS */
 @media (min-width: 450px) {
@@ -480,6 +504,12 @@ button.swal2-confirm.swal2-styled:hover::after {
   .container-fluid {
     max-width: 100%;
   }
+  .carousel-caption {
+    font-size: 12pt;
+  }
+  .carousel-caption h1 {
+    font-size: 1.5rem;
+  }
 }
 /* SM */
 @media (min-width: 576px) {
@@ -500,6 +530,9 @@ button.swal2-confirm.swal2-styled:hover::after {
   .container-xl,
   .container-fluid {
     max-width: 540px;
+  }
+  .carousel-caption h1 {
+    font-size: 2rem;
   }
 }
 /* MD */
@@ -524,7 +557,10 @@ button.swal2-confirm.swal2-styled:hover::after {
   }
   #myBtn {
     vertical-align: bottom;
-    right: 15%;
+    right: 9%;
+  }
+  .carousel-caption h1 {
+    font-size: 2.5rem;
   }
 }
 /* LG  */
@@ -549,7 +585,13 @@ button.swal2-confirm.swal2-styled:hover::after {
   }
   #myBtn {
     vertical-align: bottom;
-    right: 22%;
+    right: 7%;
+  }
+  .carousel-caption {
+    font-size: 15pt;
+  }
+  .carousel-caption h1 {
+    font-size: 3rem;
   }
 }
 /* XL */
@@ -570,7 +612,7 @@ button.swal2-confirm.swal2-styled:hover::after {
   }
   #myBtn {
     vertical-align: bottom;
-    right: 28%;
+    right: 6%;
   }
 }
 /* XXL */
@@ -588,6 +630,6 @@ button.swal2-confirm.swal2-styled:hover::after {
   }
   #myBtn {
     vertical-align: bottom;
-    right: 32%;
+    right: 6%;
   }
 }
