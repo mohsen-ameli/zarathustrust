@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="{% static 'accounts/css/fixed_bg.css' %}">
 
 <!-- Starting Page Animation -->
-<div class="test-animation" id="ani"></div>
+<!-- <div class="test-animation" id="ani"></div> -->
 
 <!-- Up button stuff -->
 <button class="btn btn-secondary" onclick="topFunction()" id="myBtn" title="Go to top">
@@ -16,108 +16,46 @@
 
 <!-- Carousel -->
 <div id="carouselExampleIndicators" class="carousel slide h-25" data-bs-ride="carousel">
-    <div class="carousel-indicators">
+    <!-- <div class="carousel-indicators">
         <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
         <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
         <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-    </div>
+    </div> -->
     <div class="carousel-inner">
         <div class="carousel-item active" data-bs-interval="7000">
-            <img src="{% static 'accounts/images/zarathus-1.jpg' %}" class="d-block w-100" alt="...">
-            <div class="carousel-caption">
-                <h1 class="fw-bold">We Pay You 2% Interest On Your Balance !</h1>
-                <p>Join us now to start your money making process without headach</p>
+            <img src="{% static 'accounts/images/zarathus-5.jpg' %}" class="d-block w-100" alt="...">
+            <div class="carousel-caption active" style="color: black;">
+                <h1 style="color: black;">{% trans "We Pay You 2% Interest On Your Balance !" %}</h1>
+                <p>{% trans "Join us now to start your money making process without any headaches" %}</p>
             </div>
         </div>
-        <div class="carousel-item" data-bs-interval="4000">
-            <img src="{% static 'accounts/images/zarathus-2.jpg' %}" class="d-block w-100" alt="...">
-        </div>
-        <div class="carousel-item" data-bs-interval="4000">
-            <img src="{% static 'accounts/images/zarathus-3.jpg' %}" class="d-block w-100" alt="...">
-        </div>
     </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+    <!-- <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Previous</span>
     </button>
     <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Next</span>
-    </button>
+    </button> -->
 </div>
 <!-- Carousel -->
 
-<!-- USP -->
-<div class="container my-5">
-    <!-- Three columns of text below the carousel -->
-    <div class="row text-center">
-        <div class="col-lg-4 my-2">
-            <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 140x140" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#777"></rect><text x="50%" y="50%" fill="#777" dy=".3em">140x140</text></svg>
 
-            <h2 class="m-2">Free For All</h2>
-            <p>We are and always will be free to use for all users around the globe, with absolutly zero advertisements.</p>
-            <p><a class="neon-button" href="#">View details »</a></p>
-        </div><!-- /.col-lg-4 -->
-        <div class="col-lg-4 my-2">
-            <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 140x140" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#777"></rect><text x="50%" y="50%" fill="#777" dy=".3em">140x140</text></svg>
-
-            <h2 class="m-2">+2% Interest</h2>
-            <p>Another exciting bit of representative placeholder content. This time, we've moved on to the second column.</p>
-            <p><a class="neon-button" href="#">View details »</a></p>
-        </div><!-- /.col-lg-4 -->
-        <div class="col-lg-4 my-2">
-            <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 140x140" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#777"></rect><text x="50%" y="50%" fill="#777" dy=".3em">140x140</text></svg>
-
-            <h2 class="m-2">Shopping</h2>
-            <p>And lastly this, the third column of representative placeholder content.</p>
-            <p><a class="neon-button" href="#">View details »</a></p>
-        </div><!-- /.col-lg-4 -->
-    </div><!-- /.row -->
-</div>
-<!-- USP -->
-
-<!-- Join us now -->
-<div class="container text-center my-5">
-    <h1 class="display-3">Join us today to start making interest !</h1>
-    <hr>
-    <!---------- 2 buttons ---------->
-    <div class="row text-center">
-        <a href="{% url 'users:register' %}" class="zoom-login">
-            <i class="fas fa-user-plus buttons-2 p-2"></i>
-            <h1 style="font-size: 2.5rem;">{% trans "Sign Up" %}</h1>
-        </a>
-        <a href="{% url 'users:login-view' %}" class="zoom-login">
-            <i class="fas fa-sign-in-alt buttons-2 p-2"></i>
-            <h1 style="font-size: 2.5rem;">{% trans "Login" %}</h1>
-        </a>
-    </div>
-</div>
-<!-- Join us now -->
-
-<!-- Fixed Background Image -->
-<div class="landing">
-    <div class="fixed-wrap">
-        <div class="fixed">
-            <img src="{% static 'accounts/images/rocks.jpg' %}">
-        </div>
-    </div>
-</div>
-<!-- Fixed Background Image -->
-
-<!-- USP -->
-<div class="container px-4 py-5 text-center" id="featured-3">
-    <h2 class="pb-2 border-bottom">Columns with icons</h2>
-    <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+<!-- First USP Section -->
+<div class="container px-4 pt-4 text-center" id="featured-3">
+    <h2 class="pb-4 border-bottom display-3">Why we are better</h2>
+    <div class="row g-4 py-4 row-cols-1 row-cols-lg-3">
         <div class="feature col">
             <div class="feature-icon bg-primary bg-gradient">
                 <i class="bi bi-app-indicator"></i>
             </div>
             <h2>Free For All</h2>
             <p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and probably just keep going until we run out of words.</p>
-            <a href="https://getbootstrap.com/docs/5.1/examples/features/#" class="icon-link">
+            <!-- <a href="https://getbootstrap.com/docs/5.1/examples/features/#" class="icon-link">
                 Call to action
                 <svg class="bi" width="1em" height="1em"><use xlink:href="#chevron-right"></use></svg>
-            </a>
+            </a> -->
         </div>
         <div class="feature col">
             <div class="feature-icon bg-primary bg-gradient">
@@ -125,10 +63,10 @@
             </div>
             <h2>+2% Interest</h2>
             <p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and probably just keep going until we run out of words.</p>
-            <a href="https://getbootstrap.com/docs/5.1/examples/features/#" class="icon-link">
+            <!-- <a href="https://getbootstrap.com/docs/5.1/examples/features/#" class="icon-link">
                 Call to action
                 <svg class="bi" width="1em" height="1em"><use xlink:href="#chevron-right"></use></svg>
-            </a>
+            </a> -->
         </div>
         <div class="feature col">
             <div class="feature-icon bg-primary bg-gradient">
@@ -136,52 +74,105 @@
             </div>
             <h2>Shopping</h2>
             <p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and probably just keep going until we run out of words.</p>
-            <a href="https://getbootstrap.com/docs/5.1/examples/features/#" class="icon-link">
+            <!-- <a href="https://getbootstrap.com/docs/5.1/examples/features/#" class="icon-link">
                 Call to action
                 <svg class="bi" width="1em" height="1em"><use xlink:href="#chevron-right"></use></svg>
-            </a>
+            </a> -->
         </div>
     </div>
 </div>
-<!-- USP -->
+<!-- First USP Section -->
+
+
+<!-- Second USP section with pics -->
+<div class="container">
+    <hr class="featurette-divider">
+
+    <div class="row featurette py-3">
+        <div class="col-md-7">
+            <h2 class="featurette-heading">First featurette heading. <span class="text-muted">It’ll blow your mind.</span></h2>
+            <p class="lead">Some great placeholder content for the first featurette here. Imagine some exciting prose here.</p>
+        </div>
+        <div class="col-md-5">
+            <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#eee"/><text x="50%" y="50%" fill="#aaa" dy=".3em">500x500</text></svg>
+        </div>
+    </div>
+
+    <hr class="featurette-divider">
+
+    <div class="row featurette py-3">
+        <div class="col-md-7 order-md-2">
+            <h2 class="featurette-heading">Oh yeah, it's that good. <span class="text-muted">See for yourself.</span></h2>
+            <p class="lead">Another featurette? Of course. More placeholder content here to give you an idea of how this layout would work with some actual real-world content in place.</p>
+        </div>
+        <div class="col-md-5 order-md-1">
+            <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#eee"/><text x="50%" y="50%" fill="#aaa" dy=".3em">500x500</text></svg>
+        </div>
+    </div>
+</div>
+<!-- Second USP section with pics -->
+
+
+<!-- Join us now -->
+<div class="container my-5 text-center">
+    <h1 class="display-3">{% trans "Join us today to start making interest !" %}</h1>
+    <hr>
+    <!---------- 2 buttons ---------->
+    <div class="row text-center">
+        <a href="{% url 'users:register' %}" class="zoom-login">
+            <i class="fas fa-user-plus buttons-2 p-2"></i>
+            <h1 style="font-size: 2rem;">{% trans "Sign Up" %}</h1>
+        </a>
+        <a href="{% url 'users:login-view' %}" class="zoom-login">
+            <i class="fas fa-sign-in-alt buttons-2 p-2"></i>
+            <h1 style="font-size: 2rem;">{% trans "Login" %}</h1>
+        </a>
+    </div>
+</div>
+<!-- Join us now -->
 
 
 <!-- Socials -->
-<div class="container text-center">
-    <h1 class="display-3">Socials</h1>
+<div class="container text-center pb-5">
+    <!-- <hr class="zarathus-hr w-100 my-5"> -->
+    <h1 class="display-3">{% trans "Follow Our Socials" %}</h1>
     <hr class="w-75" style="display: inline-flex;">
     <div class="row">
-        <div class="col-lg-4">
+        <div class="col-4">
             <a href="#"><i class="bi bi-instagram social-icons"></i></a>
         </div>
-        <div class="col-lg-4">
+        <div class="col-4">
             <a href="#"><i class="bi bi-twitter social-icons"></i></a>
         </div>
-        <div class="col-lg-4">
+        <div class="col-4">
             <a href="#"><i class="bi bi-youtube social-icons"></i></a>
         </div>
     </div>
 </div>
 <!-- Socials -->
 
+
 <!-- Footer -->
-<div class="container">
-    <hr class="zarathus-hr">
-    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4">
-      <p class="col-md-4 mb-0 text-muted">© 2022 ZarathusTrust</p>
-  
-      <a href="#" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-        <img src="{% static 'accounts/images/zarathustrust_new.png' %}" class="bi me-2" width="60" height="26">
-      </a>
-  
-      <ul class="nav col-md-4 justify-content-end">
-        <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Home</a></li>
-        <li class="nav-item"><a href="{% url 'users:login-view' %}" class="nav-link px-2 text-muted">Log in</a></li>
-        <li class="nav-item"><a href="{% url 'users:register' %}" class="nav-link px-2 text-muted">Register</a></li>
-        <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">FAQs</a></li>
-        <li class="nav-item"><a href="{% url 'accounts:about-page' %}" class="nav-link px-2 text-muted">About</a></li>
-      </ul>
-    </footer>
+<div id="footer">
+    <div class="container">
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4">
+        <p class="col-md-4 mb-0 text-muted">© 2022 ZarathusTrust</p>
+    
+        <a href="#" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+            <img src="{% static 'accounts/images/zarathustrust_new.png' %}" class="bi me-2" width="60" height="26">
+        </a>
+    
+        <ul class="nav col-md-4 justify-content-end">
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">{% trans "Home" %}</a></li>
+            <li class="nav-item"><a href="{% url 'users:login-view' %}" class="nav-link px-2 text-muted">{% trans "Log in" %}</a></li>
+            <li class="nav-item"><a href="{% url 'users:register' %}" class="nav-link px-2 text-muted">{% trans "Register" %}</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">{% trans "FAQs" %}</a></li>
+            <li class="nav-item"><a href="{% url 'accounts:about-page' %}" class="nav-link px-2 text-muted">{% trans "About" %}</a></li>
+        </ul>
+        <!-- under dev -->
+        <div class="text-muted pt-3" id="under-dev">{% trans "Still Under Development" %}</div>
+        </footer>
+    </div>
 </div>
 <!-- Footer  -->
 
@@ -192,4 +183,53 @@ integrity="sha512-H6cPm97FAsgIKmlBA4s774vqoN24V5gSQL4yBTDOY2su2DeXZVhQPxFK4P6GPd
 crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script src="{% static 'accounts/js/landing_page.js' %}"></script>
+
+<!-- hiding the other content -->
+<script>
+    const main_content = document.getElementById("main-content")
+    main_content.style.display = "none"
+</script>
 {% endblock %}
+
+<!-- USP with pics -->
+<!-- <div class="container my-5">
+    <div class="row text-center">
+        <div class="col-lg-4 my-2">
+            <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 140x140" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#777"></rect><text x="50%" y="50%" fill="#777" dy=".3em">140x140</text></svg>
+
+            <h2 class="m-2">Free For All</h2>
+            <p>We are and always will be free to use for all users around the globe, with absolutly zero advertisements.</p>
+            <p><a class="neon-button" href="#">View details »</a></p>
+        </div>
+        <div class="col-lg-4 my-2">
+            <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 140x140" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#777"></rect><text x="50%" y="50%" fill="#777" dy=".3em">140x140</text></svg>
+
+            <h2 class="m-2">+2% Interest</h2>
+            <p>Another exciting bit of representative placeholder content. This time, we've moved on to the second column.</p>
+            <p><a class="neon-button" href="#">View details »</a></p>
+        </div>
+        <div class="col-lg-4 my-2">
+            <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 140x140" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#777"></rect><text x="50%" y="50%" fill="#777" dy=".3em">140x140</text></svg>
+
+            <h2 class="m-2">Shopping</h2>
+            <p>And lastly this, the third column of representative placeholder content.</p>
+            <p><a class="neon-button" href="#">View details »</a></p>
+        </div>
+    </div>
+</div> -->
+
+<!-- Fixed Background Image -->
+<!-- <div class="landing">
+    <div class="fixed-wrap">
+        <div class="fixed">
+            <img src="{% static 'accounts/images/rocks.jpg' %}">
+        </div>
+    </div>
+</div> -->
+<!-- <div class="margin"></div>
+<section class="parent">
+    <div class="child">
+        <h1>Hello</h1>
+    </div>
+</section> -->
+<!-- Fixed Background Image -->
