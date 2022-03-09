@@ -32,7 +32,7 @@ SECRET_KEY = config.get("SECRET_KEY")
 DEBUG = True
 
 if not DEBUG:
-    ALLOWED_HOSTS = ['99.240.225.244', 'www.zarathustrust.com']
+    ALLOWED_HOSTS = ['104.158.192.24', 'www.zarathustrust.com']
 else:
     ALLOWED_HOSTS = ["*"]
 
