@@ -4,28 +4,31 @@ from django_countries import countries
 
 # Function to get the country of the user from their ip address
 def country_from_ip(request):
-    # getting the visitors country, ip address
-    ip, is_routable = get_client_ip(request)
-    if ip is None:
-        # Unable to get the client's IP address
-        name = None
-        code = None
-        return name, code
-    else:
-        # We got the client's IP address
-        if is_routable:
-            # The client's IP address is publicly routable on the Internet
-            url = f"https://geolocation-db.com/json/{ip}&position=true"
-            response = requests.get(url).json()
-            # print(response)
-            name = response['country_name']
-            code = response['country_code']
-            return name, code
-        else:
-            # The client's IP address is private
+    try:
+        # getting the visitors country, ip address
+        ip, is_routable = get_client_ip(request)
+        if ip is None:
+            # Unable to get the client's IP address
             name = None
             code = None
             return name, code
+        else:
+            # We got the client's IP address
+            if is_routable:
+                # The client's IP address is publicly routable on the Internet
+                url = f"https://geolocation-db.com/json/{ip}&position=true"
+                response = requests.get(url).json()
+                # print(response)
+                name = response['country_name']
+                code = response['country_code']
+                return name, code
+            else:
+                # The client's IP address is private
+                name = None
+                code = None
+                return name, code
+    except ConnectionError:
+        return None;
 
 
 # getting country languages
