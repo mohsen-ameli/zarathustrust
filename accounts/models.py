@@ -68,9 +68,11 @@ class transaction_history(models.Model):
     second_person       = models.ForeignKey(account, on_delete=models.SET_NULL, null=True, blank=True, related_name="second_person")
     second_wallet       = models.ForeignKey("wallets.BranchAccounts", on_delete=models.SET_NULL, null=True, blank=True, related_name="second_wallet")
     date                = models.DateTimeField(auto_now_add=True)
-    price               = models.DecimalField(decimal_places=1, max_digits=10)
+    price               = models.DecimalField(decimal_places=2, max_digits=10)
     purpose_of_use      = models.CharField(max_length=500, null=True, blank=True)
-    method              = models.CharField(max_length=100, default="None")   
+    method              = models.CharField(max_length=100, default="None")
+    ex_rate             = models.DecimalField(decimal_places=4, max_digits=10, null=True, blank=True)
+    exchanged_price     = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
 
     def message(self):
         if not self.purpose_of_use:
@@ -105,6 +107,8 @@ class transaction_history(models.Model):
             return f'WITHDRAW from {person} for the amount {symbol}{self.price} at {self.date}'
         elif self.method == "Cash Out":
             return f'CASH OUT as {person} for the amount {symbol}{self.price} at {self.date}'
+        elif self.method == "Exchange":
+            return f'EXCHANGE as {person} for the amount {symbol}{self.price} at {self.date}'
 
 
 
@@ -114,8 +118,12 @@ def account_created_handler(sender, created, instance, *args, **kwargs):
     if created:
         account_interest.objects.create(interest=instance.total_balance, id=instance.pk)
 
+        # starting the interest making process
+        from .tasks import interest_loop
+        interest_loop.delay()
+
         # Notify us that a new account has been created
-        new_user(instance.created_by)
+        # new_user(instance.created_by)
 
         # Emailing our business users
         EMAIL_ID = config.get('EMAIL_ID')
@@ -133,8 +141,8 @@ def account_delete_hendler(sender, instance, using, *args, **kwargs):
     account_interest.objects.get(id=instance.pk).delete()
 
 
-@receiver(post_save, sender=account_interest)
-def account_interest_created_handler(sender, created, instance, *args, **kwargs):
-    if created:
-        from .tasks import interest_loop
-        interest_loop.delay()
+# @receiver(post_save, sender=account_interest)
+# def account_interest_created_handler(sender, created, instance, *args, **kwargs):
+#     if created:
+#         from .tasks import interest_loop
+#         interest_loop.delay()

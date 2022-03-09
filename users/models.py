@@ -3,12 +3,27 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext as _
 from django.db.models.deletion import CASCADE
 from django.db.models.fields import BooleanField, CharField, PositiveIntegerField
+from django.contrib.auth.validators import UnicodeUsernameValidator
 import random
 import string
 from django_countries.fields import CountryField
 
 
+class MyValidator(UnicodeUsernameValidator):
+    regex = r'^[\w.@+\- ]+$'
+
 class CustomUser(AbstractUser):
+    username_validator = MyValidator()
+    username = models.CharField(
+        _('username'),
+        max_length=150,
+        unique=True,
+        help_text=_('Required. 5-15 characters allowed. Letters, digits and @/./+/-/_ only.'),
+        validators=[username_validator],
+            error_messages={
+            'unique': _("A user with that username already exists."),
+        },
+    )
     country             = CountryField(null=True)
     currency            = CharField(max_length=6, null=True)
     language            = CharField(max_length=15, null=True)
@@ -23,12 +38,11 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return f'{self.username}, pk: {self.pk}'
 
+    def get_currency(self):
+        return self.currency
+
 
 CustomUser._meta.get_field('username').max_length = 15
-CustomUser._meta.get_field('username').help_text = _(
-    'Required. 5-15 characters allowed. Letters, digits and @/./+/-/_ only.'
-)
-
 
 
 class code(models.Model):

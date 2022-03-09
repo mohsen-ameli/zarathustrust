@@ -102,42 +102,33 @@ def PersonalCountryPickSignUp(request):
 
         all_countries = data.items()
 
+        # user has submited a country
         if request.method == "POST":
+            # if user has chosen their default country
             default_country_picker = request.POST.get('default-country-picker')
             if default_country_picker != None: 
-                response = redirect("users:personal-sign-up", country = default_country)
+                response = redirect("users:personal-sign-up", country=default_country[1])
                 response.set_cookie(settings.LANGUAGE_COOKIE_NAME, default_country[1])
                 return response
-            country_code = request.POST.get('country-picker')
-            if country_code:
-                country_code = country_code.upper()
-                response = redirect("users:personal-sign-up", country = country_code)
-                response.set_cookie(settings.LANGUAGE_COOKIE_NAME, country_code)
-                return response
-            context = {
+
+        context = {
+            "default_country" : default_country[0], 
                 "default_country" : default_country[0], 
+            "default_country" : default_country[0], 
+            "default_country_code" : default_country[1], 
                 "default_country_code" : default_country[1], 
-                "countries" : all_countries,
-                "data" : data
-            }
-            response = render(request, "users/country_pick.html", context)
-            response.set_cookie(settings.LANGUAGE_COOKIE_NAME, country_code)
-            return response
+            "default_country_code" : default_country[1], 
+            "countries" : all_countries,
+            "data" : data
+        }
+        country = country_from_ip(request)[1]
+        if country is None:
+            lang = 'en'
         else:
-            context = {
-                "default_country" : default_country[0], 
-                "default_country_code" : default_country[1], 
-                "countries" : all_countries,
-                "data" : data
-            }
-            country = country_from_ip(request)[1]
-            if country is None:
-                lang = 'en'
-            else:
-                lang = get_country_lang(country)
-            response = render(request, "users/country_pick.html", context)
-            response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang)
-            return response
+            lang = get_country_lang(country)
+        response = render(request, "users/country_pick.html", context)
+        response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang)
+        return response
     else:
         return redirect("accounts:home", pk=request.user.pk)
 
@@ -158,7 +149,9 @@ def PersonalSignUp(request, country):
             else:
                 form.add_error('phone_number', _('Please enter a correct phone number'))
                 
+            # form valid
             if form.is_valid():
+                # setting up to save user into sesssions
                 user = {
                     'username'      : form.cleaned_data.get("username"),
                     'email'         : form.cleaned_data.get("email"),
@@ -198,7 +191,13 @@ def email_verify_view(request):
     if request.user.is_anonymous == True:
         user = request.session.get('user')
         form = EmailCodeForm(request.POST or None)
-        email_code = request.session.get('ver_code')['email_verify_code']
+        
+        # if user just happened to visit the page, simply redirect them back to the register page
+        try:
+            email_code = request.session.get('ver_code')['email_verify_code']
+        except TypeError:
+            return redirect("users:register")
+
         if not request.POST:
             # send email
             EMAIL_ID = config.get("EMAIL_ID")
@@ -235,7 +234,13 @@ def phone_verify_view(request):
     if request.user.is_anonymous == True:
         user = request.session.get('user')
         form = PhoneCodeForm(request.POST or None)
-        phone_code = request.session.get('ver_code')['phone_verify_code']
+
+        # if user just happened to visit the page, simply redirect them back to the register page
+        try:
+            phone_code = request.session.get('ver_code')['phone_verify_code']
+        except TypeError:
+            return redirect("users:register")
+
         phone_number = user['phone_number']
         if not request.POST:
             # send SMS
@@ -279,10 +284,16 @@ def referral_verify_view(request, backend='django.contrib.auth.backends.ModelBac
 
         # getting stuff to sign up the user
         user = request.session.get('user')
-        username = user['username']
-        password = user['password']
-        phone_number = user['phone_number']
-        country = user['country']
+        
+        # if user just happened to visit the page, simply redirect them back to the register page
+        try:
+            username        = user['username']
+            password        = user['password']
+            phone_number    = user['phone_number']
+            country         = user['country']
+        except TypeError:
+            return redirect("users:register")
+
         phone_ext = phonenumbers.country_code_for_region(country)
         currency = get_country_currency(country)
         language = get_country_lang(country)

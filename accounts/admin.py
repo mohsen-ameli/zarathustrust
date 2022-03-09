@@ -15,7 +15,7 @@ class detailsTransactions(admin.ModelAdmin):
     fields = (
         ('person', 'wallet'), 
         ('second_person', 'second_wallet'), 
-        ('price'), 
+        ('price', 'ex_rate', 'exchanged_price'), 
         'purpose_of_use', 
         'method'
     )

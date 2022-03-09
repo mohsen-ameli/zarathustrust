@@ -85,11 +85,13 @@
     </div>
 </div>
 
+
 <br>
+
 
 <!-- Transaction Cards -->
 {% for each in page_obj %}
-    <div class="list-group mx-auto">
+    <div class="list-group mx-auto mb-4">
         <a href="{% url 'accounts:history-detail' pk=user.pk tran_id=each.id %}" 
         class="list-group-item list-group-item-action flex-column align-items-start text-white" id="history-list">
             <div class="d-flex w-100 justify-content-between">
@@ -98,53 +100,51 @@
 
             <p class="mb-1" id="history-card-text">
                 {% if each.method == "Payment" %}
-                    <i class="bi bi-cart4 float-none" style="font-size: 1.5rem;"></i>
+                    <i class="bi bi-cart4 float-none history-icons"></i>
                     <span class="float-none" style="margin-left: 1rem;">
                         {% blocktrans with person=each.person.created_by.username|capfirst wallet=each.wallet.main_account.created_by.username|capfirst second_person=each.second_person.created_by.username|capfirst second_wallet=each.second_wallet.main_account.created_by.username|capfirst %}
                             Payment from {{ person }}{{wallet}} to {{ second_person }}{{ second_wallet }}
                         {% endblocktrans %}
                     </span>
                 {% elif each.method == "Transfer" %}
-                    <i class="bi bi-send-check float-none" style="font-size: 1.5rem;"></i>
+                    <i class="bi bi-send-check float-none history-icons"></i>
                     <span class="float-none" style="margin-left: 1rem;">
                         {% blocktrans with person=each.person.created_by.username|capfirst wallet=each.wallet.main_account.created_by.username|capfirst second_person=each.second_person.created_by.username|capfirst second_wallet=each.second_wallet.main_account.created_by.username|capfirst %}
                             Transfer from {{ person }}{{wallet}} to {{ second_person }}{{ second_wallet }}
                         {% endblocktrans %}
                     </span>
                 {% elif each.method == "Deposit" %}
-                    <i class="bi bi-download float-none" style="font-size: 1.5rem;"></i>
+                    <i class="bi bi-download float-none history-icons"></i>
                     <span class="float-none" style="margin-left: 1rem;">
                         {% blocktrans with person=each.person.created_by.username|capfirst wallet=each.wallet.main_account.created_by.username|capfirst %}
                             Deposit to {{ person }}{{wallet}}
                         {% endblocktrans %}
                     </span>
                 {% elif each.method == "Withdraw" %}
-                    <i class="bi bi-upload float-none" style="font-size: 1.5rem;"></i>
+                    <i class="bi bi-upload float-none history-icons"></i>
                     <span class="float-none" style="margin-left: 1rem;">
                         {% blocktrans with person=each.person.created_by.username|capfirst wallet=each.wallet.main_account.created_by.username|capfirst %}
                             Withdraw from {{ person }}{{wallet}}
                         {% endblocktrans %}
                     </span>
                 {% elif each.method == "Cash Out" %}
-                    <i class="fas fa-hand-holding-usd" style="font-size: 1.5rem; padding: 5px 0 5px 5px;"></i>
-                    <span class="float-none">
+                    <i class="fas fa-hand-holding-usd float-none history-icons py-2"></i>
+                    <span class="float-none" style="margin-left: 1rem;">
                         {% blocktrans with person=each.person.created_by.username|capfirst wallet=each.wallet.main_account.created_by.username|capfirst %}
                             Cash Out for {{ person }}{{wallet}}
                         {% endblocktrans %}
                     </span>
+                {% elif each.method == "Exchange" %}
+                    <i class="bi bi-currency-exchange float-none history-icons"></i>
+                    <span class="float-none" style="margin-left: 1rem;">
+                        {% blocktrans with person=each.person.created_by.username|capfirst wallet=each.wallet.main_account.created_by.username|capfirst %}
+                            Exchange for {{ person }}{{wallet}}
+                        {% endblocktrans %}
+                    </span>
                 {% endif %}
 
-                {% if each.method != "Transfer" %}
-                    {% if each.second_person.created_by.username == user.get_username or each.method == "Deposit" or each.method == "Cash Out" %}
-                        <span class="float-end" style="color: rgb(0, 255, 0); font-size: large;">
-                            +{{ currency_symbol }}{{ each.price }}
-                        </span>
-                    {% else %}
-                        <span class="float-end" style="color: #ff4a4a; font-size: large;">
-                            -{{ currency_symbol }}{{ each.price|floatformat:1 }}
-                        </span>
-                    {% endif %}
-                {% else %}
+                <!-- Transfer -->
+                {% if each.method == "Transfer" %}
                     {% if each.second_person.created_by.username == user.get_username or each.second_wallet.main_account.created_by.username == user.get_username %}
                         <span class="float-end" style="color: rgb(0, 255, 0); font-size: large;">
                             +{{ currency_symbol }}{{ each.price|floatformat:1 }}
@@ -154,14 +154,36 @@
                             -{{ currency_symbol }}{{ each.price|floatformat:1 }}
                         </span>
                     {% endif %}
+                <!-- Exchange -->
+                {% elif each.method == "Exchange" %}
+                    {% if each.person.main_currency == wallet or each.wallet.currency == wallet %}
+                    <span class="float-end" style="color: rgb(255, 74, 74); font-size: large;">
+                        -{{ currency_symbol }}{{ each.price|floatformat:1 }}
+                    </span>
+                    {% else %}
+                    <span class="float-end" style="color: rgb(0, 255, 0); font-size: large;">
+                        +{{ currency_symbol }}{{ each.exchanged_price|floatformat:1 }}
+                    </span>
+                    {% endif %}
+                <!-- everything else -->
+                {% else %}
+                    {% if each.second_person.created_by.username == user.get_username or each.method == "Deposit" or each.method == "Cash Out" %}
+                        <span class="float-end" style="color: rgb(0, 255, 0); font-size: large;">
+                            +{{ currency_symbol }}{{ each.price|floatformat:1 }}
+                        </span>
+                    {% else %}
+                        <span class="float-end" style="color: #ff4a4a; font-size: large;">
+                            -{{ currency_symbol }}{{ each.price|floatformat:1 }}
+                        </span>
+                    {% endif %}
                 {% endif %}
             </p>
 
             <small style="color: rgba(255, 255, 255, 0.7);">{{ each.date|date:'l \a\t g:iA' }} • {{ each.method }}</small>
         </a>
     </div>
-    <br>
 {% endfor %}
+
 
 <!-- Page pagination -->
 {% if page_obj.paginator.num_pages > 1 %}
@@ -191,12 +213,14 @@
     </nav>
 {% endif %}
 
+
 <!-- The home button at the bottom -->
 {% if counter > 0 %}
     <div class="text-center">
         <a class="neon-button" href="{% url 'accounts:home' pk=user.pk %}">Home</a>
     </div>
 {% endif %}
+
 
 <!-- Up button stuff -->
 <button class="btn btn-secondary upBtnHistory" onclick="topFunction()" id="myBtn" title="Go to top">
