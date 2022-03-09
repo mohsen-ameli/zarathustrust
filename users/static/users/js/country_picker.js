@@ -28,14 +28,14 @@
             if (i <= 0) {
                 NewCountryList.innerHTML = `
                     <li class="dropdown-item disabled" style="color: black;">
-                        <b>No accounts were found.</b>
+                        <b>No countries were found.</b>
                     </li>
                 `
             }
         } else {
             NewCountryList.innerHTML = `
                 <li class="dropdown-item disabled" style="color: black;">
-                    <b>No accounts were found.</b>
+                    <b>No countries were found.</b>
                 </li>
             `
         }

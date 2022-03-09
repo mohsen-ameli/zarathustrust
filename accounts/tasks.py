@@ -9,10 +9,11 @@ def interest_loop():
     ### celery -A money_moe worker -l info --pool=solo
     while True:
         for each in account_interest.objects.all():
-            total_balance = float(account_interest.objects.get(pk=each.pk).interest)
+            total_balance = float(each.interest)
             if total_balance != 0:
-                b = float(account_interest.objects.get(pk=each.pk).interest_rate)
+                b = float(each.interest_rate)
                 interest_ = total_balance * 0.01 / 525600  # 3153600
                 b = b + interest_
-                account_interest.objects.filter(pk=each.pk).update(interest_rate=b)
+                each.interest_rate = b
+                each.save()
         sleep(60)

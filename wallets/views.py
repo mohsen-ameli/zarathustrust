@@ -1,4 +1,5 @@
 from email import message
+from locale import currency
 import os, json, requests, decimal
 
 from django.db.models import F
@@ -7,11 +8,10 @@ from django.urls.base import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.contrib import messages
-from django.http import JsonResponse
 from django.utils.translation import gettext as _
 
 from .models import BranchAccounts
-from accounts.models import account, CustomUser
+from accounts.models import account, CustomUser, account_interest, transaction_history
 from accounts.functions import correct_user, get_currency_symbol, currency_min
 
 @login_required
@@ -110,14 +110,15 @@ def CurrencyExchange(request, pk):
         raise PermissionDenied
 
 
-# def CurrencyExchangeConfirm(request, from, amount, to):
 @login_required
 def CurrencyExchangeConfirm(request, pk, from_, amount, to):
     if correct_user(pk):
-        wallet = BranchAccounts.objects.filter(main_account__pk=pk)
-        acc = account.objects.get(pk=pk)
-        min_to = currency_min(to)
-        min_from = currency_min(from_)
+        wallet          = BranchAccounts.objects.filter(main_account__pk=pk)
+        acc_interest    = account_interest.objects.get(pk=pk)
+        acc             = account.objects.get(pk=pk)
+        min_to          = currency_min(to)
+        min_from        = currency_min(from_)
+        notEnough = False
 
         # confirming a few things
         if min_to is None or min_from is None:
@@ -126,16 +127,22 @@ def CurrencyExchangeConfirm(request, pk, from_, amount, to):
         elif from_ == to:
             messages.warning(request, _("You cannot exchange the same currencies !"))
             return redirect('accounts:home', pk=pk)
-        elif wallet.filter(currency=to).exists() is False and wallet.filter(currency=from_).exists() is False or (acc.main_currency == from_ or acc.main_currency == to) is False:
+        elif not wallet.filter(currency=to).exists() and not wallet.filter(currency=from_).exists(): # or ( (acc.main_currency == from_ or acc.main_currency == to) is False)
             messages.warning(request, _("You do not own the specified wallets !"))
             return redirect('accounts:home', pk=pk)
         elif float(amount) < float(min_from):
             messages.warning(request, _("You have chosen a value below the minimum amount to exchange !"))
             return redirect('wallets:currency-exchange', pk=pk)
-        for wallet in wallet.filter(currency=from_):
-            if float(wallet.total_balance) < float(amount):
-                messages.warning(request, _("You do not have enough money for this transaction !"))
-                return redirect('wallets:currency-exchange', pk=pk)
+        if from_ == acc.main_currency:
+            if float(acc.total_balance) < float(amount):
+                notEnough = True
+        else:
+            for wallet in wallet.filter(currency=from_):
+                if float(wallet.total_balance) < float(amount):
+                    notEnough = True
+        if notEnough:
+            messages.warning(request, _("You do not have enough money for this transaction !"))
+            return redirect('wallets:currency-exchange', pk=pk)
 
         # getting the up to date rate
         url = f'https://api.exchangerate.host/convert?from={from_}&to={to}'
@@ -147,28 +154,70 @@ def CurrencyExchangeConfirm(request, pk, from_, amount, to):
         wallet = BranchAccounts.objects.filter(main_account__pk=pk)
 
         if request.method == "POST":
-            # updating the user's wallet
-            if wallet.filter(currency=to): # sending moeny to a wallet
+            # sending to a wallet
+            if wallet.filter(currency=to): 
 
                 # subtracting the money from the user's wallet
-                wallet.filter(currency=from_).update(total_balance = F('total_balance') - float(amount))
-                # or
                 acc.total_balance = F('total_balance') - float(amount)
                 acc.save()
 
                 # adding the money to the user's wallet
                 wallet.filter(currency=to).update(total_balance = F('total_balance') + float(amount) * float(ex_rate))
                 
-                # msg & redirect
+                # updating user's interest_account
+                acc_interest.interest = F('interest') - float(amount)
+                acc_interest.save()
+
+                # sending from account to wallet
+                if from_ == CustomUser.objects.get(pk=pk).currency:
+                    history = transaction_history(
+                        person=acc, 
+                        second_wallet=wallet.get(currency=to), 
+                        price=float(amount), 
+                        ex_rate=ex_rate, 
+                        exchanged_price=float(amount) * float(ex_rate), 
+                        method="Exchange"
+                    )
+                # sending from another wallet to wallet
+                else:
+                    history = transaction_history(
+                        wallet=wallet.get(currency=from_), 
+                        second_wallet=wallet.get(currency=to), 
+                        price=float(amount), 
+                        ex_rate=ex_rate, 
+                        exchanged_price=float(amount) * float(ex_rate), 
+                        method="Exchange"
+                    )
+                # saving this transaction to history
+                history.save()
+
+                # success msg & redirect
                 messages.success(request, _("You have successfuly exchanged your desired currencies !"))
                 return redirect("accounts:home", pk=pk)
-            elif acc.main_currency == to: # sending to an account
+            
+            # sending to an account
+            elif acc.main_currency == to: 
                 # subtracting the money from the user's wallet
                 wallet.filter(currency=from_).update(total_balance = F('total_balance') - float(amount))
 
                 # adding the money to the user's account
                 acc.total_balance = F('total_balance') + float(amount) * float(ex_rate)
                 acc.save()
+
+                # updating user's interest_account
+                acc_interest.interest = F('interest') + float(amount) * float(ex_rate)
+                acc_interest.save()
+
+                # saving this transaction to history
+                history = transaction_history(
+                    wallet=wallet.get(currency=from_), 
+                    second_person=acc, 
+                    price=float(amount), 
+                    ex_rate=ex_rate, 
+                    exchanged_price=float(amount) * float(ex_rate), 
+                    method="Exchange"
+                )
+                history.save()
 
                 # msg & redirect
                 messages.success(request, _("You have successfuly exchanged your desired currencies !"))

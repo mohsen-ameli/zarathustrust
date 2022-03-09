@@ -66,7 +66,7 @@
 
         {% block content %}{% endblock %}
         <!-- under dev -->
-        <div class="py-3" style="font-size: 11pt;" id="under-dev">{% trans "Still Under Development" %}</div>
+        <div style="font-size: 11pt;" id="under-dev">{% trans "Still Under Development" %}</div>
     </div>
     
     <!-- landing page -->
@@ -99,7 +99,7 @@
         <b>{% trans "Do you like cookies?</b> &#x1F36A; We use cookies to ensure you get the best experience on our website." %}"
         <a href="{% url 'users:cookie-policy' %}" target="_blank">{% trans "Learn more" %}</a>
 
-        <button type="button" class="neon-button acceptcookies">{% trans "I agree" %}</button>
+        <button type="button" class="neon-button acceptcookies my-2">{% trans "I agree" %}</button>
     </div>
 
     <script src="https://cdn.jsdelivr.net/gh/Wruczek/Bootstrap-Cookie-Alert@gh-pages/cookiealert.js"></script>

@@ -25,6 +25,9 @@ button:link {
 .interest-h1 {
   font-size: 24pt;
 }
+.history-icons {
+  font-size: 1.5rem;
+}
 #results-box {
   max-width: 32rem;
   max-height: 280px;
@@ -151,6 +154,20 @@ button:link {
   height: 50px;
   opacity: 1;
   height: 1rem;
+}
+#phone_ext {
+  position: relative;
+  max-height: 58px;
+}
+#phone_number_help {
+  position: relative;
+  bottom: 1rem;
+}
+#hint_id_username,
+#hint_id_email,
+#hint_id_password1 li,
+#hint_id_password2 {
+  color: white !important;
 }
 h3,h1 {
   color: white;

@@ -332,10 +332,9 @@ def TransferSendView(request, pk, reciever_name):
 
                             ######## UPDATE ACCOUNT INTEREST ########
                             if update_interest_rate is True:
-                                # adding money to reciever
-                                a = reciever_interest.interest + MoneyToSend
-                                # updating reciever
-                                account_interest.objects.filter(pk=reciever.pk).update(interest=a)
+                                # updaing account interest
+                                reciever_interest.interest = F('interest') + MoneyToSend
+                                reciever_interest.save()
                             # taking money from giver
                             b = giver_interest.interest - MoneyToSend
                             # updating giver
@@ -744,18 +743,27 @@ def HistoryDetail(request, pk, tran_id):
         incoming = 0
         transactor = None
         incom = False
+        giver_symbol = None
+        reciever_symbol = None
+        id = []
+        allowed = False
         transaction = transaction_history.objects.get(pk=tran_id)
 
         if transaction.person:
             currency = transaction.person.main_currency
+            id.append(transaction.person.pk)
         if transaction.second_person:
             currency = transaction.second_person.main_currency
+            id.append(transaction.second_person.pk)
         if transaction.wallet:
             currency = transaction.wallet.currency
+            id.append(transaction.wallet.main_account.pk)
         if transaction.second_wallet:
             currency = transaction.second_wallet.currency
+            id.append(transaction.second_wallet.main_account.pk)
         currency_symbol   = get_currency_symbol(currency)
         
+        # if the transaction is a transfer
         if transaction.method == "Transfer":
             # user is giving money
             if transaction.wallet: # wallet was used
@@ -788,17 +796,35 @@ def HistoryDetail(request, pk, tran_id):
                 except:
                     transactor  = transaction.wallet.main_account.created_by.username
 
+        # if transaction is an exchange
+        elif transaction.method == "Exchange":
+            try:
+                giver_symbol = get_currency_symbol(transaction.person.main_currency)
+            except AttributeError:
+                giver_symbol = get_currency_symbol(transaction.wallet.currency)
+            try:
+                reciever_symbol = get_currency_symbol(transaction.second_person.main_currency)
+            except AttributeError:
+                reciever_symbol = get_currency_symbol(transaction.second_wallet.currency)
 
         context = {
             "transaction"       : transaction,
             "currency_symbol"   : currency_symbol,
             "incoming"          : incoming,
             "transactor"        : transactor,
+            "giver_symbol"      : giver_symbol,
+            "reciever_symbol"   : reciever_symbol,
         }
-        # if transaction.person.id or transaction.second_person.id or transaction.wallet.main_account.id or transaction.second_wallet.main_account.id :
-        return render(request, "accounts/history_detail.html", context)
-        # else: 
-        #     raise PermissionDenied()
+
+        # whether or not user's viewing the details of their own transactions
+        for i in id:
+            if i == pk:
+                allowed = True
+                
+        if allowed:
+            return render(request, "accounts/history_detail.html", context)
+        else: 
+            raise PermissionDenied()
     else:
         raise PermissionDenied()
 

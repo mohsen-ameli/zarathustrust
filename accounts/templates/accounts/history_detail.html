@@ -34,7 +34,14 @@
                 {% blocktrans with price=transaction.price %}
                     You have cashed out {{ currency_symbol }}{{ price }}
                 {% endblocktrans %}
-
+            {% elif transaction.method == "Exchange" %}
+                {% blocktrans with giver_symbol=giver_symbol reciever_symbol=reciever_symbol price=transaction.price exchanged_price=transaction.exchanged_price ex_rate=transaction.ex_rate %}
+                    You have exchanged {{ giver_symbol }}{{ price }} for {{ reciever_symbol }}{{ exchanged_price }}
+                    <br>
+                    Exchange Rate:
+                    <br>
+                    {{ giver_symbol }}1 = {{ reciever_symbol }}{{ ex_rate }}
+                {% endblocktrans %}
             {% else %}
                 {% blocktrans with price=transaction.price second_person=transaction.second_person.created_by.username second_wallet=transaction.second_wallet.main_account.created_by.username %}
                     You have paid {{ second_person }}{{ second_wallet }}, for a total of {{ currency_symbol }}{{ price }}
