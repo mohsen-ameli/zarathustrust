@@ -27,8 +27,8 @@ def country_from_ip(request):
                 name = None
                 code = None
                 return name, code
-    except ConnectionError:
-        return None;
+    except:
+        return None, None;
 
 
 # getting country languages
