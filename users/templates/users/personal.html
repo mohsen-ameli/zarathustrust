@@ -13,7 +13,8 @@
             <hr class="zarathus-hr">
 
             {% crispy form %}
-            
+            {{ form.captcha|as_crispy_field }}
+
             <button class="neon-button-green my-2" type="submit">{% trans "Sign Up" %}</button>
         </form>
         <hr class="zarathus-hr">

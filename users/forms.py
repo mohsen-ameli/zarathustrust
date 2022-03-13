@@ -4,10 +4,12 @@ from django.utils.translation import gettext as _
 from crispy_bootstrap5.bootstrap5 import FloatingField
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, HTML
+from captcha.fields import CaptchaField
 
 from .models import CustomUser, code
 
 class RegisterForm(UserCreationForm):
+    captcha = CaptchaField()
     email = forms.EmailField(help_text=_("We will not share your email with anyone."))
     phone_number = forms.CharField(
         max_length=20,
@@ -19,6 +21,7 @@ class RegisterForm(UserCreationForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
+        self.fields['captcha'].label = "CAPTCHA"
         self.helper.layout = Layout(
             FloatingField("username"),
             FloatingField("email"),

@@ -118,21 +118,32 @@ def CurrencyExchangeConfirm(request, pk, from_, amount, to):
         acc             = account.objects.get(pk=pk)
         min_to          = currency_min(to)
         min_from        = currency_min(from_)
+        acc_currency    = currency_min(acc.main_currency)
         notEnough = False
 
-        # confirming a few things
-        if min_to is None or min_from is None:
+        # confirming from and to currencies
+        if min_to is None or min_from is None: # the currency doesnt exist (JXL)
             messages.warning(request, _("You cannot exchange with the specified currencies !"))
             return redirect('accounts:home', pk=pk)
-        elif from_ == to:
+        elif from_ == to: # exchanging the same currencies
             messages.warning(request, _("You cannot exchange the same currencies !"))
             return redirect('accounts:home', pk=pk)
-        elif not wallet.filter(currency=to).exists() and not wallet.filter(currency=from_).exists(): # or ( (acc.main_currency == from_ or acc.main_currency == to) is False)
+        elif not wallet.filter(currency=to).exists() and acc.main_currency != to:
             messages.warning(request, _("You do not own the specified wallets !"))
             return redirect('accounts:home', pk=pk)
-        elif float(amount) < float(min_from):
-            messages.warning(request, _("You have chosen a value below the minimum amount to exchange !"))
+        elif not wallet.filter(currency=from_).exists() and acc.main_currency != from_:
+            messages.warning(request, _("You do not own the specified wallets !"))
+            return redirect('accounts:home', pk=pk)
+        
+        # confirming the amount is a number and is within the min range
+        if amount.replace('.','',1).isdigit():
+            if float(amount) < float(min_from):
+                messages.warning(request, _("You have chosen a value below the minimum amount to exchange !"))
+                return redirect('wallets:currency-exchange', pk=pk)
+        else:
             return redirect('wallets:currency-exchange', pk=pk)
+
+        # if user has enough money
         if from_ == acc.main_currency:
             if float(acc.total_balance) < float(amount):
                 notEnough = True

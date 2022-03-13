@@ -137,51 +137,55 @@ def PersonalCountryPickSignUp(request):
 def PersonalSignUp(request, country):
     if request.user.is_anonymous == True:
         ext = phonenumbers.country_code_for_region(country)
-        if request.method == "POST":
-            form = RegisterForm(request.POST)
+        # if country is valid
+        if ext != 0:
+            if request.method == "POST":
+                form = RegisterForm(request.POST)
 
-            # phone number checking
-            phone_num = request.POST.get('phone_number')
-            if phone_num.isnumeric():
-                phone_number = phonenumbers.is_valid_number(phonenumbers.parse(f'+{ext}{phone_num}'))
-                if phone_number is False:
+                # phone number checking
+                phone_num = request.POST.get('phone_number')
+                if phone_num.isnumeric():
+                    phone_number = phonenumbers.is_valid_number(phonenumbers.parse(f'+{ext}{phone_num}'))
+                    if phone_number is False:
+                        form.add_error('phone_number', _('Please enter a correct phone number'))
+                else:
                     form.add_error('phone_number', _('Please enter a correct phone number'))
-            else:
-                form.add_error('phone_number', _('Please enter a correct phone number'))
-                
-            # form valid
-            if form.is_valid():
-                # setting up to save user into sesssions
-                user = {
-                    'username'      : form.cleaned_data.get("username"),
-                    'email'         : form.cleaned_data.get("email"),
-                    'phone_number'  : form.cleaned_data.get("phone_number"),
-                    'country'       : country,
-                    'password'      : form.cleaned_data.get("password1"),
-                    'iban'          : None,
-                }
-                request.session['user'] = user
+                    
+                # form valid
+                if form.is_valid():
+                    # setting up to save user into sesssions
+                    user = {
+                        'username'      : form.cleaned_data.get("username"),
+                        'email'         : form.cleaned_data.get("email"),
+                        'phone_number'  : form.cleaned_data.get("phone_number"),
+                        'country'       : country,
+                        'password'      : form.cleaned_data.get("password1"),
+                        'iban'          : None,
+                    }
+                    request.session['user'] = user
 
-                code.objects.create(user=user['username'])
-                code_obj = code.objects.get(user=user['username'])
-                ver_code = {
-                    'email_verify_code' : code_obj.email_verify_code,
-                    'phone_verify_code' : code_obj.phone_verify_code,
-                    'iban_verify_code'  : code_obj.iban_verify_code,
-                }
-                request.session['ver_code'] = ver_code
-                code_obj.delete()
-               
-                messages.success(
-                    request,
-                    _(
-                        f"Please check your mailbox (as well as spam folder) for a verification code, and enter the 5-digit code below"
-                    ),
-                )
-                return redirect("users:verify-view")
+                    code.objects.create(user=user['username'])
+                    code_obj = code.objects.get(user=user['username'])
+                    ver_code = {
+                        'email_verify_code' : code_obj.email_verify_code,
+                        'phone_verify_code' : code_obj.phone_verify_code,
+                        'iban_verify_code'  : code_obj.iban_verify_code,
+                    }
+                    request.session['ver_code'] = ver_code
+                    code_obj.delete()
+                
+                    messages.success(
+                        request,
+                        _(
+                            f"Please check your mailbox (as well as spam folder) for a verification code, and enter the 5-digit code below"
+                        ),
+                    )
+                    return redirect("users:verify-view")
+            else:
+                form = RegisterForm()
+            return render(request, "users/personal.html", {"form": form, "ext" : ext})
         else:
-            form = RegisterForm()
-        return render(request, "users/personal.html", {"form": form, "ext" : ext})
+            return redirect("users:personal-country-pick")
     else:
         return redirect("accounts:home", pk=request.user.pk)
 

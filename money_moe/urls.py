@@ -10,6 +10,7 @@ urlpatterns = [
     path("", include("accounts.urls"), name="home"),
     path("", include("users.urls"), name="users"),
     path("", include("wallets.urls"), name="wallets"),
+    path('captcha/', include('captcha.urls')),
 
     path("g0atch33se&pizz1/", admin.site.urls, name="admin"),
 ]

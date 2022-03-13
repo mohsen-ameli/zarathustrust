@@ -32,6 +32,9 @@
     <!-- Bootstrap Cookie CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Wruczek/Bootstrap-Cookie-Alert@gh-pages/cookiealert.css">
 
+    <!-- Jquery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+
     <title>{% trans "ZarathusTrust" %}</title>
 </head>
 
@@ -43,32 +46,43 @@
     <div class="container" style="margin-top: 5rem;" id="main-content">
         <!-- MESSAGE ALERTS -->
         {% if messages %}
-            <div class="container my-3">
+            <div class="animate__animated animate__fadeInDown container my-3">
                 {% for msg in messages|slice:":1" %}
                     {% if msg.tags == 'warning' %}
                         <div class="alert alert-warning text-center msg-alert alert-dismissible fade show" role="alert">
                             {% blocktrans %}
                             {{ msg }}
                             {% endblocktrans %}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <button type="button" class="btn-close"></button>
                         </div>
                     {% else %}
                         <div class="alert alert-{{ msg.tags }} text-center msg-alert alert-dismissible fade show" role="alert">
                             {% blocktrans %}
                             {{ msg }}
                             {% endblocktrans %}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <button type="button" class="btn-close"></button>
                         </div>
                     {% endif %}
                 {% endfor %}
             </div>
+        <script>
+            div = document.querySelector(".animate__animated");
+            btn = document.querySelector(".btn-close")
+            btn.addEventListener('click', e=>{
+                div.classList.add("animate__fadeOutDown")
+                
+                setTimeout(()=>{
+                    div.style.display = "none";
+                }, 1000)
+            })
+        </script>
         {% endif %}
 
         {% block content %}{% endblock %}
         <!-- under dev -->
         <div style="font-size: 11pt;" id="under-dev">{% trans "Still Under Development" %}</div>
     </div>
-    
+
     <!-- landing page -->
     <div style="margin-top: 56px !important;">
         {% block landing_page %}{% endblock %}

@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     "django_countries",
     "crispy_bootstrap5",
     "django_htmx",
+    "captcha",
 
     "django.contrib.postgres",
     "django.contrib.admin",
