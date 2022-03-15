@@ -30,6 +30,7 @@ class CustomUser(AbstractUser):
     phone_ext           = CharField(max_length=4, null=True, blank=True)
     phone_number        = CharField(max_length=20, null=True)
     iban                = CharField(max_length=30, null=True, blank=True)
+    stripe_id           = CharField(max_length=50, null=True, blank=True)
 
     is_business         = BooleanField(null=True, blank=True, default=False)
     type_business       = CharField(max_length=10, null=True)

@@ -35,7 +35,10 @@
                 <div class="invalid-feedback my-2">{% trans "Please consider that the minimum amount to send is $1 !" %}</div>
             </div>
 
-            <button class="neon-button my-2" type="submit" id="Action">{% trans "Deposit" %}</button>
+            <small>{% trans "You will not be charged until you actually transfer money to our service yourself." %}</small>
+            <br>
+
+            <button class="neon-button mb-2 mt-3" type="submit" id="Action">{% trans "Deposit" %}</button>
         </form>
     </div>
 </div>

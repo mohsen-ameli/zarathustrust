@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 import json
 from datetime import timedelta
+from re import S
 from django.utils.translation import gettext_lazy as _
 
 with open("/etc/config.json") as config_file:
@@ -29,7 +30,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = config.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 if not DEBUG:
     ALLOWED_HOSTS = ['104.158.192.24', 'www.zarathustrust.com']
@@ -174,11 +175,12 @@ LOCALE_PATHS = [os.path.join(BASE_DIR, "locale/")]
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static")  #'/home/moe/money_moe/static/'
 STATIC_URL = "/static/"
-# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'staticfiles')]
+
 
 # Crispy Forms
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+
 
 # CELERY
 CELERY_BROKER_URL = config.get("BROKER_URL")
@@ -190,6 +192,7 @@ CELERY_TASK_TRACK_STARTED = True
 CELERYD_PREFETCH_MULTIPLIER = 1
 # CELERY_TASK_TIME_LIMIT = 30 * 60
 
+
 # EMAIL
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
@@ -200,14 +203,22 @@ EMAIL_HOST_PASSWORD = config.get("EMAIL_PW")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # EMAIL_USE_SSL = False
 
+
 # LOGIN
 LOGIN_URL = "/login/"
 # LOGIN_REDIRECT_URL = "/"
+
 
 # AXES LOGIN
 AXES_FAILURE_LIMIT = 3
 AXES_COOLOFF_TIME = timedelta(minutes=3)
 AXES_LOCKOUT_TEMPLATE = "users/login_timeout.html"
+
+
+# STRIPE
+STRIPE_PUBLIC_KEY = config.get("STRIPE_PUBLIC_KEY")
+STRIPE_SECRET_KEY = config.get("STRIPE_SECRET_KEY")
+
 
 # HTTPS settings
 if not DEBUG:

@@ -1,6 +1,5 @@
 {% extends "accounts/base.html" %}
 {% load i18n %}
-{% load crispy_forms_tags %}
 {% block content %}
 <div class="card text-white zarathus-card mx-auto">
     <div class="card-body">
@@ -30,7 +29,7 @@
         </form>
         <div class="pt-2">
             <small class="text-muted">
-                <a style="color: #f8b119c7;" href="{% url 'users:password_reset' %}">
+                <a style="color: #f8b119c7;" href="{% url 'password_reset' %}">
                     {% trans "Reset Password ?" %}
                 </a>
             </small>

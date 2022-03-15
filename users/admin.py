@@ -18,8 +18,7 @@ class CustomUserAdmin(UserAdmin):
                     'currency',
                     'phone_ext',
                     'phone_number',
-                    # 'iban',
-                    'is_business'
+                    'is_business',
                 )
             }
         )
