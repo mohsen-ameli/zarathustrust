@@ -3,7 +3,6 @@
 {% load l10n %}
 {% load mathfilters %}
 {% load static %}
-{% load crispy_forms_tags %}
 {% block content %}
 
 <!-- Top Part -->
@@ -26,7 +25,7 @@
                     <li><a href="?wallet-name={{wallet}}&num=5" class="dropdown-item" type="submit" name="paginate" value="5" href="#">5</a></li>
                     <li><a href="?wallet-name={{wallet}}&num=10" class="dropdown-item" type="submit" name="paginate" value="10" href="#">10</a></li>
                     <li><a href="?wallet-name={{wallet}}&num=20" class="dropdown-item" type="submit" name="paginate" value="20" href="#">20</a></li>
-                    <li><a href="?wallet-name={{wallet}}&num=all" class="dropdown-item" type="submit" name="paginate" value="all" href="#">ALL</a></li>
+                    <li><a href="?wallet-name={{wallet}}&num=all" class="dropdown-item" type="submit" name="paginate" value="all" href="#">{% trans "ALL" %}</a></li>
                 </ul>
             </div>
 
@@ -85,9 +84,7 @@
     </div>
 </div>
 
-
 <br>
-
 
 <!-- Transaction Cards -->
 {% for each in page_obj %}
@@ -191,11 +188,13 @@
         <ul class="pagination justify-content-center">
             {% if page_obj.has_previous %}
                 <li class="page-item"><a class="page-link" href="?wallet-name={{wallet}}&page=1&num={{ pagination_number }}">&laquo;</a></li>
-                <li class="page-item"><a class="page-link" href="?wallet-name={{wallet}}&page={{ page_obj.previous_page_number }}&num={{ pagination_number }}">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="?wallet-name={{wallet}}&page={{ page_obj.previous_page_number }}&num={{ pagination_number }}">{% trans "Previous" %}</a></li>
             {% endif %}
 
             <li class="page-item disabled"><a href="#" class="page-link">
-                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                {% blocktrans with a=page_obj.number b=page_obj.paginator.num_pages %}
+                Page {{ a }} of {{ b }}
+                {% endblocktrans %}
             </a></li>
 
             <!-- numbered button pagination (1  2  3  4) -->
@@ -206,7 +205,7 @@
             {% endfor %} -->
 
             {% if page_obj.has_next %}
-                <li class="page-item"><a class="page-link" href="?wallet-name={{wallet}}&page={{ page_obj.next_page_number }}&num={{ pagination_number }}">Next</a></li>
+                <li class="page-item"><a class="page-link" href="?wallet-name={{wallet}}&page={{ page_obj.next_page_number }}&num={{ pagination_number }}">{% trans "Next" %}</a></li>
                 <li class="page-item"><a class="page-link" href="?wallet-name={{wallet}}&page={{ page_obj.paginator.num_pages }}&num={{ pagination_number }}">&raquo;</a></li>
             {% endif %}
         </ul>
@@ -217,7 +216,7 @@
 <!-- The home button at the bottom -->
 {% if counter > 0 %}
     <div class="text-center">
-        <a class="neon-button" href="{% url 'accounts:home' pk=user.pk %}">Home</a>
+        <a class="neon-button" href="{% url 'accounts:home' pk=user.pk %}">{% trans "Home" %}</a>
     </div>
 {% endif %}
 

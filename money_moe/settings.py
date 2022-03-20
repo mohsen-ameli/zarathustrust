@@ -10,10 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
-import os
-import json
+import os, json
 from datetime import timedelta
-from re import S
 from django.utils.translation import gettext_lazy as _
 
 with open("/etc/config.json") as config_file:
@@ -30,12 +28,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = config.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = str(config.get("DEBUG")) == "1"
+
+ALLOWED_HOSTS = []
 
 if not DEBUG:
-    ALLOWED_HOSTS = ['104.158.192.24', 'www.zarathustrust.com']
-else:
-    ALLOWED_HOSTS = ["*"]
+    ALLOWED_HOSTS += ['104.158.192.24', 'www.zarathustrust.com']
 
 INTERNAL_IPS = (
     '127.0.0.1'

@@ -35,6 +35,7 @@ django-crispy-forms==1.13.0
 django-cron==0.5.1
 django-crontab==0.7.1
 django-crum==0.7.9
+django-dotenv==1.4.2
 django-elasticsearch-dsl==7.2.1
 django-formtools==2.3
 django-htmx==1.6.0
@@ -61,15 +62,18 @@ gunicorn==20.1.0
 idna==3.3
 importlib-metadata==3.10.1
 ipinfo==4.2.1
+itsdangerous==2.0.1
 jmespath==0.10.0
 kombu==5.2.2
 maxminddb==2.2.0
 multidict==5.2.0
 mypy-extensions==0.4.3
+nulltype==2.3.1
 pathspec==0.9.0
 phonenumbers==8.12.40
 phonenumberslite==8.12.31
 Pillow==9.0.1
+plaid-python==9.1.0
 platformdirs==2.2.0
 polib==1.1.1
 prompt-toolkit==3.0.24

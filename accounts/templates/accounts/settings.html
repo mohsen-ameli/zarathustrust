@@ -15,7 +15,7 @@
             <h3 class="fw-normal text-center">{% trans "Settings" %}</h3>
             <hr class="zarathus-hr">
 
-            <h5 class="fw-normal">Defaults</h5>
+            <h5 class="fw-normal">{% trans "Defaults" %}</h5>
             <hr class="zarathus-hr" style="width: 25%;">
 
             <a class="neon-button my-1" href="{% url 'accounts:settings-country' pk=user.pk %}">
@@ -35,7 +35,7 @@
             </a> -->
             <br>
 
-            <h5 class="fw-normal">Friend Zone</h5>
+            <h5 class="fw-normal">{% trans "Friend Zone" %}</h5>
             <hr class="zarathus-hr" style="width: 25%;">
 
             <a class="neon-button mb-3" href="{% url 'accounts:referral-code' user.pk %}">
@@ -43,7 +43,7 @@
             </a>
             <br>
 
-            <h5 class="fw-normal">Change Theme</h5>
+            <h5 class="fw-normal">{% trans "Change Theme" %}</h5>
             <hr class="zarathus-hr" style="width: 25%;">
 
             <!-- <div class="form-check form-switch my-3">
@@ -63,7 +63,7 @@
             </main>
             <br>
 
-            <h5 class="fw-normal">Account</h5>
+            <h5 class="fw-normal">{% trans "Account" %}</h5>
             <hr class="zarathus-hr" style="width: 25%;">
 
             <a class="neon-button mb-3" href="#">

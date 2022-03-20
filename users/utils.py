@@ -1,5 +1,5 @@
 from twilio.rest import Client
-import json
+import json, os
 
 with open('/etc/config.json') as config_file:
     config = json.load(config_file)

@@ -1,6 +1,4 @@
-import os
-import decimal
-import json
+import os, decimal, json, stripe
 from django.db.models.expressions import Exists
 import requests
 
@@ -529,8 +527,15 @@ def DepositUpdateView(request, pk):
                     f'{get_current_user()} with account number : {pk} has requested to deposit {currency_symbol_}{add_money}',
                     f'{EMAIL_ID}',
                     [f'{EMAIL_ID_MAIN}'],)
+
+            # stripe.api_key = settings.STRIPE_SECRET_KEY
+            # stripe.Charge.create(
+            #     amount=add_money*100,
+            #     currency=user_.currency,
+            #     customer=user_.stripe_id
+            # )
+
             account.objects.filter(pk=pk).update(add_money=0)
-            # messages.success(request, _(f"${add_money} was requested to be put into your account"))
             return redirect('accounts:add-money-info', pk=pk)
         else:
             messages.warning(request, _(f"Please consider that the minimum amount to withdraw must be {currency_symbol_}{min_currency} or higher !"))

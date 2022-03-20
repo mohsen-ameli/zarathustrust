@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-22 02:43-0500\n"
+"POT-Creation-Date: 2022-03-20 14:19-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,10 +18,215 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: money_moe/settings.py:158
+#: money_moe/settings.py:163
 msgid "German"
 msgstr ""
 
-#: money_moe/settings.py:158
+#: money_moe/settings.py:163
 msgid "English"
+msgstr ""
+
+#: wallets/forms.py:8
+msgid "Bank Account Number (IBAN)"
+msgstr ""
+
+#: wallets/forms.py:8
+msgid "We will use Stripe to verify your bank account."
+msgstr ""
+
+#: wallets/templates/wallets/bank.html:57
+msgid "Enter your bank information"
+msgstr ""
+
+#: wallets/templates/wallets/bank.html:62
+msgid "Add Bank"
+msgstr ""
+
+#: wallets/templates/wallets/card.html:16
+msgid "Credit or debit card"
+msgstr ""
+
+#: wallets/templates/wallets/card.html:27
+msgid ""
+"Please note that you will not be able to change this card unless you contact "
+"our support team."
+msgstr ""
+
+#: wallets/templates/wallets/card.html:29
+msgid "Add Card"
+msgstr ""
+
+#: wallets/templates/wallets/card_or_bank.html:10
+msgid "Link a Card"
+msgstr ""
+
+#: wallets/templates/wallets/card_or_bank.html:13
+msgid ""
+"Link a debit or credit card. This will be the easiest way to interact with "
+"your money on the website. We will ensure your card's safety by using Stripe "
+"to store your information."
+msgstr ""
+
+#: wallets/templates/wallets/card_or_bank.html:16
+msgid "New Card"
+msgstr ""
+
+#: wallets/templates/wallets/card_or_bank.html:26
+msgid "Link a Bank"
+msgstr ""
+
+#: wallets/templates/wallets/card_or_bank.html:29
+msgid ""
+"Link your bank account by providing the banking account number and depending "
+"on your country, your transit number and other information."
+msgstr ""
+
+#: wallets/templates/wallets/card_or_bank.html:32
+msgid "New Bank"
+msgstr ""
+
+#: wallets/templates/wallets/currency_exchange.html:8
+msgid "Exchange Currencies"
+msgstr ""
+
+#: wallets/templates/wallets/currency_exchange.html:30
+msgid "Amount"
+msgstr ""
+
+#: wallets/templates/wallets/currency_exchange.html:45
+msgid "Next"
+msgstr ""
+
+#: wallets/templates/wallets/currency_exchange.html:60
+msgid "You do not own any wallets yet ! Would you like to make one ?"
+msgstr ""
+
+#: wallets/templates/wallets/currency_exchange.html:62
+msgid "Make a New Wallet"
+msgstr ""
+
+#: wallets/templates/wallets/currency_exchange_confirm.html:7
+msgid "Exchange Currency Confirmation"
+msgstr ""
+
+#: wallets/templates/wallets/currency_exchange_confirm.html:9
+#, python-format
+msgid "We have a 0%% fee for any currency exchange transaction"
+msgstr ""
+
+#: wallets/templates/wallets/currency_exchange_confirm.html:12
+#, python-format
+msgid ""
+"\n"
+"                You are about to exchange %(from_symbol)s%(amount)s to "
+"%(to_symbol)s%(ex_rate)s\n"
+"            "
+msgstr ""
+
+#: wallets/templates/wallets/currency_exchange_confirm.html:18
+msgid "Exchange Rate :"
+msgstr ""
+
+#: wallets/templates/wallets/currency_exchange_confirm.html:24
+msgid "Exchange"
+msgstr ""
+
+#: wallets/templates/wallets/new_wallet.html:6
+msgid "Are you sure ?"
+msgstr ""
+
+#: wallets/templates/wallets/new_wallet.html:9
+msgid "You can choose up to 10 wallets with different currencies."
+msgstr ""
+
+#: wallets/templates/wallets/new_wallet.html:11
+msgid "Your currenct wallets are:"
+msgstr ""
+
+#: wallets/templates/wallets/new_wallet.html:20
+#, python-format
+msgid ""
+" \n"
+"            You are about to make the currency \"%(currency)s\" as one of "
+"your wallets.\n"
+"            "
+msgstr ""
+
+#: wallets/templates/wallets/new_wallet.html:28
+msgid "Save Changes"
+msgstr ""
+
+#: wallets/templates/wallets/new_wallet.html:29
+msgid "Back to Home"
+msgstr ""
+
+#: wallets/templates/wallets/wallet_search.html:8
+msgid "You can have up to 10 wallets with different currencies"
+msgstr ""
+
+#: wallets/templates/wallets/wallet_search.html:15
+msgid "Please choose a currency"
+msgstr ""
+
+#: wallets/views.py:62
+msgid "You cannot make a wallet with the same currency as your main account !"
+msgstr ""
+
+#: wallets/views.py:71
+msgid "You already have the maximum number of wallets !"
+msgstr ""
+
+#: wallets/views.py:76
+msgid "You already have that wallet !"
+msgstr ""
+
+#: wallets/views.py:83
+#, python-brace-format
+msgid "You have successfully added {currency} as one of your wallets !"
+msgstr ""
+
+#: wallets/views.py:93
+msgid "That is not a valid wallet name !"
+msgstr ""
+
+#: wallets/views.py:148
+msgid "You cannot exchange with the specified currencies !"
+msgstr ""
+
+#: wallets/views.py:151
+msgid "You cannot exchange the same currencies !"
+msgstr ""
+
+#: wallets/views.py:154 wallets/views.py:157
+msgid "You do not own the specified wallets !"
+msgstr ""
+
+#: wallets/views.py:163
+msgid "You have chosen a value below the minimum amount to exchange !"
+msgstr ""
+
+#: wallets/views.py:177
+msgid "You do not have enough money for this transaction !"
+msgstr ""
+
+#: wallets/views.py:228 wallets/views.py:256
+msgid "You have successfuly exchanged your desired currencies !"
+msgstr ""
+
+#: wallets/views.py:259
+msgid "You do not have a wallet with the specified currency !"
+msgstr ""
+
+#: wallets/views.py:343
+msgid "It seems that your card has declined."
+msgstr ""
+
+#: wallets/views.py:354
+msgid "You have successfuly added your card"
+msgstr ""
+
+#: wallets/views.py:357
+msgid ""
+"You have already attached a card to your account. If you wish to change it, "
+"please email our support team."
 msgstr ""

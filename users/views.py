@@ -1,6 +1,4 @@
-import json
-import os
-import phonenumbers
+import json, os, phonenumbers
 
 from accounts.models import account
 from crum import get_current_user

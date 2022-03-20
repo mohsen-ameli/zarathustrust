@@ -11,7 +11,7 @@
             {% else %}
                 <a class="navbar-brand" href="{% url 'accounts:home-new' %}">
                     <img src="{% static 'accounts/images/zarathustrust_new.png' %}" width="60" height="26" class="d-inline-block align-text-top">
-                    Zarathus Trust
+                    <span style="font-size: x-large;">Z</span>arathus<span style="font-size: x-large;">T</span>rust
                 </a>
             {% endif %}
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -63,7 +63,7 @@
                     {% if user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link active" href="{% url 'accounts:settings' pk=user.pk %}">
-                                <i class="fas fa-cog"></i> Settings
+                                <i class="fas fa-cog"></i> {% trans "Settings" %}
                             </a>
                         </li>
                         <li class="nav-item">

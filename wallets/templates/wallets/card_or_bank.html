@@ -1,0 +1,38 @@
+{% extends "accounts/base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="d-lg-flex">
+    <div class="p-3 mx-auto">
+        <div class="card text-white text-center zarathus-card" style="height: 20rem;">
+            <div class="card-body" style="display: flex; flex-direction: column;">
+                <h3 class="fw-normal">
+                    {% trans "Link a Card" %}
+                    <hr class="zarathus-hr">
+                </h3>
+                <h5 class="fw-normal">{% trans "Link a debit or credit card. This will be the easiest way to interact with your money on the website. We will ensure your card's safety by using Stripe to store your information." %}</h5>
+                <div class="mt-auto">
+                    <hr class="zarathus-hr">
+                    <a class="neon-button-green fixed-bottom" href="{% url 'wallets:new-card' pk=pk %}">{% trans "New Card" %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="p-3 mx-auto">
+        <div class="card text-white text-center zarathus-card" style="height: 20rem;">
+            <div class="card-body" style="display: flex; flex-direction: column;">
+                <h3 class="fw-normal">
+                    {% trans "Link a Bank" %}
+                    <hr class="zarathus-hr">
+                </h3>
+                <h5 class="fw-normal">{% trans "Link your bank account by providing the banking account number and depending on your country, your transit number and other information." %}</h5>
+                <div class="mt-auto">
+                    <hr class="zarathus-hr">
+                    <a class="neon-button-green fixed-bottom" href="{% url 'wallets:new-bank' pk=pk %}">{% trans "New Bank" %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

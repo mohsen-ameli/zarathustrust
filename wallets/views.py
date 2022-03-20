@@ -1,6 +1,4 @@
-from email import message
-from locale import currency
-import os, json, requests, decimal, stripe
+import os, json, requests, decimal, stripe, time
 
 from django.db.models import F
 from django.shortcuts import redirect, render
@@ -12,8 +10,19 @@ from django.utils.translation import gettext as _
 from django.conf import settings
 
 from .models import BranchAccounts
+from .forms import BankInfo
+from users.functions import CountryDict
 from accounts.models import account, CustomUser, account_interest, transaction_history
 from accounts.functions import correct_user, get_currency_symbol, currency_min
+import plaid
+from plaid.api import plaid_api
+from plaid.model.link_token_create_request import LinkTokenCreateRequest
+from plaid.model.link_token_create_request_user import LinkTokenCreateRequestUser
+from plaid.model.country_code import CountryCode
+from plaid.model.products import Products
+
+products = []
+products.append(Products("auth"))
 
 @login_required
 def WalletSearch(request, pk):
@@ -262,6 +271,57 @@ def CurrencyExchangeConfirm(request, pk, from_, amount, to):
 
 
 @login_required
+def Card_or_Bank(request, pk):
+    return render(request, "wallets/card_or_bank.html", {"pk" : pk})
+
+
+@login_required
+def Bank(request, pk):
+    if not correct_user(pk):
+        raise PermissionDenied()
+
+    user = CustomUser.objects.get(pk=pk)
+    form = BankInfo(request.POST or None)
+    if form.is_valid():
+        bank_num = request.POST['bank']
+
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+
+        configuration = plaid.Configuration(
+            host=plaid.Environment.Sandbox,
+            api_key={
+                'clientId': "6235305af410cd001a443813",
+                'secret': "f09ba69583a6d19be07bf9df42a7d1",
+            }
+        )
+
+        api_client = plaid.ApiClient(configuration)
+        client = plaid_api.PlaidApi(api_client)
+        try:
+            request = LinkTokenCreateRequest(
+            products=products,
+            client_name="Plaid Quickstart",
+            country_codes=list(map(lambda x: CountryCode(x), ['US', 'CA'])),
+            language='en',
+            user=LinkTokenCreateRequestUser(
+                client_user_id=str(time.time())
+            )
+            )
+
+            # create link token
+            response = client.link_token_create(request)
+            print(response.to_dict())
+        except plaid.ApiException as e:
+            return json.loads(e.body)
+
+
+    context = {
+        "form" : form
+    }
+    return render(request, "wallets/bank.html", context)
+
+
+@login_required
 def Card(request, pk):
     if not correct_user(pk):
         raise PermissionDenied()
@@ -271,13 +331,16 @@ def Card(request, pk):
 
     if request.method == "POST":
         if user.stripe_id is None:
-            # Create a Customer:
-            customer = stripe.Customer.create(
-                name=user.username,
-                source=request.POST['stripeToken'],
-                email=user.email,
-                phone=user.phone_number
-            )
+            try:
+                # Create a Customer:
+                customer = stripe.Customer.create(
+                    name=user.username,
+                    source=request.POST['stripeToken'],
+                    email=user.email,
+                    phone=user.phone_number
+                )
+            except:
+                messages.warning(request, _("It seems that your card has declined."))
             # transfer = stripe.Transfer.create(
             #     amount=1,
             #     currency='cad',
@@ -298,3 +361,34 @@ def Card(request, pk):
     }
 
     return render(request, "wallets/card.html", context)
+
+
+
+###### STEP 1 ######
+# url = "https://sandbox.api.yodlee.com/ysl/auth/token"
+
+# payload='clientId=Dyk9JfsNq8fcztLpZLYUzAt31NAyEF9b&secret=SADKaAGGQAkFApwf'
+# headers = {
+# 'Api-Version': '1.1',
+# 'loginName': 'sbMem6232450a9dc3e1',
+# 'Content-Type': 'application/x-www-form-urlencoded'
+# }
+
+# response = requests.request("POST", url, headers=headers, data=payload)
+
+# js = response.json()
+# token = js['token']['accessToken']
+# print("token : ", token)
+
+# ###### STEP 2 ######
+# url = f"https://sandbox.api.yodlee.com/ysl/accounts?providerAccountId=11303917&include={bank_num}"
+
+# payload={}
+# headers = {
+# 'Api-Version': '1.1',
+# 'Content-Type': 'application/vnd.yodlee+json',
+# 'Authorization': f'{token}'
+# }
+
+# response = requests.request("GET", url, headers=headers, data=payload)
+# print(response.text)
