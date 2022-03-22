@@ -1,4 +1,5 @@
 import json, os, phonenumbers
+from django.http import HttpResponse
 
 from accounts.models import account
 from crum import get_current_user
@@ -26,6 +27,11 @@ with open("/etc/config.json") as config_file:
 
 
 ################ Views ###############
+
+# Matrix Page
+def Matrix(request):
+    return render(request, "users/matrix.html")
+
 
 # Initial Register Page
 def register(request):

@@ -4,6 +4,9 @@ from . import views as users_views
 
 app_name = "users"
 urlpatterns = [
+    # Matrix
+    path("matrix/", users_views.Matrix, name="matrix"),
+
     # cookies
     path("cookie-policy/", users_views.CookiePolicy, name="cookie-policy"),
 

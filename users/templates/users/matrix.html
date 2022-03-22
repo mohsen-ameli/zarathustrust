@@ -1,0 +1,105 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix digital rain</title>
+</head>
+<body>
+    <!----------------------- Source: https://github.com/javascriptacademy-stash/digital-rain/blob/master/index.html ----------------------->
+    <style>
+        html {
+            background: black;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        .container {
+            position: relative;
+            top: 50%;
+        }
+        .container div {
+            margin: 0;
+            position: absolute;
+            color: #0F0;
+            top: 50%;
+            left: 50%;
+            margin-right: -50%;
+            transform: translate(-50%, -50%)
+        }
+    </style>
+    <div class="container">
+        <div id="citation"></div>
+    </div>
+    <canvas id="Matrix"></canvas>
+
+    <script>
+        window.addEventListener('load', ()=>{
+            const cite = document.getElementById("citation")
+
+            var i = 0;
+            var txt = 'Source: https://github.com/javascriptacademy-stash/digital-rain/blob/master/index.html';
+            var speed = 30;
+
+            function typeWriter() {
+                if (i < txt.length) {
+                    cite.innerHTML += txt.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, speed);
+                }
+            } typeWriter();
+
+
+            setTimeout(()=>{
+                cite.style.display = "none"
+
+                const canvas = document.getElementById('Matrix');
+                const context = canvas.getContext('2d');
+
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+
+                const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+                const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                const nums = '0123456789';
+
+                const alphabet = katakana + latin + nums;
+
+                const fontSize = 16;
+                const columns = canvas.width/fontSize;
+
+                const rainDrops = [];
+
+                for( let x = 0; x < columns; x++ ) {
+                    rainDrops[x] = 1;
+                }
+
+                const draw = () => {
+                    context.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                    context.fillRect(0, 0, canvas.width, canvas.height);
+                    
+                    context.fillStyle = '#0F0';
+                    context.font = fontSize + 'px monospace';
+
+                    for(let i = 0; i < rainDrops.length; i++)
+                    {
+                        const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                        context.fillText(text, i*fontSize, rainDrops[i]*fontSize);
+                        
+                        if(rainDrops[i]*fontSize > canvas.height && Math.random() > 0.975){
+                            rainDrops[i] = 0;
+                        }
+                        rainDrops[i]++;
+                    }
+                };
+                setInterval(draw, 30);
+            }, 4000) 
+        })
+    </script>
+</body>
+</html>
