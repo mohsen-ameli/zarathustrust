@@ -25,7 +25,7 @@ crispy-bootstrap5==0.6
 distlib==0.3.4
 distro==1.4.0
 dj-database-url==0.5.0
-Django==3.2.12
+Django==3.2.13
 django-axes==5.28.0
 django-bootstrap-v5==1.0.8
 django-common-helpers==0.9.2
