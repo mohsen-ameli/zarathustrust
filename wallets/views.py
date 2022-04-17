@@ -1,4 +1,4 @@
-import os, json, requests, decimal, stripe, time
+import os, json, requests, decimal, stripe
 
 from django.db.models import F
 from django.shortcuts import redirect, render
@@ -14,15 +14,9 @@ from .forms import BankInfo
 from users.functions import CountryDict
 from accounts.models import account, CustomUser, account_interest, transaction_history
 from accounts.functions import correct_user, get_currency_symbol, currency_min
-import plaid
-from plaid.api import plaid_api
-from plaid.model.link_token_create_request import LinkTokenCreateRequest
-from plaid.model.link_token_create_request_user import LinkTokenCreateRequestUser
-from plaid.model.country_code import CountryCode
-from plaid.model.products import Products
 
-products = []
-products.append(Products("auth"))
+with open("/etc/config.json") as config_file:
+    config = json.load(config_file)
 
 @login_required
 def WalletSearch(request, pk):
@@ -285,38 +279,31 @@ def Bank(request, pk):
     if form.is_valid():
         bank_num = request.POST['bank']
 
-        stripe.api_key = settings.STRIPE_SECRET_KEY
+    if request.is_ajax():
+        print(request.POST.get("AccountId"), request.POST.get("providerId"))
 
-        configuration = plaid.Configuration(
-            host=plaid.Environment.Sandbox,
-            api_key={
-                'clientId': "6235305af410cd001a443813",
-                'secret': "f09ba69583a6d19be07bf9df42a7d1",
-            }
-        )
+    # getting a token for the user
+    url = "https://sandbox.api.yodlee.com/ysl/auth/token"
 
-        api_client = plaid.ApiClient(configuration)
-        client = plaid_api.PlaidApi(api_client)
-        try:
-            request = LinkTokenCreateRequest(
-            products=products,
-            client_name="Plaid Quickstart",
-            country_codes=list(map(lambda x: CountryCode(x), ['US', 'CA'])),
-            language='en',
-            user=LinkTokenCreateRequestUser(
-                client_user_id=str(time.time())
-            )
-            )
+    clientId = config.get('YODLEE_CLIENT_ID')
+    secret = config.get('YODLEE_SECRET')
+    loginName = config.get('YODLEE_LOGIN_NAME')
 
-            # create link token
-            response = client.link_token_create(request)
-            print(response.to_dict())
-        except plaid.ApiException as e:
-            return json.loads(e.body)
+    payload=f'clientId={clientId}&secret={secret}'
+    headers = {
+        'Api-Version': '1.1',
+        'loginName': loginName,
+        'Content-Type': 'application/x-www-form-urlencoded'
+    }
 
+    response = requests.request("POST", url, headers=headers, data=payload)
+
+    js = response.json()
+    token = js['token']['accessToken']
 
     context = {
-        "form" : form
+        "form" : form,
+        "token" : token
     }
     return render(request, "wallets/bank.html", context)
 
@@ -363,32 +350,31 @@ def Card(request, pk):
     return render(request, "wallets/card.html", context)
 
 
+# stripe.api_key = settings.STRIPE_SECRET_KEY
 
-###### STEP 1 ######
-# url = "https://sandbox.api.yodlee.com/ysl/auth/token"
+# configuration = plaid.Configuration(
+#     host=plaid.Environment.Sandbox,
+#     api_key={
+#         'clientId': "6235305af410cd001a443813",
+#         'secret': "f09ba69583a6d19be07bf9df42a7d1",
+#     }
+# )
 
-# payload='clientId=Dyk9JfsNq8fcztLpZLYUzAt31NAyEF9b&secret=SADKaAGGQAkFApwf'
-# headers = {
-# 'Api-Version': '1.1',
-# 'loginName': 'sbMem6232450a9dc3e1',
-# 'Content-Type': 'application/x-www-form-urlencoded'
-# }
+# api_client = plaid.ApiClient(configuration)
+# client = plaid_api.PlaidApi(api_client)
+# try:
+#     request = LinkTokenCreateRequest(
+#     products=products,
+#     client_name="Plaid Quickstart",
+#     country_codes=list(map(lambda x: CountryCode(x), ['US', 'CA'])),
+#     language='en',
+#     user=LinkTokenCreateRequestUser(
+#         client_user_id=str(time.time())
+#     )
+#     )
 
-# response = requests.request("POST", url, headers=headers, data=payload)
-
-# js = response.json()
-# token = js['token']['accessToken']
-# print("token : ", token)
-
-# ###### STEP 2 ######
-# url = f"https://sandbox.api.yodlee.com/ysl/accounts?providerAccountId=11303917&include={bank_num}"
-
-# payload={}
-# headers = {
-# 'Api-Version': '1.1',
-# 'Content-Type': 'application/vnd.yodlee+json',
-# 'Authorization': f'{token}'
-# }
-
-# response = requests.request("GET", url, headers=headers, data=payload)
-# print(response.text)
+#     # create link token
+#     response = client.link_token_create(request)
+#     print(response.to_dict())
+# except plaid.ApiException as e:
+#     return json.loads(e.body)

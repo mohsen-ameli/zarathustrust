@@ -57,6 +57,8 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
     "django_htmx",
     "captcha",
+    "admin_interface",
+    "colorfield",
 
     "django.contrib.postgres",
     "django.contrib.admin",
