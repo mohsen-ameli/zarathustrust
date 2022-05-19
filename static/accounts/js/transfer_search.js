@@ -1,9 +1,9 @@
 (function() {
-    const url = window.location.href
     const searchInput = document.getElementById('search-input')
-    const searchForm = document.getElementById('search-form')
     const resultsBox = document.getElementById('results-box')
     const csrf = document.getElementsByName('csrfmiddlewaretoken')[0].value
+    const error = JSON.parse(document.getElementById("error").textContent)
+    
     const sendSearchData = (typed) => {
         $.ajax ({
             type: 'POST',
@@ -55,7 +55,7 @@
             resultsBox.innerHTML = `
                 <li>
                     <a class="dropdown-item disabled" style="text-transform: capitalize; color: black;">
-                        <b>No accounts were found.</b>
+                        <b>${error}</b>
                     </a>
                 </li>
             `

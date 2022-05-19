@@ -92,6 +92,10 @@ def new_dunc(request):
 def HomeView(request, pk):
     if not correct_user(pk):
         raise PermissionDenied()
+
+    if request.is_ajax():
+        return redirect("accounts:add-money", pk=pk)
+
     acc         = account.objects.get(pk=pk) # user's account
     user_       = CustomUser.objects.get(pk=pk) # user's model
     currency    = get_currency_symbol(user_.currency) # user model's currency
@@ -406,7 +410,7 @@ def TransferSearchView(request, pk):
     if not correct_user(pk):
         raise PermissionDenied()
 
-    return render(request, "accounts/transfer_search.html")
+    return render(request, "accounts/transfer_search.html", {"error" : _("No accounts were found.")})
 
 
 # Transfer Searching Results
