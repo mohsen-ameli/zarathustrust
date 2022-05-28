@@ -16,7 +16,7 @@ from django.urls.base import reverse
 from django.utils.translation import gettext as _
 from django.utils import translation
 from users.models import CustomUser
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.core.paginator import Paginator
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
@@ -443,40 +443,41 @@ def CashOut(request, pk):
     if not correct_user(pk):
         raise PermissionDenied()
     
-    # getting user's currency stuff
-    user_ = CustomUser.objects.get(pk=request.user.pk)
-    currency = get_currency_symbol(user_.currency)
-    
-    interest_rate     = account_interest.objects.get(pk=pk).interest_rate
-    guy               = account.objects.get(pk=pk)
-    bonus             = guy.bonus
-    if interest_rate >= 0.1:
-        # checking bonus if it's more than interest rate or not
-        if interest_rate <= bonus:
-            total_balance = account.objects.get(pk=pk).total_balance # getting total balance
-            total_balance = total_balance + (round(interest_rate, 1) * 2) 
-            account.objects.filter(pk=pk).update(total_balance=total_balance) # updating total balance
-            account_interest.objects.filter(pk=pk).update(interest=total_balance) # updating account interest
-            messages.success(request, _(f'You have successfully cashed out {currency}{round(interest_rate, 1) * 2}'))
-            account_interest.objects.filter(pk=pk).update(interest_rate=0)
-            account.objects.filter(pk=pk).update(bonus=bonus-round(interest_rate, 1)) # updating bonus
-            r = transaction_history(person=guy, price=round(interest_rate, 1) * 2, method="Cash Out")
-            r.save()
-            return redirect('accounts:home', pk=pk)
-        else:
-            total_balance = account.objects.get(pk=pk).total_balance # getting total balance
-            total_balance = total_balance + bonus + interest_rate
-            account.objects.filter(pk=pk).update(total_balance=total_balance) # updating total balance
-            account_interest.objects.filter(pk=pk).update(interest=total_balance) # updating account interest
-            messages.success(request, _(f'You have successfully cashed out {currency}{round(interest_rate, 1) + bonus}'))
-            account_interest.objects.filter(pk=pk).update(interest_rate=0)
-            account.objects.filter(pk=pk).update(bonus=0) # updating bonus 
-            r = transaction_history(person=guy, price=round(interest_rate, 1) + bonus, method="Cash Out")
-            r.save()
-            return redirect('accounts:home', pk=pk)
-    elif interest_rate < 0.1:
-        messages.warning(request, _(f'You need at least $0.1 to be able to cash out ! keep going tho'))
-        return redirect('accounts:home', pk=pk)
+    # settings variables
+    user              = CustomUser.objects.get(pk=pk)
+    acc               = account.objects.get(pk=pk)
+    accInterest       = account_interest.objects.get(pk=pk)
+    currency          = get_currency_symbol(user.currency)
+    interest_rate     = accInterest.interest_rate
+    bonus             = acc.bonus
+    total_balance     = acc.total_balance
+
+    # checking insufficient interest amount
+    if interest_rate < 0.1:
+        return JsonResponse({"failed": "You need at least $0.1 to be able to cash out ! keep going tho"})
+
+    # checking bonus if it's more than interest rate or not
+    if interest_rate <= bonus:
+        extra = (round(interest_rate, 1) * 2)
+        acc.bonus = F('bonus') - interest_rate
+    else:
+        extra = bonus + interest_rate
+        acc.bonus = 0
+
+    total_balance = total_balance + extra
+
+    # updaing everyting
+    acc.total_balance = total_balance
+    accInterest.interest = total_balance
+    accInterest.interest_rate = 0
+
+    r = transaction_history(person=acc, price=round(extra, 1), method="Cash Out")
+
+    r.save()
+    acc.save()
+    accInterest.save()
+
+    return JsonResponse({"success": True, "balance": total_balance, "bonus": acc.bonus})
 
 
 # Referral Code

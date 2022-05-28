@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "users.apps.UsersConfig",
     "accounts.apps.AccountsConfig",
     "wallets",
+    "api.apps.ApiConfig",
     
     "crispy_forms",
     "rosetta",
@@ -59,6 +60,8 @@ INSTALLED_APPS = [
     "captcha",
     "admin_interface",
     "colorfield",
+    "corsheaders",
+    "rest_framework",
 
     "django.contrib.postgres",
     "django.contrib.admin",
@@ -81,6 +84,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "axes.middleware.AxesMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -218,6 +222,12 @@ AXES_LOCKOUT_TEMPLATE = "users/login_timeout.html"
 # STRIPE
 STRIPE_PUBLIC_KEY = config.get("STRIPE_PUBLIC_KEY")
 STRIPE_SECRET_KEY = config.get("STRIPE_SECRET_KEY")
+
+
+# API & REACT
+CORS_ORIGIN_WHITELIST = [
+     'http://localhost:3000'
+]
 
 
 # HTTPS settings
