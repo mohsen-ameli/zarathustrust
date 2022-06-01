@@ -476,8 +476,10 @@ def CashOut(request, pk):
     r.save()
     acc.save()
     accInterest.save()
+    acc.refresh_from_db()
+    accInterest.refresh_from_db()
 
-    return JsonResponse({"success": True, "balance": total_balance, "bonus": acc.bonus})
+    return JsonResponse({"success": True, "balance": total_balance, "amount": round(extra, 1)})
 
 
 # Referral Code
@@ -506,7 +508,7 @@ def DepositUpdateView(request, pk):
     currency_name       = user_.currency
     currency_symbol_    = get_currency_symbol(currency_name)
     min_currency        = currency_min(currency_name)
-    currency_options    = [(currency_name, currency_symbol_)] # currencies that will be showed as options
+    currency_options    = [(currency_name, currency_symbol_, min_currency)] # currencies that will be showed as options
 
     if request.GET.get("currency"):
         currency_GET        = request.GET.get("currency").upper()
@@ -519,7 +521,7 @@ def DepositUpdateView(request, pk):
 
     branch_acc = BranchAccounts.objects.filter(main_account__pk=pk)
     for wallet in branch_acc:
-        currency_options.append((wallet.currency, get_currency_symbol(wallet.currency)))
+        currency_options.append((wallet.currency, get_currency_symbol(wallet.currency), currency_min(wallet.currency)))
 
 
     form = AddMoneyForm(request.POST or None)
@@ -547,13 +549,14 @@ def DepositUpdateView(request, pk):
             return redirect('accounts:add-money', pk=pk)
     
     context = {
-        'form'                  : form, 
+        # 'form'                  : form, 
         'min_currency'          : min_currency,
         'currency'              : currency_name,
         'user_currency_symbol'  : currency_symbol_,
         'currency_options'      : currency_options,
     }
-    return render(request, 'accounts/add_money_form.html', context)
+    return JsonResponse(context)
+    # return render(request, 'accounts/add_money_form.html', context)
 
 
 # Add Money Info

@@ -1,3 +1,4 @@
+from unicodedata import name
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
@@ -10,5 +11,7 @@ router.register('interest', views.InterestApi, 'interest')
 
 urlpatterns = [
     path('api/', include(router.urls)),
-    path('api/currUser', views.current_user, name='currUser')
+    path('api/currUser', views.current_user, name='currUser'),
+    path('api/countries', views.countries, name='countries'),
+    path('api/<int:pk>/deposit', views.deposit, name='deposit')
 ]

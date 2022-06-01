@@ -85,6 +85,7 @@ MIDDLEWARE = [
     "axes.middleware.AxesMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "corsheaders.middleware.CorsPostCsrfMiddleware",
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -228,6 +229,14 @@ STRIPE_SECRET_KEY = config.get("STRIPE_SECRET_KEY")
 CORS_ORIGIN_WHITELIST = [
      'http://localhost:3000'
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        # 'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',
+    ]
+}
+
 
 
 # HTTPS settings
