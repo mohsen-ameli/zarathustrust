@@ -1,4 +1,5 @@
 import os, json, requests, decimal
+from tokenize import Double
 from crum import get_current_user
 from django.conf import settings
 from django.utils import translation
@@ -91,37 +92,18 @@ def country_currencies_clean():
 
 
 # returns the user's wallet's and account's iso 2 and 3, their currency symbol, and money they have
-def user_wallets(request, wallet_name, branch_acc, user_, acc):
+def user_wallets(request, branch_acc, acc):
     data = country_currencies_clean()
-    # all wallets WITH user's account
-    if wallet_name:
-        wallet_name = wallet_name.upper()
-        # testing to see if the entered GET arg actually exists in the user's wallet currency column
-        test = branch_acc.filter(currency=wallet_name).exists()
-        
-        if test is not False or user_.currency == wallet_name:
-            # wallets = (country_iso2, currency, symbol, balance)
-            wallets = []
 
-            # appending the first element as the user's main currency
-            if acc.main_currency != wallet_name:
-                for a in data:
-                    if data[a] == acc.main_currency:
-                        wallets.append((a, acc.main_currency, get_currency_symbol(acc.main_currency), acc.total_balance))
+    wallets = [] # (country_iso2, currency, symbol, balance)
 
-            # attaching all wallets to the list
-            for item in branch_acc.exclude(currency=wallet_name):
-                for i in data:
-                    if data[i] == item.currency:
-                        wallets.append((i, item.currency, get_currency_symbol(item.currency), item.total_balance))
-        else:
-            wallet_name = None
-    # all wallets WITHOUT user's account
-    else:
-        wallets = []
-        for wallet in branch_acc:
-            for a in data:
-                if data[a] == wallet.currency:
-                    wallets.append((a ,wallet.currency, get_currency_symbol(wallet.currency)))
+    # attaching all wallets to the list
+    for i in data:
+        for item in branch_acc:
+            if data[i] == item.currency:
+                wallets.append((i, item.currency, get_currency_symbol(item.currency), float(item.total_balance)))
+
+        if data[i] == acc.main_currency:
+            wallets.insert(0, (i, acc.main_currency, get_currency_symbol(acc.main_currency), float(acc.total_balance)))
 
     return wallets

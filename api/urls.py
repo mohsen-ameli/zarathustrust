@@ -11,7 +11,14 @@ router.register('interest', views.InterestApi, 'interest')
 
 urlpatterns = [
     path('api/', include(router.urls)),
-    path('api/currUser', views.current_user, name='currUser'),
-    path('api/countries', views.countries, name='countries'),
-    path('api/<int:pk>/deposit', views.deposit, name='deposit')
+    path('api/currUser/', views.current_user, name='currUser'),
+    path('api/countryCurrencies/', views.countryCurrencies, name='country-currencies'),
+    path('api/countries/', views.countries, name='countries'),
+    path('api/transferSearch', views.transferSearch, name='transfer-search'),
+    path('api/transferConfirm', views.transferConfirm, name='transfer-confirm'),
+    path('api/<int:pk>/deposit', views.deposit, name='deposit'),
+    path('api/<int:pk>/withdraw', views.withdraw, name='withdraw'),
+    path('api/<int:pk>/money-form', views.moneyForm, name='money-form'),
+    path('api/<int:pk>/', views.wallets, name='wallets'),
+    path('api/<int:pk>/<str:currency>/', views.walletsConfirm, name='new-wallet'),
 ]

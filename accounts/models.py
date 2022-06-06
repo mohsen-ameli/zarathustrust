@@ -3,13 +3,11 @@ import json
 from crum import get_current_user
 from django.core.mail import send_mail
 from django.db import models
-from django.db.models.deletion import DO_NOTHING, PROTECT, RESTRICT
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from users.models import CustomUser
-from users.utils import new_user
 from .functions import get_currency_symbol
 
 with open('/etc/config.json') as config_file:
@@ -92,10 +90,19 @@ class transaction_history(models.Model):
             second_person = "Anonymous"
         
         if not self.person:
-            person = self.wallet.main_account.created_by.username
-            symbol = get_currency_symbol(self.wallet.currency)
+            try:
+                person = self.wallet.main_account.created_by.username
+            except:
+                person = "Anonymous"
+            try:
+                symbol = get_currency_symbol(self.wallet.currency)
+            except:
+                symbol = "None"
         else:
-            symbol = get_currency_symbol(self.person.created_by.currency)
+            try:
+                symbol = get_currency_symbol(self.person.created_by.currency)
+            except:
+                symbol = "None"
         
         if self.method == "Transfer":
             return f'TRANSFER from {person} to {second_person} for the amount {symbol}{price} at {self.date}'

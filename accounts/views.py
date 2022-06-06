@@ -1,4 +1,4 @@
-import os, decimal, json, stripe
+import os, decimal, json
 from django.db.models.expressions import Exists
 import requests
 
@@ -96,57 +96,25 @@ def HomeView(request, pk):
     if request.is_ajax():
         return redirect("accounts:add-money", pk=pk)
 
-    acc         = account.objects.get(pk=pk) # user's account
-    user_       = CustomUser.objects.get(pk=pk) # user's model
-    currency    = get_currency_symbol(user_.currency) # user model's currency
-    branch_acc  = BranchAccounts.objects.filter(main_account__pk=pk) # getting user's wallets
+    acc             = account.objects.get(pk=pk) # user's account
+    user            = CustomUser.objects.get(pk=pk) # user's model
+    currency        = get_currency_symbol(user.currency) # user model's currency
+    branchAccount   = BranchAccounts.objects.filter(main_account__pk=pk) # getting user's wallets
 
-    # loading data
-    data = country_currencies_clean()
-
-    # if user selected a country
-    wallet_name = request.GET.get("wallet-name")
-
-    # getting user's wallets
-    wallets = user_wallets(request, wallet_name, branch_acc, user_, acc)
-
-    # setting some vars for context
-    if wallet_name:
-        wallet_name = wallet_name.upper()
-        # testing to see if the entered GET arg actually exists in the user's wallet currency column
-        test = branch_acc.filter(currency=wallet_name).exists()
-        if test is not False or user_.currency == wallet_name:
-            # setting variables for our context
-            for i in data:
-                if data[i] == wallet_name:
-                    wallet_iso       = i
-                    wallet_currency  = data[i]
-                    wallet_symbol    = get_currency_symbol(data[i])
-                    try:
-                        wallet_balance   = branch_acc.get(currency=data[i]).total_balance
-                    except:
-                        wallet_balance = acc.total_balance
-        else:
-            wallet_name = None
-    else: # default view of the user's account
-        # show users their default wallet
-        for i in data:
-            if data[i] == acc.main_currency:
-                wallet_iso       = i
-                wallet_currency  = data[i]
-                wallet_symbol    = get_currency_symbol(data[i])
-                wallet_balance   = acc.total_balance
+    # getting user's wallet information
+    wallets = user_wallets(request, branchAccount, acc)
+    
 
     context = {
         'interest_list'         : account_interest.objects.get(pk=pk),
         'object'                : acc,
-        'is_bus'                : user_.is_business,
+        'is_bus'                : user.is_business,
         'currency'              : currency,
 
-        'wallet_iso'            : wallet_iso,
-        'wallet_currency'       : wallet_currency,
-        'wallet_symbol'         : wallet_symbol,
-        'wallet_balance'        : wallet_balance,
+        'wallet_iso'            : wallets[0][0],
+        'wallet_currency'       : wallets[0][1],
+        'wallet_symbol'         : wallets[0][2],
+        'wallet_balance'        : wallets[0][3],
         'wallets'               : zip(wallets),
         'wallets_count'         : len(wallets),
     }
@@ -454,7 +422,7 @@ def CashOut(request, pk):
 
     # checking insufficient interest amount
     if interest_rate < 0.1:
-        return JsonResponse({"failed": "You need at least $0.1 to be able to cash out ! keep going tho"})
+        return JsonResponse({"failed": "You need at least $0.1 to be able to cash out !"})
 
     # checking bonus if it's more than interest rate or not
     if interest_rate <= bonus:
