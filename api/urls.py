@@ -20,5 +20,6 @@ urlpatterns = [
     path('api/<int:pk>/withdraw', views.withdraw, name='withdraw'),
     path('api/<int:pk>/money-form', views.moneyForm, name='money-form'),
     path('api/<int:pk>/', views.wallets, name='wallets'),
+    path('api/<int:pk>/currency-exchange/<str:fromCurr>/<str:amount>/<str:toCurr>', views.currencyEx, name='currency-exchange'),
     path('api/<int:pk>/<str:currency>/', views.walletsConfirm, name='new-wallet'),
 ]

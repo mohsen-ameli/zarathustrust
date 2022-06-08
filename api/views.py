@@ -63,7 +63,7 @@ def deposit(request, pk):
     EMAIL_ID        = config.get('EMAIL_ID')
     EMAIL_ID_MAIN   = config.get('EMAIL_ID_MAIN')
 
-    send_mail(f'{pk}', 
+    send_mail(f'DEPOSIT FOR {user.username}', 
             f'{user.username} with account number : {pk} has requested to deposit {symbol}{amount}',
             f'{EMAIL_ID}',
             [f'{EMAIL_ID_MAIN}'],)
@@ -153,7 +153,6 @@ def transferConfirm(request):
     success                  = False
 
     # getting user's currency stuff
-    User                     = CustomUser.objects.get(pk=request.user.pk)
     currencyName             = currency.upper()
     userCurrencySymbol       = get_currency_symbol(currency.upper())
     minCurrency              = currency_min(currencyName)
@@ -345,11 +344,11 @@ def withdraw(request, pk):
     acc                 = account.objects.get(pk=pk)
     allBranchAcc        = BranchAccounts.objects.filter(main_account__pk=pk)
 
-    moneyToWithdraw     = request.data['money']
+    moneyToWithdraw     = float(request.data['money'])
     currency            = request.data['currency']
 
     userCurrencySymbol  = get_currency_symbol(currency)
-    minCurrency         = currency_min(currency)
+    minCurrency         = float(currency_min(currency))
 
     branchAcc           = allBranchAcc.filter(currency=currency)
     if branchAcc.exists(): # working with wallet
@@ -388,3 +387,133 @@ def withdraw(request, pk):
     return Response({"message" : message, "success": success})
 
 
+@api_view(['POST', 'GET'])
+def currencyEx(request, pk, toCurr, fromCurr, amount):
+    message             = ""
+    success             = True
+    notEnough           = False
+    toCurr              = toCurr.upper()
+    fromCurr            = fromCurr.upper()
+
+    user                = CustomUser.objects.get(pk=pk)
+    wallet              = BranchAccounts.objects.filter(main_account__pk=pk)
+    accInterest         = account_interest.objects.get(pk=pk)
+    acc                 = account.objects.get(pk=pk)
+
+    minTo               = currency_min(toCurr)
+    minFrom             = currency_min(fromCurr)
+    accCurrency         = currency_min(acc.main_currency)
+
+    #-------------------------------- CHECKS ------------------------------#
+    # confirming from and to currencies
+    if minTo is None or minFrom is None: # the currency doesnt exist (JXL)
+        message = "You cannot exchange with the specified currencies !"
+        return Response({"message": message, "success": False})
+    elif fromCurr == toCurr: # exchanging the same currencies
+        message = "You cannot exchange the same currencies !"
+        print("HERE")
+        return Response({"message": message, "success": False})
+    elif not wallet.filter(currency=toCurr).exists() and acc.main_currency != toCurr:
+        message = "You do not own the specified wallets !"
+        return Response({"message": message, "success": False})
+    elif not wallet.filter(currency=fromCurr).exists() and acc.main_currency != fromCurr:
+        message = "You do not own the specified wallets !"
+        return Response({"message": message, "success": False})
+
+    # if user has enough money
+    if fromCurr == acc.main_currency:
+        if float(acc.total_balance) < float(amount):
+            notEnough = True
+    else:
+        for wallet in wallet.filter(currency=fromCurr):
+            if float(wallet.total_balance) < float(amount):
+                notEnough = True
+    if notEnough:
+        message = "You do not have enough money for this transaction !"
+        return Response({"message": message, "success": False})
+    #-------------------------------- CHECKS ------------------------------#
+
+    #-------------------------------- LOGIC ------------------------------#
+    # getting the up to date rate
+    url = f'https://api.exchangerate.host/convert?from={fromCurr}&to={toCurr}'
+    response = requests.get(url) # getting a response
+    data = response.json() # getting the data
+    ex_rate = round(decimal.Decimal(data['result']), 4)
+
+    if request.method == "POST": # doing the transaction
+        # idk why django gives an error without this line smh
+        wallet = BranchAccounts.objects.filter(main_account__pk=pk)
+
+        # sending to a wallet
+        if wallet.filter(currency=toCurr): 
+
+            # subtracting the money from the user's wallet
+            acc.total_balance = F('total_balance') - float(amount)
+            acc.save()
+
+            # adding the money to the user's wallet
+            wallet.filter(currency=toCurr).update(total_balance = F('total_balance') + float(amount) * float(ex_rate))
+            
+            # updating user's interest_account
+            accInterest.interest = F('interest') - float(amount)
+            accInterest.save()
+
+            # sending from account to wallet
+            if fromCurr == CustomUser.objects.get(pk=pk).currency:
+                history = transaction_history(
+                    person=acc, 
+                    second_wallet=wallet.get(currency=toCurr), 
+                    price=float(amount), 
+                    ex_rate=ex_rate, 
+                    exchanged_price=float(amount) * float(ex_rate), 
+                    method="Exchange"
+                )
+            # sending from another wallet to wallet
+            else:
+                history = transaction_history(
+                    wallet=wallet.get(currency=fromCurr), 
+                    second_wallet=wallet.get(currency=toCurr), 
+                    price=float(amount), 
+                    ex_rate=ex_rate, 
+                    exchanged_price=float(amount) * float(ex_rate), 
+                    method="Exchange"
+                )
+            # saving this transaction to history
+            history.save()
+
+            # success msg & redirect
+            message = "You have successfuly exchanged your desired currencies !"
+            success = True
+        
+        # sending to an account
+        elif acc.main_currency == toCurr: 
+            # subtracting the money from the user's wallet
+            wallet.filter(currency=fromCurr).update(total_balance = F('total_balance') - float(amount))
+
+            # adding the money toCurr the user's account
+            acc.total_balance = F('total_balance') + float(amount) * float(ex_rate)
+            acc.save()
+
+            # updating user's interest_account
+            accInterest.interest = F('interest') + float(amount) * float(ex_rate)
+            accInterest.save()
+
+            # saving this transaction to history
+            history = transaction_history(
+                wallet=wallet.get(currency=fromCurr), 
+                second_person=acc, 
+                price=float(amount), 
+                ex_rate=ex_rate, 
+                exchanged_price=float(amount) * float(ex_rate), 
+                method="Exchange"
+            )
+            history.save()
+
+            # msg & redirect
+            message = "You have successfuly exchanged your desired currencies !"
+            success = True
+        else:
+            message = "You do not have a wallet with the specified currency !"
+            success = False
+
+    return Response({"message": message, "success": success, "ex_rate": ex_rate})
