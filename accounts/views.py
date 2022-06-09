@@ -53,8 +53,7 @@ def LandingPageView(request):
             code = None
 
     country = code
-    if country is None:
-        lang = 'en'
+    lang = 'en'
     # else:
     #     country_code = country.upper()
     #     # project = os.path.abspath(os.path.dirname(__name__)) # root of django project
