@@ -62,7 +62,7 @@ def LandingPageView(request):
         file = f'{project}/json/country_languages.json' # getting the file containing all country codes
         with open(file, 'r') as config_file: # opening and reading the json file
             data = json.load(config_file)
-        langs = data[country_code] # searching for our specific country code
+        langs = data['country_code'] # searching for our specific country code
         lang = next(iter(langs))
     translation.activate(lang)
     response = render(request, 'accounts/landing_page.html')
