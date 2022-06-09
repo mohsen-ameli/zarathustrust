@@ -1,3 +1,4 @@
+# sudo apt install gcc, for psycopg2
 Django==3.2.13
 celery
 djangorestframework
@@ -5,6 +6,7 @@ twilio
 requests
 stripe
 whitenoise
+Pillow
 django-crispy-forms
 django-rosetta
 django-axes
@@ -12,7 +14,6 @@ django-mathfilters
 django-countries
 crispy-bootstrap5
 django-htmx
-Pillow
 django-simple-captcha
 django-admin-interface
 django-cors-headers
@@ -20,4 +21,4 @@ psycopg2-binary
 django-crum
 phonenumbers
 gunicorn
-psycopg2-binary
+psycopg2
