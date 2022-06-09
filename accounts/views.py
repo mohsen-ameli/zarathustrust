@@ -55,15 +55,15 @@ def LandingPageView(request):
     country = code
     if country is None:
         lang = 'en'
-    else:
-        country_code = country.upper()
-        # project = os.path.abspath(os.path.dirname(__name__)) # root of django project
-        project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        file = f'{project}/json/country_languages.json' # getting the file containing all country codes
-        with open(file, 'r') as config_file: # opening and reading the json file
-            data = json.load(config_file)
-        langs = data['country_code'] # searching for our specific country code
-        lang = next(iter(langs))
+    # else:
+    #     country_code = country.upper()
+    #     # project = os.path.abspath(os.path.dirname(__name__)) # root of django project
+    #     project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    #     file = f'{project}/json/country_languages.json' # getting the file containing all country codes
+    #     with open(file, 'r') as config_file: # opening and reading the json file
+    #         data = json.load(config_file)
+    #     langs = data[country_code] # searching for our specific country code
+    #     lang = next(iter(langs))
     translation.activate(lang)
     response = render(request, 'accounts/landing_page.html')
     response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang)
