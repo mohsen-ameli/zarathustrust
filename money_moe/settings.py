@@ -30,7 +30,7 @@ SECRET_KEY = config.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = str(config.get("DEBUG")) == "1"
 
-ALLOWED_HOSTS = ['www.zarathustrust.com', '165.227.37.14', 'localhost']
+ALLOWED_HOSTS = ['www.zarathustrust.com', 'zarathustrust.com', '165.227.37.14', 'localhost']
 
 INTERNAL_IPS = (
     '127.0.0.1'
