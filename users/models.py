@@ -26,6 +26,7 @@ class CustomUser(AbstractUser):
     )
     country             = CountryField(null=True)
     currency            = CharField(max_length=6, null=True)
+    iso2                = CharField(max_length=2, null=True)
     language            = CharField(max_length=15, null=True)
     phone_ext           = CharField(max_length=4, null=True, blank=True)
     phone_number        = CharField(max_length=20, null=True)

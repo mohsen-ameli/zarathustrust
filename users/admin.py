@@ -15,7 +15,7 @@ class CustomUserAdmin(UserAdmin):
                 'fields': (
                     'country',
                     'language',
-                    'currency',
+                    ('currency', 'iso2'),
                     'phone_ext',
                     'phone_number',
                     'is_business',

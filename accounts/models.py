@@ -23,6 +23,7 @@ class account(models.Model):
     target_account    = models.CharField(max_length=30, null=True, blank=True)
     money_to_send     = models.PositiveIntegerField(null=True, default=0)
     main_currency     = models.CharField(max_length=6, null=True)
+    iso2              = models.CharField(max_length=2, null=True)
 
     def save(self, *args, **kwargs):
         if self.add_money:

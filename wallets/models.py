@@ -7,6 +7,7 @@ class BranchAccounts(models.Model):
     add_money       = models.DecimalField(decimal_places=1, max_digits=10, null=True, blank=True)
     take_money      = models.DecimalField(decimal_places=1, max_digits=10, null=True, blank=True)
     currency        = models.CharField(max_length=6, null=True)
+    iso2            = models.CharField(max_length=2, null=True)
 
     def save(self, *args, **kwargs):
         if self.add_money:

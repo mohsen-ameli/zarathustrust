@@ -92,7 +92,7 @@ def country_currencies_clean():
 
 
 # returns the user's wallet's and account's iso 2 and 3, their currency symbol, and money they have
-def user_wallets(request, branch_acc, acc):
+def user_wallets(branch_acc, acc):
     data = country_currencies_clean()
 
     wallets = [] # (country_iso2, currency, symbol, balance)
@@ -100,7 +100,7 @@ def user_wallets(request, branch_acc, acc):
     # attaching all wallets to the list
     for i in data:
         for item in branch_acc:
-            if data[i] == item.currency:
+            if data[i] == item.currency and i == item.iso2:
                 wallets.append((i, item.currency, get_currency_symbol(item.currency), float(item.total_balance)))
 
         if data[i] == acc.main_currency:

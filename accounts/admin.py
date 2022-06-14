@@ -6,7 +6,7 @@ from users.models import CustomUser
 class detailsAdmin(admin.ModelAdmin):
     model = models.account
 
-    fields=('created_by', 'main_currency', 'total_balance', ('add_money', 'take_money'), 'bonus')
+    fields=('created_by', ('main_currency', 'iso2'), 'total_balance', ('add_money', 'take_money'), 'bonus')
 
 
 class detailsTransactions(admin.ModelAdmin):

@@ -101,7 +101,7 @@ def HomeView(request, pk):
     branchAccount   = BranchAccounts.objects.filter(main_account__pk=pk) # getting user's wallets
 
     # getting user's wallet information
-    wallets = user_wallets(request, branchAccount, acc)
+    wallets = user_wallets(branchAccount, acc)
     
 
     context = {
@@ -674,7 +674,7 @@ def History(request, pk):
     wallet = request.GET.get("wallet-name")
 
     # getting user's wallets
-    wallets = user_wallets(request, wallet, branch_acc, user_, acc)
+    wallets = user_wallets(branch_acc, acc)
 
     # checking if user selected to see their wallets and only wallets
     if wallet and wallet != currency:

@@ -1,21 +1,24 @@
 import json
 import os
 
-from accounts.functions import *
-from accounts.models import account, account_interest, transaction_history
 from django.core.mail import send_mail, EmailMessage
 from django.db.models import Q, F
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import Paginator
 from rest_framework import viewsets
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+
+from accounts.functions import *
+from accounts.models import *
 from users.models import CustomUser
 from wallets.models import BranchAccounts
+from .serializers import *
 
-from .serializers import AccountSerializer, CustomUserSerializer, InterestSerializer, UserSerializer
 
-with open('/etc/config.json') as config_file:
-    config = json.load(config_file)
+def loadConfig():
+    with open('/etc/config.json') as config_file:
+        return json.load(config_file)
 
 
 class AccountsApi(viewsets.ModelViewSet):
@@ -34,7 +37,7 @@ class UsersApi(viewsets.ModelViewSet):
 
 
 @api_view(['GET'])
-def current_user(request):
+def currentUser(request):
     try:
         user = CustomUser.objects.get(pk=request.user.pk)
     except:
@@ -44,9 +47,9 @@ def current_user(request):
 
 
 @api_view(['GET'])
-def countries(request):
+def jsonSearch(request, file):
     project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    file = f'{project}/json/currencies.json' # getting the file containing all country codes
+    file = f'{project}/json/{file}.json' # getting the file containing all country codes
 
     with open(file, 'r') as json_currency: # opening and reading the json file
         data = json.load(json_currency)
@@ -55,8 +58,10 @@ def countries(request):
 
 
 @api_view(['POST'])
-def deposit(request, pk):
-    user = CustomUser.objects.get(pk=pk)
+def deposit(request):
+    pk              = request.user.pk
+    config          = loadConfig()
+    user            = CustomUser.objects.get(pk=pk)
 
     symbol          = request.data['symbol']
     amount          = request.data['amount']
@@ -73,50 +78,99 @@ def deposit(request, pk):
     return Response()
 
 
+@api_view(['POST'])
+def withdraw(request):
+    pk                  = request.user.pk
+    config              = loadConfig()
+    success             = False
+    user                = CustomUser.objects.get(pk=pk)
+    acc                 = account.objects.get(pk=pk)
+    allBranchAcc        = BranchAccounts.objects.filter(main_account__pk=pk)
+
+    moneyToWithdraw     = float(request.data['money'])
+    currency            = request.data['currency']
+
+    userCurrencySymbol  = get_currency_symbol(currency)
+    minCurrency         = float(currency_min(currency))
+
+    branchAcc           = allBranchAcc.filter(currency=currency)
+    if branchAcc.exists(): # working with wallet
+        balance = branchAcc.values("total_balance")[0]['total_balance']
+    else: # working with account
+        balance = acc.total_balance
+
+
+    if moneyToWithdraw >= minCurrency and moneyToWithdraw <= balance:
+        # sending email to admin and user
+        EMAIL_ID        = config.get('EMAIL_ID')
+        EMAIL_ID_MAIN   = config.get('EMAIL_ID_MAIN')
+        MOE_EMAIL       = config.get('MOE_EMAIL')
+        send_mail(f'WITHDRAW FOR {user.username}', 
+                f'{user.username} with account number {pk} has requested to withdraw {userCurrencySymbol}{moneyToWithdraw}',
+                f'{EMAIL_ID}',
+                [f'{EMAIL_ID_MAIN}'],)
+
+
+        if branchAcc.exists(): # withdrawing from wallet
+            branchAcc.update(total_balance=F('total_balance') - moneyToWithdraw)
+            branchAcc.update(take_money=0)
+        else: # withdrawing from account
+            acc.take_money = 0
+            acc.total_balance = F('total_balance') - moneyToWithdraw
+            acc.save()
+
+        # success message
+        message = f"{userCurrencySymbol}{moneyToWithdraw} was requested to be taken out"
+        success = True
+    elif moneyToWithdraw > balance:
+        message = "You have requested to take more than you have in your current balance !"
+    else:
+        message = f"Please consider that the minimum amount to withdraw must be {userCurrencySymbol}{minCurrency} or higher !"
+        
+    return Response({"message" : message, "success": success})
+
+
 @api_view(['GET'])
-def moneyForm(request, pk):
-    # getting some vars
-    currency            = account.objects.get(pk=pk).main_currency
-    branch_acc          = BranchAccounts.objects.filter(main_account__pk=pk)
+def moneyForm(request):
+    pk                  = request.user.pk
+    acc                 = account.objects.get(pk=pk)
+    branchAcc           = BranchAccounts.objects.filter(main_account__pk=pk)
+
+    currency            = acc.main_currency
+    iso2                = acc.iso2
 
     userCurrencySymbol  = get_currency_symbol(currency)
     minCurrency         = currency_min(currency)
 
-    currencyOptions    = [(currency, userCurrencySymbol, minCurrency)] # currencies that will be showed as options
+    currencyOptions     = [(iso2, currency, userCurrencySymbol, minCurrency)] # currencies that will be showed as options
 
-    for wallet in branch_acc:
-        currencyOptions.append((wallet.currency, get_currency_symbol(wallet.currency), currency_min(wallet.currency)))
+    for wallet in branchAcc:
+        currencyOptions.append((wallet.iso2, wallet.currency, get_currency_symbol(wallet.currency), currency_min(wallet.currency)))
     
     return Response({'currencyOptions': currencyOptions})
 
 
 @api_view(['GET'])
-def wallets(request, pk):
+def wallets(request):
+    pk              = request.user.pk
     acc             = account.objects.get(pk=pk)
     branchAccount   = BranchAccounts.objects.filter(main_account__pk=pk)
 
-    wallets = user_wallets(request, branchAccount, acc)
+    wallets = user_wallets(branchAccount, acc)
 
     return Response(wallets)
 
 
 @api_view(['POST'])
-def walletsConfirm(request, pk, currency):
+def walletsConfirm(request):
+    pk       = request.user.pk
+    currency = request.data['currency']
+    iso2     = request.data['iso2']
+
     main_account = account.objects.get(pk=pk)
-    BranchAccounts.objects.create(main_account=main_account, currency=currency)
+    BranchAccounts.objects.create(main_account=main_account, currency=currency, iso2=iso2)
     
     return Response()
-
-
-@api_view(['GET'])
-def countryCurrencies(request):
-    project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    file = f'{project}/json/country_currencies_clean.json' # getting the file containing all country codes
-    
-    with open(file, 'r') as config_file: # opening and reading the json file
-        data = json.load(config_file)
-
-    return Response(data)
 
 
 @api_view(['POST'])
@@ -145,6 +199,7 @@ def transferSearch(request):
 @api_view(['POST'])
 def transferConfirm(request):
     # react variables
+    config                   = loadConfig()
     pk                       = request.user.pk
     reciever_name            = request.data['reciever_name']
     purpose                  = request.data['purpose']
@@ -336,87 +391,34 @@ def transferConfirm(request):
     return Response({"message" : message, "success": success})
 
 
-@api_view(['POST'])
-def withdraw(request, pk):
-    # some vars
-    success             = False
-    user                = CustomUser.objects.get(pk=pk)
-    acc                 = account.objects.get(pk=pk)
-    allBranchAcc        = BranchAccounts.objects.filter(main_account__pk=pk)
-
-    moneyToWithdraw     = float(request.data['money'])
-    currency            = request.data['currency']
-
-    userCurrencySymbol  = get_currency_symbol(currency)
-    minCurrency         = float(currency_min(currency))
-
-    branchAcc           = allBranchAcc.filter(currency=currency)
-    if branchAcc.exists(): # working with wallet
-        balance = branchAcc.values("total_balance")[0]['total_balance']
-    else: # working with account
-        balance = acc.total_balance
-
-
-    if moneyToWithdraw >= minCurrency and moneyToWithdraw <= balance:
-        # sending email to admin and user
-        EMAIL_ID        = config.get('EMAIL_ID')
-        EMAIL_ID_MAIN   = config.get('EMAIL_ID_MAIN')
-        MOE_EMAIL       = config.get('MOE_EMAIL')
-        send_mail(f'WITHDRAW FOR {user.username}', 
-                f'{user.username} with account number {pk} has requested to withdraw {userCurrencySymbol}{moneyToWithdraw}',
-                f'{EMAIL_ID}',
-                [f'{EMAIL_ID_MAIN}'],)
-
-
-        if branchAcc.exists(): # withdrawing from wallet
-            branchAcc.update(total_balance=F('total_balance') - moneyToWithdraw)
-            branchAcc.update(take_money=0)
-        else: # withdrawing from account
-            acc.take_money = 0
-            acc.total_balance = F('total_balance') - moneyToWithdraw
-            acc.save()
-
-        # success message
-        message = f"{userCurrencySymbol}{moneyToWithdraw} was requested to be taken out"
-        success = True
-    elif moneyToWithdraw > balance:
-        message = "You have requested to take more than you have in your current balance !"
-    else:
-        message = f"Please consider that the minimum amount to withdraw must be {userCurrencySymbol}{minCurrency} or higher !"
-        
-    return Response({"message" : message, "success": success})
-
-
 @api_view(['POST', 'GET'])
-def currencyEx(request, pk, toCurr, fromCurr, amount):
+def currencyEx(request, fromCurr, fromIso, amount, toCurr, toIso):
+    pk                  = request.user.pk
     message             = ""
     success             = True
     notEnough           = False
     toCurr              = toCurr.upper()
     fromCurr            = fromCurr.upper()
 
-    user                = CustomUser.objects.get(pk=pk)
     wallet              = BranchAccounts.objects.filter(main_account__pk=pk)
     accInterest         = account_interest.objects.get(pk=pk)
     acc                 = account.objects.get(pk=pk)
 
     minTo               = currency_min(toCurr)
     minFrom             = currency_min(fromCurr)
-    accCurrency         = currency_min(acc.main_currency)
 
     #-------------------------------- CHECKS ------------------------------#
     # confirming from and to currencies
     if minTo is None or minFrom is None: # the currency doesnt exist (JXL)
-        message = "You cannot exchange with the specified currencies !"
+        message = "88You cannot exchange with the specified currencies !"
         return Response({"message": message, "success": False})
     elif fromCurr == toCurr: # exchanging the same currencies
         message = "You cannot exchange the same currencies !"
-        print("HERE")
         return Response({"message": message, "success": False})
-    elif not wallet.filter(currency=toCurr).exists() and acc.main_currency != toCurr:
+    elif not wallet.filter(currency=toCurr, iso2=toIso).exists() and acc.main_currency != toCurr:
         message = "You do not own the specified wallets !"
         return Response({"message": message, "success": False})
-    elif not wallet.filter(currency=fromCurr).exists() and acc.main_currency != fromCurr:
+    elif not wallet.filter(currency=fromCurr, iso2=fromIso).exists() and acc.main_currency != fromCurr:
         message = "You do not own the specified wallets !"
         return Response({"message": message, "success": False})
 
@@ -425,7 +427,7 @@ def currencyEx(request, pk, toCurr, fromCurr, amount):
         if float(acc.total_balance) < float(amount):
             notEnough = True
     else:
-        for wallet in wallet.filter(currency=fromCurr):
+        for wallet in wallet.filter(currency=fromCurr, iso2=fromIso):
             if float(wallet.total_balance) < float(amount):
                 notEnough = True
     if notEnough:
@@ -445,14 +447,14 @@ def currencyEx(request, pk, toCurr, fromCurr, amount):
         wallet = BranchAccounts.objects.filter(main_account__pk=pk)
 
         # sending to a wallet
-        if wallet.filter(currency=toCurr): 
+        if wallet.filter(currency=toCurr, iso2=toIso): 
 
             # subtracting the money from the user's wallet
             acc.total_balance = F('total_balance') - float(amount)
             acc.save()
 
             # adding the money to the user's wallet
-            wallet.filter(currency=toCurr).update(total_balance = F('total_balance') + float(amount) * float(ex_rate))
+            wallet.filter(currency=toCurr, iso2=toIso).update(total_balance = F('total_balance') + float(amount) * float(ex_rate))
             
             # updating user's interest_account
             accInterest.interest = F('interest') - float(amount)
@@ -462,7 +464,7 @@ def currencyEx(request, pk, toCurr, fromCurr, amount):
             if fromCurr == CustomUser.objects.get(pk=pk).currency:
                 history = transaction_history(
                     person=acc, 
-                    second_wallet=wallet.get(currency=toCurr), 
+                    second_wallet=wallet.get(currency=toCurr, iso2=toIso), 
                     price=float(amount), 
                     ex_rate=ex_rate, 
                     exchanged_price=float(amount) * float(ex_rate), 
@@ -471,8 +473,8 @@ def currencyEx(request, pk, toCurr, fromCurr, amount):
             # sending from another wallet to wallet
             else:
                 history = transaction_history(
-                    wallet=wallet.get(currency=fromCurr), 
-                    second_wallet=wallet.get(currency=toCurr), 
+                    wallet=wallet.get(currency=fromCurr, iso2=fromIso), 
+                    second_wallet=wallet.get(currency=toCurr, iso2=toIso), 
                     price=float(amount), 
                     ex_rate=ex_rate, 
                     exchanged_price=float(amount) * float(ex_rate), 
@@ -488,7 +490,7 @@ def currencyEx(request, pk, toCurr, fromCurr, amount):
         # sending to an account
         elif acc.main_currency == toCurr: 
             # subtracting the money from the user's wallet
-            wallet.filter(currency=fromCurr).update(total_balance = F('total_balance') - float(amount))
+            wallet.filter(currency=fromCurr, iso2=fromIso).update(total_balance = F('total_balance') - float(amount))
 
             # adding the money toCurr the user's account
             acc.total_balance = F('total_balance') + float(amount) * float(ex_rate)
@@ -500,7 +502,7 @@ def currencyEx(request, pk, toCurr, fromCurr, amount):
 
             # saving this transaction to history
             history = transaction_history(
-                wallet=wallet.get(currency=fromCurr), 
+                wallet=wallet.get(currency=fromCurr, iso2=fromIso), 
                 second_person=acc, 
                 price=float(amount), 
                 ex_rate=ex_rate, 
@@ -517,3 +519,195 @@ def currencyEx(request, pk, toCurr, fromCurr, amount):
             success = False
 
     return Response({"message": message, "success": success, "ex_rate": ex_rate})
+
+
+@api_view(['GET'])
+def transactions(request, walletIso, walletName, pageNum, numItems):
+    pk             = request.user.pk
+    counter        = 0
+
+    acc            = account.objects.get(pk=pk)
+    branchAcc      = BranchAccounts.objects.filter(main_account__pk=pk)
+    transactions   = transaction_history.objects.none()
+
+    currency       = acc.main_currency
+
+    # showing wallet's transactions
+    if walletName != currency:
+        # wallet's currency symbol
+        currency_symbol = get_currency_symbol(walletName)
+
+        # getting wallet's transactions
+        for branch in branchAcc:
+            person_history         = transaction_history.objects.filter(wallet=branch).filter(wallet__currency=walletName, wallet__iso2=walletIso).order_by('date').reverse()
+            seconed_person_history = transaction_history.objects.filter(second_wallet=branch).filter(second_wallet__currency=walletName, second_wallet__iso2=walletIso).order_by('date').reverse()
+            if person_history or seconed_person_history:
+                transactions = person_history | seconed_person_history
+    # showing account's transactions
+    else:
+        # account's currency symbol
+        currency_symbol        = get_currency_symbol(currency)
+
+        # getting account's transactions
+        person_history         = transaction_history.objects.filter(person=acc).order_by('date').reverse()
+        seconed_person_history = transaction_history.objects.filter(second_person=acc).order_by('date').reverse()
+        transactions = person_history | seconed_person_history
+    
+    # total number of transactions
+    counter = transactions.count()
+
+    # user wants to see all of their transactions
+    if numItems == 0:
+        numItems = counter
+        print("hereeeeeeeeeeeeeeeeeeeeeeeeee", counter)
+    if counter == 0:
+      numItems = 1  
+
+    paginator   = Paginator(transactions, numItems)
+    page_obj    = paginator.get_page(pageNum)
+
+    transactions = []
+
+    for item in page_obj:
+        id      = item.id
+        person  = [item.person.created_by.username, item.person.main_currency] if item.person else "Anonymous"
+        wallet  = [item.wallet.main_account.created_by.username, item.wallet.currency] if item.wallet else "Anonymous"
+        person2 = item.second_person.created_by.username if item.second_person else "Anonymous"
+        wallet2 = item.second_wallet.main_account.created_by.username if item.second_wallet else "Anonymous"
+
+        newItem = {
+            "id"        : id,
+            "type"      : item.method,
+            "price"     : item.price,
+            "exPrice"   : item.exchanged_price,
+            "date"      : [item.date.year, item.date.month, item.date.day, item.date.hour, item.date.minute, item.date.second],
+            "person"    : person,
+            "wallet"    : wallet,
+            "person2"   : person2,
+            "wallet2"   : wallet2,
+        }
+
+        transactions.append(newItem)
+
+
+    context = {
+        "transactions"         : transactions, 
+        "counter"              : counter,
+        "currencySymbol"       : currency_symbol,
+    }
+
+    return Response(context)
+
+
+@api_view(['GET'])
+def transactionDetail(request, tId):
+    pk  = request.user.pk
+    incoming = 0
+    transactor = None
+    incom = False
+    giver_symbol = None
+    reciever_symbol = None
+    id = []
+    allowed = False
+    transaction = transaction_history.objects.get(pk=tId)
+
+    if transaction.person:
+        currency = transaction.person.main_currency
+        id.append(transaction.person.pk)
+    if transaction.second_person:
+        currency = transaction.second_person.main_currency
+        id.append(transaction.second_person.pk)
+    if transaction.wallet:
+        currency = transaction.wallet.currency
+        id.append(transaction.wallet.main_account.pk)
+    if transaction.second_wallet:
+        currency = transaction.second_wallet.currency
+        id.append(transaction.second_wallet.main_account.pk)
+    currency_symbol   = get_currency_symbol(currency)
+    
+    # if the transaction is a transfer
+    if transaction.method == "Transfer":
+        # user is giving money
+        if transaction.wallet: # wallet was used
+            if transaction.wallet.main_account.created_by == request.user:
+                incoming = 0
+                try:
+                    transactor = transaction.second_person.created_by.username
+                except:
+                    try:
+                        transactor = transaction.second_wallet.main_account.created_by.username
+                    except AttributeError:
+                        transactor = "Anonymous"
+            else:
+                incom = True
+        elif transaction.person: # person was used
+            # if user is sending money
+            if transaction.person.created_by == request.user:
+                incoming = 0
+                try:
+                    transactor = transaction.second_person.created_by.username
+                except:
+                    try:
+                        transactor = transaction.second_wallet.main_account.created_by.username
+                    except AttributeError:
+                        transactor = "Anonymous"
+            # if user is recieving
+            else:
+                incom = True
+        else:
+            incoming = 0
+        # user is recieving moeny
+        if incom == True:
+            incoming = 1
+            try:
+                transactor  = transaction.person.created_by.username
+            except:
+                try:
+                    transactor  = transaction.wallet.main_account.created_by.username
+                except AttributeError:
+                    transactor = "Anonymous"
+
+    # if transaction is an exchange
+    elif transaction.method == "Exchange":
+        try:
+            giver_symbol = get_currency_symbol(transaction.person.main_currency)
+        except AttributeError:
+            giver_symbol = get_currency_symbol(transaction.wallet.currency)
+        try:
+            reciever_symbol = get_currency_symbol(transaction.second_person.main_currency)
+        except AttributeError:
+            reciever_symbol = get_currency_symbol(transaction.second_wallet.currency)
+
+
+    person  = [transaction.person.created_by.username, transaction.person.main_currency] if transaction.person else "Anonymous"
+    wallet  = [transaction.wallet.main_account.created_by.username, transaction.wallet.currency] if transaction.wallet else "Anonymous"
+    person2 = transaction.second_person.created_by.username if transaction.second_person else "Anonymous"
+    wallet2 = transaction.second_wallet.main_account.created_by.username if transaction.second_wallet else "Anonymous"
+
+    data = [{
+        "type"          : transaction.method,
+        "price"         : transaction.price,
+        "exPrice"       : transaction.exchanged_price,
+        "date"          : json.dumps(transaction.date.strftime('%Y-%m-%d %H:%M:%S %Z')),
+        "message"       : transaction.purpose_of_use,
+        "person"        : person,
+        "wallet"        : wallet,
+        "person2"       : person2,
+        "wallet2"       : wallet2,
+    }]
+
+    print(json.dumps(transaction.date.strftime('%Y-%m-%d %H:%M:%S %Z')))
+
+    context = {
+        "transaction"       : data,
+        "currency_symbol"   : currency_symbol,
+        "incoming"          : incoming,
+        "transactor"        : transactor,
+        "giverSymbol"      : giver_symbol,
+        "recieverSymbol"   : reciever_symbol,
+    }
+
+
+    return Response(context)
+
+

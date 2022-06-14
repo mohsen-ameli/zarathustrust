@@ -11,7 +11,7 @@ urlpatterns = [
     path("", include("accounts.urls"), name="home"),
     path("", include("users.urls"), name="users"),
     path("", include("wallets.urls"), name="wallets"),
-    path("", include("api.urls"), name="api"),
+    path("api/", include("api.urls"), name="api"),
     path("captcha/", include('captcha.urls')),
 
     # adming
