@@ -559,7 +559,6 @@ def transactions(request, walletIso, walletName, pageNum, numItems):
     # user wants to see all of their transactions
     if numItems == 0:
         numItems = counter
-        print("hereeeeeeeeeeeeeeeeeeeeeeeeee", counter)
     if counter == 0:
       numItems = 1  
 
@@ -695,8 +694,6 @@ def transactionDetail(request, tId):
         "person2"       : person2,
         "wallet2"       : wallet2,
     }]
-
-    print(json.dumps(transaction.date.strftime('%Y-%m-%d %H:%M:%S %Z')))
 
     context = {
         "transaction"       : data,
