@@ -4,6 +4,11 @@ from django.urls import path, include
 from rest_framework import routers
 from . import views
 
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
 router = routers.DefaultRouter()
 router.register('accounts', views.AccountsApi, 'accounts')
 router.register('users', views.UsersApi, 'users')
@@ -11,6 +16,10 @@ router.register('interest', views.InterestApi, 'interest')
 
 urlpatterns = [
     path('', include(router.urls)),
+
+    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
     path('currUser/', views.currentUser, name='currUser'),
     path('json/<str:file>/', views.jsonSearch, name='json-search'),
     path('transferSearch', views.transferSearch, name='transfer-search'),

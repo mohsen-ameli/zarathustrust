@@ -6,8 +6,9 @@ from django.db.models import Q, F
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
 from rest_framework import viewsets
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 from accounts.functions import *
 from accounts.models import *
@@ -20,23 +21,24 @@ def loadConfig():
     with open('/etc/config.json') as config_file:
         return json.load(config_file)
 
-
+@permission_classes([IsAuthenticated])
 class AccountsApi(viewsets.ModelViewSet):
     serializer_class = AccountSerializer
     queryset = account.objects.all()
 
-
+@permission_classes([IsAuthenticated])
 class InterestApi(viewsets.ModelViewSet):
     serializer_class = InterestSerializer
     queryset = account_interest.objects.all()
 
-
+@permission_classes([IsAuthenticated])
 class UsersApi(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     queryset = CustomUser.objects.all()
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def currentUser(request):
     try:
         user = CustomUser.objects.get(pk=request.user.pk)
@@ -47,6 +49,7 @@ def currentUser(request):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def jsonSearch(request, file):
     project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     file = f'{project}/json/{file}.json' # getting the file containing all country codes
@@ -58,6 +61,7 @@ def jsonSearch(request, file):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def deposit(request):
     pk              = request.user.pk
     config          = loadConfig()
@@ -79,6 +83,7 @@ def deposit(request):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def withdraw(request):
     pk                  = request.user.pk
     config              = loadConfig()
@@ -131,6 +136,7 @@ def withdraw(request):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def moneyForm(request):
     pk                  = request.user.pk
     acc                 = account.objects.get(pk=pk)
@@ -151,6 +157,7 @@ def moneyForm(request):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def wallets(request):
     pk              = request.user.pk
     acc             = account.objects.get(pk=pk)
@@ -162,6 +169,7 @@ def wallets(request):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def walletsConfirm(request):
     pk       = request.user.pk
     currency = request.data['currency']
@@ -174,6 +182,7 @@ def walletsConfirm(request):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def transferSearch(request):
     typed = request.data['person']
     
@@ -197,6 +206,7 @@ def transferSearch(request):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def transferConfirm(request):
     # react variables
     config                   = loadConfig()
@@ -392,6 +402,7 @@ def transferConfirm(request):
 
 
 @api_view(['POST', 'GET'])
+@permission_classes([IsAuthenticated])
 def currencyEx(request, fromCurr, fromIso, amount, toCurr, toIso):
     pk                  = request.user.pk
     message             = ""
@@ -522,6 +533,7 @@ def currencyEx(request, fromCurr, fromIso, amount, toCurr, toIso):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def transactions(request, walletIso, walletName, pageNum, numItems):
     pk             = request.user.pk
     counter        = 0
@@ -599,6 +611,7 @@ def transactions(request, walletIso, walletName, pageNum, numItems):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def transactionDetail(request, tId):
     pk  = request.user.pk
     incoming = 0
