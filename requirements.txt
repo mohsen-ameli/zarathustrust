@@ -21,4 +21,4 @@ psycopg2-binary
 django-crum
 phonenumbers
 gunicorn
-psycopg2
+# psycopg2
