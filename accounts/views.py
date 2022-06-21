@@ -523,7 +523,6 @@ def DepositUpdateView(request, pk):
         'currency_options'      : currency_options,
     }
     return JsonResponse(context)
-    # return render(request, 'accounts/add_money_form.html', context)
 
 
 # Add Money Info
@@ -609,7 +608,6 @@ def WithdrawUpdateView(request, pk):
         'currency_options'      : currency_options
     }
     return render(request, 'accounts/take_money_form.html', context)
-
 
 
 # Checkout Page

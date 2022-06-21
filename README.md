@@ -20,7 +20,7 @@ cd money-moe-linux
 * Or you can just download the zip file from the same url listed above and unzip it.
 
 # Backend Setup
-* Install the venv package in order to make a virtual environment
+<!-- * Install the venv package in order to make a virtual environment
 ```shell script
 python3 -m pip install venv
 ```
@@ -33,9 +33,9 @@ python3 -m venv env
 * Then we will activate that virtual environement
 ```shell script
 source /env/bin/activate
-```
+``` -->
 
-* Install all packages
+* Install all of the required packages
 ```shell script
 python3 -m pip install -r requirements.txt
 ```
@@ -65,7 +65,7 @@ npm install
 
 * Run the react app
 ```shell script
-npm start run
+npm start
 ```
 
 * navigate to http://localhost:3000

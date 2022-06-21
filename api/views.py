@@ -60,6 +60,49 @@ def jsonSearch(request, file):
     return Response(data)
 
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def cashOut(request):
+    # settings variables
+    pk                = request.user.pk
+    user              = CustomUser.objects.get(pk=pk)
+    acc               = account.objects.get(pk=pk)
+    accInterest       = account_interest.objects.get(pk=pk)
+    currency          = get_currency_symbol(user.currency)
+    interest_rate     = accInterest.interest_rate
+    bonus             = acc.bonus
+    total_balance     = acc.total_balance
+
+    # checking insufficient interest amount
+    if interest_rate < 0.1:
+        return Response({"failed": "You need at least $0.1 to be able to cash out !"})
+
+    # checking bonus if it's more than interest rate or not
+    if interest_rate <= bonus:
+        extra = (round(interest_rate, 1) * 2)
+        acc.bonus = F('bonus') - interest_rate
+    else:
+        extra = bonus + interest_rate
+        acc.bonus = 0
+
+    total_balance = total_balance + extra
+
+    # updaing everyting
+    acc.total_balance = total_balance
+    accInterest.interest = total_balance
+    accInterest.interest_rate = 0
+
+    r = transaction_history(person=acc, price=round(extra, 1), method="Cash Out")
+
+    r.save()
+    acc.save()
+    accInterest.save()
+    acc.refresh_from_db()
+    accInterest.refresh_from_db()
+
+    return Response({"success": True, "balance": total_balance, "amount": round(extra, 1)})
+
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def deposit(request):
@@ -67,8 +110,10 @@ def deposit(request):
     config          = loadConfig()
     user            = CustomUser.objects.get(pk=pk)
 
-    symbol          = request.data['symbol']
-    amount          = request.data['amount']
+    body = json.loads(request.body)
+    print("request : ", json.loads(request.body))
+    symbol          = body['symbol']
+    amount          = body['amount']
     EMAIL_ID        = config.get('EMAIL_ID')
     EMAIL_ID_MAIN   = config.get('EMAIL_ID_MAIN')
 
@@ -79,21 +124,22 @@ def deposit(request):
 
     account.objects.filter(pk=pk).update(add_money=0)
     
-    return Response()
+    return Response({"message": "success", "success": True})
 
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def withdraw(request):
     pk                  = request.user.pk
+    body                = json.loads(request.body)
     config              = loadConfig()
     success             = False
     user                = CustomUser.objects.get(pk=pk)
     acc                 = account.objects.get(pk=pk)
     allBranchAcc        = BranchAccounts.objects.filter(main_account__pk=pk)
 
-    moneyToWithdraw     = float(request.data['money'])
-    currency            = request.data['currency']
+    moneyToWithdraw     = float(body['money'])
+    currency            = body['currency']
 
     userCurrencySymbol  = get_currency_symbol(currency)
     minCurrency         = float(currency_min(currency))
@@ -172,8 +218,9 @@ def wallets(request):
 @permission_classes([IsAuthenticated])
 def walletsConfirm(request):
     pk       = request.user.pk
-    currency = request.data['currency']
-    iso2     = request.data['iso2']
+    body     = json.loads(request.body)
+    currency = body['currency']
+    iso2     = body['iso2']
 
     main_account = account.objects.get(pk=pk)
     BranchAccounts.objects.create(main_account=main_account, currency=currency, iso2=iso2)
@@ -184,7 +231,8 @@ def walletsConfirm(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def transferSearch(request):
-    typed = request.data['person']
+    body = json.loads(request.body)
+    typed = body['person']
     
     query = CustomUser.objects.all().filter(
                 Q(email__iexact=typed) | Q(phone_number__iexact=typed) | Q(username__iexact=typed)
@@ -211,10 +259,11 @@ def transferConfirm(request):
     # react variables
     config                   = loadConfig()
     pk                       = request.user.pk
-    reciever_name            = request.data['reciever_name']
-    purpose                  = request.data['purpose']
-    moneyToSend              = request.data['moneyToSend']
-    currency                 = request.data['currency']
+    body                     = json.loads(request.body)
+    reciever_name            = body['reciever_name']
+    purpose                  = body['purpose']
+    moneyToSend              = float(body['moneyToSend'])
+    currency                 = body['currency']
     success                  = False
 
     # getting user's currency stuff
@@ -329,11 +378,11 @@ def transferConfirm(request):
                 
                 ######## UPDATING ########
                 # adding money to reciever
-                new_total_balance = reciever_total_balance + moneyToSend
+                new_total_balance = float(reciever_total_balance) + moneyToSend
                 # updating the reciever
                 reciever_update.update(total_balance=new_total_balance)
                 # taking money from giver
-                rmv_total_balance = giver_total_balance - moneyToSend
+                rmv_total_balance = float(giver_total_balance) - moneyToSend
                 # updating the giver
                 giver_update.update(total_balance=rmv_total_balance)
 
@@ -343,7 +392,7 @@ def transferConfirm(request):
                     reciever_interest.interest = F('interest') + moneyToSend
                     reciever_interest.save()
                 # taking money from giver
-                b = giver_interest.interest - moneyToSend
+                b = float(giver_interest.interest) - moneyToSend
                 # updating giver
                 account_interest.objects.filter(pk=pk).update(interest=b)
 

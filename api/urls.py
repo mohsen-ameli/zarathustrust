@@ -22,6 +22,7 @@ urlpatterns = [
 
     path('currUser/', views.currentUser, name='currUser'),
     path('json/<str:file>/', views.jsonSearch, name='json-search'),
+    path('cash-out', views.cashOut, name='cash-out'),
     path('transferSearch', views.transferSearch, name='transfer-search'),
     path('transferConfirm', views.transferConfirm, name='transfer-confirm'),
     path('deposit', views.deposit, name='deposit'),
