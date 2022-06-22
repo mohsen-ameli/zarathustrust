@@ -1,20 +1,25 @@
 What knowledge and/or skills did you learn?
     - Aspects of the language?
-        + I learned how to use hooks and how to update data for the users to see, live.
+        + I learned how to use hooks and how to update data for the users to see, live. Also learned how to fetch data,
+        make backend endpoints.
     
     - Specific topics?
-        + I learned how to fetch data from the backend server, responses, async and await, and more.
+        + I learned how to fetch data from the backend server, responses, async and await, and more. Show all of the information
+        fetched from the backend onto the DOM, and be able to log users in and keep them logged in until their session runs out.
     
     - Specific java classes?
         + I used i18n for translation, Axios for fetching, as well as the built-in fetch function
         inside javascript, and some other web design frameworks like bootstrap and fontawesome. 
     
     - Project management?
-        + Just realized (more) about how important it is to use git.
+        + Just realized (more) about how important it is to use git. I also kept the back and front end folders seperate
+        so it wouldn't be such a mess. But for the final submission I had to merge them together. Also if I were to push
+        this project to my server, and use it globally at a production level, I'd have to have them together anyways, so..
     
     - Time management?
         + I had multiple other culminating projects, and managing time was difficult, but I always put at least
-        one hour aside for ICS.
+        one hour aside for ICS. Also my calender (in project proposal) came in handy, to keep track of all of the things I 
+        needed to get done.
 
 What problems did you experience? 
     + Lots of problems. Like fetching data from the server and then immediately 
@@ -22,9 +27,11 @@ What problems did you experience?
     
     - How did you overcome them?
         + Just by persisting, researching, watching, and doing. Mostly from StackOverflow,
-        YouTube tutorials, and other resources.
+        YouTube tutorials, and some official docs.
     
     - Show your learning that isn’t explicitly shown through the code?
         + Online docs, and YouTube videos. For example, Dennis Ivy on YT has helped me a lot with react.
         https://www.youtube.com/channel/UCTZRcDjjkVajGL6wd76UnGg and he helped me set up the log-in system.
         As well as https://www.youtube.com/c/TheNetNinja who helped me a lot at the beginning when I had no idea how react worked.
+
+Survey password: Food falling through the gutters are grate.
