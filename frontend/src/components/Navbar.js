@@ -5,10 +5,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHome, faCircleInfo, faGlobe, faGear } from '@fortawesome/free-solid-svg-icons'
 import { useRef, useContext } from 'react';
 import AuthContext from '../context/AuthContext';
+import i18next from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 const Navbar = () => {
+    let countryCodes = {
+        "en": "en",
+        "de": "de",
+        "fa-IR": "ir"
+    }
+    let { t } = useTranslation()
     let { user } = useContext(AuthContext)
-    const nav    = useRef()
+    const nav = useRef()
+    const langIcon = useRef()
 
     let logged = false
     let id = user?.user_id
@@ -22,6 +31,12 @@ const Navbar = () => {
             document.querySelector("#root > div.navbar > nav > div > button").click()
         }
     })
+
+    let changeLang = (lang, code) => {
+        i18next.changeLanguage(lang)
+        langIcon.current.classList.replace(langIcon.current.classList[1],`flag-icon-${code}`)
+        localStorage.setItem("code", code)
+    }
 
     return (
         <div className="navbar">
@@ -39,13 +54,13 @@ const Navbar = () => {
                         <ul className="navbar-nav mr-auto">
                             <li className="nav-item">
                                 <Link className="nav-link active" to="/">
-                                    <FontAwesomeIcon icon={faHome} /> Home
+                                    <FontAwesomeIcon icon={faHome} /> {t("home")}
                                 </Link>
                             </li>
 
                             <li className="nav-item">
                                 <Link className="nav-link active" to="/about">
-                                    <FontAwesomeIcon icon={faCircleInfo} /> About
+                                    <FontAwesomeIcon icon={faCircleInfo} /> {t("about")}
                                 </Link>
                             </li>
                         </ul>
@@ -53,34 +68,45 @@ const Navbar = () => {
                         <ul className="navbar-nav ms-auto">
                             <li className="nav-item dropdown">
                                 <Link className="nav-link dropdown-toggle text-white" to="/" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <FontAwesomeIcon icon={faGlobe} /> <span
-                                        className="flag-icon flag-icon-"></span>
+                                    <FontAwesomeIcon icon={faGlobe} className="mx-1" />
+                                    {t("language")}
+                                    <span className={`flag-icon flag-icon-${countryCodes[localStorage.getItem("i18nextLng")]} mx-1`} ref={langIcon}></span>
                                 </Link>
                                 <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <input type="hidden" value="" />
                                     <li>
-                                        <button className="dropdown-item" type="submit" value="">
-                                            <span className="flag-icon flag-icon-"></span>
+                                        <button onClick={() => changeLang("en", "en")} className="dropdown-item">
+                                            <span className="flag-icon flag-icon-en mx-1"></span>
+                                            English
+                                        </button>
+                                        <button onClick={() => changeLang("de", "de")} className="dropdown-item">
+                                            <span className="flag-icon flag-icon-de mx-1"></span>
+                                            Deutsch
+                                        </button>
+                                        <button onClick={() => changeLang("fa-IR", "ir")} className="dropdown-item">
+                                            <span className="flag-icon flag-icon-ir mx-1"></span>
+                                            Persian
                                         </button>
                                     </li>
                                 </ul> 
                             </li>
+
                             <li className="nav-item">
                                 <Link className="nav-link active" to="/">
-                                    <FontAwesomeIcon icon={faGear} /> Settings
+                                    <FontAwesomeIcon icon={faGear} /> {t("settings")}
                                 </Link>
                             </li>
                             { logged ?
                             <li className="nav-item">
-                                <Link to="/logout" className="nav-link active">Log Out</Link>
+                                <Link to="/logout" className="nav-link active">{t("log_out")}</Link>
                             </li>
                             :
                             <>
                             <li className="nav-item">
-                                <Link className="nav-link active" to="/login">Log In</Link>
+                                <Link className="nav-link active" to="/login">{t("log_in")}</Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link active" to="/">Sign Up</Link>
+                                <Link className="nav-link active" to="/">{t("sign_up")}</Link>
                             </li>
                             </>
                             }

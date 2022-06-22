@@ -1,0 +1,40 @@
+June 2nd,
+Worked on Wallet. Showing all the wallets a user has on the home page. Made the page to make new wallets.
+June 3rd,
+Outside the whole day
+June 4th,
+Finished the functionality of transferring money. Made a reusable React Hook, which is the dropdown, including the user's currencies and the amount of money to work with.
+Jun 5th,
+Worked on the withdraw page. Fixed session storage for storing messages. Added a system to show error and success messages on tasks that a user completes.
+June 6th,
+Worked on showing animations on messages. Still need to finish the tooltips on the home page.
+June 7th,
+Started working on Currency Exchange and managed to show the form to exchange, and show error messages (wrong type of input, or less than minimum amount of money required to exchange)
+June 8th,
+Completed the Currency Exchange page. Started working on the confirmation page, and still need to show the currency symbols on the confirmation page.
+June 9th,
+Finished tooltips. Finished (?) currency exchange. Still need to test all of the functionality to ensure there are no bugs.
+June 10th,
+Fixed the issue with withdrawing not updating the amount of money the user is withdrawing. Fixed some error notification issues. Made the backend for showing all transactions. Showed the type of transaction, date, and amount of money. Still need to make everything look nicer.
+June 11th,
+Added date, showed correct currency and amount of money in each transaction. The looks are almost complete. Still need to be able to show each wallet’s transactions and also add pagination. 
+June 12th,
+Added changing wallet functionality to transactions. Added pagination (number of transactions per page, and switching between these pages). Fixed a bug where countries with the same currency would show multiple times when trying to show a user’s wallets. Still need to show each transaction in more detail.
+June 13th,
+Showed the transactions properly and showed the times properly with proper timezones. Still need to show each transaction in more detail. Added iso2 for more specific wallets, since there was a bug with adding currencies used by different countries. This caused other components to break. Need to find out which files got broken, and fix them.
+June 14th,
+Finished showing each transaction in detail. Fixed some react bugs shown on the terminal. Fixed bugs relating to changing pages in the transaction page. Fixed bugs relating to users having wallets with the same currency names, but different countries. Will start working on login, logout, and sign-up pages.
+June 15th,
+Started watching videos about JWT and authentication, using Django as the backend and React in the frontend. Implemented this method into the website, and finished most of it. Still need to 
+June 16th,
+Added private routes for pages that require the user to be logged in. Need to make sure the user stays logged in after 5 minutes (which is the set amount in the backend).
+June 17th,
+Watched some youtube tutorials on how to refresh the user’s tokens. Was able to accomplish it but it was a heck of a hack to do it, so watched another video to figure out an easier way. Implemented an easier way, but there were bugs. So still need to fix those bugs for logging in users and keeping them logged in.
+June 18th,
+Fixed logging users in, but broke the functionality to fetch data properly. Still need to fix that.
+June 19th,
+Finished the login with a new react hook and a couple of YT tutorials. Users are able to log in properly and use their session time accordingly. Next would be to work on languages.
+June 20th,
+Working on other summatives.
+June 21st,
+Added Internationalization support for three different languages. Still need to complete all of the translations, work on the landing page, and put a confirmation window right before users send money, withdraw, and deposit. 

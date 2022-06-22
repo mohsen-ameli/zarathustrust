@@ -2,11 +2,13 @@ import { useEffect, useRef, useState } from "react"
 import { Link } from "react-router-dom"
 import ReactCountryFlag from "react-country-flag"
 import useFetch from "./useFetch"
+import { useTranslation } from "react-i18next"
 
 const ShowWallets = ({pk, home, changeCurr}) => {
-    const [wallets, setWallets]                     = useState([])
-    let link                                        = useRef()
-    let api                                         = useFetch()
+    const [wallets, setWallets] = useState([])
+    let link                    = useRef()
+    let api                     = useFetch()
+    const { t }                 = useTranslation()
     
     useEffect(() => {
         loadWallets()
@@ -17,10 +19,6 @@ const ShowWallets = ({pk, home, changeCurr}) => {
         let { response, data } = await api(`/api/wallets`)
         if (response.status === 200) {
             setWallets(data)
-        } else {
-            setError('An error occurred. Awkward..')
-            setShowErr(true)
-            setIsLoading(false)
         }
     }
 
@@ -37,13 +35,13 @@ const ShowWallets = ({pk, home, changeCurr}) => {
         <div className={"show-wallets dropdown align-self-center ms-3"}>
             <a className="neon-button" href="#" role="button" onMouseOver={() => mouseOver()} onMouseOut={() => mouseOut()}
             id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                Wallets <i className="fas fa-caret-down" ref={link}></i>
+                {t("wallets")} <i className="fas fa-caret-down" ref={link}></i>
             </a>
         
             <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink">
 
                 {home &&<>
-                <li><Link className="dropdown-item" to="/wallet-search">Make a New Wallet</Link></li>
+                <li><Link className="dropdown-item" to="/wallet-search">{t("make_new_wallet")}</Link></li>
                 <li><hr className="dropdown-divider"></hr></li>
                 </>}
 

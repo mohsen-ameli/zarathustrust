@@ -11,11 +11,13 @@ import '../css/tooltip.css'
 import 'tippy.js/animations/scale.css';
 import AuthContext from "../context/AuthContext";
 import useFetch from "../components/useFetch";
+import { useTranslation } from 'react-i18next';
 
 
 const Home = () => {
     let zero = 0
     let { user }                        = useContext(AuthContext)
+    const { t }                         = useTranslation()
     let pk                              = user?.user_id
     let api                             = useFetch()
 
@@ -184,7 +186,7 @@ const Home = () => {
 
             } else {
                 setShowErr(true)
-                setError(`You need at least $$$$$$$$$$$FIIIIIIIIIIIIIXXXXXXXXX to be able to cash out !`)
+                setError(`You need at least $0.1 to be able to cash out !`)
                 setIsLoading(false);
             }
         })
@@ -262,18 +264,16 @@ const Home = () => {
         {/************* First Part ***********/}
         <div className="d-sm-flex">
             <div className="py-2">
-                <h3 className="text-capitalize">Welcome, { name } !</h3>
+                <h3 className="text-capitalize">{t("welcome", {"name":name})}</h3>
             </div>
             <div className="py-2 ms-auto">
                 <div className="d-flex">
                     <h3>
-                        Bonus: { interestSymbol && interestSymbol }{ bonus }
+                        {t("bonus", {"interestSymbol": interestSymbol, "bonus": bonus})}
                     </h3>
 
                     <Tippy content={
-                        `The ${interestSymbol}${bonus} bonus is a gift from us to every new user. It has no expiration date!
-                        Every time you transfer the accumulated interest to your balance,
-                        an equal amount will be taken out of your bonus.`
+                        `${t("bonus_msg", {"interestSymbol": interestSymbol, "bonus": bonus})}`
                     } theme={'tomato'} animation={'scale'}>
                         <a href="#" className="fas fa-question-circle p-2">{null}</a>
                     </Tippy>
@@ -294,7 +294,7 @@ const Home = () => {
                     </div>
 
                     <div className="align-self-center">
-                        <h1>Ballance</h1>
+                        <h1>{t("ballance")}</h1>
                     </div>
 
                     {/* Wallet */}
@@ -305,13 +305,13 @@ const Home = () => {
                 <div className="card text-white home-card">
                     <div className="card-body">
                         <h5 className="fw-normal text-capitalize">
-                            { name }'<span className="text-lowercase">s</span> {isBiz && "business"} {!isBiz && "personal"} account
+                            {isBiz ? t("user_account_biz", {"name": name}) : t("user_account_not_biz", {"name": name})}
                         </h5>
                         <hr className="zarathus-hr"></hr>
                         <h1 className="fw-normal">
                             { symbol }{ balance }
                         </h1>
-                            Current Balance ({currency})
+                            {t("balance", {"currency":currency})}
                     </div>
                 </div>
             </div>
@@ -324,7 +324,7 @@ const Home = () => {
                         <i className="bi bi-piggy-bank home-icon-top"></i>
                     </div>
                     <div className="align-self-center">
-                        <h1>Interest</h1>
+                        <h1>{t("interest")}</h1>
                     </div>
                 </div>
                 {/************* bottom part (counter) **************/}
@@ -334,7 +334,7 @@ const Home = () => {
                     </div>
                 </div>
                 <br></br>
-                <button onClick={() => cashOut()} className="neon-button ml-2">Cash Out</button>
+                <button onClick={() => cashOut()} className="neon-button ml-2">{t("cash_out")}</button>
             </div>
         </div>
 
@@ -343,23 +343,23 @@ const Home = () => {
         <div className="row text-center">
             <Link to="/deposit" className="col-md zoom" name="add-money">
                 <i className="bi bi-download buttons-5"></i>
-                <h3>Deposit</h3>
+                <h3>{t("deposit")}</h3>
             </Link>
             <Link to="/transfer-search" className="col-md zoom" name="transfer-search">
                 <i className="bi bi-send-check buttons-5"></i>
-                <h3>Send Money</h3>
+                <h3>{t("send_money")}</h3>
             </Link>
             <Link to="/withdraw" className="col-md zoom" name="take-money">
                 <i className="bi bi-upload buttons-5"></i>
-                <h3>Withdraw</h3>
+                <h3>{t("withdraw")}</h3>
             </Link>
             <Link to="/currency-exchange" className="col-md zoom" name="currency-exchange">
                 <i className="bi bi-currency-exchange buttons-5"></i>
-                <h3>Currency Exchange</h3>
+                <h3>{t("currency_exchange")}</h3>
             </Link>
             <Link to="/transactions" className="col-md zoom" name="history">
                 <i className="bi bi-book-half buttons-5"></i>
-                <h3>Transaction History</h3>
+                <h3>{t("transaction_history")}</h3>
             </Link>
         </div>
 

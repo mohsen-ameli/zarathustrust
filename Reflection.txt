@@ -1,0 +1,30 @@
+What knowledge and/or skills did you learn?
+    - Aspects of the language?
+        + I learned how to use hooks and how to update data for the users to see, live.
+    
+    - Specific topics?
+        + I learned how to fetch data from the backend server, responses, async and await, and more.
+    
+    - Specific java classes?
+        + I used i18n for translation, Axios for fetching, as well as the built-in fetch function
+        inside javascript, and some other web design frameworks like bootstrap and fontawesome. 
+    
+    - Project management?
+        + Just realized (more) about how important it is to use git.
+    
+    - Time management?
+        + I had multiple other culminating projects, and managing time was difficult, but I always put at least
+        one hour aside for ICS.
+
+What problems did you experience? 
+    + Lots of problems. Like fetching data from the server and then immediately 
+    updating the DOM with new data. Logging users in was also a pain but managed to make it work.
+    
+    - How did you overcome them?
+        + Just by persisting, researching, watching, and doing. Mostly from StackOverflow,
+        YouTube tutorials, and other resources.
+    
+    - Show your learning that isn’t explicitly shown through the code?
+        + Online docs, and YouTube videos. For example, Dennis Ivy on YT has helped me a lot with react.
+        https://www.youtube.com/channel/UCTZRcDjjkVajGL6wd76UnGg and he helped me set up the log-in system.
+        As well as https://www.youtube.com/c/TheNetNinja who helped me a lot at the beginning when I had no idea how react worked.

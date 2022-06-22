@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom';
-
 import Alert from 'react-bootstrap/Alert';
 import RotateLoader from 'react-spinners/RotateLoader';
 import { useEffect, useState } from 'react';
 import useFetch from '../components/useFetch';
+import { useTranslation } from 'react-i18next';
 
 const About = () => {
+    const { t } = useTranslation()
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError]         = useState(null)
     const [showErr, setShowErr]     = useState(false)
@@ -44,14 +45,14 @@ const About = () => {
 
         <div className="card text-white zarathus-card mx-auto">
             <div className="card-body">
-                <h3 className="fw-normal text-center">This is the about page</h3>
+                <h3 className="fw-normal text-center">{t("about_page")}</h3>
                 <hr className="zarathus-hr"></hr>
                 <h5 className="fw-normal">
-                    We Pay You 2% Interest On Your Balance ! Share our website with your friends to get extra prizes.
+                    {t("about_msg")}
                 </h5>
                 <hr className="zarathus-hr"></hr>
-                    <Link className="neon-button" to="/">Home</Link>
-                <small style={{float: "right"}}>version:0.9.999999999</small>
+                    <Link className="neon-button" to="/">{t("home")}</Link>
+                <small style={{float: "right"}}>{t("version")}</small>
             </div>
         </div>
     </div>

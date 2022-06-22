@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import ReactCountryFlag from "react-country-flag";
+import { useTranslation } from "react-i18next";
 import useFetch from "./useFetch";
 
 
@@ -18,6 +19,7 @@ const useAddMoney = (pk) => {
     const [showErr, setShowErr]         = useState(false);
 
     let api                             = useFetch()
+    const { t }                         = useTranslation()
 
 
     useEffect(() => {
@@ -51,7 +53,7 @@ const useAddMoney = (pk) => {
         setSymbol(symbol)
         setMin(min)
         if (money < min) {
-            setErr(`Please consider that the minimum amount to send is ${min}${symbol} !`)
+            setErr(t("min_warning", {"min": min, "symbol": symbol}))
             setGood(false)
         } else {
             setGood(true)
@@ -67,7 +69,7 @@ const useAddMoney = (pk) => {
                 setGood(false)
             } else if (typed !== "") { // valid
                 if (Number(typed) < min) {
-                    setErr(`Please consider that the minimum amount to send is ${min}${symbol} !`)
+                    setErr(t("min_warning", {"min": min, "symbol": symbol}))
                     setGood(false)
                 } else {
                     setGood(true)
@@ -123,7 +125,7 @@ const useAddMoney = (pk) => {
                     <input type="text" placeholder=" " className={err ? "form-control is-invalid" : "form-control"} 
                         onChange={e => changeMoney(e.target.value)} autoComplete="off"></input>
                     <label htmlFor="id_add_money">
-                        Enter Amount
+                        {t("enter_amount")}
                     </label>
                 </div>
 

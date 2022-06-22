@@ -51,6 +51,9 @@ python3 manage.py migrate
 python3 manage.py runserver
 ```
 
+* Sign up for a user through this link (http://localhost:8000/register/personal/) then save the username and password
+This is because the sign up form is still not working on the react side, and there is no other way to make users (unless you do python3 manage.py createsuperuser and then on the admin page which is at http://localhost:8000/g0atch33se&pizz1/ you create an account)
+
 
 # Frontend Setup
 * Open another terminal window and navigate to the forntend directory:

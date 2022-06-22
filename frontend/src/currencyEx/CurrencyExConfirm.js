@@ -9,7 +9,7 @@ import { useContext } from "react";
 import useFetch from "../components/useFetch";
 
 const CurrencyExConfirm = () => {
-    let { authToken, user }         = useContext(AuthContext)
+    let { user }                    = useContext(AuthContext)
     let pk                          = user?.user_id
     let fromCurr                    = useParams().fromCurr
     let fromIso                     = useParams().fromIso

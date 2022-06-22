@@ -6,12 +6,14 @@ import RotateLoader from 'react-spinners/RotateLoader'
 import useAddMoney from "../components/useAddMoney"
 import AuthContext from "../context/AuthContext";
 import useFetch from "../components/useFetch";
+import { useTranslation } from "react-i18next";
 
 const Deposit = () => {
-    let { user }                          = useContext(AuthContext)
-    let pk                                = user?.user_id
-    let history                           = useHistory()
-    let api                               = useFetch()
+    let { user }  = useContext(AuthContext)
+    let pk        = user?.user_id
+    let history   = useHistory()
+    let api       = useFetch()
+    const { t }   = useTranslation()
 
     const [addMoney, good, money, , , symbol, addLoad, addError, addShowErr] = useAddMoney(pk)
 
@@ -64,18 +66,18 @@ const Deposit = () => {
 
             <div className="card zarathus-card mx-auto">
                 <div className="card-body">
-                    <h3 className="fw-normal text-center">Deposit Money From Your Account</h3>
+                    <h3 className="fw-normal text-center">{t("deposit_title")}</h3>
                     <hr className="zarathus-hr"></hr>
 
                     {/* amount to send */}
                     {addMoney}
 
-                    <small>You will not be charged until you actually transfer money to our service yourself.</small>
+                    <small>{t("deposit_small_info")}</small>
                     <br></br>
 
                     <button className="neon-button mb-2 mt-3" type="submit" id="Action" 
                         onClick={() => submit()}>
-                        Deposit
+                        {t("deposit")}
                     </button>
                 </div>
             </div>
