@@ -99,7 +99,9 @@ ROOT_URLCONF = "money_moe.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [
+            os.path.join(BASE_DIR, 'frontend/build')
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -180,6 +182,9 @@ LOCALE_PATHS = [os.path.join(BASE_DIR, "locale/")]
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static")  #'/home/moe/money_moe/static/'
 STATIC_URL = "/static/"
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'frontend/build/static')
+]
 
 
 # Crispy Forms

@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { useParams, useHistory, useLocation } from "react-router-dom";
-import axios from "axios";
 import Alert from 'react-bootstrap/Alert';
 import RotateLoader from 'react-spinners/RotateLoader';
 import AuthContext from "../context/AuthContext";
 import { useContext } from "react";
 import useFetch from "../components/useFetch";
+import { useTranslation } from "react-i18next";
 
 const CurrencyExConfirm = () => {
     let { user }                    = useContext(AuthContext)
+    let { t }                       = useTranslation()
     let pk                          = user?.user_id
     let fromCurr                    = useParams().fromCurr
     let fromIso                     = useParams().fromIso
@@ -71,7 +72,7 @@ const CurrencyExConfirm = () => {
             if (!res.data['success']) {
                 history.push("/currency-exchange")
             } else {
-                history.push("/")
+                history.push("/home")
             }
             setIsLoading(false)
         })
@@ -94,20 +95,20 @@ const CurrencyExConfirm = () => {
 
             <div className="card text-white zarathus-card mx-auto">
                 <div className="card-body">
-                    <h3 className="fw-normal text-center">Exchange Currency Confirmation</h3>
+                    <h3 className="fw-normal text-center">{t("exchange_confirm")}</h3>
                     <hr className="zarathus-hr"></hr>
-                    <h3 style={{color: "#f8b119c7"}}>We have a 0% fee for any currency exchange transaction</h3>
+                    <h3 style={{color: "#f8b119c7"}}>{t("exchange_confirm_info")}</h3>
                     <br></br>
                     <p style={{fontSize: "large"}}>
-                        You are about to exchange { fromSymbol }{ amount } to { toSymbol }{ exRate*amount }
-
+                        {t("exchange_info", {"fromSymbol": fromSymbol, "amount": amount, "toSymbol": toSymbol, "toRate": exRate*amount})}
+                        
                         <br></br>
                         
-                        Exchange Rate :<br></br>
+                        {t("exchange_rate")}<br></br>
                         1{ fromCurr } = { exRate }{ toCurr }
                     </p>
 
-                    <button className="neon-button my-3" onClick={() => submit()}>Exchange</button>
+                    <button className="neon-button my-3" onClick={() => submit()}>{t("exchange")}</button>
                 </div>
             </div>
         </div>

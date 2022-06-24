@@ -6,9 +6,11 @@ import Alert from 'react-bootstrap/Alert';
 import RotateLoader from 'react-spinners/RotateLoader'
 import AuthContext from "../context/AuthContext";
 import useFetch from "../components/useFetch";
+import { useTranslation } from "react-i18next";
 
 const Withdraw = () => {
     let { user }                    = useContext(AuthContext)
+    let { t }                       = useTranslation()
     const pk                        = user?.user_id
     let api                         = useFetch()
 
@@ -48,7 +50,7 @@ const Withdraw = () => {
                     sessionStorage.setItem('msg', '')
                     sessionStorage.setItem('success', false)
                 } else {
-                    history.push("/")
+                    history.push("/home")
                 }
     
                 setIsLoading(false)
@@ -78,19 +80,20 @@ const Withdraw = () => {
 
             <div className="card text-white zarathus-card mx-auto">
                 <div className="card-body" style={{padding: "1.5rem"}}>
-                    <h3 className="fw-normal text-center">Withdraw Money From Your Account</h3>
+                    <h3 className="fw-normal text-center">{t("withdraw_title")}</h3>
                     <hr className="zarathus-hr"></hr>
                     <h5 className="fw-normal">
-                        In order to withdraw money, please enter the value you want to 
+                        {t("withdraw_info")}
+                        {/* In order to withdraw money, please enter the value you want to 
                         withdraw blelow <br></br> and we will transfer the amount you requested
-                        to your bank account, <span style={{color: "#f8b119"}}>within 1 bussiness day.</span>
+                        to your bank account, <span style={{color: "#f8b119"}}>within 1 bussiness day.</span> */}
                     </h5> 
                     <br></br>
 
                     {/* amount to send */}
                     { addMoney }
 
-                    <button className="neon-button my-2" type="submit" onClick={() => submit()}>Withdraw</button>
+                    <button className="neon-button my-2" type="submit" onClick={() => submit()}>{t("withdraw")}</button>
                 </div>
             </div>
         </div>

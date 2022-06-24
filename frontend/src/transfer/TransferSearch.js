@@ -6,9 +6,10 @@ import RotateLoader from 'react-spinners/RotateLoader'
 import { useContext } from "react";
 import AuthContext from "../context/AuthContext";
 import useFetch from "../components/useFetch";
+import { useTranslation } from "react-i18next";
 
 const TransferSearch = () => {
-    let { authToken }               = useContext(AuthContext)
+    let { t }                       = useTranslation()
     let api                         = useFetch()
 
     const [data, setData]           = useState(null)
@@ -61,13 +62,13 @@ const TransferSearch = () => {
                 <div className="card-body">
                     
 
-                    <h3 className="fw-normal text-center">Send Money to Others</h3>
+                    <h3 className="fw-normal text-center">{t("send_money_info")}</h3>
                     <hr className="zarathus-hr"></hr>
 
                     <div className="dropdown form-floating">
                         <input type="text" id="search-input" className="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
                             placeholder="Country" autoComplete="off" onChange={e => search(e.target.value)}></input>
-                        <label htmlFor="search-input">Username, Email or Phone Number</label>
+                        <label htmlFor="search-input">{t("send_money_fields")}</label>
 
                         <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink" id="results-box">
                             {data ? data.map((item, i) => (
@@ -80,7 +81,7 @@ const TransferSearch = () => {
                             )) : 
                                 <li>
                                     <a className="dropdown-item disabled" style={{textTransform: "capitalize", color: "black"}}>
-                                        <b>No accounts were found.</b>
+                                        <b>{t("no_accounts")}</b>
                                     </a>
                                 </li>
                             }

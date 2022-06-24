@@ -4,7 +4,7 @@ import React from "react";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Navbar from "./components/Navbar";
-import Default from "./pages/Default";
+import LandingPage from "./pages/LandingPage";
 import About from "./pages/About";
 import Deposit from "./deposit/Deposit";
 import DepositInfo from './deposit/DepositInfo';
@@ -22,6 +22,7 @@ import Logout from './auth/Logout';
 
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
+import SignUp from './auth/SignUp';
 
 function App() {
     return (
@@ -30,8 +31,7 @@ function App() {
                 <Navbar />
                 <div className="app container" style={{marginTop: "4rem"}} id="main-content">
                     <Switch>
-                        <PrivateRoute exact path="/" component={Home} />
-                        <PrivateRoute path="/about" component={About} />
+                        <PrivateRoute path="/home" component={Home} />
                         <PrivateRoute path="/deposit" component={Deposit} />
                         <PrivateRoute path="/deposit-info" component={DepositInfo} />
                         <PrivateRoute path="/withdraw" component={Withdraw} />
@@ -43,6 +43,9 @@ function App() {
                         <PrivateRoute path="/currency-exchange" component={CurrencyEx} />
                         <PrivateRoute path="/transactions/:tId" component={TransactionsDetail} />
                         <PrivateRoute path="/transactions/" component={Transactions} />
+                        <Route exact path="/" component={LandingPage} />
+                        <Route path="/about" component={About} /> 
+                        <Route path="/signup" component={SignUp} />
                         <Route path="/login" component={Login} />
                         <Route path="/logout" component={Logout} />
                         <Route component={NotFound} />

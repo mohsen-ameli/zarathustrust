@@ -7,9 +7,11 @@ import ReactCountryFlag from 'react-country-flag';
 import AuthContext from '../context/AuthContext';
 import { useContext } from 'react';
 import useFetch from '../components/useFetch';
+import { useTranslation } from 'react-i18next';
 
 const CurrencyEx = () => {
-    let { authToken, user }          = useContext(AuthContext)
+    let { user }    = useContext(AuthContext)
+    let { t }       = useTranslation()
     const pk        = user?.user_id
     const history   = useHistory()
     let api         = useFetch()
@@ -63,6 +65,7 @@ const CurrencyEx = () => {
         setIsLoading(false)
     }, [currencies])
 
+
     let submit = () => {
         if (good) {
             setIsLoading(true)
@@ -106,7 +109,7 @@ const CurrencyEx = () => {
 
             <div className="card text-white zarathus-card mx-auto">
                 <div className="card-body">
-                    <h3 className="fw-normal text-center">Exchange Currencies</h3>
+                    <h3 className="fw-normal text-center">{t("exchange_title")}</h3>
                     <hr className="zarathus-hr"></hr>
 
                     <div className="d-flex align-items-center justify-content-center" ref={dflex}>
@@ -146,7 +149,7 @@ const CurrencyEx = () => {
                         </div>
                     </div>
 
-                    <button className="neon-button my-3" onClick={() => submit()}>Next</button>
+                    <button className="neon-button my-3" onClick={() => submit()}>{t("next")}</button>
 
                 </div>
             </div>

@@ -12,7 +12,7 @@ const useAddMoney = (pk) => {
     const [min, setMin]                 = useState(0);
     const [err, setErr]                 = useState(null);
     const [good, setGood]               = useState(false);
-    const [money, setMoney]             = useState(0);
+    const [money, setMoney]             = useState(null);
 
     const [isLoading, setIsLoading]     = useState(false);
     const [error, setError]             = useState(null);
@@ -52,7 +52,7 @@ const useAddMoney = (pk) => {
         setCurr(curr)
         setSymbol(symbol)
         setMin(min)
-        if (money < min) {
+        if (money !== null && money < min) {
             setErr(t("min_warning", {"min": min, "symbol": symbol}))
             setGood(false)
         } else {
@@ -65,8 +65,9 @@ const useAddMoney = (pk) => {
     let changeMoney = (typed) => {
         if (typed) {
             if (isNaN(typed)) { // invalid
-                setErr("Please enter a number!")
+                setErr(t("plz_num"))
                 setGood(false)
+                setMoney(null)
             } else if (typed !== "") { // valid
                 if (Number(typed) < min) {
                     setErr(t("min_warning", {"min": min, "symbol": symbol}))
@@ -74,12 +75,13 @@ const useAddMoney = (pk) => {
                 } else {
                     setGood(true)
                     setErr(null)
-                    setMoney(Number(typed))
                 }
+                setMoney(Number(typed))
             }
         } else { // nothing (valid)
             setErr(null)
             setGood(false)
+            setMoney(null)
         }
     }
 

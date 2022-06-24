@@ -8,9 +8,11 @@ import useAddMoney from "../components/useAddMoney"
 import AuthContext from "../context/AuthContext";
 import { useContext } from "react";
 import useFetch from "../components/useFetch";
+import { useTranslation } from "react-i18next";
 
 const TransferConfirm = () => {
     let { user_ }                   = useContext(AuthContext)
+    let { t }                       = useTranslation()
     let pk                          = user_?.user_id      
     let user                        = useParams().user
     let history                     = useHistory()
@@ -75,7 +77,7 @@ const TransferConfirm = () => {
                     sessionStorage.setItem('msg', res.data['message'])
                     sessionStorage.setItem('success', res.data['success'])
                     
-                    history.push("/")
+                    history.push("/home")
                 }
 
                 setIsLoading(false)
@@ -107,7 +109,7 @@ const TransferConfirm = () => {
             <div className="card text-white zarathus-card mx-auto">
                 <div className="card-body">
                     <h3 className="fw-normal text-center">
-                        Send Money to { user }
+                        {t("send_money_to", {"user": user})}
                     </h3>
                     <hr className="zarathus-hr"></hr>
 
@@ -118,15 +120,15 @@ const TransferConfirm = () => {
                     <div className="form-floating mb-3">
                         <input type="text" placeholder=" " autoComplete="off" onChange={e => changeMsg(e.target.value)}
                         className={colour==="red" ? "form-control is-invalid" : "form-control"} id="msg"></input>
-                        <label htmlFor="msg">Message (optional)</label>
+                        <label htmlFor="msg">{t("message")}</label>
                     </div>
-                    {colour && colour==="green" ? <div>Maximum characters ({counter}/{max}) </div> : null}
-                    {colour && colour==="yellow" ? <div style={{color: "orange"}}>Maximum characters ({counter}/{max}) </div> : null}
-                    {colour && colour==="red" ? <div className="input-error">Maximum characters Reached! </div> : null}
+                    {colour && colour==="green" ? <div>{t("max_char", {"counter": counter, "max": max})}</div> : null}
+                    {colour && colour==="yellow" ? <div style={{color: "orange"}}>{t("max_char", {"counter": counter, "max": max})}</div> : null}
+                    {colour && colour==="red" ? <div className="input-error">{t("max_char_reached")}</div> : null}
 
 
                     {/* button */}
-                    <button className="neon-button my-2" type="submit" onClick={() => submit()}>Send</button>
+                    <button className="neon-button my-2" type="submit" onClick={() => submit()}>{t("send")}</button>
                 </div>
             </div>
         </div>

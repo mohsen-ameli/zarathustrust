@@ -16,7 +16,7 @@ const Logout = () => {
                     <hr className="zarathus-hr" />
                     <div className="d-flex justify-content-center">
                         <button onClick={logoutUser} className="neon-button-red">{t("log_out")}</button>
-                        <Link to="/" className="neon-button ms-3">{t("back_to_home")}</Link>
+                        <Link to="/home" className="neon-button ms-3">{t("back_to_home")}</Link>
                     </div>
                 </div>
             </div>

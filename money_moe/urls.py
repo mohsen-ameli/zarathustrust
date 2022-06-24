@@ -6,6 +6,19 @@ from django.contrib.auth import views as auth_views
 from django.urls import include, path, re_path
 from users import views as users_views
 
+from django.views.generic import TemplateView
+
+urlpatterns = [
+    path("api/", include("api.urls"), name="api"),
+    # match the root
+    # re_path(r'^$', TemplateView.as_view(template_name='index.html')),
+    path("", TemplateView.as_view(template_name='index.html')),
+    # match all other pages
+    re_path(r'^(?:.*)/?$', TemplateView.as_view(template_name='index.html')),
+]
+
+
+'''
 app_name = "money_moe"
 urlpatterns = [
     path("", include("accounts.urls"), name="home"),
@@ -37,3 +50,4 @@ urlpatterns += i18n_patterns(path('jsi18n/', JavaScriptCatalog.as_view(), name='
 
 if "rosetta" in settings.INSTALLED_APPS:
     urlpatterns += [re_path(r"^rosetta/", include("rosetta.urls"))]
+'''

@@ -42,7 +42,7 @@ const Navbar = () => {
         <div className="navbar">
             <nav className="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
                 <div className="container-sm">
-                        <Link className="navbar-brand" to="/">
+                        <Link className="navbar-brand" to={logged ? "/home" : "/"}>
                             <img src={ img } alt='' width="60" height="26" className="d-inline-block align-text-top"></img>
                             <span style={{fontSize: "x-large"}}> Z</span>arathus<span style={{fontSize: "x-large"}}>T</span>rust
                         </Link>
@@ -53,7 +53,7 @@ const Navbar = () => {
                     <div className="collapse navbar-collapse" id="navbarSupportedContent" ref={nav}>
                         <ul className="navbar-nav mr-auto">
                             <li className="nav-item">
-                                <Link className="nav-link active" to="/">
+                                <Link className="nav-link active" to={logged ? "/home" : "/"}>
                                     <FontAwesomeIcon icon={faHome} /> {t("home")}
                                 </Link>
                             </li>
@@ -106,7 +106,7 @@ const Navbar = () => {
                                 <Link className="nav-link active" to="/login">{t("log_in")}</Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link active" to="/">{t("sign_up")}</Link>
+                                <Link className="nav-link active" to="/signup">{t("sign_up")}</Link>
                             </li>
                             </>
                             }

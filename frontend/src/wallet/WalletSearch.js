@@ -45,7 +45,10 @@ const WalletSearch = () => {
 
 
     let loadJson = async () => {
-        let { response, data } = await api("/api/json/country_currencies_clean")
+        console.log("HEREEE")
+        let { response, data } = await api("/api/json/country_currencies_clean/")
+        
+        console.log("data: ", data)
         if (response.status === 200) {
             setCurrencies(data)
             setIsLoading(false)

@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import ShowDate from '../components/ShowDate'
 import ShowWallets from "../components/ShowWallets";
+import { useTranslation } from "react-i18next";
 
 import Alert from 'react-bootstrap/Alert';
 import RotateLoader from 'react-spinners/RotateLoader';
@@ -11,6 +12,7 @@ import useFetch from "../components/useFetch";
 
 const Transactions = () => {
     let { user }                        = useContext(AuthContext)
+    let { t }                           = useTranslation()
     const pk                            = user?.user_id
     let api                             = useFetch()
 
@@ -171,13 +173,13 @@ const Transactions = () => {
                 <div className="card-body">
                     <div className="m-2 mx-auto">
                         {totalTrans !== 0 ? 
-                            <><div className="mb-3 text-center">Choose How Many Transaction to See Per Page (default is 10)</div>
-                                <div className="mb-3 text-center">Total Transactions:  {totalTrans}</div>
+                            <><div className="mb-3 text-center">{t("pagniation")}</div>
+                                <div className="mb-3 text-center">{t("total_transaction")}{totalTrans}</div>
 
                                 <div className="align-self-center ms-3 text-center">
                                 <button className="neon-button" onMouseOver={() => mouseOver(1)} onMouseOut={() => mouseOut(1)}
                                 id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Choose a number <i className="fas fa-caret-down" ref={link}></i>
+                                    {t("plz_num")} <i className="fas fa-caret-down" ref={link}></i>
                                 </button>
                             
                                 <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
@@ -346,7 +348,7 @@ const Transactions = () => {
             }
 
                 <div className="text-center">
-                    <Link className="neon-button my-2" to="/">Home</Link> 
+                    <Link className="neon-button my-2" to="/home">Home</Link> 
                 </div>
             </>
             }

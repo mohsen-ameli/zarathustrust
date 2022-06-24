@@ -5,6 +5,7 @@ import RotateLoader from 'react-spinners/RotateLoader' // a react-spinner called
 import AuthContext from "../context/AuthContext"; // react component which stores variables and functions that are accessible throughout the whole proj 
 import { useContext } from "react"; // this is needed to use the context provided by the previous import
 import useFetch from "../components/useFetch"; // custom react hook to fetch data from the backend, with authentication included
+import { useTranslation } from "react-i18next";
 
 /**
  * Component to show the deposit information required for users to be able to deposit money into their account.
@@ -54,6 +55,11 @@ const DepositInfo = () => {
     const [showErr, setShowErr]     = useState(false);
 
     /**
+     * Translations
+     */
+    const { t }   = useTranslation()
+
+    /**
      * react hook that is a function that runs on every render
      * it runs a function "loadUser" that fetches the currUser api from the backend
      */
@@ -74,6 +80,7 @@ const DepositInfo = () => {
         if (response.status === 200) {
             // setting the username
             setUsername(data['username'])
+
             // finished fetching so loading will be turned off
             setIsLoading(false)
         } else { // unsuccesful fetch
@@ -108,23 +115,21 @@ const DepositInfo = () => {
             {/* custom bootstrap card */}
             <div className="card text-white zarathus-card mx-auto" style={{maxWidth: "40rem"}}>
                 <div className="card-body">
-                    <h3 className="fw-normal text-center">Deposit Money From Your Account</h3>
+                    <h3 className="fw-normal text-center">{t("deposit_title")}</h3>
                     <hr className="zarathus-hr"></hr>
                     <h5 className="fw-normal">
-                            In order to transfer money, please log into your
-                            own bank account and use the following informaiton to transfer money. 
-                            After that, when your transaction gets processed by us 
-                            (<span style={{color: "#f8b119"}}>within 1 bussiness day</span>), it will show 
-                            the new ballance on your wallet
-                    </h5> <br></br>
+                            {t("deposit_info")}
+                    </h5> <br />
                     <p className="text-capitalize">
-                        name : mohsen ameli <br></br>
-                        account number : 128739127312 <br></br>
-                        purpose(optional) : {username && username}-{ pk }
+                        {t("deposit_card_info", {"username": username, "pk": pk}).split("\\n").map((item, i) => (
+                            <span key={i}>
+                            {item} <br />
+                            </span>
+                        ))}
                     </p>
 
                     {/* home button */}
-                    <Link className="neon-button my-2" to="/">Home</Link>
+                    <Link className="neon-button my-2" to="/home">Home</Link>
                 </div>
             </div>
         </div>
