@@ -78,7 +78,6 @@ const Home = () => {
         let { response, data } = await api(`/api/accounts/${pk}`)
 
         if (response.status === 200) {
-            console.log("LoadAccount success")
             // eslint-disable-next-line
             balanceStatic = (Number(data.total_balance));
             setBalance(Number(data.total_balance).toFixed(2));
@@ -96,7 +95,6 @@ const Home = () => {
         let { response, data } = await api(`/api/interest/${pk}`)
 
         if (response.status === 200) {
-            console.log("fetchInter success")
             setInterest(Number(data.interest_rate).toFixed(20));
             // eslint-disable-next-line
             interestRate = Number(data.interest_rate)
@@ -114,7 +112,6 @@ const Home = () => {
         let { response, data } = await api(`/api/users/${pk}`)
 
         if (response.status === 200) {
-            console.log("loadUser success")
             setId(data.id)
             setName(data.username)
             setIsBiz(data.is_business)
@@ -134,7 +131,6 @@ const Home = () => {
         let { response, data } = await api("/api/json/currencies/")
 
         if (response.status === 200) {
-            console.log("Catchh success")
             setIsLoading(false);
             data.map(item => {
                 if (item.currency.code === currencyStatic) {

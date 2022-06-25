@@ -31,25 +31,27 @@ function App() {
                 <Navbar />
                 <Switch>
                     <Route exact path="/" component={LandingPage} />
-                    <div className="app container" style={{marginTop: "4rem"}} id="main-content">
-                        <PrivateRoute path="/home" component={Home} />
-                        <PrivateRoute path="/deposit" component={Deposit} />
-                        <PrivateRoute path="/deposit-info" component={DepositInfo} />
-                        <PrivateRoute path="/withdraw" component={Withdraw} />
-                        <PrivateRoute path="/wallet-search/:curr" component={WalletConfirm} />
-                        <PrivateRoute path="/wallet-search" component={WalletSearch} />
-                        <PrivateRoute path="/:user/transfer-confirm/" component={TransferConfirm} />
-                        <PrivateRoute path="/transfer-search" component={TransferSearch} />
-                        <PrivateRoute path="/currency-exchange/:fromCurr/:fromIso/:amount/:toCurr/:toIso" component={CurrencyExConfirm} />
-                        <PrivateRoute path="/currency-exchange" component={CurrencyEx} />
-                        <PrivateRoute path="/transactions/:tId" component={TransactionsDetail} />
-                        <PrivateRoute path="/transactions/" component={Transactions} />
-                        <Route path="/about" component={About} /> 
-                        <Route path="/signup" component={SignUp} />
-                        <Route path="/login" component={Login} />
-                        <Route path="/logout" component={Logout} />
-                        {/* <Route component={NotFound} /> */}
-                    </div>
+                    <Route>
+                        <div className="app container" style={{marginTop: "4rem"}} id="main-content">
+                            <PrivateRoute path="/home" component={Home} />
+                            <PrivateRoute path="/deposit" component={Deposit} />
+                            <PrivateRoute path="/deposit-info" component={DepositInfo} />
+                            <PrivateRoute path="/withdraw" component={Withdraw} />
+                            <PrivateRoute path="/wallet-search/:curr" exact component={WalletConfirm} />
+                            <PrivateRoute path="/wallet-search" exact component={WalletSearch} />
+                            <PrivateRoute path="/:user/transfer-confirm/" component={TransferConfirm} />
+                            <PrivateRoute path="/transfer-search" component={TransferSearch} />
+                            <PrivateRoute path="/currency-exchange/:fromCurr/:fromIso/:amount/:toCurr/:toIso" exact component={CurrencyExConfirm} />
+                            <PrivateRoute path="/currency-exchange" exact component={CurrencyEx} />
+                            <PrivateRoute path="/transactions/:tId" exact component={TransactionsDetail} />
+                            <PrivateRoute path="/transactions/" exact component={Transactions} />
+                            <Route path="/about" component={About} /> 
+                            <Route path="/signup" component={SignUp} />
+                            <Route path="/login" component={Login} />
+                            <Route path="/logout" component={Logout} />
+                            {/* <Route component={NotFound} /> */}
+                        </div>
+                    </Route>
                 </Switch>
             </AuthProvider>
         </Router>

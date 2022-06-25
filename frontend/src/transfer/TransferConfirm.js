@@ -35,7 +35,7 @@ const TransferConfirm = () => {
 
     useEffect(() => {
         if (!state?.fromApp) {
-            history.push(`/${pk}/transfer-search`)
+            history.push("transfer-search")
         }
         setIsLoading(false)
     }, [history, pk, state?.fromApp])

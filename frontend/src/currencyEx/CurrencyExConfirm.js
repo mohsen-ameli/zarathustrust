@@ -33,10 +33,10 @@ const CurrencyExConfirm = () => {
 
     useEffect(() => {
         if (!state?.fromApp) {
-            history.push(`/${pk}/currency-exchange`)
+            history.push("/currency-exchange")
         }
 
-        api("/api/json/currencies_symbols")
+        api("/api/json/currencies_symbols/")
         .then(res => {
             setToSymbol(res.data[toCurr])
             setFromSymbol(res.data[fromCurr])
