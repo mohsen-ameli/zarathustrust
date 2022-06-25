@@ -1,5 +1,4 @@
 import os, decimal, json
-from django.db.models.expressions import Exists
 import requests
 
 from django.http.response import JsonResponse
@@ -22,7 +21,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 
 from .forms import AddMoneyForm, TakeMoneyForm, TransferSendForm
-from .models import account, account_interest, transaction_history
+from .models import Account, AccountInterest, TransactionHistory
 from .tasks import interest_loop
 from .functions import *
 from users.models import ReferralCode
@@ -95,7 +94,7 @@ def HomeView(request, pk):
     if request.is_ajax():
         return redirect("accounts:add-money", pk=pk)
 
-    acc             = account.objects.get(pk=pk) # user's account
+    acc             = Account.objects.get(pk=pk) # user's account
     user            = CustomUser.objects.get(pk=pk) # user's model
     currency        = get_currency_symbol(user.currency) # user model's currency
     branchAccount   = BranchAccounts.objects.filter(main_account__pk=pk) # getting user's wallets
@@ -105,7 +104,7 @@ def HomeView(request, pk):
     
 
     context = {
-        'interest_list'         : account_interest.objects.get(pk=pk),
+        'interest_list'         : AccountInterest.objects.get(pk=pk),
         'object'                : acc,
         'is_bus'                : user.is_business,
         'currency'              : currency,
@@ -179,8 +178,8 @@ def TransferSendView(request, pk, reciever_name):
     min_currency        = currency_min(currency_name)
 
     # getting giver/reciever stuff
-    giver                    = account.objects.get(pk=pk)
-    reciever                 = account.objects.get(created_by__username=reciever_name)
+    giver                    = Account.objects.get(pk=pk)
+    reciever                 = Account.objects.get(created_by__username=reciever_name)
     giver_wallet             = BranchAccounts.objects.filter(main_account=giver)
     balance                  = giver.total_balance
     giver_currency           = giver.main_currency
@@ -208,8 +207,8 @@ def TransferSendView(request, pk, reciever_name):
             # Logic starts
             try:
                 if giver != reciever: # making sure the user isn't sending money to themselves
-                    giver_interest      = account_interest.objects.get(pk=pk)
-                    reciever_interest   = account_interest.objects.get(pk=reciever.pk)
+                    giver_interest      = AccountInterest.objects.get(pk=pk)
+                    reciever_interest   = AccountInterest.objects.get(pk=reciever.pk)
 
                     # form variables
                     purpose     = form.cleaned_data.get("purpose")
@@ -224,7 +223,7 @@ def TransferSendView(request, pk, reciever_name):
                         # reciever and giver's accounts do not have the same currency
                         if giver_currency == currency_name: # account-to-somthing
                             giver_total_balance = balance
-                            giver_update = account.objects.filter(pk=pk)
+                            giver_update = Account.objects.filter(pk=pk)
                             if reciever_specific.exists():
                                 # account-to-wallet
                                 print("account-to-wallet")
@@ -234,18 +233,18 @@ def TransferSendView(request, pk, reciever_name):
                                 update_interest_rate = False
 
                                 # recording the transaction
-                                r = transaction_history(person=giver, second_wallet=reciever_specific.get(main_account=reciever),
+                                r = TransactionHistory(person=giver, second_wallet=reciever_specific.get(main_account=reciever),
                                 price=MoneyToSend, purpose_of_use=purpose, method="Transfer")
                             elif giver_currency == reciever_currency and currency_name:
                                 # account-to-account
                                 print("account-to-account")
 
                                 reciever_total_balance = reciever.total_balance
-                                reciever_update = account.objects.filter(created_by__username=reciever_name)
+                                reciever_update = Account.objects.filter(created_by__username=reciever_name)
                                 update_interest_rate = True
 
                                 # recording the transaction
-                                r = transaction_history(person=giver, second_person=reciever,
+                                r = TransactionHistory(person=giver, second_person=reciever,
                                 price=MoneyToSend, purpose_of_use=purpose, method="Transfer")
                             else:
                                 # account-to-newWallet
@@ -258,7 +257,7 @@ def TransferSendView(request, pk, reciever_name):
                                 update_interest_rate = False
 
                                 # recording the transaction
-                                r = transaction_history(person=giver, second_wallet=new,
+                                r = TransactionHistory(person=giver, second_wallet=new,
                                 price=MoneyToSend, purpose_of_use=purpose, method="Transfer")
                         else: # wallet-to-something
                             giver_total_balance = giver_wallet.filter(currency=currency_name).values("total_balance")[0]['total_balance']
@@ -272,17 +271,17 @@ def TransferSendView(request, pk, reciever_name):
                                 update_interest_rate = False
 
                                 # recording the transaction
-                                r = transaction_history(wallet=abc, second_wallet=reciever_wallet.get(currency=currency_name),
+                                r = TransactionHistory(wallet=abc, second_wallet=reciever_wallet.get(currency=currency_name),
                                 price=MoneyToSend, purpose_of_use=purpose, method="Transfer")
                             elif reciever.main_currency == currency_name:
                                 # wallet-to-account
                                 print("wallet-to-account")
                                 reciever_total_balance = reciever.total_balance
-                                reciever_update = account.objects.filter(created_by__username=reciever_name)
+                                reciever_update = Account.objects.filter(created_by__username=reciever_name)
                                 update_interest_rate = True
 
                                 # recording the transaction
-                                r = transaction_history(wallet=abc, second_person=reciever,
+                                r = TransactionHistory(wallet=abc, second_person=reciever,
                                 price=MoneyToSend, purpose_of_use=purpose, method="Transfer")
                             else:
                                 # wallet-to-newWallet
@@ -295,7 +294,7 @@ def TransferSendView(request, pk, reciever_name):
                                 update_interest_rate = False
                                 
                                 # recording the transaction
-                                r = transaction_history(wallet=abc, second_wallet=new,
+                                r = TransactionHistory(wallet=abc, second_wallet=new,
                                 price=MoneyToSend, purpose_of_use=purpose, method="Transfer")
                         
                         ######## UPDATING ########
@@ -316,7 +315,7 @@ def TransferSendView(request, pk, reciever_name):
                         # taking money from giver
                         b = giver_interest.interest - MoneyToSend
                         # updating giver
-                        account_interest.objects.filter(pk=pk).update(interest=b)
+                        AccountInterest.objects.filter(pk=pk).update(interest=b)
 
 
 
@@ -412,8 +411,8 @@ def CashOut(request, pk):
     
     # settings variables
     user              = CustomUser.objects.get(pk=pk)
-    acc               = account.objects.get(pk=pk)
-    accInterest       = account_interest.objects.get(pk=pk)
+    acc               = Account.objects.get(pk=pk)
+    accInterest       = AccountInterest.objects.get(pk=pk)
     currency          = get_currency_symbol(user.currency)
     interest_rate     = accInterest.interest_rate
     bonus             = acc.bonus
@@ -438,7 +437,7 @@ def CashOut(request, pk):
     accInterest.interest = total_balance
     accInterest.interest_rate = 0
 
-    r = transaction_history(person=acc, price=round(extra, 1), method="Cash Out")
+    r = TransactionHistory(person=acc, price=round(extra, 1), method="Cash Out")
 
     r.save()
     acc.save()
@@ -509,7 +508,7 @@ def DepositUpdateView(request, pk):
             #     customer=user_.stripe_id
             # )
 
-            account.objects.filter(pk=pk).update(add_money=0)
+            Account.objects.filter(pk=pk).update(add_money=0)
             return redirect('accounts:add-money-info', pk=pk)
         else:
             messages.warning(request, _(f"Please consider that the minimum amount to withdraw must be {currency_symbol_}{min_currency} or higher !"))
@@ -547,7 +546,7 @@ def WithdrawUpdateView(request, pk):
     if user_.stripe_id is None:
         return redirect("wallets:new-card", pk=pk)
 
-    acc                 = account.objects.get(pk=pk)
+    acc                 = Account.objects.get(pk=pk)
     branch_acc          = BranchAccounts.objects.filter(main_account__pk=pk)
     currency_name       = user_.currency
     balance             = acc.total_balance
@@ -619,9 +618,9 @@ def checkout(request, shop, price):
 
     if "$" in price:
         price = price.replace("$", '')
-    total_balance = account.objects.get(created_by=request.user).total_balance
+    total_balance = Account.objects.get(created_by=request.user).total_balance
     remaining     = round(total_balance - decimal.Decimal(float(price)), 2)
-    buyer_balance = account.objects.get(pk=get_current_user().pk).total_balance
+    buyer_balance = Account.objects.get(pk=get_current_user().pk).total_balance
     currency = CustomUser.objects.get(pk=pk).currency
     context = {'pk' : pk,'price' : price, 'balance' : total_balance, 'remaining' : remaining, 'shop' : shop, 'currency' : currency}
 
@@ -631,16 +630,16 @@ def checkout(request, shop, price):
     price = decimal.Decimal(float(price)) # compatibilizing str price to decimalField in models 
     if request.method == "POST":
         if buyer_balance >= round(price, 2):
-            shop_balance = account.objects.get(created_by__username=shop).total_balance
+            shop_balance = Account.objects.get(created_by__username=shop).total_balance
             # adding price to the shop owner
-            account.objects.filter(created_by__username=shop).update(total_balance=shop_balance + price)
+            Account.objects.filter(created_by__username=shop).update(total_balance=shop_balance + price)
             # subtracting price from buyer
-            account.objects.filter(pk=get_current_user().pk).update(total_balance=buyer_balance - price)
+            Account.objects.filter(pk=get_current_user().pk).update(total_balance=buyer_balance - price)
 
             # add the transaction to the user's history
-            person = account.objects.get(pk=get_current_user().pk)
-            second_person = account.objects.get(created_by__username=shop)
-            r = transaction_history(person=person, second_person=second_person,
+            person = Account.objects.get(pk=get_current_user().pk)
+            second_person = Account.objects.get(created_by__username=shop)
+            r = TransactionHistory(person=person, second_person=second_person,
             price=price, method="Payment")
             r.save()
 
@@ -662,12 +661,12 @@ def History(request, pk):
 
     # getting user's currency stuff
     user_                  = CustomUser.objects.get(pk=pk)
-    currency               = account.objects.get(pk=pk).main_currency
-    acc                    = account.objects.get(pk=pk)
+    currency               = Account.objects.get(pk=pk).main_currency
+    acc                    = Account.objects.get(pk=pk)
     branch_acc             = BranchAccounts.objects.filter(main_account__pk=pk) # getting user's wallets
 
     counter = 0
-    transactions = transaction_history.objects.none()
+    transactions = TransactionHistory.objects.none()
     # if user has selected a wallet
     wallet = request.GET.get("wallet-name")
 
@@ -683,8 +682,8 @@ def History(request, pk):
 
             # getting wallet's transactions
             for branch in branch_acc:
-                person_history         = transaction_history.objects.filter(wallet=branch).filter(wallet__currency=wallet).order_by('date').reverse()
-                seconed_person_history = transaction_history.objects.filter(second_wallet=branch).filter(second_wallet__currency=wallet).order_by('date').reverse()
+                person_history         = TransactionHistory.objects.filter(wallet=branch).filter(wallet__currency=wallet).order_by('date').reverse()
+                seconed_person_history = TransactionHistory.objects.filter(second_wallet=branch).filter(second_wallet__currency=wallet).order_by('date').reverse()
                 if person_history or seconed_person_history:
                     transactions = person_history | seconed_person_history
                     counter = Paginator(transactions, 1).count
@@ -696,8 +695,8 @@ def History(request, pk):
         currency_symbol        = get_currency_symbol(currency)
 
         # getting account's transactions
-        person_history         = transaction_history.objects.filter(person=acc).order_by('date').reverse()
-        seconed_person_history = transaction_history.objects.filter(second_person=acc).order_by('date').reverse()
+        person_history         = TransactionHistory.objects.filter(person=acc).order_by('date').reverse()
+        seconed_person_history = TransactionHistory.objects.filter(second_person=acc).order_by('date').reverse()
         transactions = person_history | seconed_person_history
         counter = Paginator(transactions, 1).count
 
@@ -748,7 +747,7 @@ def HistoryDetail(request, pk, tran_id):
     reciever_symbol = None
     id = []
     allowed = False
-    transaction = transaction_history.objects.get(pk=tran_id)
+    transaction = TransactionHistory.objects.get(pk=tran_id)
 
     if transaction.person:
         currency = transaction.person.main_currency
@@ -758,22 +757,22 @@ def HistoryDetail(request, pk, tran_id):
         id.append(transaction.second_person.pk)
     if transaction.wallet:
         currency = transaction.wallet.currency
-        id.append(transaction.wallet.main_account.pk)
+        id.append(transaction.wallet.main_Account.pk)
     if transaction.second_wallet:
         currency = transaction.second_wallet.currency
-        id.append(transaction.second_wallet.main_account.pk)
+        id.append(transaction.second_wallet.main_Account.pk)
     currency_symbol   = get_currency_symbol(currency)
     
     # if the transaction is a transfer
     if transaction.method == "Transfer":
         # user is giving money
         if transaction.wallet: # wallet was used
-            if transaction.wallet.main_account.created_by == request.user:
+            if transaction.wallet.main_Account.created_by == request.user:
                 incoming = 0
                 try:
                     transactor = transaction.second_person.created_by.username
                 except:
-                    transactor = transaction.second_wallet.main_account.created_by.username
+                    transactor = transaction.second_wallet.main_Account.created_by.username
             else:
                 incom = True
         elif transaction.person: # person was used
@@ -783,7 +782,7 @@ def HistoryDetail(request, pk, tran_id):
                 try:
                     transactor = transaction.second_person.created_by.username
                 except:
-                    transactor = transaction.second_wallet.main_account.created_by.username
+                    transactor = transaction.second_wallet.main_Account.created_by.username
             # if user is recieving
             else:
                 incom = True
@@ -795,7 +794,7 @@ def HistoryDetail(request, pk, tran_id):
             try:
                 transactor  = transaction.person.created_by.username
             except:
-                transactor  = transaction.wallet.main_account.created_by.username
+                transactor  = transaction.wallet.main_Account.created_by.username
 
     # if transaction is an exchange
     elif transaction.method == "Exchange":
@@ -859,7 +858,7 @@ def payment(request, url1, url2, url3, url4):
             price = soup.select_one('.price-current').getText()
             price = price[1:]
 
-        total_balance = account.objects.get(created_by=request.user).total_balance
+        total_balance = Account.objects.get(created_by=request.user).total_balance
         translation_table = dict.fromkeys(map(ord, ','), None)
         price = price.translate(translation_table)
         remaining     = round(total_balance - decimal.Decimal(float(price)), 2)
@@ -871,13 +870,13 @@ def payment(request, url1, url2, url3, url4):
         return redirect(reverse("login-view-pay", kwargs={"url1" : url1, "url2" : url2, "url3" : url3, "url4" : url4}))
 # DELETE this later
 def paying_func(shop, price, buyer_balance):
-    shop_owner = account.objects.get(created_by__username=shop).created_by
-    shop_balance = account.objects.get(created_by=shop_owner).total_balance
+    shop_owner = Account.objects.get(created_by__username=shop).created_by
+    shop_balance = Account.objects.get(created_by=shop_owner).total_balance
     new_balance = shop_balance + price
-    account.objects.filter(created_by=shop_owner).update(total_balance = new_balance)
+    Account.objects.filter(created_by=shop_owner).update(total_balance = new_balance)
 
     # subtracting the price from the buyer
-    account.objects.filter(pk=get_current_user().pk).update(total_balance=buyer_balance-price)
+    Account.objects.filter(pk=get_current_user().pk).update(total_balance=buyer_balance-price)
 # DELETE this later
 @login_required
 def payment_done(request, url1, url2, url3, url4, price):
@@ -887,7 +886,7 @@ def payment_done(request, url1, url2, url3, url4, price):
     price = decimal.Decimal(float(price)) # compatibilizing str price to decimalField in models 
 
     # Checking to see if the buyer has enough money
-    buyer_balance = account.objects.get(pk=get_current_user().pk).total_balance
+    buyer_balance = Account.objects.get(pk=get_current_user().pk).total_balance
     if buyer_balance >= round(price, 2):
         # adding the price to the shop owner
         if "amazon" in url1:
@@ -908,17 +907,17 @@ class HomeView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 
     def test_func(self):
         account = self.get_object()
-        if self.request.user == account.created_by:
+        if self.request.user == Account.created_by:
             return True
         return False
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['interest_list'] = account_interest.objects.get(pk=get_current_user().pk)
+        context['interest_list'] = AccountInterest.objects.get(pk=get_current_user().pk)
         context['is_bus'] = CustomUser.objects.get(pk=get_current_user().pk).is_business
         context['currency'] = CustomUser.objects.get(pk=get_current_user().pk).currency
 
-        acc = account.objects.get(pk=get_current_user().pk)
+        acc = Account.objects.get(pk=get_current_user().pk)
 
         url = f'https://api.exchangerate.host/convert?from=USD&to=EUR' # 1 USD to EUR
         response = requests.get(url) # getting a response

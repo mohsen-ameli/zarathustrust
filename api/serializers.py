@@ -1,16 +1,16 @@
 from rest_framework import serializers
-from accounts.models import account, account_interest
+from accounts.models import Account, AccountInterest
 from users.models import CustomUser
 
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
-        model = account
+        model = Account
         fields = "__all__"
 
 
 class InterestSerializer(serializers.ModelSerializer):
     class Meta:
-        model = account_interest
+        model = AccountInterest
         fields = "__all__"
 
 class CustomUserSerializer(serializers.ModelSerializer):
