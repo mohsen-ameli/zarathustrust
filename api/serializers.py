@@ -13,14 +13,7 @@ class InterestSerializer(serializers.ModelSerializer):
         model = account_interest
         fields = "__all__"
 
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = ('id', 'username', 'currency', 'language', 'is_business')
-
-
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ('id', 'username', 'iso2', 'currency')
+        fields = ('id', 'username', 'iso2', 'currency', 'language', 'is_business')

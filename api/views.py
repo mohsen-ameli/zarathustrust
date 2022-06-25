@@ -21,6 +21,7 @@ def loadConfig():
     with open('/etc/config.json') as config_file:
         return json.load(config_file)
 
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def accounts(request):
@@ -32,15 +33,17 @@ def accounts(request):
 
     return Response(serializer.data)
 
-@permission_classes([IsAuthenticated])
-class InterestApi(viewsets.ModelViewSet):
-    serializer_class = InterestSerializer
-    queryset = account_interest.objects.all()
 
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
-class UsersApi(viewsets.ModelViewSet):
-    serializer_class = UserSerializer
-    queryset = CustomUser.objects.all()
+def accountInterest(request):
+    try:
+        user = account_interest.objects.get(pk=request.user.pk)
+    except:
+        user = None
+    serializer = InterestSerializer(instance=user, many=False)
+
+    return Response(serializer.data)
 
 
 @api_view(['GET'])
