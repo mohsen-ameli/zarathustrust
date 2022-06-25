@@ -8,6 +8,7 @@ from users import views as users_views
 
 from django.views.generic import TemplateView
 
+
 urlpatterns = [
     path("api/", include("api.urls"), name="api"),
     # match the root
