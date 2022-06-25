@@ -34,6 +34,7 @@ const Transactions = () => {
     const [showErr, setShowErr]         = useState(false)
 
     useEffect(() => {
+        console.log("loadUser started, ", user)
         loadUser()
     }, [])
 
@@ -56,6 +57,7 @@ const Transactions = () => {
 
     let getTransactions = async (iso, curr) => {
         let { response, data } = await api(`/api/transactions/${iso}/${curr}/${pageNum}/${numItems}`) // /transactios/<currency>/<pageNumber>/<numItems>
+        
         if (response.status === 200) {
             console.log("response: ", response, " data: ", data)
             
@@ -68,24 +70,6 @@ const Transactions = () => {
             setError('An error occurred. Awkward..')
             setShowErr(true)
             setIsLoading(false)
-        }
-    }
-
-
-
-
-    let mouseOver = (num) => {
-        if (num === 1) {
-            link.current.style.color = "black"
-        } else {
-            link2.current.style.color = "black"
-        }
-    }
-    let mouseOut = (num) => {
-        if (num === 1) {
-            link.current.style.color = "#f8b119c7"
-        } else {
-            link2.current.style.color = "#f8b119c7"
         }
     }
 
@@ -157,6 +141,22 @@ const Transactions = () => {
             setError('An error occurred. Awkward..')
             setShowErr(true)
             setIsLoading(false)
+        }
+    }
+
+
+    let mouseOver = (num) => {
+        if (num === 1) {
+            link.current.style.color = "black"
+        } else {
+            link2.current.style.color = "black"
+        }
+    }
+    let mouseOut = (num) => {
+        if (num === 1) {
+            link.current.style.color = "#f8b119c7"
+        } else {
+            link2.current.style.color = "#f8b119c7"
         }
     }
 
