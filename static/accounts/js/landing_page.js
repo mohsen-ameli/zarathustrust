@@ -1,4 +1,4 @@
-(function() {
+a = () => {
     const ani = document.getElementById("ani");
     const holdInitialTime = 3000;
     const animationTime = 7;
@@ -45,4 +45,5 @@
     setTimeout(()=> {
         ani.style.display = "none"
     }, animationTime * 1000 + holdInitialTime + 1000)
-})();
+}
+a()
