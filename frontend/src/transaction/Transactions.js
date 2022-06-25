@@ -41,6 +41,7 @@ const Transactions = () => {
         let { response, data } = await api("/api/currUser")
 
         if (response.status === 200) {
+            console.log("loadUser success")
             setUsername(data['username'])
             setIso2(data['iso2'])
             setCurrency(data['currency'])
@@ -56,6 +57,8 @@ const Transactions = () => {
     let getTransactions = async (iso, curr) => {
         let { response, data } = await api(`/api/transactions/${iso}/${curr}/${pageNum}/${numItems}`) // /transactios/<currency>/<pageNumber>/<numItems>
         if (response.status === 200) {
+            console.log("response: ", response, " data: ", data)
+            
             setAllTrans(data.transactions)
             setSymbol(data.currencySymbol)
             setTotalTrans(data.counter)
@@ -92,6 +95,7 @@ const Transactions = () => {
         
         let { response, data } = await api(`/api/transactions/${wallet[0]}/${wallet[1]}/1/${numItems}`)
         if (response.status === 200) {
+            console.log("changing currency was a success")
             setAllTrans(data.transactions)
             setSymbol(data.currencySymbol)
             setTotalTrans(data.counter)
@@ -117,6 +121,7 @@ const Transactions = () => {
         
         let { response, data } = await api(`/api/transactions/${iso2}/${currency}/1/${num}`)
         if (response.status === 200) {
+            console.log("changing number of items was a success")
             setAllTrans(data.transactions)
             setSymbol(data.currencySymbol)
             setTotalTrans(data.counter)
@@ -142,6 +147,7 @@ const Transactions = () => {
         
         let { response, data } = await api(`/api/transactions/${iso2}/${currency}/${num}/${numItems}`)
         if (response.status === 200) {
+            console.log("changing the page number was a success")
             setAllTrans(data.transactions)
             setSymbol(data.currencySymbol)
             setTotalTrans(data.counter)
