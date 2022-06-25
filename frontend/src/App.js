@@ -29,8 +29,9 @@ function App() {
         <Router>
             <AuthProvider>
                 <Navbar />
-                <div className="app container" style={{marginTop: "4rem"}} id="main-content">
-                    <Switch>
+                <Switch>
+                    <Route exact path="/" component={LandingPage} />
+                    <div className="app container" style={{marginTop: "4rem"}} id="main-content">
                         <PrivateRoute path="/home" component={Home} />
                         <PrivateRoute path="/deposit" component={Deposit} />
                         <PrivateRoute path="/deposit-info" component={DepositInfo} />
@@ -43,14 +44,13 @@ function App() {
                         <PrivateRoute path="/currency-exchange" component={CurrencyEx} />
                         <PrivateRoute path="/transactions/:tId" component={TransactionsDetail} />
                         <PrivateRoute path="/transactions/" component={Transactions} />
-                        <Route exact path="/" component={LandingPage} />
                         <Route path="/about" component={About} /> 
                         <Route path="/signup" component={SignUp} />
                         <Route path="/login" component={Login} />
                         <Route path="/logout" component={Logout} />
-                        <Route component={NotFound} />
-                    </Switch>
-                </div>
+                        {/* <Route component={NotFound} /> */}
+                    </div>
+                </Switch>
             </AuthProvider>
         </Router>
     );

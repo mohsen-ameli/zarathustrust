@@ -52,11 +52,13 @@ const Navbar = () => {
                     </button>
                     <div className="collapse navbar-collapse" id="navbarSupportedContent" ref={nav}>
                         <ul className="navbar-nav mr-auto">
+                            {logged &&
                             <li className="nav-item">
-                                <Link className="nav-link active" to={logged ? "/home" : "/"}>
+                                <Link className="nav-link active" to="/home">
                                     <FontAwesomeIcon icon={faHome} /> {t("home")}
                                 </Link>
                             </li>
+                            }
 
                             <li className="nav-item">
                                 <Link className="nav-link active" to="/about">
@@ -91,11 +93,13 @@ const Navbar = () => {
                                 </ul> 
                             </li>
 
+                            { logged &&
                             <li className="nav-item">
-                                <Link className="nav-link active" to="/">
+                                <Link className="nav-link active" to="#">
                                     <FontAwesomeIcon icon={faGear} /> {t("settings")}
                                 </Link>
                             </li>
+                            }
                             { logged ?
                             <li className="nav-item">
                                 <Link to="/logout" className="nav-link active">{t("log_out")}</Link>

@@ -18,6 +18,7 @@ urlpatterns = [
 ]
 
 
+
 '''
 app_name = "money_moe"
 urlpatterns = [

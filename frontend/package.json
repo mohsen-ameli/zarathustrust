@@ -15,6 +15,7 @@
     "axios": "^0.27.2",
     "dayjs": "^1.11.3",
     "firebase": "^9.8.4",
+    "gsap": "^3.10.4",
     "i18next": "^21.8.10",
     "i18next-browser-languagedetector": "^6.1.4",
     "i18next-http-backend": "^1.4.1",

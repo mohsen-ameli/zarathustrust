@@ -11,7 +11,7 @@ root.render(
     <Suspense fallback={
       <div className="spinner">
         <RotateLoader color="#f8b119" size={20} />
-    </div>
+      </div>
     }>
       <App />
     </Suspense>
