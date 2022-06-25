@@ -90,7 +90,7 @@ const Transactions = () => {
     let changeCurr = async (wallet) => {
         setIsLoading(true)
         
-        let { response, data } = await api(`/api/transactions/${wallet[0]}/${wallet[1]}/1/${numItems}`)
+        let { response, data } = await api(`/api/transactions/${wallet[0]}/${wallet[1]}/1/${numItems}/`)
         if (response.status === 200) {
             setAllTrans(data.transactions)
             setSymbol(data.currencySymbol)
@@ -115,7 +115,7 @@ const Transactions = () => {
         setIsLoading(true)
         setNumItems(num)
         
-        let { response, data } = await api(`/api/transactions/${iso2}/${currency}/1/${num}`)
+        let { response, data } = await api(`/api/transactions/${iso2}/${currency}/1/${num}/`)
         if (response.status === 200) {
             setAllTrans(data.transactions)
             setSymbol(data.currencySymbol)
