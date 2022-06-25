@@ -1,7 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from .models import account
-from users.models import CustomUser
+from .models import Account
 from crispy_bootstrap5.bootstrap5 import FloatingField
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout
@@ -12,7 +11,7 @@ class AddMoneyForm(forms.ModelForm):
         widget = forms.TextInput(attrs={'placeholder': '$0.0'}))
 
     class Meta:
-        model  = account
+        model  = Account
         fields = ['add_money']
 
     def __init__(self, *args, **kwargs):
@@ -29,7 +28,7 @@ class TakeMoneyForm(forms.ModelForm):
         widget = forms.TextInput(attrs={'placeholder': '$0.0'}))
 
     class Meta:
-        model = account
+        model = Account
         fields = ['take_money']
     
     def __init__(self, *args, **kwargs):
@@ -48,7 +47,7 @@ class TransferSendForm(forms.ModelForm):
             widget     = forms.TextInput(attrs={'placeholder': _('e.g. Happy Birthday Honey !')}))
 
     class Meta:
-        model  = account
+        model  = Account
         fields = ['money_to_send', 'money_to_send']
 
     def __init__(self, *args, **kwargs):

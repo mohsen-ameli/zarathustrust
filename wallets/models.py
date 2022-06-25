@@ -1,5 +1,5 @@
 from django.db import models
-from accounts.models import transaction_history
+from accounts.models import TransactionHistory
 
 class BranchAccounts(models.Model):
     main_account    = models.ForeignKey("accounts.account", on_delete=models.SET_NULL, null=True, blank=True)
@@ -13,12 +13,12 @@ class BranchAccounts(models.Model):
         if self.add_money:
             self.total_balance = self.total_balance + self.add_money
             
-            r = transaction_history(wallet=self, method="Deposit", price=self.add_money)
+            r = TransactionHistory(wallet=self, method="Deposit", price=self.add_money)
             r.save()
 
             self.add_money = 0
         elif self.take_money:
-            r = transaction_history(wallet=self, method="Withdraw", price=self.take_money)
+            r = TransactionHistory(wallet=self, method="Withdraw", price=self.take_money)
             r.save()
 
             self.take_money = 0

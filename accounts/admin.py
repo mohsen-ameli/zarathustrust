@@ -1,16 +1,14 @@
 from django.contrib import admin
-from django.db.models import fields
 from . import models
-from users.models import CustomUser
 
 class detailsAdmin(admin.ModelAdmin):
-    model = models.account
+    model = models.Account
 
     fields=('created_by', ('main_currency', 'iso2'), 'total_balance', ('add_money', 'take_money'), 'bonus')
 
 
 class detailsTransactions(admin.ModelAdmin):
-    model = models.transaction_history
+    model = models.TransactionHistory
 
     fields = (
         ('person', 'wallet'), 
@@ -21,6 +19,6 @@ class detailsTransactions(admin.ModelAdmin):
     )
 
 
-admin.site.register(models.account, detailsAdmin)
-admin.site.register(models.account_interest)
-admin.site.register(models.transaction_history, detailsTransactions)
+admin.site.register(models.Account, detailsAdmin)
+admin.site.register(models.AccountInterest)
+admin.site.register(models.TransactionHistory, detailsTransactions)

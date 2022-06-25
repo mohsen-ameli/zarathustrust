@@ -1,5 +1,5 @@
 from __future__ import absolute_import, unicode_literals
-from .models import account_interest
+from .models import AccountInterest
 from time import sleep
 from celery import shared_task
 
@@ -8,7 +8,7 @@ from celery import shared_task
 def interest_loop():
     ### celery -A money_moe worker -l info --pool=solo
     while True:
-        for each in account_interest.objects.all():
+        for each in AccountInterest.objects.all():
             total_balance = float(each.interest)
             if total_balance != 0:
                 b = float(each.interest_rate)

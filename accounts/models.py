@@ -14,7 +14,7 @@ with open('/etc/config.json') as config_file:
     config = json.load(config_file)
 
 
-class account(models.Model):
+class Account(models.Model):
     created_by        = models.OneToOneField(CustomUser, on_delete=models.CASCADE, null=True)
     total_balance     = models.DecimalField(decimal_places=2, max_digits=10, null=True, default=0)
     add_money         = models.DecimalField(decimal_places=1, max_digits=10, null=True, blank=True)
@@ -27,19 +27,19 @@ class account(models.Model):
 
     def save(self, *args, **kwargs):
         if self.add_money:
-            a = account_interest.objects.get(pk=self.pk).interest + self.add_money
-            account_interest.objects.filter(pk=self.pk).update(interest=a)
+            a = AccountInterest.objects.get(pk=self.pk).interest + self.add_money
+            AccountInterest.objects.filter(pk=self.pk).update(interest=a)
             self.total_balance = self.total_balance + self.add_money
 
-            r = transaction_history(person=self, method="Deposit", price=self.add_money)
+            r = TransactionHistory(person=self, method="Deposit", price=self.add_money)
             r.save()
             
             self.add_money = 0
         elif self.take_money:
-            b = account_interest.objects.get(pk=self.pk).interest - self.take_money
-            account_interest.objects.filter(pk=self.pk).update(interest=b)
+            b = AccountInterest.objects.get(pk=self.pk).interest - self.take_money
+            AccountInterest.objects.filter(pk=self.pk).update(interest=b)
 
-            r = transaction_history(person=self, method="Withdraw", price=self.take_money)
+            r = TransactionHistory(person=self, method="Withdraw", price=self.take_money)
             r.save()
 
             self.take_money = 0
@@ -53,7 +53,7 @@ class account(models.Model):
         return reverse('accounts:account-profile', kwargs={'pk':self.pk})
 
 
-class account_interest(models.Model):
+class AccountInterest(models.Model):
     interest                    = models.DecimalField(decimal_places=10, max_digits=30, null=True)
     interest_rate               = models.DecimalField(decimal_places=10, max_digits=30, null=True, default=0)
 
@@ -61,10 +61,10 @@ class account_interest(models.Model):
         return f'account-interest-pk : {self.pk}'
 
 
-class transaction_history(models.Model):
-    person              = models.ForeignKey(account, on_delete=models.SET_NULL, null=True, blank=True)
+class TransactionHistory(models.Model):
+    person              = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True)
     wallet              = models.ForeignKey("wallets.BranchAccounts", on_delete=models.SET_NULL, null=True, blank=True, related_name="wallet")
-    second_person       = models.ForeignKey(account, on_delete=models.SET_NULL, null=True, blank=True, related_name="second_person")
+    second_person       = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True, related_name="second_person")
     second_wallet       = models.ForeignKey("wallets.BranchAccounts", on_delete=models.SET_NULL, null=True, blank=True, related_name="second_wallet")
     date                = models.DateTimeField(auto_now_add=True)
     price               = models.DecimalField(decimal_places=2, max_digits=10)
@@ -120,11 +120,11 @@ class transaction_history(models.Model):
 
 
 
-# signal to create an account_interest, right after an account is created
-@receiver(post_save, sender=account)
+# signal to create an AccountInterest, right after an account is created
+@receiver(post_save, sender=Account)
 def account_created_handler(sender, created, instance, *args, **kwargs):
     if created:
-        account_interest.objects.create(interest=instance.total_balance, id=instance.pk)
+        AccountInterest.objects.create(interest=instance.total_balance, id=instance.pk)
 
         # starting the interest making process
         from .tasks import interest_loop
@@ -144,13 +144,13 @@ def account_created_handler(sender, created, instance, *args, **kwargs):
                         [f'{email}'],)
 
 
-@receiver(pre_delete, sender=account)
+@receiver(pre_delete, sender=Account)
 def account_delete_hendler(sender, instance, using, *args, **kwargs):
-    account_interest.objects.get(id=instance.pk).delete()
+    AccountInterest.objects.get(id=instance.pk).delete()
 
 
-# @receiver(post_save, sender=account_interest)
-# def account_interest_created_handler(sender, created, instance, *args, **kwargs):
+# @receiver(post_save, sender=AccountInterest)
+# def AccountInterest_created_handler(sender, created, instance, *args, **kwargs):
 #     if created:
 #         from .tasks import interest_loop
 #         interest_loop.delay()

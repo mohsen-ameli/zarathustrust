@@ -26,7 +26,7 @@ def loadConfig():
 @permission_classes([IsAuthenticated])
 def accounts(request):
     try:
-        user = account.objects.get(pk=request.user.pk)
+        user = Account.objects.get(pk=request.user.pk)
     except:
         user = None
     serializer = AccountSerializer(instance=user, many=False)
@@ -38,7 +38,7 @@ def accounts(request):
 @permission_classes([IsAuthenticated])
 def accountInterest(request):
     try:
-        user = account_interest.objects.get(pk=request.user.pk)
+        user = AccountInterest.objects.get(pk=request.user.pk)
     except:
         user = None
     serializer = InterestSerializer(instance=user, many=False)
@@ -75,8 +75,8 @@ def cashOut(request):
     # settings variables
     pk                = request.user.pk
     user              = CustomUser.objects.get(pk=pk)
-    acc               = account.objects.get(pk=pk)
-    accInterest       = account_interest.objects.get(pk=pk)
+    acc               = Account.objects.get(pk=pk)
+    accInterest       = AccountInterest.objects.get(pk=pk)
     currency          = get_currency_symbol(user.currency)
     interest_rate     = accInterest.interest_rate
     bonus             = acc.bonus
@@ -101,7 +101,7 @@ def cashOut(request):
     accInterest.interest = total_balance
     accInterest.interest_rate = 0
 
-    r = transaction_history(person=acc, price=round(extra, 1), method="Cash Out")
+    r = TransactionHistory(person=acc, price=round(extra, 1), method="Cash Out")
 
     r.save()
     acc.save()
@@ -131,7 +131,7 @@ def deposit(request):
             f'{EMAIL_ID}',
             [f'{EMAIL_ID_MAIN}'],)
 
-    account.objects.filter(pk=pk).update(add_money=0)
+    Account.objects.filter(pk=pk).update(add_money=0)
     
     return Response({"message": "success", "success": True})
 
@@ -144,7 +144,7 @@ def withdraw(request):
     config              = loadConfig()
     success             = False
     user                = CustomUser.objects.get(pk=pk)
-    acc                 = account.objects.get(pk=pk)
+    acc                 = Account.objects.get(pk=pk)
     allBranchAcc        = BranchAccounts.objects.filter(main_account__pk=pk)
 
     moneyToWithdraw     = float(body['money'])
@@ -194,7 +194,7 @@ def withdraw(request):
 @permission_classes([IsAuthenticated])
 def moneyForm(request):
     pk                  = request.user.pk
-    acc                 = account.objects.get(pk=pk)
+    acc                 = Account.objects.get(pk=pk)
     branchAcc           = BranchAccounts.objects.filter(main_account__pk=pk)
 
     currency            = acc.main_currency
@@ -215,7 +215,7 @@ def moneyForm(request):
 @permission_classes([IsAuthenticated])
 def wallets(request):
     pk              = request.user.pk
-    acc             = account.objects.get(pk=pk)
+    acc             = Account.objects.get(pk=pk)
     branchAccount   = BranchAccounts.objects.filter(main_account__pk=pk)
 
     wallets = user_wallets(branchAccount, acc)
@@ -232,7 +232,7 @@ def walletsConfirm(request):
     iso2     = body['iso2']
     success = False
 
-    main_account = account.objects.get(pk=pk)
+    main_account = Account.objects.get(pk=pk)
 
     if (iso2 != main_account.iso2):
         branch = BranchAccounts.objects.get_or_create(main_account=main_account, currency=currency, iso2=iso2)
@@ -289,8 +289,8 @@ def transferConfirm(request):
     # Logic starts
     try:
         # getting giver/reciever stuff
-        giver                    = account.objects.get(pk=pk)
-        reciever                 = account.objects.get(created_by__username=reciever_name)
+        giver                    = Account.objects.get(pk=pk)
+        reciever                 = Account.objects.get(created_by__username=reciever_name)
         giver_wallet             = BranchAccounts.objects.filter(main_account=giver)
 
         # testing to see if we are withdrawing to a wallet
@@ -304,8 +304,8 @@ def transferConfirm(request):
         reciever_currency        = reciever.main_currency
 
         if giver != reciever: # making sure the user isn't sending money to themselves
-            giver_interest      = account_interest.objects.get(pk=pk)
-            reciever_interest   = account_interest.objects.get(pk=reciever.pk)
+            giver_interest      = AccountInterest.objects.get(pk=pk)
+            reciever_interest   = AccountInterest.objects.get(pk=reciever.pk)
 
             # if user has entered the bare minimum, and if has enough money
             if moneyToSend >= minCurrency and moneyToSend <= balance:
@@ -316,7 +316,7 @@ def transferConfirm(request):
                 # reciever and giver's accounts do not have the same currency
                 if giver_currency == currencyName: # account-to-somthing
                     giver_total_balance = balance
-                    giver_update = account.objects.filter(pk=pk)
+                    giver_update = Account.objects.filter(pk=pk)
                     if reciever_specific.exists():
                         # account-to-wallet
                         print("account-to-wallet")
@@ -326,18 +326,18 @@ def transferConfirm(request):
                         update_interest_rate = False
 
                         # recording the transaction
-                        r = transaction_history(person=giver, second_wallet=reciever_specific.get(main_account=reciever),
+                        r = TransactionHistory(person=giver, second_wallet=reciever_specific.get(main_account=reciever),
                         price=moneyToSend, purpose_of_use=purpose, method="Transfer")
                     elif giver_currency == reciever_currency and currencyName:
                         # account-to-account
                         print("account-to-account")
 
                         reciever_total_balance = reciever.total_balance
-                        reciever_update = account.objects.filter(created_by__username=reciever_name)
+                        reciever_update = Account.objects.filter(created_by__username=reciever_name)
                         update_interest_rate = True
 
                         # recording the transaction
-                        r = transaction_history(person=giver, second_person=reciever,
+                        r = TransactionHistory(person=giver, second_person=reciever,
                         price=moneyToSend, purpose_of_use=purpose, method="Transfer")
                     else:
                         # account-to-newWallet
@@ -350,7 +350,7 @@ def transferConfirm(request):
                         update_interest_rate = False
 
                         # recording the transaction
-                        r = transaction_history(person=giver, second_wallet=new,
+                        r = TransactionHistory(person=giver, second_wallet=new,
                         price=moneyToSend, purpose_of_use=purpose, method="Transfer")
                 else: # wallet-to-something
                     giver_total_balance = giver_wallet.filter(currency=currencyName).values("total_balance")[0]['total_balance']
@@ -364,17 +364,17 @@ def transferConfirm(request):
                         update_interest_rate = False
 
                         # recording the transaction
-                        r = transaction_history(wallet=abc, second_wallet=reciever_wallet.get(currency=currencyName),
+                        r = TransactionHistory(wallet=abc, second_wallet=reciever_wallet.get(currency=currencyName),
                         price=moneyToSend, purpose_of_use=purpose, method="Transfer")
                     elif reciever.main_currency == currencyName:
                         # wallet-to-account
                         print("wallet-to-account")
                         reciever_total_balance = reciever.total_balance
-                        reciever_update = account.objects.filter(created_by__username=reciever_name)
+                        reciever_update = Account.objects.filter(created_by__username=reciever_name)
                         update_interest_rate = True
 
                         # recording the transaction
-                        r = transaction_history(wallet=abc, second_person=reciever,
+                        r = TransactionHistory(wallet=abc, second_person=reciever,
                         price=moneyToSend, purpose_of_use=purpose, method="Transfer")
                     else:
                         # wallet-to-newWallet
@@ -387,7 +387,7 @@ def transferConfirm(request):
                         update_interest_rate = False
                         
                         # recording the transaction
-                        r = transaction_history(wallet=abc, second_wallet=new,
+                        r = TransactionHistory(wallet=abc, second_wallet=new,
                         price=moneyToSend, purpose_of_use=purpose, method="Transfer")
                 
                 ######## UPDATING ########
@@ -408,7 +408,7 @@ def transferConfirm(request):
                 # taking money from giver
                 b = float(giver_interest.interest) - moneyToSend
                 # updating giver
-                account_interest.objects.filter(pk=pk).update(interest=b)
+                AccountInterest.objects.filter(pk=pk).update(interest=b)
 
 
 
@@ -475,8 +475,8 @@ def currencyEx(request, fromCurr, fromIso, amount, toCurr, toIso):
     fromCurr            = fromCurr.upper()
 
     wallet              = BranchAccounts.objects.filter(main_account__pk=pk)
-    accInterest         = account_interest.objects.get(pk=pk)
-    acc                 = account.objects.get(pk=pk)
+    accInterest         = AccountInterest.objects.get(pk=pk)
+    acc                 = Account.objects.get(pk=pk)
 
     minTo               = currency_min(toCurr)
     minFrom             = currency_min(fromCurr)
@@ -536,7 +536,7 @@ def currencyEx(request, fromCurr, fromIso, amount, toCurr, toIso):
 
             # sending from account to wallet
             if fromCurr == CustomUser.objects.get(pk=pk).currency:
-                history = transaction_history(
+                history = TransactionHistory(
                     person=acc, 
                     second_wallet=wallet.get(currency=toCurr, iso2=toIso), 
                     price=float(amount), 
@@ -546,7 +546,7 @@ def currencyEx(request, fromCurr, fromIso, amount, toCurr, toIso):
                 )
             # sending from another wallet to wallet
             else:
-                history = transaction_history(
+                history = TransactionHistory(
                     wallet=wallet.get(currency=fromCurr, iso2=fromIso), 
                     second_wallet=wallet.get(currency=toCurr, iso2=toIso), 
                     price=float(amount), 
@@ -575,7 +575,7 @@ def currencyEx(request, fromCurr, fromIso, amount, toCurr, toIso):
             accInterest.save()
 
             # saving this transaction to history
-            history = transaction_history(
+            history = TransactionHistory(
                 wallet=wallet.get(currency=fromCurr, iso2=fromIso), 
                 second_person=acc, 
                 price=float(amount), 
@@ -601,9 +601,9 @@ def transactions(request, walletIso, walletName, pageNum, numItems):
     pk             = request.user.pk
     counter        = 0
 
-    acc            = account.objects.get(pk=pk)
+    acc            = Account.objects.get(pk=pk)
     branchAcc      = BranchAccounts.objects.filter(main_account__pk=pk)
-    transactions   = transaction_history.objects.none()
+    transactions   = TransactionHistory.objects.none()
 
     currency       = acc.main_currency
 
@@ -614,8 +614,8 @@ def transactions(request, walletIso, walletName, pageNum, numItems):
 
         # getting wallet's transactions
         for branch in branchAcc:
-            person_history         = transaction_history.objects.filter(wallet=branch).filter(wallet__currency=walletName, wallet__iso2=walletIso).order_by('date').reverse()
-            seconed_person_history = transaction_history.objects.filter(second_wallet=branch).filter(second_wallet__currency=walletName, second_wallet__iso2=walletIso).order_by('date').reverse()
+            person_history         = TransactionHistory.objects.filter(wallet=branch).filter(wallet__currency=walletName, wallet__iso2=walletIso).order_by('date').reverse()
+            seconed_person_history = TransactionHistory.objects.filter(second_wallet=branch).filter(second_wallet__currency=walletName, second_wallet__iso2=walletIso).order_by('date').reverse()
             if person_history or seconed_person_history:
                 transactions = person_history | seconed_person_history
     # showing account's transactions
@@ -624,8 +624,8 @@ def transactions(request, walletIso, walletName, pageNum, numItems):
         currency_symbol        = get_currency_symbol(currency)
 
         # getting account's transactions
-        person_history         = transaction_history.objects.filter(person=acc).order_by('date').reverse()
-        seconed_person_history = transaction_history.objects.filter(second_person=acc).order_by('date').reverse()
+        person_history         = TransactionHistory.objects.filter(person=acc).order_by('date').reverse()
+        seconed_person_history = TransactionHistory.objects.filter(second_person=acc).order_by('date').reverse()
         transactions = person_history | seconed_person_history
     
     # total number of transactions
@@ -684,7 +684,7 @@ def transactionDetail(request, tId):
     reciever_symbol = None
     id = []
     allowed = False
-    transaction = transaction_history.objects.get(pk=tId)
+    transaction = TransactionHistory.objects.get(pk=tId)
 
     if transaction.person:
         currency = transaction.person.main_currency
