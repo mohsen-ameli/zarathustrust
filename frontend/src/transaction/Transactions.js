@@ -43,11 +43,11 @@ const Transactions = () => {
 
         if (response.status === 200) {
             console.log("loadUser success")
-            setUsername(data['username'])
-            setIso2(data['iso2'])
-            setCurrency(data['currency'])
+            setUsername(data.username)
+            setIso2(data.iso2)
+            setCurrency(data.currency)
 
-            getTransactions(data['iso2'], data['currency'])
+            getTransactions(data.iso2, data.currency)
         } else {
             setError('An error occurred. Awkward..')
             setShowErr(true)
@@ -56,7 +56,7 @@ const Transactions = () => {
     }
 
     let getTransactions = async (iso, curr) => {
-        let { response, data } = await api(`/api/transactions/${iso}/${curr}/${pageNum}/${numItems}`) // /transactios/<currency>/<pageNumber>/<numItems>
+        let { response, data } = await api(`/api/transactions/${iso}/${curr}/${pageNum}/${numItems}/`)
         
         if (response.status === 200) {
             console.log("response: ", response, " data: ", data)
@@ -77,7 +77,7 @@ const Transactions = () => {
     let changeCurr = async (wallet) => {
         setIsLoading(true)
         
-        let { response, data } = await api(`/api/transactions/${wallet[0]}/${wallet[1]}/1/${numItems}`)
+        let { response, data } = await api(`/api/transactions/${wallet[0]}/${wallet[1]}/1/${numItems}/`)
         if (response.status === 200) {
             console.log("changing currency was a success")
             setAllTrans(data.transactions)
@@ -103,7 +103,7 @@ const Transactions = () => {
         setIsLoading(true)
         setNumItems(num)
         
-        let { response, data } = await api(`/api/transactions/${iso2}/${currency}/1/${num}`)
+        let { response, data } = await api(`/api/transactions/${iso2}/${currency}/1/${num}/`)
         if (response.status === 200) {
             console.log("changing number of items was a success")
             setAllTrans(data.transactions)
@@ -129,7 +129,7 @@ const Transactions = () => {
             setPageNum(num)
         }
         
-        let { response, data } = await api(`/api/transactions/${iso2}/${currency}/${num}/${numItems}`)
+        let { response, data } = await api(`/api/transactions/${iso2}/${currency}/${num}/${numItems}/`)
         if (response.status === 200) {
             console.log("changing the page number was a success")
             setAllTrans(data.transactions)

@@ -75,7 +75,7 @@ const Home = () => {
 
 
     let loadAccount = async () => {
-        let { response, data } = await api(`/api/accounts`)
+        let { response, data } = await api(`/api/account`)
 
         if (response.status === 200) {
             // eslint-disable-next-line
@@ -92,7 +92,7 @@ const Home = () => {
 
 
     let fetchInter = async () => {
-        let { response, data } = await api(`/api/interest/${pk}`)
+        let { response, data } = await api(`/api/account-interest`)
 
         if (response.status === 200) {
             setInterest(Number(data.interest_rate).toFixed(20));
@@ -109,7 +109,7 @@ const Home = () => {
 
 
     let loadUser = async () => {
-        let { response, data } = await api(`/api/users/${pk}`)
+        let { response, data } = await api(`/api/currUser`)
 
         if (response.status === 200) {
             setId(data.id)
