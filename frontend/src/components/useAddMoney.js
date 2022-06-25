@@ -28,7 +28,7 @@ const useAddMoney = (pk) => {
 
 
     let loadMoneyForm = async () => {
-        let { response, data } = await api("/api/money-form")
+        let { response, data } = await api("/api/money-form/")
         if (response.status === 200) {
             let options = data['currencyOptions']
 

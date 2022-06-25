@@ -42,7 +42,7 @@ const CurrencyExConfirm = () => {
             setFromSymbol(res.data[fromCurr])
         })
 
-        api(`/api/currency-exchange/${fromCurr}/${fromIso}/${amount}/${toCurr}/${toIso}`)
+        api(`/api/currency-exchange/${fromCurr}/${fromIso}/${amount}/${toCurr}/${toIso}/`)
         .then (res => {
             setExRate(res.data['ex_rate'])
             setIsLoading(false)
@@ -52,7 +52,7 @@ const CurrencyExConfirm = () => {
 
     let submit = () => {
         setIsLoading(true)
-        api(`/api/currency-exchange/${fromCurr}/${fromIso}/${amount}/${toCurr}/${toIso}`, {
+        api(`/api/currency-exchange/${fromCurr}/${fromIso}/${amount}/${toCurr}/${toIso}/`, {
             method: "POST",
             headers: {
                 'X-CSRFToken': Cookies.get('csrftoken'),

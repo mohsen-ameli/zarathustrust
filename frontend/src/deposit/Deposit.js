@@ -29,9 +29,10 @@ const Deposit = () => {
         if (good) {
             setIsLoading(true)
             
-            let { response } = await api("/api/deposit", {
+            let { response } = await api("/api/deposit/", {
                 method: "POST",
-                headers: Cookies.get('csrftoken') + {
+                headers: {
+                    'X-CSRFToken': Cookies.get('csrftoken'),
                     'Content-Type':'application/json',
                 },
                 body: JSON.stringify({"symbol" : symbol, "amount" : money})

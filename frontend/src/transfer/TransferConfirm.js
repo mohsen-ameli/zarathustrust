@@ -60,7 +60,7 @@ const TransferConfirm = () => {
         if (counter <= max && good) {
             setIsLoading(true)
 
-            api("/api/transferConfirm",{
+            api("/api/transferConfirm/",{
                 method: "POST",
                 headers: {
                     'X-CSRFToken': Cookies.get('csrftoken'),

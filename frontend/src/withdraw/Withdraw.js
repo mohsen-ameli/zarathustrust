@@ -30,10 +30,11 @@ const Withdraw = () => {
         if (good) {
             setIsLoading(true)
             
-            api("/api/withdraw",{
+            api("/api/withdraw/",{
                 method: "POST",
                 headers: {
                     'X-CSRFToken': Cookies.get('csrftoken'),
+                    'Content-Type':'application/json',
                 },
                 body: JSON.stringify(
                     {'money': money, 'currency': curr}

@@ -74,7 +74,7 @@ const DepositInfo = () => {
      */
     let loadUser = async () => {
         // awaiting the response from the backend
-        let { response, data } = await api("/api/currUser")
+        let { response, data } = await api("/api/currUser/")
         
         // if the response was successful or not
         if (response.status === 200) {

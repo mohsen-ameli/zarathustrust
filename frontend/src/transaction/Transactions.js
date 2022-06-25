@@ -39,7 +39,7 @@ const Transactions = () => {
     }, [])
 
     let loadUser = async () => {
-        let { response, data } = await api("/api/currUser")
+        let { response, data } = await api("/api/currUser/")
 
         if (response.status === 200) {
             console.log("loadUser success")

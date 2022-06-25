@@ -16,7 +16,7 @@ const ShowWallets = ({pk, home, changeCurr}) => {
 
 
     let loadWallets = async () => {
-        let { response, data } = await api(`/api/wallets`)
+        let { response, data } = await api("/api/wallets/")
         if (response.status === 200) {
             setWallets(data)
         }

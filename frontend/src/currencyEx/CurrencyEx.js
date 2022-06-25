@@ -70,7 +70,7 @@ const CurrencyEx = () => {
         if (good) {
             setIsLoading(true)
 
-            api(`/api/currency-exchange/${curr}/${iso}/${money}/${toCurr}/${iso2}`)
+            api(`/api/currency-exchange/${curr}/${iso}/${money}/${toCurr}/${iso2}/`)
             .then (res => {
                 if (!res.data['success']) {
                     setError(res.data['message'])
