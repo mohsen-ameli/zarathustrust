@@ -21,10 +21,16 @@ def loadConfig():
     with open('/etc/config.json') as config_file:
         return json.load(config_file)
 
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
-class AccountsApi(viewsets.ModelViewSet):
-    serializer_class = AccountSerializer
-    queryset = account.objects.all()
+def accounts(request):
+    try:
+        user = account.objects.get(pk=request.user.pk)
+    except:
+        user = None
+    serializer = AccountSerializer(instance=user, many=False)
+
+    return Response(serializer.data)
 
 @permission_classes([IsAuthenticated])
 class InterestApi(viewsets.ModelViewSet):

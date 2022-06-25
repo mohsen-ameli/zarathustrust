@@ -10,7 +10,6 @@ from rest_framework_simplejwt.views import (
 )
 
 router = routers.DefaultRouter()
-router.register('accounts', views.AccountsApi, 'accounts')
 router.register('users', views.UsersApi, 'users')
 router.register('interest', views.InterestApi, 'interest')
 
@@ -21,6 +20,7 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     path('currUser/', views.currentUser, name='currUser'),
+    path('accounts', views.accounts, name='accounts-api'),
     path('json/<str:file>/', views.jsonSearch, name='json-search'),
     path('cash-out', views.cashOut, name='cash-out'),
     path('transferSearch', views.transferSearch, name='transfer-search'),

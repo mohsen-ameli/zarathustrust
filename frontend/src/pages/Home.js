@@ -75,7 +75,7 @@ const Home = () => {
 
 
     let loadAccount = async () => {
-        let { response, data } = await api(`/api/accounts/${pk}`)
+        let { response, data } = await api(`/api/accounts`)
 
         if (response.status === 200) {
             // eslint-disable-next-line
