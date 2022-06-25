@@ -10,7 +10,7 @@ import AuthContext from "../context/AuthContext";
 import useFetch from "../components/useFetch";
 
 const WalletConfirm = () => {
-    let { authToken, user }         = useContext(AuthContext)
+    let { user }                    = useContext(AuthContext)
     const pk                        = user?.user_id
     const iso2                      = useParams().curr
     let history                     = useHistory()
@@ -28,7 +28,7 @@ const WalletConfirm = () => {
     
     useEffect(() => {
         if (!state?.fromApp) {
-            history.push(`/${pk}/wallet-search`)
+            history.push("/wallet-search")
         }
 
         loadWallets()
@@ -53,7 +53,7 @@ const WalletConfirm = () => {
 
 
     let nextFetch = async () => {
-        let { response, data } =  await api("/api/json/country_currencies_clean")
+        let { response, data } =  await api("/api/json/country_currencies_clean/")
         if (response.status === 200) {
             setCurrency(data[iso2])
             setIsLoading(false)
@@ -66,7 +66,7 @@ const WalletConfirm = () => {
 
 
     let createWallet = async () => {
-        api(`/api/wallets-confirm`, {
+        let { response, data } = await api(`/api/wallets-confirm`, {
             method: "POST",
             headers: {
                 'X-CSRFToken': Cookies.get('csrftoken'),
@@ -75,13 +75,23 @@ const WalletConfirm = () => {
                 {"currency" : currency, "iso2": iso2}
             )
         })
-        .then(() => {
-            sessionStorage.setItem('msg', `You have successfully added ${currency} as one of your wallets !`)
-            sessionStorage.setItem('success', true)
+        if (response.status === 200) {
+            if (data.success) {
+                sessionStorage.setItem('msg', `You have successfully added ${currency} as one of your wallets !`)
+                sessionStorage.setItem('success', true)
 
-            history.push("/")
-        })
-        .catch(() => {setError('An error occurred. Awkward..'); setShowErr(true); setIsLoading(false)})
+                history.push("/home")
+            } else {
+                sessionStorage.setItem('msg', "You already have that wallet!")
+                sessionStorage.setItem('success', false)
+
+                history.push("/wallet-search")
+            }
+        } else {
+            setError('An error occurred. Awkward..')
+            setShowErr(true)
+            setIsLoading(false)
+        }
     }
 
 
@@ -118,7 +128,7 @@ const WalletConfirm = () => {
                     
                     <div className="d-flex mb-3 mt-4 justify-content-center">
                         <button className="neon-button-green my-2 me-4" id="Action" onClick={() => createWallet()}>Save Changes</button>
-                        <Link className="neon-button my-2" to="/">Back to Home</Link>
+                        <Link className="neon-button my-2" to="/home">Back to Home</Link>
                     </div>
                 </div>
             </div>
