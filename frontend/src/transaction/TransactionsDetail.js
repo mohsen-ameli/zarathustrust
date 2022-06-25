@@ -35,7 +35,7 @@ const TransactionsDetail = () => {
 
 
     let loadTransaction = async () => {
-        let { response, data } = await api(`/api/transactions/${tId}`)
+        let { response, data } = await api(`/api/transactions/${tId}/`)
         if (response.status === 200) {
             let transaction = data.transaction[0]
 

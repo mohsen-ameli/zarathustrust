@@ -8,7 +8,7 @@ from users import views as users_views
 
 from django.views.generic import TemplateView
 
-
+app_name = "money_moe"
 urlpatterns = [
     # api
     path("api/", include("api.urls"), name="api"),
@@ -26,7 +26,6 @@ urlpatterns = [
 
 
 '''
-app_name = "money_moe"
 urlpatterns = [
     path("", include("accounts.urls"), name="home"),
     path("", include("users.urls"), name="users"),

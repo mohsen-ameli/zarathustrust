@@ -23,7 +23,7 @@ const TransferSearch = () => {
     }, [])
 
     let sendSearchData = (typed) => {
-        api(`/api/transferSearch`, {
+        api("/api/transferSearch/", {
             method: "POST",
             headers: {
                 'X-CSRFToken': Cookies.get('csrftoken'),

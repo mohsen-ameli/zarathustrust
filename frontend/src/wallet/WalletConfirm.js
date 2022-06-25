@@ -39,7 +39,7 @@ const WalletConfirm = () => {
 
 
     let loadWallets = async () => {
-        let { response, data } = await api("/api/wallets")
+        let { response, data } = await api("/api/wallets/")
         
         if (response.status === 200) {
             setWallets(data)
@@ -66,7 +66,7 @@ const WalletConfirm = () => {
 
 
     let createWallet = async () => {
-        let { response, data } = await api(`/api/wallets-confirm`, {
+        let { response, data } = await api("/api/wallets-confirm/", {
             method: "POST",
             headers: {
                 'X-CSRFToken': Cookies.get('csrftoken'),

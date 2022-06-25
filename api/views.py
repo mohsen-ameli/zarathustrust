@@ -230,11 +230,15 @@ def walletsConfirm(request):
     body     = json.loads(request.body)
     currency = body['currency']
     iso2     = body['iso2']
+    success = False
 
     main_account = account.objects.get(pk=pk)
-    branch = BranchAccounts.objects.get_or_create(main_account=main_account, currency=currency, iso2=iso2)    
 
-    return Response({"success": branch[1]})
+    if (iso2 != main_account.iso2):
+        branch = BranchAccounts.objects.get_or_create(main_account=main_account, currency=currency, iso2=iso2)
+        success = branch[1]
+
+    return Response({"success": success})
 
 
 
