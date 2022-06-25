@@ -10,11 +10,16 @@ from django.views.generic import TemplateView
 
 
 urlpatterns = [
+    # api
     path("api/", include("api.urls"), name="api"),
-    # match the root
-    # re_path(r'^$', TemplateView.as_view(template_name='index.html')),
+
+    # admin
+    path("g0atch33se&pizz1/", admin.site.urls, name="admin"),
+
+    # React
     path("", TemplateView.as_view(template_name='index.html')),
-    # match all other pages
+
+    # match all other pages (React)
     re_path(r'^(?:.*)/?$', TemplateView.as_view(template_name='index.html')),
 ]
 
@@ -28,9 +33,6 @@ urlpatterns = [
     path("", include("wallets.urls"), name="wallets"),
     path("api/", include("api.urls"), name="api"),
     path("captcha/", include('captcha.urls')),
-
-    # adming
-    path("g0atch33se&pizz1/", admin.site.urls, name="admin"),
 
     # password reset
     path("password-reset/",
