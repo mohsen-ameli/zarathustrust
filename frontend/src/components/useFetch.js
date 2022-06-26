@@ -17,20 +17,26 @@ let useFetch = () => {
         return {response, data}
     }
 
-    let refreshToken = async (authToken) => {
-        let response = await fetch('http://127.0.0.1:8000/api/token/refresh/', {
+    let refreshToken = (authToken) => {
+        console.log("Expired")
+        fetch('/api/token/refresh/', {
             method:'POST',
             headers:{
                 'Content-Type':'application/json'
             },
             body:JSON.stringify({'refresh':authToken.refresh})
         })
-
-        let data = await response.json()
-        localStorage.setItem('authToken', JSON.stringify(data))
-        setAuthToken(data)
-        setUser(jwt_decode(data.access))
-        return data
+        .then(res => {
+            return res.json()
+        })
+        .then(data => {
+            console.log("data: ", data)
+            localStorage.setItem('authToken', JSON.stringify(data))
+            setAuthToken(data)
+            setUser(jwt_decode(data.access))
+            return data
+        })
+        .catch(err => console.log("error: ", err))
     }
 
     let callFetch = async (url, conf) => {
