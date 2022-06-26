@@ -233,10 +233,12 @@ STRIPE_SECRET_KEY = config.get("STRIPE_SECRET_KEY")
 # API & REACT
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000',
+    'http://localhost:8000',
     'https://www.zarathustrust.com'
 ]
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
+    'http://localhost:8000',
     'https://www.zarathustrust.com'
 ]
 # CORS_ORIGIN_ALLOW_ALL = True
