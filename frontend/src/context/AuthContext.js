@@ -7,10 +7,17 @@ const AuthContext = createContext()
 export default AuthContext;
 
 export const AuthProvider = ({children}) => {
-    let code = JSON.parse(localStorage.getItem('authToken')).code
+    let valid
+    let code = JSON.parse(localStorage.getItem('authToken'))?.code
 
-    let [authToken, setAuthToken] = useState(()=> code !== "token_not_valid" ? JSON.parse(localStorage.getItem('authToken')) : null)
-    let [user, setUser] = useState(()=> code !== "token_not_valid" ? jwt_decode(localStorage.getItem('authToken')) : null)
+    if (code === "token_not_valid" || code === undefined || code === null) {
+        valid = false
+    } else {
+        valid = true
+    }
+
+    let [authToken, setAuthToken] = useState(()=> valid ? JSON.parse(localStorage.getItem('authToken')) : null)
+    let [user, setUser] = useState(()=> valid ? jwt_decode(localStorage.getItem('authToken')) : null)
     let [loading, setLoading] = useState(true)
 
     let history = useHistory()
