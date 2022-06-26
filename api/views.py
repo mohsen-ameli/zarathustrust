@@ -9,6 +9,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from accounts.functions import *
 from accounts.models import *
@@ -20,6 +21,14 @@ from .serializers import *
 def loadConfig():
     with open('/etc/config.json') as config_file:
         return json.load(config_file)
+
+
+@api_view(['POST'])
+def logoutView(request):
+    refresh_token = request.data["refresh"]
+    token = RefreshToken(refresh_token)
+    token.blacklist()
+    return Response("Successful Logout")
 
 
 @api_view(['GET'])
