@@ -230,17 +230,8 @@ STRIPE_PUBLIC_KEY = config.get("STRIPE_PUBLIC_KEY")
 STRIPE_SECRET_KEY = config.get("STRIPE_SECRET_KEY")
 
 
-# API & REACT
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000',
-    'http://localhost:8000',
-    'https://www.zarathustrust.com'
-]
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://localhost:8000',
-    'https://www.zarathustrust.com'
-]
+# CORS & Django REST FRAMEWORK
+
 # CORS_ORIGIN_ALLOW_ALL = True
 # CORS_ALLOW_CREDENTIALS = True
 
@@ -250,9 +241,25 @@ REST_FRAMEWORK = {
     )
 }
 
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:3000',
+)
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+    'http://localhost:8000',
+    'https://www.zarathustrust.com'
+]
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+r"^https://\w+\.zarathustrust\.com$",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
 # SIMPLE JWT
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=5),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=90),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
