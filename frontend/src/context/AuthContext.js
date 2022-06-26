@@ -49,11 +49,25 @@ export const AuthProvider = ({children}) => {
         }
     }
 
-    let logoutUser = () => {
-        setAuthToken(null)
-        setUser(null)
-        localStorage.removeItem("authToken")
-        history.push("/login")
+    let logoutUser = async () => {
+        let res = await fetch("/api/logout/", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                'refresh': authToken.refresh
+            })
+        })
+
+        if (res.ok) {
+            setAuthToken(null)
+            setUser(null)
+            localStorage.removeItem("authToken")
+            history.push("/login")
+        } else {
+            alert("bam")
+        }
     }
 
     let contextData = {

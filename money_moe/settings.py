@@ -257,8 +257,8 @@ CORS_ALLOW_CREDENTIALS = True
 
 # SIMPLE JWT
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=3),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=90),
+    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=10),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': False,
     'UPDATE_LAST_LOGIN': False,
