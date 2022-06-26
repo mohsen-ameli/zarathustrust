@@ -7,12 +7,13 @@ const AuthContext = createContext()
 export default AuthContext;
 
 export const AuthProvider = ({children}) => {
-    let [authToken, setAuthToken] = useState(()=> localStorage.getItem('authToken') ? JSON.parse(localStorage.getItem('authToken')) : null)
-    let [user, setUser] = useState(()=> localStorage.getItem('authToken') ? jwt_decode(localStorage.getItem('authToken')) : null)
+    let code = JSON.parse(localStorage.getItem('authToken')).code
+
+    let [authToken, setAuthToken] = useState(()=> code !== "token_not_valid" ? JSON.parse(localStorage.getItem('authToken')) : null)
+    let [user, setUser] = useState(()=> code !== "token_not_valid" ? jwt_decode(localStorage.getItem('authToken')) : null)
     let [loading, setLoading] = useState(true)
 
     let history = useHistory()
-
 
     let loginUser = async (e) => {
         e.preventDefault()
