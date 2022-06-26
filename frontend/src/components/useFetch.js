@@ -7,7 +7,7 @@ import AuthContext from '../context/AuthContext';
 let useFetch = () => {
     let config = {}
 
-    let {authToken, setAuthToken, setUser} = useContext(AuthContext)
+    let {authToken, setAuthToken, setUser, logoutUser} = useContext(AuthContext)
 
 
     let originalRequest = async (url, config)=> {
@@ -32,6 +32,8 @@ let useFetch = () => {
             setAuthToken(data)
             setUser(jwt_decode(data.access))
             return data
+        } else {
+            logoutUser()
         }
     }
 

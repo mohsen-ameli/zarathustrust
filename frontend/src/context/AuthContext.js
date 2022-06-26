@@ -56,7 +56,7 @@ export const AuthProvider = ({children}) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                'refresh': authToken.refresh
+                'refresh': authToken?.refresh
             })
         })
 
