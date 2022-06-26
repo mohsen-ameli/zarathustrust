@@ -25,9 +25,12 @@ def loadConfig():
 
 @api_view(['POST'])
 def logoutView(request):
-    refresh_token = request.data["refresh"]
-    token = RefreshToken(refresh_token)
-    token.blacklist()
+    try:
+        refresh_token = request.data["refresh"]
+        token = RefreshToken(refresh_token)
+        token.blacklist()
+    except:
+        pass
     return Response("Successful Logout")
 
 
