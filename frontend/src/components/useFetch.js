@@ -18,14 +18,14 @@ let useFetch = () => {
     }
 
     let refreshToken = async (authToken) => {
-        let response = await fetch('/api/token/refresh/', {
+        let response = await fetch('http://127.0.0.1:8000/api/token/refresh/', {
             method:'POST',
             headers:{
                 'Content-Type':'application/json'
             },
             body:JSON.stringify({'refresh':authToken.refresh})
         })
-        
+
         let data = await response.json()
         localStorage.setItem('authToken', JSON.stringify(data))
         setAuthToken(data)
