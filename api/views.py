@@ -14,7 +14,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from accounts.functions import *
 from accounts.models import *
 from users.models import CustomUser, code
-from users.forms import RegisterForm
+from users.forms import RegisterForm, EmailCodeForm
 from wallets.models import BranchAccounts
 from .serializers import *
 
@@ -794,17 +794,21 @@ def transactionDetail(request, tId):
 @api_view(['POST'])
 # Personal Register
 def signUp(request):
+    form = RegisterForm(request.data)
+    
     country = request.data['country']
     ext = request.data['ext']
     username = request.data['username']
     email = request.data['email']
-    phone_num = int(request.data['phone_number'])
     password1 = request.data['password1']
     password2 = request.data['password2']
 
-    phone_number = ""
+    try:
+        phone_num = int(request.data['phone_number'])
+    except ValueError:
+        form.add_error('phone_number', 'Please enter a correct phone number')
 
-    form = RegisterForm(request.data)
+    phone_number = ""
 
     if request.user.is_anonymous == True:
         # phone number checking
@@ -814,29 +818,48 @@ def signUp(request):
             form.add_error('phone_number', e)
         if phone_number is False:
             form.add_error('phone_number', 'Please enter a correct phone number')
-            
+        
 
-        # setting up to save user into sesssions
-        user = {
-            'username'      : username,
-            'email'         : email,
-            'phone_number'  : phone_number,
-            'country'       : country,
-            'password1'     : password1,
-            'password2'     : password2,
-            'iban'          : None,
-        }
-        request.session['user'] = user
+        # saving the user
+        if form.is_valid():
+            user = {
+                'username'      : username,
+                'email'         : email,
+                'phone_number'  : phone_number,
+                'country'       : country,
+                'password1'     : password1,
+                'password2'     : password2,
+                'iban'          : None,
+            }
+            request.session['user'] = user
 
-        code.objects.create(user=user['username'])
-        code_obj = code.objects.get(user=user['username'])
-        ver_code = {
-            'email_verify_code' : code_obj.email_verify_code,
-            'phone_verify_code' : code_obj.phone_verify_code,
-            'iban_verify_code'  : code_obj.iban_verify_code,
-        }
-        request.session['ver_code'] = ver_code
-        code_obj.delete()
+            code.objects.create(user=user['username'])
+            code_obj = code.objects.get(user=user['username'])
+            ver_code = {
+                'email_verify_code' : code_obj.email_verify_code,
+                'phone_verify_code' : code_obj.phone_verify_code,
+                'iban_verify_code'  : code_obj.iban_verify_code,
+            }
+            request.session['ver_code'] = ver_code
+            code_obj.delete()
     
     return Response(form.errors.as_json())
 
+
+
+@api_view(['GET'])
+# Email Verify 
+def emailVerify(request):
+    user = request.session.get('user')
+    email_code = request.session.get('ver_code')['email_verify_code']
+
+    # send email
+    EMAIL_ID = config.get("EMAIL_ID")
+    send_mail(
+        f"Hello {user['username']}",
+        f"Your verification code is : {email_code}, you are very close to starting your money making process!",
+        f"{EMAIL_ID}",
+        [f"{user['email']}"],
+    )
+
+    return Response({"code": email_code})

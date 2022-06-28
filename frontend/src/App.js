@@ -24,6 +24,7 @@ import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
 import SignUp from './auth/SignUp';
 import CountryPicker from './auth/CountryPicker';
+import EmailVerify from './auth/EmailVerify';
 
 function App() {
     return (
@@ -49,6 +50,7 @@ function App() {
                             <Route path="/about" component={About} />
                             <Route path="/country-picker" component={CountryPicker} />
                             <Route path="/signup" component={SignUp} />
+                            <Route path="/email-verify" component={EmailVerify} />
                             <Route path="/login" component={Login} />
                             <Route path="/logout" component={Logout} />
                             {/* <Route component={NotFound} /> */}

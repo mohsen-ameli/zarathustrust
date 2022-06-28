@@ -2,8 +2,13 @@ import { useState, useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import RotateLoader from 'react-spinners/RotateLoader';
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
+
+
+let currentTime;
 
 const SignUp = () => {
+    let bot = false
     let { state }   = useLocation()
     let history     = useHistory()
     let { t }       = useTranslation()
@@ -23,7 +28,10 @@ const SignUp = () => {
     const [errPass1, setErrPass1] = useState(null);
     const [errPass2, setErrPass2] = useState(null);
 
+
     useEffect(() => {
+        currentTime = Date.now()
+
         if (!state?.fromApp) {
             history.push("/country-picker")
         }
@@ -45,14 +53,19 @@ const SignUp = () => {
 
 
     let submit = async (e) => {
+        e.preventDefault()
+
+        // checking for bots
+        if (bot || Date.now() - currentTime < 1000) {
+            window.location.replace("https://youtu.be/dQw4w9WgXcQ")
+        }
+
         setIsLoading(true)
         setErrUser(null)
         setErrEmail(null)
         setErrPN(null)
         setErrPass1(null)
         setErrPass2(null)
-        
-        e.preventDefault()
 
         if (username.length < 5) {
             setErrUser("Username has to be at least 5 characters long")
@@ -86,7 +99,7 @@ const SignUp = () => {
             data.password1 && setErrPass1(data.password1[0].message)
             data.password2 && setErrPass2(data.password2[0].message)
 
-            if (!data) {
+            if (Object.keys(data).length === 0) {
                 history.push("/email-verify", {"data": data, "msg": t("email_verify")})
             }
             console.log(data)
@@ -95,30 +108,31 @@ const SignUp = () => {
         }
     }
 
-
     return (
-        <div className="sign-up" >
-            { isLoading && 
-            <div className="spinner">
-                <RotateLoader color="#f8b119" size={20} />
-            </div>
-            }
+        <GoogleReCaptchaProvider reCaptchaKey={process.env.REACT_APP_RECAPTCHA_KEY} SameSite="None">
+            <div className="sign-up">
+                { isLoading && 
+                <div className="spinner">
+                    <RotateLoader color="#f8b119" size={20} />
+                </div>
+                }
 
-            <div className="card text-white zarathus-card mx-auto my-3">
-                <div className="card-body">
-                    <form onSubmit={e => submit(e)} autoComplete="off">
-                        <div className="mb-2">
+                <div className="card text-white zarathus-card mx-auto my-3">
+                    <div className="card-body">
+                        <form onSubmit={e => submit(e)} autoComplete="off">
                             <h3 className="fw-normal text-center">{t("sign_up_title")}</h3>
                             <hr className="zarathus-hr" />
 
+                            {/* Honey Pot */}
+                            <input type="text" style={{ display: "none" }} onChange={() => {bot = true}} />
+
+
                             {/* Username */}
-                            <div className="form-group form-floating mb-3" style={{color: "black"}}>
+                            <div className="form-floating">
                                 <input type="text" className={errUser ? "form-control is-invalid" : "form-control"} autoFocus={true} required={true}
                                 maxLength="15" autoCapitalize="none" onChange={e => setUsername(e.target.value)} />
 
-                                <label htmlFor="id_username" className="requiredField">
-                                    {t("username")}
-                                </label>
+                                <label htmlFor="id_username">{t("username")}</label>
 
                                 <span className="invalid-feedback"><strong>
                                     {errUser && errUser}
@@ -130,13 +144,11 @@ const SignUp = () => {
                             </div>
 
                             {/* Email */}
-                            <div className="form-group form-floating mb-3" style={{color: "black"}}> 
+                            <div className="form-floating"> 
                                 <input type="email" className={errEmail ? "form-control is-invalid" : "form-control"} id="id_email" required={true}
-                                placeholder="email" onChange={e => setEmail(e.target.value)} />
+                                placeholder=" " onChange={e => setEmail(e.target.value)} />
 
-                                <label htmlFor="id_email" className="requiredField">
-                                    {t("email")}
-                                </label>
+                                <label htmlFor="id_email">{t("email")}</label>
 
                                 <span className="invalid-feedback"><strong>
                                     {errEmail && errEmail}
@@ -147,6 +159,7 @@ const SignUp = () => {
                                 </p>
                             </div>
 
+
                             {/* Phone Number */}
                             <div className="d-flex">
                                 <div className="input-group-text" id="phone_ext">
@@ -155,7 +168,7 @@ const SignUp = () => {
                                 <div className="form-floating-group flex-grow-1">
                                     <div id="div_id_phone_number" className="form-floating mb-3">
                                         <input type="number" className={errPN ? "form-control is-invalid" : "form-control"} id="id_phone_number" required={true}
-                                        placeholder="phone number" onChange={e => setPhoneNumber(e.target.value)} />
+                                        placeholder=" " onChange={e => setPhoneNumber(e.target.value)} />
 
                                         <label htmlFor="id_phone_number">
                                             {t("phone_number")}
@@ -167,20 +180,17 @@ const SignUp = () => {
                                     </div>
                                 </div>
                             </div>
-
                             <div className="form-text text-white" id="phone_number_help">
                                 {t("phone_number_help")}
                             </div>
 
 
                             {/* Password */}
-                            <div className="form-group form-floating mb-3" style={{color: "black"}}> 
+                            <div className="form-floating"> 
                                 <input type="password" className={errPass1 ? "form-control is-invalid" : "form-control"} id="id_password" required={true}
                                 onChange={e => setPassword(e.target.value)} />
 
-                                <label htmlFor="id_password" className="requiredField">
-                                    {t("password")}
-                                </label>
+                                <label htmlFor="id_password">{t("password")}</label>
 
                                 <span className="invalid-feedback"><strong>
                                     {errPass1 && errPass1}
@@ -193,14 +203,13 @@ const SignUp = () => {
                                 </ul>
                             </div>
 
+
                             {/* Password confirm */}
-                            <div className="form-group form-floating mb-3" style={{color: "black"}}> 
+                            <div className="form-floating"> 
                                 <input type="password" className={errPass2 ? "form-control is-invalid" : "form-control"} id="id_password_confirm" required={true}
                                 onChange={e => setPasswordConfirm(e.target.value)} />
 
-                                <label htmlFor="id_password_confirm" className="requiredField">
-                                    {t("password_confirm")}
-                                </label>
+                                <label htmlFor="id_password_confirm">{t("password_confirm")}</label>
 
                                 <span className="invalid-feedback"><strong>
                                     {errPass2 && errPass2}
@@ -210,7 +219,6 @@ const SignUp = () => {
                                     {t("password_confirm_help")}
                                 </p>
                             </div>
-                        </div>
 
                         {/* submit */}
                         <button className="neon-button-green my-2">{t("sign_up")}</button>
@@ -224,9 +232,10 @@ const SignUp = () => {
                         </small>
                     </div>
 
+                    </div>
                 </div>
             </div>
-        </div>
+        </GoogleReCaptchaProvider>
     );
 }
  
