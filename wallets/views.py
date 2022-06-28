@@ -12,7 +12,7 @@ from django.conf import settings
 from .models import BranchAccounts
 from .forms import BankInfo
 from users.functions import CountryDict
-from accounts.models import account, CustomUser, account_interest, transaction_history
+from accounts.models import Account, CustomUser, AccountInterest, TransactionHistory
 from accounts.functions import correct_user, get_currency_symbol, currency_min
 
 with open("/etc/config.json") as config_file:
@@ -52,7 +52,7 @@ def NewWallet(request, pk, currency):
     for i in data:
         if currency not in data[i]:
             kick = True
-        elif currency == account.objects.get(pk=pk).main_currency:
+        elif currency == Account.objects.get(pk=pk).main_currency:
             messages.warning(request, _("You cannot make a wallet with the same currency as your main account !"))
             return redirect('accounts:home', pk=pk)
         else:
@@ -70,7 +70,7 @@ def NewWallet(request, pk, currency):
                         messages.warning(request, _("You already have that wallet !"))
                         return redirect('accounts:home', pk=pk)
 
-                main_account = account.objects.get(pk=pk)
+                main_account = Account.objects.get(pk=pk)
                 BranchAccounts.objects.create(main_account=main_account, currency=currency)
 
                 # success message
@@ -130,8 +130,8 @@ def CurrencyExchangeConfirm(request, pk, from_, amount, to):
         return redirect("wallets:new-card", pk=pk)
 
     wallet          = BranchAccounts.objects.filter(main_account__pk=pk)
-    acc_interest    = account_interest.objects.get(pk=pk)
-    acc             = account.objects.get(pk=pk)
+    acc_interest    = AccountInterest.objects.get(pk=pk)
+    acc             = Account.objects.get(pk=pk)
     min_to          = currency_min(to)
     min_from        = currency_min(from_)
     acc_currency    = currency_min(acc.main_currency)
@@ -197,7 +197,7 @@ def CurrencyExchangeConfirm(request, pk, from_, amount, to):
 
             # sending from account to wallet
             if from_ == CustomUser.objects.get(pk=pk).currency:
-                history = transaction_history(
+                history = TransactionHistory(
                     person=acc, 
                     second_wallet=wallet.get(currency=to), 
                     price=float(amount), 
@@ -207,7 +207,7 @@ def CurrencyExchangeConfirm(request, pk, from_, amount, to):
                 )
             # sending from another wallet to wallet
             else:
-                history = transaction_history(
+                history = TransactionHistory(
                     wallet=wallet.get(currency=from_), 
                     second_wallet=wallet.get(currency=to), 
                     price=float(amount), 
@@ -236,7 +236,7 @@ def CurrencyExchangeConfirm(request, pk, from_, amount, to):
             acc_interest.save()
 
             # saving this transaction to history
-            history = transaction_history(
+            history = TransactionHistory(
                 wallet=wallet.get(currency=from_), 
                 second_person=acc, 
                 price=float(amount), 

@@ -4,7 +4,7 @@ import React from "react";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Navbar from "./components/Navbar";
-import LandingPage from "./pages/LandingPage";
+import LandingPage from "./landingPage/LandingPage";
 import About from "./pages/About";
 import Deposit from "./deposit/Deposit";
 import DepositInfo from './deposit/DepositInfo';
@@ -23,6 +23,7 @@ import Logout from './auth/Logout';
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
 import SignUp from './auth/SignUp';
+import CountryPicker from './auth/CountryPicker';
 
 function App() {
     return (
@@ -33,19 +34,20 @@ function App() {
                     <Route exact path="/" component={LandingPage} />
                     <Route>
                         <div className="app container" style={{marginTop: "4rem"}} id="main-content">
-                            <PrivateRoute path="/home" component={Home} />
-                            <PrivateRoute path="/deposit" component={Deposit} />
-                            <PrivateRoute path="/deposit-info" component={DepositInfo} />
-                            <PrivateRoute path="/withdraw" component={Withdraw} />
-                            <PrivateRoute path="/wallet-search/:curr" exact component={WalletConfirm} />
-                            <PrivateRoute path="/wallet-search" exact component={WalletSearch} />
-                            <PrivateRoute path="/:user/transfer-confirm/" component={TransferConfirm} />
-                            <PrivateRoute path="/transfer-search" component={TransferSearch} />
-                            <PrivateRoute path="/currency-exchange/:fromCurr/:fromIso/:amount/:toCurr/:toIso" exact component={CurrencyExConfirm} />
-                            <PrivateRoute path="/currency-exchange" exact component={CurrencyEx} />
-                            <PrivateRoute path="/transactions/:tId" exact component={TransactionsDetail} />
-                            <PrivateRoute path="/transactions/" exact component={Transactions} />
-                            <Route path="/about" component={About} /> 
+                            <PrivateRoute path="/home" comp={Home} />
+                            <PrivateRoute path="/deposit" comp={Deposit} />
+                            <PrivateRoute path="/deposit-info" comp={DepositInfo} />
+                            <PrivateRoute path="/withdraw" comp={Withdraw} />
+                            <PrivateRoute path="/wallet-search/:curr" exact comp={WalletConfirm} />
+                            <PrivateRoute path="/wallet-search" exact comp={WalletSearch} />
+                            <PrivateRoute path="/:user/transfer-confirm/" comp={TransferConfirm} />
+                            <PrivateRoute path="/transfer-search" comp={TransferSearch} />
+                            <PrivateRoute path="/currency-exchange/:fromCurr/:fromIso/:amount/:toCurr/:toIso" exact comp={CurrencyExConfirm} />
+                            <PrivateRoute path="/currency-exchange" exact comp={CurrencyEx} />
+                            <PrivateRoute path="/transactions/:tId" exact comp={TransactionsDetail} />
+                            <PrivateRoute path="/transactions/" exact comp={Transactions} />
+                            <Route path="/about" component={About} />
+                            <Route path="/country-picker" component={CountryPicker} />
                             <Route path="/signup" component={SignUp} />
                             <Route path="/login" component={Login} />
                             <Route path="/logout" component={Logout} />

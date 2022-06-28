@@ -85,9 +85,6 @@ const Withdraw = () => {
                     <hr className="zarathus-hr"></hr>
                     <h5 className="fw-normal">
                         {t("withdraw_info")}
-                        {/* In order to withdraw money, please enter the value you want to 
-                        withdraw blelow <br></br> and we will transfer the amount you requested
-                        to your bank account, <span style={{color: "#f8b119"}}>within 1 bussiness day.</span> */}
                     </h5> 
                     <br></br>
 

@@ -1,11 +1,11 @@
 import json
 import os
+import phonenumbers
 
 from django.core.mail import send_mail, EmailMessage
 from django.db.models import Q, F
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
-from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -13,7 +13,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from accounts.functions import *
 from accounts.models import *
-from users.models import CustomUser
+from users.models import CustomUser, code
+from users.forms import RegisterForm
 from wallets.models import BranchAccounts
 from .serializers import *
 
@@ -70,7 +71,6 @@ def currentUser(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def jsonSearch(request, file):
     project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     file = f'{project}/json/{file}.json' # getting the file containing all country codes
@@ -86,10 +86,8 @@ def jsonSearch(request, file):
 def cashOut(request):
     # settings variables
     pk                = request.user.pk
-    user              = CustomUser.objects.get(pk=pk)
     acc               = Account.objects.get(pk=pk)
     accInterest       = AccountInterest.objects.get(pk=pk)
-    currency          = get_currency_symbol(user.currency)
     interest_rate     = accInterest.interest_rate
     bonus             = acc.bonus
     total_balance     = acc.total_balance
@@ -242,7 +240,7 @@ def walletsConfirm(request):
     body     = json.loads(request.body)
     currency = body['currency']
     iso2     = body['iso2']
-    success = False
+    success  = False
 
     main_account = Account.objects.get(pk=pk)
 
@@ -688,14 +686,12 @@ def transactions(request, walletIso, walletName, pageNum, numItems):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def transactionDetail(request, tId):
-    pk  = request.user.pk
     incoming = 0
     transactor = None
     incom = False
     giver_symbol = None
     reciever_symbol = None
     id = []
-    allowed = False
     transaction = TransactionHistory.objects.get(pk=tId)
 
     if transaction.person:
@@ -792,7 +788,55 @@ def transactionDetail(request, tId):
         "recieverSymbol"   : reciever_symbol,
     }
 
-
     return Response(context)
 
+
+@api_view(['POST'])
+# Personal Register
+def signUp(request):
+    country = request.data['country']
+    ext = request.data['ext']
+    username = request.data['username']
+    email = request.data['email']
+    phone_num = int(request.data['phone_number'])
+    password1 = request.data['password1']
+    password2 = request.data['password2']
+
+    phone_number = ""
+
+    form = RegisterForm(request.data)
+
+    if request.user.is_anonymous == True:
+        # phone number checking
+        try:
+            phone_number = phonenumbers.is_valid_number(phonenumbers.parse(f'+{ext}{phone_num}'))
+        except Exception as e:
+            form.add_error('phone_number', e)
+        if phone_number is False:
+            form.add_error('phone_number', 'Please enter a correct phone number')
+            
+
+        # setting up to save user into sesssions
+        user = {
+            'username'      : username,
+            'email'         : email,
+            'phone_number'  : phone_number,
+            'country'       : country,
+            'password1'     : password1,
+            'password2'     : password2,
+            'iban'          : None,
+        }
+        request.session['user'] = user
+
+        code.objects.create(user=user['username'])
+        code_obj = code.objects.get(user=user['username'])
+        ver_code = {
+            'email_verify_code' : code_obj.email_verify_code,
+            'phone_verify_code' : code_obj.phone_verify_code,
+            'iban_verify_code'  : code_obj.iban_verify_code,
+        }
+        request.session['ver_code'] = ver_code
+        code_obj.delete()
+    
+    return Response(form.errors.as_json())
 

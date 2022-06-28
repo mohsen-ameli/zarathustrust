@@ -1,16 +1,20 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { t } from "i18next"
+import { useEffect } from "react"
+import { useState } from "react"
+import { Link, useHistory } from "react-router-dom"
 import ReactCountryFlag from "react-country-flag"
-
 import Alert from 'react-bootstrap/Alert';
 import RotateLoader from 'react-spinners/RotateLoader';
-import useFetch from "../components/useFetch";
+import { useRef } from "react"
 
-const WalletSearch = () => {
-    let api                             = useFetch()
-    const [currencies, setCurrencies]   = useState([])
+const CountryPicker = () => {
+    let ref = useRef()
+    let history = useHistory()
+    const [countries, setCountries]   = useState([])
     const [choices, setChoices]         = useState(null)
     const [empty, setEmpty]             = useState(true)
+    const [defCountry, setDefCountry]   = useState(null)
+    const [defCountryIso, setDefCountryIso]   = useState(null)
 
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError]         = useState(null)
@@ -19,51 +23,46 @@ const WalletSearch = () => {
     const [msg, setMsg]             = useState("")
 
     useEffect(() => {
-        let success = (sessionStorage.getItem('success') === "true")
-        let m = String(sessionStorage.getItem('msg'))
-
-        // displaying any messages
-        if (m !== "" && m !== "null") {
-            if (!success) {
-                setError(m)
-                setShowErr(true)
-            } else if (success) {
-                setMsg(m)
-                setShowMsg(true)
-            } else {
-                setShowErr(false)
-                setShowMsg(false)
-            }
-        }
-        // cleaning the cookies
-        sessionStorage.setItem('msg', '')
-        sessionStorage.setItem('success', false)
-
-
         loadJson()
+
+        getCountry()
     }, [])
 
 
-    let loadJson = async () => {
-        let { response, data } = await api("/api/json/country_currencies_clean/")
-        
-        if (response.status === 200) {
-            setCurrencies(data)
-            setIsLoading(false)
-        } else {
-            setError('An error occurred. Awkward..'); setShowErr(true); setIsLoading(false);
+    let getCountry = async () => {
+        let response = await fetch("https://ipapi.co/json/")
+
+        if (response.ok) {
+            let data = await response.json()
+            setDefCountry(data.country_name)
+            setDefCountryIso(data.country_code)
         }
+    }
+
+
+    let loadJson = async () => {
+        fetch("/api/json/country_names/", {
+            method: "GET"
+        })
+        .then(res => {
+            return res.json()
+        })
+        .then(data => {
+            setCountries(data)
+            setIsLoading(false)
+        })
+        .catch(() => {setError('An error occurred. Awkward..'); setShowErr(true); setIsLoading(false)})
     }
 
 
     let search = (typed) => {
         setEmpty(true)
-        let arrCurr = Object.entries(currencies);
+        let arrCountries = Object.entries(countries);
         let ch = []
 
         if (typed.length > 0 && typed !== '') {
-            arrCurr.map(item => {
-                if (item[1].startsWith(typed.toUpperCase())) {
+            arrCountries.map(item => {
+                if (item[1].startsWith(typed.toLowerCase())) {
                     setEmpty(false)
                     ch.push([item[0], item[1]]) 
                 }
@@ -72,8 +71,14 @@ const WalletSearch = () => {
         setChoices(ch)
     }
 
+
+    let next = (country, iso) => {
+        history.push("/signup", { fromApp: true, country: country, iso: iso })
+    }
+
+
     return (
-        <div className="new-wallet-page">
+        <div className="country-picker" onKeyDown={e => {e.key === "Enter" && next(choices[0][1], choices[0][0])}}>
             {showErr && 
             <Alert className="text-center" variant="danger" onClose={() => setShowErr(false)} dismissible>
                 { error }
@@ -93,20 +98,22 @@ const WalletSearch = () => {
 
             <div className="card text-white zarathus-card mx-auto">
                 <div className="card-body">
-                    <h3 className="fw-normal text-center">You can have up to 10 wallets with different currencies</h3>
-                    <hr className="zarathus-hr"></hr>
+                    <h3 className="fw-normal text-center">Please Choose a Country</h3>
+                    <hr className="zarathus-hr" />
 
                     <div className="dropdown form-floating">
-                        <input type="text" id="country-input" className="form-control dropdown-toggle" autoComplete="off"
-                        data-bs-toggle="dropdown" aria-expanded="false" placeholder="Country"
-                        onChange={e => search(e.target.value)}></input>
-                        
-                        <label htmlFor="country-input">Please choose a currency</label>
-                        
+                        <input type="text" className="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
+                            placeholder="Country" id="country-input" autoComplete="off"
+                            defaultValue={defCountry} ref={ref} onClick={() => ref.current.value = ""} onChange={e => search(e.target.value)} />
+
+                        <label htmlFor="country-input">Please choose a country</label>
+
+                        <button type="submit" className="neon-button my-3" name="default-submit" value="canada" onClick={() => next(defCountry.toLowerCase(), defCountryIso)}>Next</button>
+
                         <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink" id="new-country-list">
                             {choices && choices.map((item, i) => (
                                 <li key={i}>
-                                    <Link className="dropdown-item" to={{ pathname: `/wallet-search/${item[0]}`, state: { fromApp: true } }}
+                                    <button className="dropdown-item" onClick={() => next(item[1], item[0])}
                                         style={{textTransform: "capitalize"}}>
                                         <ReactCountryFlag
                                             countryCode={item[0]}
@@ -115,23 +122,27 @@ const WalletSearch = () => {
                                             title={item[0]}
                                         /> 
                                         {item[1]}
-                                    </Link>
+                                    </button>
                                 </li>
                             ))}
                             {empty && 
                                 <li>
                                 <a className="dropdown-item disabled" style={{textTransform: "capitalize", color: "black"}}>
-                                    <b>No accounts were found.</b>
+                                    <b>No countries were found.</b>
                                 </a>
                             </li>
                             }
                         </ul>
                     </div>
 
+                    <div className="d-flex text-white" style={{fontSize: "9.5pt"}}>
+                        <div className="mt-3">Already have an account ?</div>
+                        <Link className="mt-3 ms-2" to="/login" style={{color: "#f8b119"}}>{t("log_in")}</Link>
+                    </div>
                 </div>
             </div>
         </div>
     );
 }
  
-export default WalletSearch;
+export default CountryPicker;
