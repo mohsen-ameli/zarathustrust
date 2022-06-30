@@ -45,7 +45,7 @@ export const AuthProvider = ({children}) => {
 
             history.push("/home")
         } else {
-            alert("bam")
+            throw data.detail
         }
     }
 

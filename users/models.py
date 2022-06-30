@@ -55,19 +55,22 @@ class code(models.Model):
 
     def save(self, *args, **kwargs):
         # Email & phone number verificaiton
-        for e in range(2):
-            number_list = [x for x in range(10)]
-            code_items = []
+        # for e in range(2):
+        #     number_list = [x for x in range(10)]
+        #     code_items = []
 
-            for i in range(6):
-                num = random.choice(number_list)
-                code_items.append(num)
+        #     for i in range(6):
+        #         num = random.choice(number_list)
+        #         code_items.append(num)
 
-            code_string = "".join(str(item) for item in code_items)
-            if e == 1:
-                self.email_verify_code = code_string
-            else:
-                self.phone_verify_code = code_string
+        #     code_string = "".join(str(item) for item in code_items)
+        #     if e == 1:
+        #         self.email_verify_code = code_string
+        #     else:
+        #         self.phone_verify_code = code_string
+        n = 6
+        self.email_verify_code = random.randint(10**(n-1),10**n-1)
+        self.phone_verify_code = random.randint(10**(n-1),10**n-1)
         # End
 
         # IBAN verificaiton

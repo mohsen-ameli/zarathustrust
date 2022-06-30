@@ -35,6 +35,13 @@ a:link,
 button:link {
   text-decoration: none;
 }
+.email-resend {
+  color: var(--clr-zar);
+}
+.email-resend:hover {
+  color: var(--clr-zar);
+  text-decoration: underline;
+}
 .buttons-5 {
   font-size: 4rem; 
   color: #f8b119;

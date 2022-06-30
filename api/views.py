@@ -15,6 +15,7 @@ from accounts.functions import *
 from accounts.models import *
 from users.models import CustomUser, code
 from users.forms import RegisterForm, EmailCodeForm
+from users.utils import phone_msg_verify
 from wallets.models import BranchAccounts
 from .serializers import *
 
@@ -825,7 +826,7 @@ def signUp(request):
             user = {
                 'username'      : username,
                 'email'         : email,
-                'phone_number'  : phone_number,
+                'phone_number'  : phone_num,
                 'country'       : country,
                 'password1'     : password1,
                 'password2'     : password2,
@@ -849,7 +850,7 @@ def signUp(request):
 
 @api_view(['GET'])
 # Email Verify 
-def emailVerify(request):
+def verifyEmail(request):
     user = request.session.get('user')
     email_code = request.session.get('ver_code')['email_verify_code']
 
@@ -863,3 +864,27 @@ def emailVerify(request):
     )
 
     return Response({"code": email_code})
+
+
+@api_view(['GET'])
+# Phone Verify 
+def verifyPhone(request):
+    user = request.session.get('user')
+    phone_code = request.session.get('ver_code')['phone_verify_code']
+    phone_number = user['phone_number']
+
+    print(phone_number, "phone_code: ", phone_code)
+
+    # phone_msg_verify(
+    #             verify_code=phone_code, phone_number_to=phone_number
+    #         )
+
+    return Response({"code": phone_code})
+
+
+@api_view(['GET', 'POST'])
+# Phone Verify 
+def verifyReferral(request):
+    user = request.session.get('user')
+
+    return Response("hi")

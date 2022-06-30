@@ -100,7 +100,7 @@ const SignUp = () => {
             data.password2 && setErrPass2(data.password2[0].message)
 
             if (Object.keys(data).length === 0) {
-                history.push("/email-verify", {"data": data, "msg": t("email_verify")})
+                history.push("/verify-email", {"data": data, "msg": t("email_verify")})
             }
             console.log(data)
 

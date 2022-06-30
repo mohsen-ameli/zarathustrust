@@ -1,16 +1,56 @@
 import { useState, useContext } from "react"
 import { useTranslation } from "react-i18next";
 import AuthContext from "../context/AuthContext";
+import Alert from 'react-bootstrap/Alert';
+import RotateLoader from 'react-spinners/RotateLoader';
 
 const Login = () => {
     let { loginUser } = useContext(AuthContext)
     const { t }       = useTranslation()
 
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError]         = useState(() => localStorage.getItem("msg") ? localStorage.getItem("msg") && setShowErr(true) : null)
+    const [showErr, setShowErr]     = useState(false)
+    const [showMsg, setShowMsg]     = useState(false)
+    const [msg, setMsg]             = useState("")
+
+    
+    let submit = (e) => {
+        setIsLoading(true)
+
+        let prom = loginUser(e)
+        
+        prom
+        .catch(err => {
+            setError(err)
+            setShowErr(true)
+            setIsLoading(false)
+        })
+        
+    }
+
+
     return (
         <div className="login">
+            {showErr && 
+            <Alert className="text-center" variant="danger" onClose={() => setShowErr(false)} dismissible>
+                { error }
+            </Alert>
+            }
+            {showMsg &&
+            <Alert className="text-center" variant="success" onClose={() => setShowMsg(false)} dismissible>
+                { msg }
+            </Alert>
+            }
+            { isLoading && 
+            <div className="spinner">
+                <RotateLoader color="#f8b119" size={20} />
+            </div>
+            }
+
             <div className="card text-white zarathus-card mx-auto">
                 <div className="card-body">
-                    <form onSubmit={loginUser}>
+                    <form onSubmit={e => submit(e)}>
                         <div className="mb-2">
                             <h3 className="fw-normal text-center">{t("log_in")}</h3>
                             <hr className="zarathus-hr" />

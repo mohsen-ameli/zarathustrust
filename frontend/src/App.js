@@ -24,7 +24,9 @@ import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
 import SignUp from './auth/SignUp';
 import CountryPicker from './auth/CountryPicker';
-import EmailVerify from './auth/EmailVerify';
+import VerifyEmail from './auth/VerifyEmail';
+import VerifyPhone from './auth/VerifyPhone';
+import VerifyReferral from './auth/VerifyReferral';
 
 function App() {
     return (
@@ -50,7 +52,9 @@ function App() {
                             <Route path="/about" component={About} />
                             <Route path="/country-picker" component={CountryPicker} />
                             <Route path="/signup" component={SignUp} />
-                            <Route path="/email-verify" component={EmailVerify} />
+                            <Route path="/verify-email" component={VerifyEmail} />
+                            <Route path="/verify-phone" component={VerifyPhone} />
+                            <Route path="/verify-referral" component={VerifyReferral} />
                             <Route path="/login" component={Login} />
                             <Route path="/logout" component={Logout} />
                             {/* <Route component={NotFound} /> */}
