@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from 'react-router-dom'
 
-const EmailVerify = () => {
+const OTPInput = ({ url, next, translationTitle, translationHelp }) => {
     let { t } = useTranslation()
     let otp = useRef()
     let [emailCode, setEmailCode] = useState(null)
@@ -20,7 +20,7 @@ const EmailVerify = () => {
 
 
     let getCode = async () => {
-        let res = await fetch("/api/email-verify/")
+        let res = await fetch(url)
         
         if (res.ok) {
             let data = await res.json()
@@ -38,7 +38,7 @@ const EmailVerify = () => {
         }
 
         if (Number(code) === Number(emailCode)) {
-            history.push("/phone-verify")
+            history.push(next)
         } else {
             setErr("You have enterd the wrong verificaiton code! Please try again.")
         }
@@ -73,26 +73,13 @@ const EmailVerify = () => {
         }
     }
 
-    // let validate = e => {
-    //     // let re = /^\d*\.?\d*$/;
-    //     let entered = e.target.value || window.event.key
-    //     let id = Number(e.target.id)
-
-    //     if (isNaN(entered)) {
-    //         console.log("not a number")
-    //         inputs[id].value = ""
-    //     } else {
-    //         console.log("Number")
-    //     }
-    // }
-
 
     return (
-        <div className="email-verify">
+        <div className="otp-input">
             <div className="card text-white zarathus-card mx-auto">
                 <div className="card-body">
                     <form onSubmit={e => submit(e)} autoComplete="off">
-                        <h3 className="fw-normal text-center">{t("verify_email_title")}</h3>
+                        <h3 className="fw-normal text-center">{t(translationTitle)}</h3>
                         <hr className="zarathus-hr" />
 
                         <div className="form-floating"> 
@@ -111,7 +98,7 @@ const EmailVerify = () => {
                                 {err && err}
                             </strong></span>
                             
-                            <p className="form-text text-white">{t("email_verify")}</p>
+                            <p className="form-text text-white">{t(translationHelp)}</p>
                         </div>
 
                         <button className="neon-button-green my-2" type="submit">{t("verify")}</button>
@@ -122,4 +109,4 @@ const EmailVerify = () => {
     );
 }
  
-export default EmailVerify;
+export default OTPInput;
