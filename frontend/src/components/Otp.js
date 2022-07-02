@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from 'react-router-dom'
 
-const Otp = ({ url, next, translationTitle, translationHelp }) => {
+const Otp = ({ url, next, state, translationTitle, translationHelp }) => {
     const REFRESH_TIME = 5
     let { t } = useTranslation()
     let otp = useRef()
@@ -57,7 +57,7 @@ const Otp = ({ url, next, translationTitle, translationHelp }) => {
         }
 
         if (Number(code) === Number(emailCode)) {
-            history.push(next)
+            history.push(next, state)
         } else {
             setErr("You have enterd the wrong verificaiton code! Please try again.")
         }

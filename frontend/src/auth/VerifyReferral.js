@@ -1,9 +1,16 @@
 import { useTranslation } from "react-i18next";
+import { useHistory, useLocation } from "react-router-dom";
 
 const VerifyReferral = () => {
     let { t } = useTranslation()
+    const { state } = useLocation()
+    let history = useHistory()
+    
+    if (!state?.fromVerifyPhone) {
+        history.push("/country-picker")
+    }
 
-    let submit = async (e) => {
+    let submit = async e => {
         e.preventDefault()
         
         let res = await fetch("/api/verify-referral/", {
@@ -18,10 +25,12 @@ const VerifyReferral = () => {
 
         if (res.ok) {
             let data = await res.json()
-
-            console.log(data)
+            localStorage.setItem("success", true)
+            localStorage.setItem("msg", data.msg)
+            history.push("/login")
         } else {
-            console.log("failed")
+            localStorage.setItem("success", false)
+            localStorage.setItem("msg", "An error occured while registering. Please try again later.")
         }
     }
 

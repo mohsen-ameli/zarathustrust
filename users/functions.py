@@ -1,3 +1,4 @@
+from operator import indexOf
 import os, json, requests
 from ipware import get_client_ip
 from django_countries import countries
@@ -34,7 +35,6 @@ def country_from_ip(request):
 # getting country languages
 def get_country_lang(country_code):
     country_code = country_code.upper()
-    # project = os.path.abspath(os.path.dirname(__name__)) # root of django project
     project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     file = f'{project}/json/country_languages.json' # getting the file containing all country codes
     with open(file, 'r') as config_file: # opening and reading the json file
@@ -47,13 +47,29 @@ def get_country_lang(country_code):
 # getting country currency
 def get_country_currency(country_code):
     country_code = country_code.upper()
-    # project = os.path.abspath(os.path.dirname(__name__)) # root of django project
     project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
     file = f'{project}/json/country_currencies.json' # getting the file containing all country codes
+    
     with open(file, 'r') as config_file: # opening and reading the json file
         data = json.load(config_file)
 
     return data[country_code]
+
+
+# getting country currency
+def getCurrencyFromCountry(countryCode):
+    countryCode = countryCode.capitalize()
+    project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+    file = f'{project}/json/currencies.json' # getting the file containing all country codes
+
+    with open(file, 'r') as config_file: # opening and reading the json file
+        data = json.load(config_file)
+
+    for i in range(len(data)) :
+        if data[i]['name'] == countryCode:
+            return data[i]
 
 
 # searching through the country dict

@@ -3,16 +3,41 @@ import { useTranslation } from "react-i18next";
 import AuthContext from "../context/AuthContext";
 import Alert from 'react-bootstrap/Alert';
 import RotateLoader from 'react-spinners/RotateLoader';
+import { useEffect } from "react";
 
 const Login = () => {
     let { loginUser } = useContext(AuthContext)
     const { t }       = useTranslation()
 
     const [isLoading, setIsLoading] = useState(false)
-    const [error, setError]         = useState(() => localStorage.getItem("msg") ? localStorage.getItem("msg") && setShowErr(true) : null)
+    // const [error, setError]         = useState(() => localStorage.getItem("msg") ? localStorage.getItem("msg") && setShowErr(true) : null)
+    const [error, setError]         = useState(null)
     const [showErr, setShowErr]     = useState(false)
     const [showMsg, setShowMsg]     = useState(false)
     const [msg, setMsg]             = useState("")
+
+
+    useEffect(() => {
+        let success = (localStorage.getItem('success') === "true")
+        let message = String(localStorage.getItem('msg'))
+
+        // displaying any messages
+        if (message !== "" && message !== "null") {
+            if (!success) {
+                setError(message)
+                setShowErr(true)
+            } else if (success) {
+                setMsg(message)
+                setShowMsg(true)
+            } else {
+                setShowErr(false)
+                setShowMsg(false)
+            }
+        }
+        // cleaning the cookies
+        localStorage.setItem('msg', "")
+        localStorage.setItem('success', false)
+    }, [])
 
     
     let submit = (e) => {
@@ -81,7 +106,7 @@ const Login = () => {
                     {/* reset pass */}
                     <div className="pt-2">
                         <small className="text-muted">
-                            <a style={{color: "#f8b119c7"}} href="#">
+                            <a style={{color: "#f8b119c7"}} href="/password-reset">
                                 {t("reset_password")}
                             </a>
                         </small>

@@ -33,6 +33,9 @@ urlpatterns = [
     path("api/", include("api.urls"), name="api"),
     path("captcha/", include('captcha.urls')),
 
+    # admin
+    path("g0atch33se&pizz1/", admin.site.urls, name="admin"),
+
     # password reset
     path("password-reset/",
         auth_views.PasswordResetView.as_view(template_name="users/password_reset.html"),

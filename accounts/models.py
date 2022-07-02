@@ -21,7 +21,7 @@ class Account(models.Model):
     take_money        = models.DecimalField(decimal_places=1, max_digits=10, null=True, blank=True)
     bonus             = models.DecimalField(decimal_places=1, max_digits=10, null=True) # remove this default
     target_account    = models.CharField(max_length=30, null=True, blank=True)
-    money_to_send     = models.PositiveIntegerField(null=True, default=0)
+    money_to_send     = models.PositiveIntegerField(null=True, blank=True, default=0)
     main_currency     = models.CharField(max_length=6, null=True)
     iso2              = models.CharField(max_length=2, null=True)
 
@@ -119,7 +119,6 @@ class TransactionHistory(models.Model):
             return f'EXCHANGE as {person} for the amount {symbol}{self.price} at {self.date}'
 
 
-
 # signal to create an AccountInterest, right after an account is created
 @receiver(post_save, sender=Account)
 def account_created_handler(sender, created, instance, *args, **kwargs):
@@ -128,7 +127,7 @@ def account_created_handler(sender, created, instance, *args, **kwargs):
 
         # starting the interest making process
         from .tasks import interest_loop
-        interest_loop.delay()
+        interest_loop()
 
         # Notify us that a new account has been created
         # new_user(instance.created_by)
@@ -147,10 +146,3 @@ def account_created_handler(sender, created, instance, *args, **kwargs):
 @receiver(pre_delete, sender=Account)
 def account_delete_hendler(sender, instance, using, *args, **kwargs):
     AccountInterest.objects.get(id=instance.pk).delete()
-
-
-# @receiver(post_save, sender=AccountInterest)
-# def AccountInterest_created_handler(sender, created, instance, *args, **kwargs):
-#     if created:
-#         from .tasks import interest_loop
-#         interest_loop.delay()
