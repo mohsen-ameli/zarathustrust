@@ -4,7 +4,7 @@ import '../css/features.css'
 import '../css/fixed_bg.css'
 import zarathus_5 from '../images/zarathus-5.jpg'
 import zarathustrust_new from '../images/zarathustrust_new.png'
-import LandingAni from '../components/LandingAni'
+import LandingAni from './LandingAni'
 
 const LandingPage = () => {
     let { t } = useTranslation()

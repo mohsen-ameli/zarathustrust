@@ -41,7 +41,7 @@ let useFetch = () => {
         config['method'] = conf?.method
         config['body'] = conf?.body
 
-        const user = jwt_decode(authToken.access)
+        const user = jwt_decode(authToken?.access)
         const isExpired = dayjs.unix(user.exp).diff(dayjs()) < 1;
 
         if(isExpired){

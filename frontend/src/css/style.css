@@ -210,6 +210,16 @@ i {
   font-size: 0.875em;
   color: #ff4a59;
 }
+.inputs input {
+  width: 50px;
+  height: 65px;
+  font-size: x-large;
+}
+
+.form-control:focus {
+  box-shadow: 0px 0px 5px 1px var(--clr-zar);
+  border: 2px solid var(--clr-zar);
+}
 /********* End *********/
 
 /********** help text **********/
