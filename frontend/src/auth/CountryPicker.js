@@ -1,16 +1,19 @@
 import { t } from "i18next"
-import { useEffect } from "react"
+import { useCallback, useEffect } from "react"
 import { useState } from "react"
 import { Link, useHistory } from "react-router-dom"
 import ReactCountryFlag from "react-country-flag"
 import Alert from 'react-bootstrap/Alert';
 import RotateLoader from 'react-spinners/RotateLoader';
 import { useRef } from "react"
+import useFetch from "../components/useFetch";
+
 
 const CountryPicker = () => {
     let ref = useRef()
     let history = useHistory()
-    const [countries, setCountries]   = useState([])
+    let api = useFetch()
+    const [countries, setCountries]     = useState([])
     const [choices, setChoices]         = useState(null)
     const [empty, setEmpty]             = useState(true)
     const [defCountry, setDefCountry]   = useState(null)
@@ -19,40 +22,50 @@ const CountryPicker = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError]         = useState(null)
     const [showErr, setShowErr]     = useState(false)
-    const [showMsg, setShowMsg]     = useState(false)
-    const [msg, setMsg]             = useState("")
 
-    useEffect(() => {
-        loadJson()
 
-        getCountry()
+    const fetchStuff = useCallback(() => {
+        // loading user if they are already signed in
+        let loadUser = async () => {
+            let { response } = await api("/api/currUser/")
+    
+            if (response.status === 200) {
+                history.push("/home")
+            }
+        }; loadUser()
+
+        // getting the country of the user based on their ip
+        let getCountry = async () => {
+            let response = await fetch("https://ipapi.co/json/")
+    
+            if (response.ok) {
+                let data = await response.json()
+                setDefCountry(data.country_name)
+                setDefCountryIso(data.country_code)
+            }
+        }; getCountry()
+
+        // getting all country names
+        let loadJson = async () => {
+            fetch("/api/json/country_names/", {
+                method: "GET"
+            })
+            .then(res => {
+                return res.json()
+            })
+            .then(data => {
+                setCountries(data)
+                setIsLoading(false)
+            })
+            .catch(() => {setError('An error occurred. Awkward..'); setShowErr(true); setIsLoading(false)})
+        }; loadJson()
+        // eslint-disable-next-line
     }, [])
 
 
-    let getCountry = async () => {
-        let response = await fetch("https://ipapi.co/json/")
-
-        if (response.ok) {
-            let data = await response.json()
-            setDefCountry(data.country_name)
-            setDefCountryIso(data.country_code)
-        }
-    }
-
-
-    let loadJson = async () => {
-        fetch("/api/json/country_names/", {
-            method: "GET"
-        })
-        .then(res => {
-            return res.json()
-        })
-        .then(data => {
-            setCountries(data)
-            setIsLoading(false)
-        })
-        .catch(() => {setError('An error occurred. Awkward..'); setShowErr(true); setIsLoading(false)})
-    }
+    useEffect(() => {
+        fetchStuff()
+    }, [fetchStuff])
 
 
     let search = (typed) => {
@@ -66,6 +79,7 @@ const CountryPicker = () => {
                     setEmpty(false)
                     ch.push([item[0], item[1]]) 
                 }
+                return ch
             })
         }
         setChoices(ch)
@@ -84,11 +98,6 @@ const CountryPicker = () => {
                 { error }
             </Alert>
             }
-            {showMsg &&
-            <Alert className="text-center" variant="success" onClose={() => setShowMsg(false)} dismissible>
-                { msg }
-            </Alert>
-            }
 
             { isLoading && 
             <div className="spinner">
@@ -102,7 +111,7 @@ const CountryPicker = () => {
                     <hr className="zarathus-hr" />
 
                     <div className="dropdown form-floating">
-                        <input type="text" className="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
+                        <input type="text" className="form-control dropdown-toggle" data-bs-toggle="dropdown"
                             placeholder="Country" id="country-input" autoComplete="off"
                             defaultValue={defCountry} ref={ref} onClick={() => ref.current.value = ""} onChange={e => search(e.target.value)} />
 
@@ -127,9 +136,9 @@ const CountryPicker = () => {
                             ))}
                             {empty && 
                                 <li>
-                                <a className="dropdown-item disabled" style={{textTransform: "capitalize", color: "black"}}>
+                                <span className="dropdown-item disabled" style={{textTransform: "capitalize", color: "black"}}>
                                     <b>No countries were found.</b>
-                                </a>
+                                </span>
                             </li>
                             }
                         </ul>

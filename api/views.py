@@ -1,11 +1,13 @@
 import json
 import os
 import phonenumbers
+import pycountry
 
 from django.core.mail import send_mail, EmailMessage
 from django.db.models import Q, F
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
+from django.contrib.auth.hashers import make_password
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -13,8 +15,9 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from accounts.functions import *
 from accounts.models import *
-from users.models import CustomUser, code
-from users.forms import RegisterForm, EmailCodeForm
+from users.models import CustomUser, code, ReferralCode
+from users.forms import RegisterForm
+from users.functions import *
 from wallets.models import BranchAccounts
 from .serializers import *
 
@@ -94,7 +97,7 @@ def cashOut(request):
 
     # checking insufficient interest amount
     if interest_rate < 0.1:
-        return Response({"failed": "You need at least $0.1 to be able to cash out !"})
+        return Response({"failed": "You need at least $0.1 to be able to cash out!"})
 
     # checking bonus if it's more than interest rate or not
     if interest_rate <= bonus:
@@ -193,9 +196,9 @@ def withdraw(request):
         message = f"{userCurrencySymbol}{moneyToWithdraw} was requested to be taken out"
         success = True
     elif moneyToWithdraw > balance:
-        message = "You have requested to take more than you have in your current balance !"
+        message = "You have requested to take more than you have in your current balance!"
     else:
-        message = f"Please consider that the minimum amount to withdraw must be {userCurrencySymbol}{minCurrency} or higher !"
+        message = f"Please consider that the minimum amount to withdraw must be {userCurrencySymbol}{minCurrency} or higher!"
         
     return Response({"message" : message, "success": success})
 
@@ -463,13 +466,13 @@ def transferConfirm(request):
                 success = True
 
             elif moneyToSend < minCurrency:
-                message = f"Please consider that the minimum amount to send is {userCurrencySymbol}{minCurrency} !"
+                message = f"Please consider that the minimum amount to send is {userCurrencySymbol}{minCurrency}!"
             elif moneyToSend > balance:
-                message = "You have requested to transfer more than you have in your current balance !"
+                message = "You have requested to transfer more than you have in your current balance!"
         else:
             message = "You cannot send money to yourself."
     except ObjectDoesNotExist:
-        message = "The account you are trying to send money to has not finished signing up !"
+        message = "The account you are trying to send money to has not finished signing up!"
 
     return Response({"message" : message, "success": success})
 
@@ -494,16 +497,16 @@ def currencyEx(request, fromCurr, fromIso, amount, toCurr, toIso):
     #-------------------------------- CHECKS ------------------------------#
     # confirming from and to currencies
     if minTo is None or minFrom is None: # the currency doesnt exist (JXL)
-        message = "88You cannot exchange with the specified currencies !"
+        message = "88You cannot exchange with the specified currencies!"
         return Response({"message": message, "success": False})
     elif fromCurr == toCurr: # exchanging the same currencies
-        message = "You cannot exchange the same currencies !"
+        message = "You cannot exchange the same currencies!"
         return Response({"message": message, "success": False})
     elif not wallet.filter(currency=toCurr, iso2=toIso).exists() and acc.main_currency != toCurr:
-        message = "You do not own the specified wallets !"
+        message = "You do not own the specified wallets!"
         return Response({"message": message, "success": False})
     elif not wallet.filter(currency=fromCurr, iso2=fromIso).exists() and acc.main_currency != fromCurr:
-        message = "You do not own the specified wallets !"
+        message = "You do not own the specified wallets!"
         return Response({"message": message, "success": False})
 
     # if user has enough money
@@ -515,7 +518,7 @@ def currencyEx(request, fromCurr, fromIso, amount, toCurr, toIso):
             if float(wallet.total_balance) < float(amount):
                 notEnough = True
     if notEnough:
-        message = "You do not have enough money for this transaction !"
+        message = "You do not have enough money for this transaction!"
         return Response({"message": message, "success": False})
     #-------------------------------- CHECKS ------------------------------#
 
@@ -568,7 +571,7 @@ def currencyEx(request, fromCurr, fromIso, amount, toCurr, toIso):
             history.save()
 
             # success msg & redirect
-            message = "You have successfuly exchanged your desired currencies !"
+            message = "You have successfuly exchanged your desired currencies!"
             success = True
         
         # sending to an account
@@ -596,10 +599,10 @@ def currencyEx(request, fromCurr, fromIso, amount, toCurr, toIso):
             history.save()
 
             # msg & redirect
-            message = "You have successfuly exchanged your desired currencies !"
+            message = "You have successfuly exchanged your desired currencies!"
             success = True
         else:
-            message = "You do not have a wallet with the specified currency !"
+            message = "You do not have a wallet with the specified currency!"
             success = False
 
     return Response({"message": message, "success": success, "ex_rate": ex_rate})
@@ -825,7 +828,8 @@ def signUp(request):
             user = {
                 'username'      : username,
                 'email'         : email,
-                'phone_number'  : phone_number,
+                'ext'           : ext,
+                'phone_number'  : phone_num,
                 'country'       : country,
                 'password1'     : password1,
                 'password2'     : password2,
@@ -846,10 +850,9 @@ def signUp(request):
     return Response(form.errors.as_json())
 
 
-
 @api_view(['GET'])
 # Email Verify 
-def emailVerify(request):
+def verifyEmail(request):
     user = request.session.get('user')
     email_code = request.session.get('ver_code')['email_verify_code']
 
@@ -863,3 +866,106 @@ def emailVerify(request):
     )
 
     return Response({"code": email_code})
+
+
+@api_view(['GET'])
+# Phone Verify 
+def verifyPhone(request):
+    user = request.session.get('user')
+    phone_code = request.session.get('ver_code')['phone_verify_code']
+    phone_number = user['phone_number']
+
+    print(phone_number, "phone_code: ", phone_code)
+
+    # phone_msg_verify(
+    #             verify_code=phone_code, phone_number_to=phone_number
+    #         )
+
+    return Response({"code": phone_code})
+
+
+@api_view(['POST'])
+# Phone Verify 
+def verifyReferral(request):
+    # the amount in which new user's bonus will get
+    EXTRA_BONUS_VALUE = 200
+
+    message = ""
+
+    # getting stuff to sign up the user
+    user = request.session.get('user')
+    
+    # if user just happened to visit the page, simply redirect them back to the register page
+    username        = user['username']
+    email           = user['email']
+    password        = user['password1']
+    phone_number    = user['phone_number']
+    country         = user['country']
+    phone_ext       = user['ext']
+    enterd_code     = request.data['code']
+
+    iso2            = pycountry.countries.search_fuzzy(country)[0].alpha_2
+    currency        = get_country_currency(iso2)
+    language        = get_country_lang(iso2)
+    friend_code     = ReferralCode.objects.filter(referral_code=enterd_code)
+    user_currency_min = currency_min(currency)
+
+    # creating a user
+    user = CustomUser.objects.create(username=username, password=make_password(password), email=email, phone_number=phone_number, country=iso2,
+    phone_ext=phone_ext, currency=currency, iso2=iso2, language=language)
+
+
+    if friend_code.exists():  # referral code exists
+        # getting current user's stuff
+        user_currency_symbol    = get_currency_symbol(user.currency) # their currency symbol
+        user_extra_bonus        = user_currency_min * EXTRA_BONUS_VALUE
+
+        # creating an account for the user
+        bonus = (user_currency_min * 1000) + user_extra_bonus
+        Account.objects.create(created_by=user, bonus=bonus, total_balance=0, main_currency=currency, iso2=iso2, id=user.pk)
+
+        # updating the user's bonus
+        # Account.objects.filter(created_by=user).update(bonus = user_extra_bonus + user_currency_min * 1000)
+
+        # getting the some info from the user whose referral code was used
+        giver_user = ReferralCode.objects.get(referral_code=enterd_code).user # their name
+        giver_account           = Account.objects.get(created_by=giver_user) # their account
+        giver_balance           = giver_account.total_balance # their balance
+        giver_bonus             = giver_account.bonus # their bonus
+        giver_currency          = giver_account.main_currency # their currency in iso-3 format
+        giver_currency_min      = currency_min(giver_currency) # $1 in their currency
+        giver_extra_bonus       = giver_currency_min * EXTRA_BONUS_VALUE
+        giver_currency_symbol   = get_currency_symbol(giver_currency) # their currency symbol
+
+        # updating the giver user's bonus
+        Account.objects.filter(created_by=giver_user).update(
+            bonus = giver_bonus + giver_extra_bonus,
+            total_balance = giver_balance + giver_currency_min
+        )
+
+        # send email to the person whose referral code was just used
+        EMAIL_ID = config.get("EMAIL_ID")
+        GIVER_EMAIL = giver_user.email
+        send_mail(
+            f"Dear {giver_user.username}!",
+            f"{user['username']} just used your referral code! You recieved {giver_currency_symbol}{giver_currency_min} on your balance, and {giver_currency_symbol}{giver_extra_bonus} added to your bonus!",
+            f"{EMAIL_ID}",
+            [f"{GIVER_EMAIL}"],
+        )
+
+        # success message
+        message = f"You have successfully registered, {user['username']}. For your prize, {user_currency_symbol}{user_extra_bonus} has been transfered to your bonus!"
+    else:  # referral code not entered
+        # creating an account for the user
+        bonus = user_currency_min * 1000
+        try:
+            Account.objects.create(created_by=user, bonus=bonus, main_currency=currency, iso2=iso2, pk=user.pk)
+        except Exception as e:
+            print(e)
+        # success message
+        if enterd_code == "":  # referral code not submitted
+            message = f"You have successfully registered, {username}!"
+        else: # referral code was wrong
+            message = f"Sorry, this referral code is incorrect, but you have successfully registered, {username}!"
+
+    return Response({"msg": message})

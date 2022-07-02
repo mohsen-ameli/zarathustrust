@@ -110,7 +110,7 @@ const Navbar = () => {
                                 <Link className="nav-link active" to="/login">{t("log_in")}</Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link active" to="/signup">{t("sign_up")}</Link>
+                                <Link className="nav-link active" to="/country-picker">{t("sign_up")}</Link>
                             </li>
                             </>
                             }

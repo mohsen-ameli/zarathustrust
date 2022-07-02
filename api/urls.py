@@ -18,7 +18,9 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('logout/', views.logoutView, name='logout'),
     path('signup/', views.signUp, name='sign-up'),
-    path('email-verify/', views.emailVerify, name='email-verify'),
+    path('verify-email/', views.verifyEmail, name='verify-email'),
+    path('verify-phone/', views.verifyPhone, name='verify-phone'),
+    path('verify-referral/', views.verifyReferral, name='verify-referral'),
 
     path('currUser/', views.currentUser, name='currUser'),
     path('account/', views.accounts, name='account'),
