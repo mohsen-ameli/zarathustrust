@@ -43,7 +43,7 @@ const SignUp = () => {
 
 
     let getPhoneExt = async () => {
-        let response = await fetch(`/api/json/country_phone_codes`)
+        let response = await fetch(`/api/json/country_phone_codes/`)
 
         if (response.ok) {
             let data = await response.json()

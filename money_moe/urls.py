@@ -8,7 +8,7 @@ from users import views as users_views
 
 from django.views.generic import TemplateView
 
-app_name = "money_moe"'''
+app_name = "money_moe"
 urlpatterns = [
     # api
     path("api/", include("api.urls"), name="api"),
@@ -56,3 +56,4 @@ urlpatterns += i18n_patterns(path('jsi18n/', JavaScriptCatalog.as_view(), name='
 
 if "rosetta" in settings.INSTALLED_APPS:
     urlpatterns += [re_path(r"^rosetta/", include("rosetta.urls"))]
+'''

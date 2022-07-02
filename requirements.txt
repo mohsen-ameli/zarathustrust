@@ -22,4 +22,5 @@ django-crum
 phonenumbers
 gunicorn
 djangorestframework-simplejwt
+pycountry
 # psycopg2
