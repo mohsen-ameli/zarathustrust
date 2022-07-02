@@ -1,16 +1,21 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useLocation } from "react-router-dom";
+import RotateLoader from 'react-spinners/RotateLoader';
 
 const VerifyReferral = () => {
-    let { t } = useTranslation()
+    let { t }       = useTranslation()
     const { state } = useLocation()
-    let history = useHistory()
+    let history     = useHistory()
+
+    const [isLoading, setIsLoading] = useState(false)
     
     if (!state?.fromVerifyPhone) {
         history.push("/country-picker")
     }
 
     let submit = async e => {
+        setIsLoading(true)
         e.preventDefault()
         
         let res = await fetch("/api/verify-referral/", {
@@ -36,6 +41,12 @@ const VerifyReferral = () => {
 
     return (
         <div className="referral-code">
+            { isLoading && 
+            <div className="spinner">
+                <RotateLoader color="#f8b119" size={20} />
+            </div>
+            }
+
             <div className="card text-white zarathus-card mx-auto">
                 <div className="card-body">
                     <h3 className="fw-normal text-center">Referral Code (Optional)</h3>
