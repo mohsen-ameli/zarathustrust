@@ -107,6 +107,8 @@ const SignUp = () => {
         }
     }
 
+    console.log("REACT_APP_RECAPTCHA_KEY: ", process.env.REACT_APP_RECAPTCHA_KEY)
+
     return (
         <GoogleReCaptchaProvider reCaptchaKey={process.env.REACT_APP_RECAPTCHA_KEY} SameSite="None">
             <div className="sign-up">
