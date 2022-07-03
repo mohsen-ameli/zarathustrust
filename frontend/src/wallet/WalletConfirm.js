@@ -1,17 +1,12 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams, useHistory, useLocation, Link } from "react-router-dom";
-import axios from "axios";
 import Cookies from 'js-cookie';
 
 import Alert from 'react-bootstrap/Alert';
 import RotateLoader from 'react-spinners/RotateLoader';
-import { useContext } from "react";
-import AuthContext from "../context/AuthContext";
 import useFetch from "../components/useFetch";
 
 const WalletConfirm = () => {
-    let { user }                    = useContext(AuthContext)
-    const pk                        = user?.user_id
     const iso2                      = useParams().curr
     let history                     = useHistory()
     let api                         = useFetch()
@@ -25,44 +20,45 @@ const WalletConfirm = () => {
     const [error, setError]         = useState(null)
     const [showErr, setShowErr]     = useState(false)
 
+
+    const fetchStuff = useCallback(() => {
+        let loadWallets = async () => {
+            let { response, data } = await api("/api/wallets/")
+            
+            if (response.status === 200) {
+                setWallets(data)
+                setIsLoading(false)
+            } else {
+                setError('An error occurred. Awkward..')
+                setShowErr(true)
+                setIsLoading(false)
+            }
+        }; loadWallets()
+
+        let nextFetch = async () => {
+            let { response, data } =  await api("/api/json/country_currencies_clean/")
+            if (response.status === 200) {
+                setCurrency(data[iso2])
+                setIsLoading(false)
+            } else {
+                setError('An error occurred. Awkward..')
+                setShowErr(true)
+                setIsLoading(false)
+            }
+        }; nextFetch()
+
+        // eslint-disable-next-line
+    }, [])
+
     
     useEffect(() => {
         if (!state?.fromApp) {
             history.push("/wallet-search")
         }
 
-        loadWallets()
-
-        nextFetch()
-
-    }, [currency, history, pk])
-
-
-    let loadWallets = async () => {
-        let { response, data } = await api("/api/wallets/")
-        
-        if (response.status === 200) {
-            setWallets(data)
-            setIsLoading(false)
-        } else {
-            setError('An error occurred. Awkward..')
-            setShowErr(true)
-            setIsLoading(false)
-        }
-    }
-
-
-    let nextFetch = async () => {
-        let { response, data } =  await api("/api/json/country_currencies_clean/")
-        if (response.status === 200) {
-            setCurrency(data[iso2])
-            setIsLoading(false)
-        } else {
-            setError('An error occurred. Awkward..')
-            setShowErr(true)
-            setIsLoading(false)
-        }
-    }
+        fetchStuff()
+        // eslint-disable-next-line
+    }, [fetchStuff])
 
 
     let createWallet = async () => {

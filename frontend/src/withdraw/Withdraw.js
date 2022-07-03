@@ -41,12 +41,12 @@ const Withdraw = () => {
                 )
             })
             .then(res => {
-                sessionStorage.setItem('msg', res.data['message'])
+                sessionStorage.setItem('msg', t("withdraw_success", {"amount": money, "currency": res.data['userCurrencySymbol']}))
                 sessionStorage.setItem('success', res.data['success'])
     
     
                 if (!res.data['success']) {
-                    setError(res.data['message'])
+                    setError(t("withdraw_error"))
                     setShowErr(true)
                     sessionStorage.setItem('msg', '')
                     sessionStorage.setItem('success', false)

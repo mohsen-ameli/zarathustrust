@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Cookies from 'js-cookie';
 import Alert from 'react-bootstrap/Alert';
 import RotateLoader from 'react-spinners/RotateLoader'
-import { useContext } from "react";
-import AuthContext from "../context/AuthContext";
 import useFetch from "../components/useFetch";
 import { useTranslation } from "react-i18next";
 
@@ -66,7 +64,7 @@ const TransferSearch = () => {
                     <hr className="zarathus-hr"></hr>
 
                     <div className="dropdown form-floating">
-                        <input type="text" id="search-input" className="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
+                        <input type="text" id="search-input" className="form-control dropdown-toggle" data-bs-toggle="dropdown"
                             placeholder="Country" autoComplete="off" onChange={e => search(e.target.value)}></input>
                         <label htmlFor="search-input">{t("send_money_fields")}</label>
 
@@ -80,9 +78,9 @@ const TransferSearch = () => {
                                 </li>
                             )) : 
                                 <li>
-                                    <a className="dropdown-item disabled" style={{textTransform: "capitalize", color: "black"}}>
+                                    <span className="dropdown-item disabled" style={{textTransform: "capitalize", color: "black"}}>
                                         <b>{t("no_accounts")}</b>
-                                    </a>
+                                    </span>
                                 </li>
                             }
                         </ul>

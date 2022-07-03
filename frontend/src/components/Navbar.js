@@ -1,8 +1,6 @@
 import { Link } from 'react-router-dom';
 import img from '../images/zarathustrust_new.png'
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHome, faCircleInfo, faGlobe, faGear } from '@fortawesome/free-solid-svg-icons'
 import { useRef, useContext } from 'react';
 import AuthContext from '../context/AuthContext';
 import i18next from 'i18next';
@@ -18,6 +16,7 @@ const Navbar = () => {
     let { user } = useContext(AuthContext)
     const nav = useRef()
     const langIcon = useRef()
+    const btn = useRef()
 
     let logged = false
     let id = user?.user_id
@@ -26,9 +25,11 @@ const Navbar = () => {
         logged = true
     }
 
-    window.addEventListener('click', () => {
+    window.addEventListener('click', (e) => {
         if (nav.current?.classList.contains("show")) {
-            document.querySelector("#root > div.navbar > nav > div > button").click()
+            if (!e.target.id.includes("langDropdown")) {
+                btn.current.click()
+            }
         }
     })
 
@@ -43,11 +44,11 @@ const Navbar = () => {
             <nav className="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
                 <div className="container-sm">
                         <Link className="navbar-brand" to={logged ? "/home" : "/"}>
-                            <img src={ img } alt='' width="60" height="26" className="d-inline-block align-text-top"></img>
+                            <img src={ img } alt='' width="60" height="26" className="d-inline-block align-text-top" id="zarathus-img"></img>
                             <span style={{fontSize: "x-large"}}> Z</span>arathus<span style={{fontSize: "x-large"}}>T</span>rust
                         </Link>
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" ref={btn}>
                         <span className="navbar-toggler-icon"></span>
                     </button>
                     <div className="collapse navbar-collapse" id="navbarSupportedContent" ref={nav}>
@@ -55,26 +56,27 @@ const Navbar = () => {
                             {logged &&
                             <li className="nav-item">
                                 <Link className="nav-link active" to="/home">
-                                    <FontAwesomeIcon icon={faHome} /> {t("home")}
+                                <i className="fa-solid fa-house"></i> {t("home")}
                                 </Link>
                             </li>
                             }
 
                             <li className="nav-item">
                                 <Link className="nav-link active" to="/about">
-                                    <FontAwesomeIcon icon={faCircleInfo} /> {t("about")}
+                                    <i className="fa-solid fa-circle-info"></i> {t("about")}
                                 </Link>
                             </li>
                         </ul>
 
                         <ul className="navbar-nav ms-auto">
                             <li className="nav-item dropdown">
-                                <Link className="nav-link dropdown-toggle text-white" to="/" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <FontAwesomeIcon icon={faGlobe} className="mx-1" />
+                                <Link className="nav-link dropdown-toggle text-white" to="/" 
+                                id="langDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i className="fa-solid fa-globe"></i>
                                     {t("language")}
                                     <span className={`flag-icon flag-icon-${countryCodes[localStorage.getItem("i18nextLng")]} mx-1`} ref={langIcon}></span>
                                 </Link>
-                                <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <ul className="dropdown-menu" aria-labelledby="langDropdown">
                                     <input type="hidden" value="" />
                                     <li>
                                         <button onClick={() => changeLang("en", "en")} className="dropdown-item">
@@ -95,8 +97,8 @@ const Navbar = () => {
 
                             { logged &&
                             <li className="nav-item">
-                                <Link className="nav-link active" to="#">
-                                    <FontAwesomeIcon icon={faGear} /> {t("settings")}
+                                <Link className="nav-link active" to="/settings">
+                                    <i className="fa-solid fa-gear"></i> {t("settings")}
                                 </Link>
                             </li>
                             }

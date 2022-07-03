@@ -3,15 +3,12 @@ import Cookies from "js-cookie";
 import { useParams, useHistory, useLocation } from "react-router-dom";
 import Alert from 'react-bootstrap/Alert';
 import RotateLoader from 'react-spinners/RotateLoader';
-import AuthContext from "../context/AuthContext";
-import { useContext } from "react";
 import useFetch from "../components/useFetch";
 import { useTranslation } from "react-i18next";
+import { useCallback } from "react";
 
 const CurrencyExConfirm = () => {
-    let { user }                    = useContext(AuthContext)
     let { t }                       = useTranslation()
-    let pk                          = user?.user_id
     let fromCurr                    = useParams().fromCurr
     let fromIso                     = useParams().fromIso
     let amount                      = useParams().amount
@@ -30,12 +27,7 @@ const CurrencyExConfirm = () => {
     
     const { state }                 = useLocation()
 
-
-    useEffect(() => {
-        if (!state?.fromApp) {
-            history.push("/currency-exchange")
-        }
-
+    const fetchStuff = useCallback(() => {
         api("/api/json/currencies_symbols/")
         .then(res => {
             setToSymbol(res.data[toCurr])
@@ -48,7 +40,18 @@ const CurrencyExConfirm = () => {
             setIsLoading(false)
         })
         .catch(() => {setError('1 An error occurred. Awkward..'); setShowErr(true); setIsLoading(false);})
+
+        // eslint-disable-next-line
     }, [])
+
+    useEffect(() => {
+        if (!state?.fromApp) {
+            history.push("/currency-exchange")
+        }
+
+        fetchStuff()
+        // eslint-disable-next-line
+    }, [fetchStuff])
 
     let submit = () => {
         setIsLoading(true)

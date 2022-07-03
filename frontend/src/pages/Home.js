@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useContext } from 'react';
+import { useEffect, useState, useRef, useContext, useCallback } from 'react';
 import { Link } from "react-router-dom";
 import ShowWallets from "../components/ShowWallets";
 
@@ -24,7 +24,6 @@ const Home = () => {
     const [interest, setInterest]       = useState(zero.toFixed(20))
     const [balance, setBalance]         = useState(zero.toFixed(2))
     const [bonus, setBonus]             = useState(zero.toFixed(1))
-    const [id, setId]                   = useState(null)
     const [name, setName]               = useState(null)
     const [isBiz, setIsBiz]             = useState(null)
     const [currency, setCurrency]       = useState(null)
@@ -42,6 +41,76 @@ const Home = () => {
     let balanceStatic                   = null
     let currencyStatic                  = null
     let interestRate                    = 0
+
+
+    const fetchStuff = useCallback(() => {
+        let loadAccount = async () => {
+            let { response, data } = await api("/api/account/")
+    
+            if (response.status === 200) {
+                // eslint-disable-next-line
+                balanceStatic = (Number(data.total_balance));
+                setBalance(Number(data.total_balance).toFixed(2));
+                setBonus(Number(data.bonus).toFixed(1));
+            } else {
+                setError('An error occurred. Awkward..')
+                setShowErr(true)
+                setIsLoading(false)
+            }
+        }; loadAccount()
+
+        let loadAccountInterest = async () => {
+            let { response, data } = await api("/api/account-interest/")
+    
+            if (response.status === 200) {
+                setInterest(Number(data.interest_rate).toFixed(20));
+                // eslint-disable-next-line
+                interestRate = Number(data.interest_rate)
+                setIsLoading(false);
+                interestCounter()
+            } else {
+                setError('An error occurred. Awkward..')
+                setShowErr(true)
+                setIsLoading(false)
+            }
+        }; loadAccountInterest()
+
+        let loadUser = async () => {
+            let { response, data } = await api("/api/currUser/")
+    
+            if (response.status === 200) {
+                setName(data.username)
+                setIsBiz(data.is_business)
+                setCurrency(data.currency)
+                // eslint-disable-next-line
+                currencyStatic = data.currency
+            } else {
+                setError('An error occurred. Awkward..')
+                setShowErr(true)
+                setIsLoading(false)
+            }
+        }; loadUser()
+
+        let loadCurrencies = async () => {
+            let { response, data } = await api("/api/json/currencies/")
+    
+            if (response.status === 200) {
+                setIsLoading(false);
+                data.map(item => {
+                    if (item.currency.code === currencyStatic) {
+                        setInterestSymbol(item.currency.symbol)
+                        setSymbol(item.currency.symbol)
+                    }
+                    return null;
+                })
+                setIsLoading(false);
+            } else {
+                setError('An error occurred. Awkward..')
+                setShowErr(true)
+                setIsLoading(false)
+            }
+        }; loadCurrencies()
+    }, [])
 
 
     useEffect(() => {
@@ -65,87 +134,8 @@ const Home = () => {
         sessionStorage.setItem('msg', "")
         sessionStorage.setItem('success', false)
         
-        // loading account
-        loadAccount()
-
-        // loading user
-        loadUser()
-
-    }, [])
-
-
-    let loadAccount = async () => {
-        let { response, data } = await api("/api/account/")
-
-        if (response.status === 200) {
-            // eslint-disable-next-line
-            balanceStatic = (Number(data.total_balance));
-            setBalance(Number(data.total_balance).toFixed(2));
-            setBonus(Number(data.bonus).toFixed(1));
-            fetchInter()
-        } else {
-            setError('An error occurred. Awkward..')
-            setShowErr(true)
-            setIsLoading(false)
-        }
-    }
-
-
-    let fetchInter = async () => {
-        let { response, data } = await api("/api/account-interest/")
-
-        if (response.status === 200) {
-            setInterest(Number(data.interest_rate).toFixed(20));
-            // eslint-disable-next-line
-            interestRate = Number(data.interest_rate)
-            setIsLoading(false);
-            interestCounter()
-        } else {
-            setError('An error occurred. Awkward..')
-            setShowErr(true)
-            setIsLoading(false)
-        }
-    }
-
-
-    let loadUser = async () => {
-        let { response, data } = await api("/api/currUser/")
-
-        if (response.status === 200) {
-            setId(data.id)
-            setName(data.username)
-            setIsBiz(data.is_business)
-            setCurrency(data.currency)
-            // eslint-disable-next-line
-            currencyStatic = data.currency
-            catchh()
-        } else {
-            setError('An error occurred. Awkward..')
-            setShowErr(true)
-            setIsLoading(false)
-        }
-    }
-
-
-    let catchh = async () => {
-        let { response, data } = await api("/api/json/currencies/")
-
-        if (response.status === 200) {
-            setIsLoading(false);
-            data.map(item => {
-                if (item.currency.code === currencyStatic) {
-                    setInterestSymbol(item.currency.symbol)
-                    setSymbol(item.currency.symbol)
-                }
-                return null;
-            })
-            setIsLoading(false);
-        } else {
-            setError('An error occurred. Awkward..')
-            setShowErr(true)
-            setIsLoading(false)
-        }
-    }
+        fetchStuff()
+    }, [fetchStuff])
 
 
     // interest counter
@@ -275,7 +265,7 @@ const Home = () => {
                     <Tippy content={
                         `${t("bonus_msg", {"interestSymbol": interestSymbol, "bonus": bonus})}`
                     } theme={'tomato'} animation={'scale'}>
-                        <a href="#" className="fas fa-question-circle p-2">{null}</a>
+                        <a href="#0" className="fas fa-question-circle p-2">{null}</a>
                     </Tippy>
                 </div>
             </div>

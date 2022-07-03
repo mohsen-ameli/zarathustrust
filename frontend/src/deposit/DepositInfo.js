@@ -64,34 +64,34 @@ const DepositInfo = () => {
      * it runs a function "loadUser" that fetches the currUser api from the backend
      */
     useEffect(() => {
-        loadUser()
-    }, [])
+        /**
+         * asynchornous function that uses the useFetch custom hook to fetch
+         * the api endpoint "currUser" which will return the current user's info
+         * @example -> {id: 1, username: 'NoobMoe', iso2: 'CA', currency: 'CAD'}
+         */
+        let loadUser = async () => {
+            // awaiting the response from the backend
+            let { response, data } = await api("/api/currUser/")
+            
+            // if the response was successful or not
+            if (response.status === 200) {
+                // setting the username
+                setUsername(data['username'])
 
-    /**
-     * asynchornous function that uses the useFetch custom hook to fetch
-     * the api endpoint "currUser" which will return the current user's info
-     * @example -> {id: 1, username: 'NoobMoe', iso2: 'CA', currency: 'CAD'}
-     */
-    let loadUser = async () => {
-        // awaiting the response from the backend
-        let { response, data } = await api("/api/currUser/")
+                // finished fetching so loading will be turned off
+                setIsLoading(false)
+            } else { // unsuccesful fetch
+                // show an error message since fetching was unsuccesful
+                setError('An error occurred with fetching data. Awkward..')
+                // show the error
+                setShowErr(true)
+                // set loading as false.
+                setIsLoading(false)
+            }
+        }; loadUser()
         
-        // if the response was successful or not
-        if (response.status === 200) {
-            // setting the username
-            setUsername(data['username'])
-
-            // finished fetching so loading will be turned off
-            setIsLoading(false)
-        } else { // unsuccesful fetch
-            // show an error message since fetching was unsuccesful
-            setError('An error occurred with fetching data. Awkward..')
-            // show the error
-            setShowErr(true)
-            // set loading as false.
-            setIsLoading(false)
-        }
-    }
+        // eslint-disable-next-line
+    }, [])
 
     /**
      * Returns a bit of JSX code which will be compiled by a Babel compiler built into react
@@ -129,7 +129,7 @@ const DepositInfo = () => {
                     </p>
 
                     {/* home button */}
-                    <Link className="neon-button my-2" to="/home">Home</Link>
+                    <Link className="neon-button my-2" to="/home">{t("home")}</Link>
                 </div>
             </div>
         </div>

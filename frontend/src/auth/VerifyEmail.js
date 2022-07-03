@@ -1,15 +1,10 @@
 import { useTranslation } from "react-i18next";
-import { useHistory, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Otp from "../components/Otp";
 
 const VerifyVerify = () => {
     const { state } = useLocation()
-    let history     = useHistory()
     let { t }       = useTranslation()
-    
-    if (!state?.fromSignUp) {
-        history.push("/country-picker")
-    }
 
     return (
         <div className="verify-email">

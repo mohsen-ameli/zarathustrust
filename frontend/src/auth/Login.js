@@ -4,10 +4,12 @@ import AuthContext from "../context/AuthContext";
 import Alert from 'react-bootstrap/Alert';
 import RotateLoader from 'react-spinners/RotateLoader';
 import { useEffect } from "react";
+import { useHistory } from "react-router-dom";
 
 const Login = () => {
-    let { loginUser } = useContext(AuthContext)
+    let { loginUser, user } = useContext(AuthContext)
     const { t }       = useTranslation()
+    let history = useHistory()
 
     const [isLoading, setIsLoading] = useState(false)
     // const [error, setError]         = useState(() => localStorage.getItem("msg") ? localStorage.getItem("msg") && setShowErr(true) : null)
@@ -18,6 +20,12 @@ const Login = () => {
 
 
     useEffect(() => {
+        let id = user?.user_id
+
+        if (id !== undefined) {
+            history.push("/home")
+        }
+
         let success = (localStorage.getItem('success') === "true")
         let message = String(localStorage.getItem('msg'))
 
@@ -37,6 +45,8 @@ const Login = () => {
         // cleaning the cookies
         localStorage.setItem('msg', "")
         localStorage.setItem('success', false)
+
+        // eslint-disable-next-line
     }, [])
 
     

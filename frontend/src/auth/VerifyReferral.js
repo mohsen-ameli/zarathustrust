@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useLocation } from "react-router-dom";
@@ -9,10 +10,14 @@ const VerifyReferral = () => {
     let history     = useHistory()
 
     const [isLoading, setIsLoading] = useState(false)
-    
-    if (!state?.fromVerifyPhone) {
-        history.push("/country-picker")
-    }
+
+    useEffect(() => {
+        if (!state?.fromVerifyPhone) {
+            history.push("/country-picker")
+        }
+        
+        // eslint-disable-next-line
+    }, [])
 
     let submit = async e => {
         setIsLoading(true)

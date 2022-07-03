@@ -36,8 +36,6 @@ const CurrencyEx = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError]         = useState(null)
     const [showErr, setShowErr]     = useState(false)
-    const [showMsg, setShowMsg]     = useState(false)
-    const [msg, setMsg]             = useState("")
 
     let changeCurr = (a, b, c) => {
         setIso2(a)
@@ -63,6 +61,8 @@ const CurrencyEx = () => {
         }
 
         setIsLoading(false)
+
+        // eslint-disable-next-line
     }, [currencies])
 
 
@@ -94,11 +94,6 @@ const CurrencyEx = () => {
             {showErr && 
             <Alert className="text-center" variant="danger" onClose={() => setShowErr(false)} dismissible>
                 { error }
-            </Alert>
-            }
-            {showMsg &&
-            <Alert className="text-center" variant="success" onClose={() => setShowMsg(false)} dismissible>
-                { msg }
             </Alert>
             }
             { isLoading && 

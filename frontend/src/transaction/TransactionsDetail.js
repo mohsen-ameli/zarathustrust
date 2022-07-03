@@ -30,45 +30,44 @@ const TransactionsDetail = () => {
     const [showErr, setShowErr]                 = useState(false)
 
     useEffect(() => {
-        loadTransaction()
-    }, [tId])
+        let loadTransaction = async () => {
+            let { response, data } = await api(`/api/transactions/${tId}/`)
+            if (response.status === 200) {
+                let transaction = data.transaction[0]
+    
+                setType(transaction.type)
+                setPrice(transaction.price?.toFixed(2))
+                setExPrice(transaction.exPrice?.toFixed(2))
+                setTransactor(data.transactor)
+                setIncoming(data.incoming)
+                setCurrencySymbol(data.currency_symbol)
+                setMessage(transaction.message)
+    
+                setPerson(transaction.person)
+                // setPerson2(transaction.person2)
+                setWallet(transaction.wallet)
+                // setWallet2(transaction.wallet2)
+    
+                setGiverSymbol(data.giverSymbol)
+                setRecieverSymbol(data.recieverSymbol)
+    
+                let temp = new Date(transaction.date)
+    
+                let date_ = temp.toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' }) 
+                + " | " +  temp.toLocaleString('default', { hour: 'numeric', minute: 'numeric', second: '2-digit' })
+    
+                setDate(date_)
+    
+                setIsLoading(false)
+            } else {
+                setError('An error occurred. Awkward..')
+                setShowErr(true)
+                setIsLoading(false)
+            }
+        }; loadTransaction()
 
-
-    let loadTransaction = async () => {
-        let { response, data } = await api(`/api/transactions/${tId}/`)
-        if (response.status === 200) {
-            let transaction = data.transaction[0]
-
-            setType(transaction.type)
-            setPrice(transaction.price?.toFixed(2))
-            setExPrice(transaction.exPrice?.toFixed(2))
-            setTransactor(data.transactor)
-            setIncoming(data.incoming)
-            setCurrencySymbol(data.currency_symbol)
-            setMessage(transaction.message)
-
-            setPerson(transaction.person)
-            // setPerson2(transaction.person2)
-            setWallet(transaction.wallet)
-            // setWallet2(transaction.wallet2)
-
-            setGiverSymbol(data.giverSymbol)
-            setRecieverSymbol(data.recieverSymbol)
-
-            let temp = new Date(transaction.date)
-
-            let date_ = temp.toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' }) 
-            + " | " +  temp.toLocaleString('default', { hour: 'numeric', minute: 'numeric', second: '2-digit' })
-
-            setDate(date_)
-
-            setIsLoading(false)
-        } else {
-            setError('An error occurred. Awkward..')
-            setShowErr(true)
-            setIsLoading(false)
-        }
-    }
+        // eslint-disable-next-line
+    }, [])
 
 
     return (

@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import ReactCountryFlag from "react-country-flag";
 import { useTranslation } from "react-i18next";
 import useFetch from "./useFetch";
@@ -23,28 +23,27 @@ const useAddMoney = (pk) => {
 
 
     useEffect(() => {
-        loadMoneyForm()
-    }, [pk])
+        let loadMoneyForm = async () => {
+            let { response, data } = await api("/api/money-form/")
+            if (response.status === 200) {
+                let options = data['currencyOptions']
+    
+                setIso2(options[0][0])
+                setCurr(options[0][1])
+                setSymbol(options[0][2])
+                setMin(options[0][3])
+                setCurrencies(options)
+    
+                setIsLoading(false)
+            } else {
+                setError('An error occurred. Awkward..')
+                setShowErr(true)
+                setIsLoading(false)
+            }
+        }; loadMoneyForm()
 
-
-    let loadMoneyForm = async () => {
-        let { response, data } = await api("/api/money-form/")
-        if (response.status === 200) {
-            let options = data['currencyOptions']
-
-            setIso2(options[0][0])
-            setCurr(options[0][1])
-            setSymbol(options[0][2])
-            setMin(options[0][3])
-            setCurrencies(options)
-
-            setIsLoading(false)
-        } else {
-            setError('An error occurred. Awkward..')
-            setShowErr(true)
-            setIsLoading(false)
-        }
-    }
+        // eslint-disable-next-line
+    }, [])
 
 
     let changeCurr = (iso, curr, symbol, min) => {

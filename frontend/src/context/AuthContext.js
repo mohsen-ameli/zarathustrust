@@ -17,8 +17,8 @@ export const AuthProvider = ({children}) => {
         valid = true
     }
 
-    let [authToken, setAuthToken] = useState(()=> valid ? auth : null)
-    let [user, setUser] = useState(()=> valid ? jwt_decode(localStorage.getItem('authToken')) : null)
+    let [authToken, setAuthToken] = useState(() => valid ? auth : null)
+    let [user, setUser] = useState(() => valid ? jwt_decode(localStorage.getItem('authToken')) : null)
     let [loading, setLoading] = useState(true)
 
     let history = useHistory()
@@ -66,7 +66,7 @@ export const AuthProvider = ({children}) => {
             localStorage.removeItem("authToken")
             history.push("/login")
         } else {
-            alert("bam")
+            history.push("/logout")
         }
     }
 

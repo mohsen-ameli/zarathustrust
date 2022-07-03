@@ -11,16 +11,15 @@ const ShowWallets = ({pk, home, changeCurr}) => {
     const { t }                 = useTranslation()
     
     useEffect(() => {
-        loadWallets()
+        let loadWallets = async () => {
+            let { response, data } = await api("/api/wallets/")
+            if (response.status === 200) {
+                setWallets(data)
+            }
+        }; loadWallets()
+
+        // eslint-disable-next-line
     }, [])
-
-
-    let loadWallets = async () => {
-        let { response, data } = await api("/api/wallets/")
-        if (response.status === 200) {
-            setWallets(data)
-        }
-    }
 
     
     let mouseOver = () => {
@@ -33,10 +32,10 @@ const ShowWallets = ({pk, home, changeCurr}) => {
 
     return (
         <div className={"show-wallets dropdown align-self-center ms-3"}>
-            <a className="neon-button" href="#" role="button" onMouseOver={() => mouseOver()} onMouseOut={() => mouseOut()}
+            <Link className="neon-button" to="#" role="button" onMouseOver={() => mouseOver()} onMouseOut={() => mouseOut()}
             id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                 {t("wallets")} <i className="fas fa-caret-down" ref={link}></i>
-            </a>
+            </Link>
         
             <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink">
 

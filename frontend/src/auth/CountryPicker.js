@@ -1,18 +1,19 @@
 import { t } from "i18next"
-import { useCallback, useEffect } from "react"
+import { useCallback, useContext, useEffect } from "react"
 import { useState } from "react"
 import { Link, useHistory } from "react-router-dom"
 import ReactCountryFlag from "react-country-flag"
 import Alert from 'react-bootstrap/Alert';
 import RotateLoader from 'react-spinners/RotateLoader';
 import { useRef } from "react"
-import useFetch from "../components/useFetch";
+import AuthContext from "../context/AuthContext"
 
 
 const CountryPicker = () => {
     let ref = useRef()
     let history = useHistory()
-    let api = useFetch()
+    let { user } = useContext(AuthContext)
+
     const [countries, setCountries]     = useState([])
     const [choices, setChoices]         = useState(null)
     const [empty, setEmpty]             = useState(true)
@@ -25,15 +26,6 @@ const CountryPicker = () => {
 
 
     const fetchStuff = useCallback(() => {
-        // loading user if they are already signed in
-        let loadUser = async () => {
-            let { response } = await api("/api/currUser/")
-    
-            if (response.status === 200) {
-                history.push("/home")
-            }
-        }; loadUser()
-
         // getting the country of the user based on their ip
         let getCountry = async () => {
             let response = await fetch("https://ipapi.co/json/")
@@ -64,7 +56,14 @@ const CountryPicker = () => {
 
 
     useEffect(() => {
+        let id = user?.user_id
+
+        if (id !== undefined) {
+            history.push("/home")
+        }
+        
         fetchStuff()
+        // eslint-disable-next-line
     }, [fetchStuff])
 
 
