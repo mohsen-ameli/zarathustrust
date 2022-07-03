@@ -10,11 +10,11 @@ from django.views.generic import TemplateView
 
 app_name = "money_moe"
 urlpatterns = [
-    # api
-    path("api/", include("api.urls"), name="api"),
-
     # admin
     path("g0atch33se&pizz1/", admin.site.urls, name="admin"),
+    
+    # api
+    path("api/", include("api.urls"), name="api"),
 
     # React
     path("", TemplateView.as_view(template_name='index.html')),

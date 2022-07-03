@@ -12,6 +12,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.serializers import TokenObtainSerializer, api_settings
 
 from accounts.functions import *
 from accounts.models import *
@@ -812,6 +814,9 @@ def signUp(request):
     except ValueError:
         form.add_error('phone_number', 'Please enter a correct phone number')
 
+    if CustomUser.objects.filter(email=email).exists():
+        form.add_error('email', 'A user with that email address already exists!')
+
     phone_number = ""
 
     if request.user.is_anonymous == True:
@@ -968,3 +973,7 @@ def verifyReferral(request):
             message = f"Sorry, this referral code is incorrect, but you have successfully registered, {username}!"
 
     return Response({"msg": message})
+
+
+class EmailTokenObtainPairView(TokenObtainPairView):
+    serializer_class = EmailTokenObtainSerializer
