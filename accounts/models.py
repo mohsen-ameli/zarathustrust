@@ -127,7 +127,7 @@ def account_created_handler(sender, created, instance, *args, **kwargs):
 
         # starting the interest making process
         from .tasks import interest_loop
-        interest_loop()
+        # interest_loop()
 
         # Notify us that a new account has been created
         # new_user(instance.created_by)
