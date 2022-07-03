@@ -1,5 +1,4 @@
 import { useContext } from "react";
-import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import AuthContext from "../context/AuthContext";

@@ -1,8 +1,7 @@
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import React from "react";
+import React, { useState } from "react";
 
 import Home from "./pages/Home";
-import NotFound from "./pages/NotFound";
 import Navbar from "./components/Navbar";
 import LandingPage from "./landingPage/LandingPage";
 import About from "./pages/About";
@@ -27,40 +26,57 @@ import CountryPicker from './auth/CountryPicker';
 import VerifyEmail from './auth/VerifyEmail';
 import VerifyPhone from './auth/VerifyPhone';
 import VerifyReferral from './auth/VerifyReferral';
+import Settings from './pages/Settings';
+import { createContext } from 'react';
+
+export const ThemeContext = createContext(null)
 
 function App() {
+    let [theme, setTheme] = useState(() => localStorage?.getItem("theme") ? localStorage?.getItem("theme") : "dark")
+
+    console.log(localStorage.getItem("theme"))
+
+    let toggleTheme = () => {
+        theme === "light" ? setTheme("dark") && localStorage.setItem("theme", "dark") : setTheme("light") && localStorage.setItem("theme", "light")
+    }
+
     return (
         <Router>
             <AuthProvider>
-                <Navbar />
-                <Switch>
-                    <Route exact path="/" component={LandingPage} />
-                    <Route>
-                        <div className="app container" style={{marginTop: "4rem"}} id="main-content">
-                            <PrivateRoute path="/home" comp={Home} />
-                            <PrivateRoute path="/deposit" comp={Deposit} />
-                            <PrivateRoute path="/deposit-info" comp={DepositInfo} />
-                            <PrivateRoute path="/withdraw" comp={Withdraw} />
-                            <PrivateRoute path="/wallet-search/:curr" exact comp={WalletConfirm} />
-                            <PrivateRoute path="/wallet-search" exact comp={WalletSearch} />
-                            <PrivateRoute path="/:user/transfer-confirm/" comp={TransferConfirm} />
-                            <PrivateRoute path="/transfer-search" comp={TransferSearch} />
-                            <PrivateRoute path="/currency-exchange/:fromCurr/:fromIso/:amount/:toCurr/:toIso" exact comp={CurrencyExConfirm} />
-                            <PrivateRoute path="/currency-exchange" exact comp={CurrencyEx} />
-                            <PrivateRoute path="/transactions/:tId" exact comp={TransactionsDetail} />
-                            <PrivateRoute path="/transactions/" exact comp={Transactions} />
-                            <Route path="/about" component={About} />
-                            <Route path="/country-picker" component={CountryPicker} />
-                            <Route path="/signup" component={SignUp} />
-                            <Route path="/verify-email" component={VerifyEmail} />
-                            <Route path="/verify-phone" component={VerifyPhone} />
-                            <Route path="/verify-referral" component={VerifyReferral} />
-                            <Route path="/login" component={Login} />
-                            <Route path="/logout" component={Logout} />
-                            {/* <Route component={NotFound} /> */}
-                        </div>
-                    </Route>
-                </Switch>
+            <ThemeContext.Provider value={{ theme, toggleTheme }}>
+                <div className="app" id={theme}>
+                    <Navbar />
+                    <Switch>
+                        <Route exact path="/" component={LandingPage} />
+                        <Route>
+                            <div className="container" id="main-content">
+                                <PrivateRoute path="/home" comp={Home} />
+                                <PrivateRoute path="/deposit" comp={Deposit} />
+                                <PrivateRoute path="/deposit-info" comp={DepositInfo} />
+                                <PrivateRoute path="/withdraw" comp={Withdraw} />
+                                <PrivateRoute path="/wallet-search/:curr" exact comp={WalletConfirm} />
+                                <PrivateRoute path="/wallet-search" exact comp={WalletSearch} />
+                                <PrivateRoute path="/:user/transfer-confirm" comp={TransferConfirm} />
+                                <PrivateRoute path="/transfer-search" comp={TransferSearch} />
+                                <PrivateRoute path="/currency-exchange/:fromCurr/:fromIso/:amount/:toCurr/:toIso" exact comp={CurrencyExConfirm} />
+                                <PrivateRoute path="/currency-exchange" exact comp={CurrencyEx} />
+                                <PrivateRoute path="/transactions/:tId" exact comp={TransactionsDetail} />
+                                <PrivateRoute path="/transactions" exact comp={Transactions} />
+                                <PrivateRoute path="/settings" exact comp={Settings} />
+                                <Route path="/about" component={About} />
+                                <Route path="/country-picker" component={CountryPicker} />
+                                <Route path="/signup" component={SignUp} />
+                                <Route path="/verify-email" component={VerifyEmail} />
+                                <Route path="/verify-phone" component={VerifyPhone} />
+                                <Route path="/verify-referral" component={VerifyReferral} />
+                                <Route path="/login" component={Login} />
+                                <Route path="/logout" component={Logout} />
+                                {/* <Route component={NotFound} /> */}
+                            </div>
+                        </Route>
+                    </Switch>
+                </div>
+            </ThemeContext.Provider>
             </AuthProvider>
         </Router>
     );

@@ -196,14 +196,9 @@ def withdraw(request):
             acc.save()
 
         # success message
-        message = f"{userCurrencySymbol}{moneyToWithdraw} was requested to be taken out"
         success = True
-    elif moneyToWithdraw > balance:
-        message = "You have requested to take more than you have in your current balance!"
-    else:
-        message = f"Please consider that the minimum amount to withdraw must be {userCurrencySymbol}{minCurrency} or higher!"
         
-    return Response({"message" : message, "success": success})
+    return Response({"userCurrencySymbol" : userCurrencySymbol, "minCurrency": minCurrency, "success": success})
 
 
 @api_view(['GET'])

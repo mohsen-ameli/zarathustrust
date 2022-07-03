@@ -9,6 +9,7 @@ import RotateLoader from 'react-spinners/RotateLoader';
 import AuthContext from "../context/AuthContext";
 import { useContext } from "react";
 import useFetch from "../components/useFetch";
+import { useCallback } from "react";
 
 const Transactions = () => {
     let { user }                        = useContext(AuthContext)
@@ -33,41 +34,47 @@ const Transactions = () => {
     const [error, setError]             = useState(null)
     const [showErr, setShowErr]         = useState(false)
 
-    useEffect(() => {
-        loadUser()
+    const fetchStuff = useCallback(() => {
+        let loadUser = async () => {
+            let { response, data } = await api("/api/currUser/")
+    
+            if (response.status === 200) {
+                setUsername(data.username)
+                setIso2(data.iso2)
+                setCurrency(data.currency)
+    
+                getTransactions(data.iso2, data.currency)
+            } else {
+                setError('An error occurred. Awkward..')
+                setShowErr(true)
+                setIsLoading(false)
+            }
+        }; loadUser()
+    
+        let getTransactions = async (iso, curr) => {
+            let { response, data } = await api(`/api/transactions/${iso}/${curr}/${pageNum}/${numItems}/`)
+            
+            if (response.status === 200) {            
+                setAllTrans(data.transactions)
+                setSymbol(data.currencySymbol)
+                setTotalTrans(data.counter)
+    
+                setIsLoading(false)
+            } else {
+                setError('An error occurred. Awkward..')
+                setShowErr(true)
+                setIsLoading(false)
+            }
+        }
+
+        // eslint-disable-next-line
     }, [])
 
-    let loadUser = async () => {
-        let { response, data } = await api("/api/currUser/")
+    useEffect(() => {
+        fetchStuff()
+    }, [fetchStuff])
 
-        if (response.status === 200) {
-            setUsername(data.username)
-            setIso2(data.iso2)
-            setCurrency(data.currency)
-
-            getTransactions(data.iso2, data.currency)
-        } else {
-            setError('An error occurred. Awkward..')
-            setShowErr(true)
-            setIsLoading(false)
-        }
-    }
-
-    let getTransactions = async (iso, curr) => {
-        let { response, data } = await api(`/api/transactions/${iso}/${curr}/${pageNum}/${numItems}/`)
-        
-        if (response.status === 200) {            
-            setAllTrans(data.transactions)
-            setSymbol(data.currencySymbol)
-            setTotalTrans(data.counter)
-
-            setIsLoading(false)
-        } else {
-            setError('An error occurred. Awkward..')
-            setShowErr(true)
-            setIsLoading(false)
-        }
-    }
+    
 
 
     let changeCurr = async (wallet) => {
@@ -192,9 +199,9 @@ const Transactions = () => {
                             </div></>
                             : 
                             <>
-                                <h5 className="text-center mb-3">sheesh, no transactions yet, make one ?</h5>
+                                <h5 className="text-center mb-3">{t("no_transaction")}</h5>
                                 <div className="text-center">
-                                    <Link to="/deposit" className="neon-button">Deposit</Link>
+                                    <Link to="/deposit" className="neon-button">{t("deposit")}</Link>
                                 </div>
                             </>
                         }
@@ -347,7 +354,7 @@ const Transactions = () => {
             }
 
                 <div className="text-center">
-                    <Link className="neon-button my-2" to="/home">Home</Link> 
+                    <Link className="neon-button my-2" to="/home">{t("home")}</Link> 
                 </div>
             </>
             }

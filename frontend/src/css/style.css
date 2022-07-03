@@ -9,10 +9,31 @@ html {
 }
 body {
   overflow-x: hidden;
-  background-image: url("../images/backgound-black3.jpg");
-  /* background-image: url("https://static.vecteezy.com/system/resources/thumbnails/002/774/066/small_2x/abstract-green-cube-pattern-on-dark-blue-background-modern-lines-square-mesh-simple-flat-geometric-design-you-can-use-for-cover-poster-banner-web-flyer-landing-page-print-ad-vector.jpg"); */
   background-repeat: repeat;
   color: white;
+  background-image: url("https://media.istockphoto.com/illustrations/blue-abstract-dots-pattern-background-illustration-id1131858515?k=20&m=1131858515&s=612x612&w=0&h=-hE6c_vq-HTjqQnd2Z1uYoz8HwHXV0jstDqysGyjVSY=");
+}
+/* #dark {
+  background-image: url("../images/backgound-black3.jpg");
+  background-image: url("https://www.shutterstock.com/blog/wp-content/uploads/sites/5/2020/05/shutterstock_1556534186.jpg");
+  overflow-x: hidden;
+  background-repeat: repeat;
+  color: white;
+} */
+#light {
+  background-image: url("https://static.vecteezy.com/system/resources/thumbnails/002/774/066/small_2x/abstract-green-cube-pattern-on-dark-blue-background-modern-lines-square-mesh-simple-flat-geometric-design-you-can-use-for-cover-poster-banner-web-flyer-landing-page-print-ad-vector.jpg");
+}
+
+#dark .bg-dark {
+  background-color: rgb(2, 28, 54) !important;
+}
+
+#light .bg-dark {
+  background-color: rgb(2, 86, 166) !important;
+}
+
+#main-content {
+  margin-top: 4rem;
 }
 svg {
   color: var(--clr-zar);
@@ -181,6 +202,13 @@ button:link {
   height: 50px;
   opacity: 1;
   height: 1rem;
+}
+.zarathus-hr-half {
+  background-color: #f8b119c7 !important;
+  height: 50px;
+  opacity: 1;
+  height: 1rem;
+  width: 25%;
 }
 #phone_ext {
   position: relative;

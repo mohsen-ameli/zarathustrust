@@ -1,18 +1,17 @@
 {
   "files": {
-    "main.css": "/static/css/main.c022d669.css",
-    "main.js": "/static/js/main.0b501ee2.js",
+    "main.css": "/static/css/main.7b9d4ff5.css",
+    "main.js": "/static/js/main.e6312738.js",
     "static/media/rocks.jpg": "/static/media/rocks.1515fe42ffea6153e21a.jpg",
     "static/media/zarathus-5.jpg": "/static/media/zarathus-5.574d4dcf4757400df83f.jpg",
-    "static/media/backgound-black3.jpg": "/static/media/backgound-black3.dcbbfae824a55f3e28f7.jpg",
     "static/media/zarathustrust_new.png": "/static/media/zarathustrust_new.3e739568728e478332c9.png",
     "index.html": "/index.html",
     "static/media/getFetch.cjs": "/static/media/getFetch.c780682470504fffbd04.cjs",
-    "main.c022d669.css.map": "/static/css/main.c022d669.css.map",
-    "main.0b501ee2.js.map": "/static/js/main.0b501ee2.js.map"
+    "main.7b9d4ff5.css.map": "/static/css/main.7b9d4ff5.css.map",
+    "main.e6312738.js.map": "/static/js/main.e6312738.js.map"
   },
   "entrypoints": [
-    "static/css/main.c022d669.css",
-    "static/js/main.0b501ee2.js"
+    "static/css/main.7b9d4ff5.css",
+    "static/js/main.e6312738.js"
   ]
 }

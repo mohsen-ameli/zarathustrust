@@ -20,9 +20,13 @@ const Otp = ({ url, next, statePrev, stateNew, translationTitle, translationHelp
 
 
     useEffect(() => {
-        setMsg(statePrev?.msg)
-        setShowMsg(true)
-        getCode()
+        if (!statePrev) {
+            history.push("/country-picker")
+        } else {
+            setMsg(statePrev?.msg)
+            setShowMsg(true)
+            getCode()
+        }
         
         // eslint-disable-next-line
     }, [])

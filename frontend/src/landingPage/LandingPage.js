@@ -117,13 +117,13 @@ const LandingPage = () => {
             <hr className="w-75" style={{display: "inline-flex"}} />
             <div className="row">
                 <div className="col-4">
-                    <a href="#"><i className="bi bi-instagram social-icons"></i></a>
+                    <a href="#0"><i className="bi bi-instagram social-icons"></i></a>
                 </div>
                 <div className="col-4">
-                    <a href="#"><i className="bi bi-twitter social-icons"></i></a>
+                    <a href="#0"><i className="bi bi-twitter social-icons"></i></a>
                 </div>
                 <div className="col-4">
-                    <a href="#"><i className="bi bi-youtube social-icons"></i></a>
+                    <a href="#0"><i className="bi bi-youtube social-icons"></i></a>
                 </div>
             </div>
         </div>
@@ -136,15 +136,15 @@ const LandingPage = () => {
                 <footer className="d-flex flex-wrap justify-content-between align-items-center py-3 my-4">
                     <p className="col-md-4 mb-0 text-muted">© 2022 ZarathusTrust</p>
                 
-                    <a style={{cursor: "default"}} className="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-                        <img src={zarathustrust_new} className="bi me-2" width="60" height="26" />
-                    </a>
+                    <span style={{cursor: "default"}} className="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+                        <img src={zarathustrust_new} className="bi me-2" width="60" height="26" alt="" />
+                    </span>
                 
                     <ul className="nav col-md-4 justify-content-end">
-                        <li className="nav-item"><a href="#" className="nav-link px-2 text-muted">{t("home")}</a></li>
+                        <li className="nav-item"><a href="#0" className="nav-link px-2 text-muted">{t("home")}</a></li>
                         <li className="nav-item"><Link to="/login" className="nav-link px-2 text-muted">{t("log_in")}</Link></li>
-                        <li className="nav-item"><a href="#" className="nav-link px-2 text-muted">Register</a></li>
-                        <li className="nav-item"><a href="#" className="nav-link px-2 text-muted">FAQs</a></li>
+                        <li className="nav-item"><a href="#0" className="nav-link px-2 text-muted">Register</a></li>
+                        <li className="nav-item"><a href="#0" className="nav-link px-2 text-muted">FAQs</a></li>
                         <li className="nav-item"><Link to="/about" className="nav-link px-2 text-muted">{t("about")}</Link></li>
                     </ul>
 

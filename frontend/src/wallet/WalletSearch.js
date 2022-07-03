@@ -40,20 +40,19 @@ const WalletSearch = () => {
         sessionStorage.setItem('success', false)
 
 
-        loadJson()
+        let loadJson = async () => {
+            let { response, data } = await api("/api/json/country_currencies_clean/")
+            
+            if (response.status === 200) {
+                setCurrencies(data)
+                setIsLoading(false)
+            } else {
+                setError('An error occurred. Awkward..'); setShowErr(true); setIsLoading(false);
+            }
+        }; loadJson()
+
+        // eslint-disable-next-line
     }, [])
-
-
-    let loadJson = async () => {
-        let { response, data } = await api("/api/json/country_currencies_clean/")
-        
-        if (response.status === 200) {
-            setCurrencies(data)
-            setIsLoading(false)
-        } else {
-            setError('An error occurred. Awkward..'); setShowErr(true); setIsLoading(false);
-        }
-    }
 
 
     let search = (typed) => {
@@ -67,6 +66,7 @@ const WalletSearch = () => {
                     setEmpty(false)
                     ch.push([item[0], item[1]]) 
                 }
+                return ch
             })
         }
         setChoices(ch)
@@ -98,7 +98,7 @@ const WalletSearch = () => {
 
                     <div className="dropdown form-floating">
                         <input type="text" id="country-input" className="form-control dropdown-toggle" autoComplete="off"
-                        data-bs-toggle="dropdown" aria-expanded="false" placeholder="Country"
+                        data-bs-toggle="dropdown" placeholder="Country"
                         onChange={e => search(e.target.value)}></input>
                         
                         <label htmlFor="country-input">Please choose a currency</label>
@@ -120,9 +120,9 @@ const WalletSearch = () => {
                             ))}
                             {empty && 
                                 <li>
-                                <a className="dropdown-item disabled" style={{textTransform: "capitalize", color: "black"}}>
+                                <span className="dropdown-item disabled" style={{textTransform: "capitalize", color: "black"}}>
                                     <b>No accounts were found.</b>
-                                </a>
+                                </span>
                             </li>
                             }
                         </ul>
