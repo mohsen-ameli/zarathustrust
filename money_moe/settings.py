@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     
     "crispy_forms",
     "rosetta",
-    "axes",
+    # "axes",
     "mathfilters",
     "django_countries",
     "crispy_bootstrap5",
@@ -81,7 +81,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "axes.middleware.AxesMiddleware",
+    # "axes.middleware.AxesMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "corsheaders.middleware.CorsPostCsrfMiddleware",
@@ -89,7 +89,7 @@ MIDDLEWARE = [
 
 AUTHENTICATION_BACKENDS = [
     # AxesBackend should be the first backend in the AUTHENTICATION_BACKENDS list.
-    "axes.backends.AxesBackend",
+    # "axes.backends.AxesBackend",
     # Django ModelBackend is the default authentication backend.
     "django.contrib.auth.backends.ModelBackend",
 ]
@@ -220,9 +220,9 @@ LOGIN_URL = "/login/"
 
 
 # AXES LOGIN
-AXES_FAILURE_LIMIT = 3
-AXES_COOLOFF_TIME = timedelta(minutes=3)
-AXES_LOCKOUT_TEMPLATE = "users/login_timeout.html"
+# AXES_FAILURE_LIMIT = 3
+# AXES_COOLOFF_TIME = timedelta(minutes=3)
+# AXES_LOCKOUT_TEMPLATE = "users/login_timeout.html"
 
 
 # STRIPE

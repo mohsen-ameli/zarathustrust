@@ -85,7 +85,7 @@ const Login = () => {
                                 <input type="text" autoFocus={true} autoCapitalize="none" autoComplete="username" 
                                 maxLength="150" className="form-control" placeholder="username" name="username" />
                                 <label htmlFor="id_username" className=" requiredField">
-                                    {t("username")}
+                                    {t("username_or_email")}
                                 </label>
                             </div>
 

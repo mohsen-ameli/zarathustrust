@@ -74,7 +74,6 @@ const SignUp = () => {
             setErrPass2("The two passwords have to match")
             setIsLoading(false)
         } else {
-
             let res = await fetch("/api/signup/", {
                 method:'POST',
                 headers:{
