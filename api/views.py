@@ -18,6 +18,7 @@ from accounts.models import *
 from users.models import CustomUser, code, ReferralCode
 from users.forms import RegisterForm
 from users.functions import *
+from users.utils import phone_msg_verify
 from wallets.models import BranchAccounts
 from .serializers import *
 
@@ -875,11 +876,9 @@ def verifyPhone(request):
     phone_code = request.session.get('ver_code')['phone_verify_code']
     phone_number = user['phone_number']
 
-    print(phone_number, "phone_code: ", phone_code)
-
-    # phone_msg_verify(
-    #             verify_code=phone_code, phone_number_to=phone_number
-    #         )
+    phone_msg_verify(
+                verify_code=phone_code, phone_number_to=phone_number
+            )
 
     return Response({"code": phone_code})
 
