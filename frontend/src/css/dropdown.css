@@ -1,0 +1,16 @@
+/* div.dropdown > .btn {
+    transition: transform 0.8s cubic-bezier(0,-0.14,.27,1.55);
+    transform: rotate(90deg);
+}
+
+div.dropdown > .btn.show {
+    transform: rotate(270deg);
+}
+
+div.dropdown>.dropdown-menu {    
+    display: inherit;
+    transform: translate(69px, 19px) scaleX(0);
+    transition: all 0.8s cubic-bezier(0,-0.14,.27,1.55);
+    transform-origin:left;
+    left: 0;
+} */

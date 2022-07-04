@@ -5,5 +5,6 @@
   "python.linting.pylintEnabled": false,
   "python.linting.enabled": false,
   "python.linting.pylamaEnabled": false,
-  "python.linting.banditEnabled": true 
+  "python.linting.banditEnabled": true,
+  "python.analysis.extraPaths": ["/home/moe/.local/lib/python3.8/site-packages"] 
 }

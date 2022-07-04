@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { ThemeContext } from "../App";
 import Switch from "react-switch";
+import { Link } from "react-router-dom";
 
 const Settings = () => {
     let { t } = useTranslation()
@@ -46,9 +47,9 @@ const Settings = () => {
 
                     <a className="neon-button mb-3" href="#0">Change Username</a><br />
                     <a className="neon-button mb-3" href="#0">Change Phone Number</a><br />
-                    <a className="neon-button mb-3" href="#0">Change Password</a><br />
+                    <Link className="neon-button mb-3" to="/password-reset">Change Password</Link><br />
                     <a className="neon-button mb-3" href="#0">Transfer To a Business Account</a><br />
-                    <a className="neon-button mb-3" href="#0">Delete My Account</a>
+                    <a className="neon-button-red mb-3" href="#0">Delete My Account</a>
                 </div>
             </div>
         </div>

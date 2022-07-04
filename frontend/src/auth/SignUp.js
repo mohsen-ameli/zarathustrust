@@ -158,7 +158,7 @@ const SignUp = () => {
                             <div className="form-floating">
                                 <input type="text" className={errUser ? "form-control is-invalid" : "form-control"} autoFocus={true} required={true}
                                 maxLength="15" autoCapitalize="none" onChange={e => setUsername(e.target.value)}
-                                id="name" name="name" autoComplete="name" />
+                                id="name" name="name" autoComplete="name" placeholder=" " />
 
                                 <label htmlFor="id_username">{t("username")}</label>
 
@@ -221,7 +221,7 @@ const SignUp = () => {
                                 <div className="form-floating-group flex-grow-1">
                                     <div className="form-floating">
                                         <input type="password" className={errPass1 ? "form-control is-invalid" : "form-control"} required={true}
-                                        onChange={e => setPassword(e.target.value)} ref={passRef}
+                                        onChange={e => setPassword(e.target.value)} ref={passRef} placeholder=" "
                                         id="password" name="password" autoComplete="password" />
 
                                         <label htmlFor="password">{t("password")}</label>
@@ -248,8 +248,7 @@ const SignUp = () => {
                             {/* Password confirm */}
                             <div className="form-floating"> 
                                 <input type="password" className={errPass2 ? "form-control is-invalid" : "form-control"} required={true}
-                                onChange={e => setPasswordConfirm(e.target.value)}
-                                id="password-confirm"/>
+                                onChange={e => setPasswordConfirm(e.target.value)} id="password-confirm" placeholder=" " />
 
                                 <label htmlFor="password-confirm">{t("password_confirm")}</label>
 
