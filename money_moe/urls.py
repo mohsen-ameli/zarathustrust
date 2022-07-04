@@ -1,9 +1,6 @@
-from django.conf import settings
-from django.conf.urls.i18n import i18n_patterns
-from django.views.i18n import JavaScriptCatalog
 from django.contrib import admin
-from django.contrib.auth import views as auth_views
 from django.urls import include, path, re_path
+from django.views.generic import TemplateView
 
 app_name = "money_moe"
 
