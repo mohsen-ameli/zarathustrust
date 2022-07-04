@@ -16,10 +16,6 @@ import { useTranslation } from 'react-i18next';
 
 const Home = () => {
     let zero = 0
-    let { user }                        = useContext(AuthContext)
-    const { t }                         = useTranslation()
-    let pk                              = user?.user_id
-    let api                             = useFetch()
 
     const [interest, setInterest]       = useState(zero.toFixed(20))
     const [balance, setBalance]         = useState(zero.toFixed(2))
@@ -36,6 +32,10 @@ const Home = () => {
     const [showMsg, setShowMsg]         = useState(false)
     const [msg, setMsg]                 = useState("")
     
+    let { user }                        = useContext(AuthContext)
+    let pk                              = user?.user_id
+    const { t }                         = useTranslation()
+    let api                             = useFetch()
     const ref                           = useRef(null)
 
     let balanceStatic                   = null
@@ -270,7 +270,7 @@ const Home = () => {
                 </div>
             </div>
         </div>
-
+        
 
         {/************** Second Part **************/}
         <div className="d-md-flex bd-highlight mb-4">

@@ -28,13 +28,13 @@ import VerifyPhone from './auth/VerifyPhone';
 import VerifyReferral from './auth/VerifyReferral';
 import Settings from './pages/Settings';
 import { createContext } from 'react';
+import PassReset from './auth/PassReset';
+import PassResetConfirm from './auth/PassResetConfirm';
 
 export const ThemeContext = createContext(null)
 
 function App() {
     let [theme, setTheme] = useState(() => localStorage?.getItem("theme") ? localStorage?.getItem("theme") : "dark")
-
-    console.log(localStorage.getItem("theme"))
 
     let toggleTheme = () => {
         theme === "light" ? setTheme("dark") && localStorage.setItem("theme", "dark") : setTheme("light") && localStorage.setItem("theme", "light")
@@ -71,6 +71,8 @@ function App() {
                                 <Route path="/verify-referral" component={VerifyReferral} />
                                 <Route path="/login" component={Login} />
                                 <Route path="/logout" component={Logout} />
+                                <Route path="/password-reset" component={PassReset} />
+                                <Route path="/password-reset-confirm/:uidb64/:token" component={PassResetConfirm} />
                                 {/* <Route component={NotFound} /> */}
                             </div>
                         </Route>

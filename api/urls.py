@@ -21,6 +21,9 @@ urlpatterns = [
     path('verify-email/', views.verifyEmail, name='verify-email'),
     path('verify-phone/', views.verifyPhone, name='verify-phone'),
     path('verify-referral/', views.verifyReferral, name='verify-referral'),
+    path('password-reset/', views.RequestPasswordResetEmail.as_view(), name='password-reset'),
+    path('password-reset-confirm/<uidb64>/<token>/', views.PasswordTokenCheck.as_view(), name='password-reset-confirm'),
+    path('password-reset-complete/', views.PasswordResetAPIView.as_view(), name='password-complete'),
 
     path('currUser/', views.currentUser, name='currUser'),
     path('account/', views.accounts, name='account'),

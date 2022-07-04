@@ -4,11 +4,10 @@ from django.views.i18n import JavaScriptCatalog
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import include, path, re_path
-from users import views as users_views
-
-from django.views.generic import TemplateView
 
 app_name = "money_moe"
+
+'''
 urlpatterns = [
     # admin
     path("g0atch33se&pizz1/", admin.site.urls, name="admin"),
@@ -24,8 +23,8 @@ urlpatterns = [
 ]
 
 
-
 '''
+
 urlpatterns = [
     path("", include("accounts.urls"), name="home"),
     path("", include("users.urls"), name="users"),
@@ -56,4 +55,3 @@ urlpatterns += i18n_patterns(path('jsi18n/', JavaScriptCatalog.as_view(), name='
 
 if "rosetta" in settings.INSTALLED_APPS:
     urlpatterns += [re_path(r"^rosetta/", include("rosetta.urls"))]
-'''
