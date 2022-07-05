@@ -468,8 +468,8 @@ def DepositUpdateView(request, pk):
     user_               = CustomUser.objects.get(pk=request.user.pk)
 
     # redirecting to new card if user doesn't have a card
-    if user_.stripe_id is None:
-        return redirect("wallets:new-card", pk=pk)
+    # if user_.stripe_id is None:
+    #     return redirect("wallets:new-card", pk=pk)
 
     currency_name       = user_.currency
     currency_symbol_    = get_currency_symbol(currency_name)
@@ -543,8 +543,8 @@ def WithdrawUpdateView(request, pk):
     user_               = CustomUser.objects.get(pk=request.user.pk)
 
     # redirecting to new card if user doesn't have a card
-    if user_.stripe_id is None:
-        return redirect("wallets:new-card", pk=pk)
+    # if user_.stripe_id is None:
+    #     return redirect("wallets:new-card", pk=pk)
 
     acc                 = Account.objects.get(pk=pk)
     branch_acc          = BranchAccounts.objects.filter(main_account__pk=pk)

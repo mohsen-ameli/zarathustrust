@@ -9,6 +9,8 @@ import useAddMoney from "../components/useAddMoney"
 import AuthContext from "../context/AuthContext";
 import useFetch from "../components/useFetch";
 import MsgAlert from "../components/MsgAlert";
+import useSwal from "../components/useSwal";
+import useMsgSwal from "../components/useMsgSwal";
 
 const Withdraw = () => {
     let { user }                    = useContext(AuthContext)
@@ -19,20 +21,20 @@ const Withdraw = () => {
     let history = useHistory()
 
     const [isLoading, setIsLoading] = useState(true);
-    const [error, setError]         = useState(null);
-    const [addMoney, good, money, curr, , ,addLoad, addError, ,] = useAddMoney(pk)
+    const msgSwal                   = useMsgSwal()
 
+    const [addMoney, good, money, curr, ,symbol ,addLoad, addError, ,] = useAddMoney(pk)
 
     useEffect(() => {
         setIsLoading(false)
     }, [])
 
 
-    let submit = () => {
+    let submit = async () => {
         if (good) {
             setIsLoading(true)
-            
-            api("/api/withdraw/",{
+
+            let { response, data } = await api("/api/withdraw/",{
                 method: "POST",
                 headers: {
                     'X-CSRFToken': Cookies.get('csrftoken'),
@@ -42,33 +44,40 @@ const Withdraw = () => {
                     {'money': money, 'currency': curr}
                 )
             })
-            .then(res => {    
-                if (!res.data['success']) {
-                    setError(t("withdraw_error"))
-                } else {
-                    sessionStorage.setItem('msg', t("withdraw_success", {"amount": money, "currency": res.data['userCurrencySymbol']}))
-                    sessionStorage.setItem('success', true)
 
+            if (response.status === 200) {
+                if (!data['success']) {
+                    msgSwal(t("withdraw_error"), "error")
+                } else {
+                    msgSwal(t("withdraw_success", {"amount": money, "currency": symbol}), "success")
                     history.push("/home")
                 }
     
                 setIsLoading(false)
-            })
-            .catch(() => {setError('0 An error occurred. Awkward..'); setIsLoading(false);})
+            } else {
+                msgSwal(t("default_error"), "error")
+                setIsLoading(false)
+            }
         }
     }
+
+    const confirm = useSwal(
+        t("withdraw_msg", {"symbol": symbol, "amount": money}),
+        submit
+    )
 
 
     let handleKeyClick = (e) => {
         if (e.key === 'Enter') {
-            submit()
+            e.preventDefault()
+            confirm()
         }
     }
 
 
     return (
         <div className="withdraw" onKeyDown={e => handleKeyClick(e)}>
-            {(error || addError) &&  <MsgAlert msg={error || addError} variant="danger" />}
+            {(addError) &&  <MsgAlert msg={addError} variant="danger" />}
             {(isLoading || addLoad) && 
             <div className="spinner">
                 <RotateLoader color="#f8b119" size={20} />
@@ -87,7 +96,7 @@ const Withdraw = () => {
                     {/* amount to send */}
                     { addMoney }
 
-                    <button className="neon-button my-2" type="submit" onClick={() => submit()}>{t("withdraw")}</button>
+                    <button className="neon-button my-2" type="submit" onClick={() => confirm()}>{t("withdraw")}</button>
                 </div>
             </div>
         </div>

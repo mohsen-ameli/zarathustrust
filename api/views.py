@@ -35,6 +35,14 @@ def loadConfig():
         return json.load(config_file)
 
 
+def loadJson(filename):
+    project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    file = f'{project}/json/{filename}.json'
+
+    with open(file, 'r') as json_currency:
+        return json.load(json_currency)
+
+
 @api_view(['POST'])
 def logoutView(request):
     try:
@@ -83,25 +91,16 @@ def currentUser(request):
 
 @api_view(['GET'])
 def jsonSearch(request, file):
-    project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    file = f'{project}/json/{file}.json' # getting the file containing all country codes
+    return Response(loadJson(file))
 
-    with open(file, 'r') as json_currency: # opening and reading the json file
-        data = json.load(json_currency)
-
-    return Response(data)
 
 @api_view(['GET'])
 def getCurrencySymbol(request, country):
     try:
-        country_code = country.upper()
-        project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        file = f'{project}/json/currencies_symbols.json' # getting the file containing all country codes
-        with open(file, 'r') as config_file: # opening and reading the json file
-            data = json.load(config_file)
+        data = loadJson("currencies_symbols")
 
-        return Response(data[country_code])
-    except:
+        return Response(data[country.upper()])
+    except Exception:
         return Response({})
 
 

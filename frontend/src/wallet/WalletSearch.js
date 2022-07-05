@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import ReactCountryFlag from "react-country-flag"
-
-import Alert from 'react-bootstrap/Alert';
-import RotateLoader from 'react-spinners/RotateLoader';
-import useFetch from "../components/useFetch";
-import MsgAlert from "../components/MsgAlert";
 import { useTranslation } from "react-i18next";
+
+import ReactCountryFlag from "react-country-flag"
+import RotateLoader from 'react-spinners/RotateLoader';
+
+import useFetch from "../components/useFetch";
+import useMsgSwal from "../components/useMsgSwal";
+
 
 const WalletSearch = () => {
     const [currencies, setCurrencies]   = useState([])
@@ -14,34 +15,13 @@ const WalletSearch = () => {
     const [empty, setEmpty]             = useState(true)
 
     const [isLoading, setIsLoading]     = useState(true)
-    const [error, setError]             = useState(null)
-    const [showMsg, setShowMsg]         = useState(false)
-    const [msg, setMsg]                 = useState("")
+    const msgSwal                       = useMsgSwal()
 
     let api                             = useFetch()
     let { t }                           = useTranslation()
 
 
     useEffect(() => {
-        let success = (sessionStorage.getItem('success') === "true")
-        let m = String(sessionStorage.getItem('msg'))
-
-        // displaying any messages
-        if (m !== "" && m !== "null") {
-            if (!success) {
-                setError(m)
-            } else if (success) {
-                setMsg(m)
-                setShowMsg(true)
-            } else {
-                setShowMsg(false)
-            }
-        }
-        // cleaning the cookies
-        sessionStorage.setItem('msg', '')
-        sessionStorage.setItem('success', false)
-
-
         let loadJson = async () => {
             let { response, data } = await api("/api/json/country_currencies_clean/")
             
@@ -49,7 +29,7 @@ const WalletSearch = () => {
                 setCurrencies(data)
                 setIsLoading(false)
             } else {
-                setError("default_error"); setIsLoading(false);
+                msgSwal(t("default_error"), "error"); setIsLoading(false);
             }
         }; loadJson()
 
@@ -76,13 +56,6 @@ const WalletSearch = () => {
 
     return (
         <div className="new-wallet-page">
-            {error && <MsgAlert msg={t(error)} variant="danger" />}
-            {showMsg &&
-            <Alert className="text-center" variant="success" onClose={() => setShowMsg(false)} dismissible>
-                { msg }
-            </Alert>
-            }
-
             { isLoading && 
             <div className="spinner">
                 <RotateLoader color="#f8b119" size={20} />

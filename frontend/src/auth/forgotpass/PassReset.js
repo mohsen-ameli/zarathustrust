@@ -1,12 +1,13 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
+
 import RotateLoader from 'react-spinners/RotateLoader'
-import MsgAlert from "../../components/MsgAlert"
+import useMsgSwal from "../../components/useMsgSwal";
 
 const PassReset = () => {
     const [success, setSuccess] = useState(false)
+    const msgSwal               = useMsgSwal()
     const [isLoading, setIsLoading] = useState(false)
-    const [err, setErr] = useState(false)
 
     let { t } = useTranslation()
 
@@ -29,15 +30,18 @@ const PassReset = () => {
             setIsLoading(false)
         } else {
             setIsLoading(false)
-            setErr("no_user_email")
+            msgSwal(t("no_user_email"), "error")
         }
+    }
+
+
+    let showSwal = () => {
+        msgSwal(t("email_reset_msg"), "info")
     }
 
 
     return (
         <div className="pass-reset">
-            {err && <MsgAlert msg={t(err)} variant="danger" />}
-
             { isLoading && 
             <div className="spinner">
                 <RotateLoader color="#f8b119" size={20} />
@@ -62,7 +66,7 @@ const PassReset = () => {
                     </div>
                 </div>
             :
-            <MsgAlert msg={t("email_reset_msg")} variant="primary" />
+            showSwal()
             }
         </div>
     );

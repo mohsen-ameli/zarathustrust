@@ -1,12 +1,16 @@
 import { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
 import Cookies from 'js-cookie';
 import RotateLoader from 'react-spinners/RotateLoader'
+
 import useAddMoney from "../components/useAddMoney"
 import AuthContext from "../context/AuthContext";
 import useFetch from "../components/useFetch";
-import { useTranslation } from "react-i18next";
 import MsgAlert from '../components/MsgAlert';
+import useMsgSwal from "../components/useMsgSwal";
+
 
 const Deposit = () => {
     let { user }  = useContext(AuthContext)
@@ -18,7 +22,7 @@ const Deposit = () => {
     const [addMoney, good, money, , , symbol, addLoad, addError, ,] = useAddMoney(pk)
 
     const [isLoading, setIsLoading] = useState(true);
-    const [error, setError]         = useState(null);
+    const msgSwal                   = useMsgSwal()
 
 
     useEffect(() => {
@@ -40,13 +44,14 @@ const Deposit = () => {
             })
 
             if (response.status === 200) {
+                msgSwal(t("deposit_success", {"symbol": symbol, "amount": money}), "success")
                 history.push("/deposit-info")
             } else {
-                setError("default_error")
+                msgSwal(t("default_error"), "error")
                 setIsLoading(false)
             }
         } else {
-            setError("default_error")
+            msgSwal(t("default_error"), "error")
             setIsLoading(false)
         }
     }
@@ -59,7 +64,7 @@ const Deposit = () => {
 
     return (
         <div className="deposit-page" onKeyPress={e => {handleKeyClick(e)}}>
-            {(error || addError) &&  <MsgAlert msg={t(error) || t(addError)} variant="danger" />}
+            {(addError) &&  <MsgAlert msg={t(addError)} variant="danger" />}
             {(isLoading || addLoad) && 
             <div className="spinner">
                 <RotateLoader color="#f8b119" size={20} />

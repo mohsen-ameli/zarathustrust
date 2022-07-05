@@ -9,6 +9,8 @@ import useAddMoney from "../components/useAddMoney"
 import AuthContext from "../context/AuthContext";
 import useFetch from "../components/useFetch";
 import MsgAlert from "../components/MsgAlert";
+import useMsgSwal from "../components/useMsgSwal";
+import useSwal from "../components/useSwal";
 
 
 const TransferConfirm = () => {
@@ -29,7 +31,7 @@ const TransferConfirm = () => {
     const [msg, setMsg]             = useState(null);
 
     const [isLoading, setIsLoading] = useState(true);
-    const [error, setError]         = useState(null);
+    const msgSwal                   = useMsgSwal()
 
 
     useEffect(() => {
@@ -74,32 +76,36 @@ const TransferConfirm = () => {
             })
             .then(res => {
                 if (!res.data['success']) {
-                    setError(t(res.data['message']))
+                    msgSwal(t("default_error"), "error")
                 } else {
-                    sessionStorage.setItem('msg', t("transfer_success", {"symbol": symbol, "amount": money, "user": user}))
-                    sessionStorage.setItem('success', true)
-                    
+                    msgSwal(t("transfer_success", {"symbol": symbol, "amount": money, "user": user}), "success")
                     history.push("/home")
                 }
 
                 setIsLoading(false)
             })
-            .catch(() => {setError("default_error"); setIsLoading(false);})
+            .catch(() => {msgSwal(t("default_error"), "error"); setIsLoading(false);})
 
         }
     }
 
+    const confirm = useSwal(
+        t("transfer_msg", {"symbol": symbol, "amount": money, "username": user}),
+        submit
+    )
+
 
     let handleKeyClick = (e) => {
         if (e.key === 'Enter') {
-            submit()
+            e.preventDefault()
+            confirm()
         }
     }
 
 
     return (
         <div className="transfer-confirm" onKeyDown={e => handleKeyClick(e)}>
-            {(error || addError) && <MsgAlert msg={error || addError} variant="danger" />}
+            {(addError) && <MsgAlert msg={addError} variant="danger" />}
             {(isLoading || addLoad) && 
             <div className="spinner">
                 <RotateLoader color="#f8b119" size={20} />
@@ -128,7 +134,7 @@ const TransferConfirm = () => {
 
 
                     {/* button */}
-                    <button className="neon-button my-2" type="submit" onClick={() => submit()}>{t("send")}</button>
+                    <button className="neon-button my-2" type="submit" onClick={() => confirm()}>{t("send")}</button>
                 </div>
             </div>
         </div>

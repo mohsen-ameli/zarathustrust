@@ -8,12 +8,12 @@ import Tippy from "@tippyjs/react";
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
 
+
 import '../css/tooltip.css'
 import AuthContext from "../context/AuthContext";
 import useFetch from "../components/useFetch";
-import MsgAlert from "../components/MsgAlert";
 import ShowWallets from "../components/ShowWallets";
-
+import useMsgSwal from "../components/useMsgSwal";
 
 const Home = () => {
     let zero = 0
@@ -28,9 +28,8 @@ const Home = () => {
     const [interestSymbol, setInterestSymbol]       = useState(null)
 
     const [isLoading, setIsLoading]     = useState(true)
-    const [error, setError]             = useState(null)
-    const [msg, setMsg]                 = useState("")
-    
+    const msgSwal                       = useMsgSwal()
+
     let { user }                        = useContext(AuthContext)
     let { t }                           = useTranslation()
     let pk                              = user?.user_id
@@ -50,7 +49,7 @@ const Home = () => {
                 setBalance(Number(data.total_balance).toFixed(2));
                 setBonus(Number(data.bonus).toFixed(1));
             } else {
-                setError(t("default_error"))
+                msgSwal(t("default_error"), "error")
                 setIsLoading(false)
             }
         }; loadAccount()
@@ -64,7 +63,7 @@ const Home = () => {
                 interestRate = Number(data.interest_rate)
                 interestCounter()
             } else {
-                setError(t("default_error"))
+                msgSwal(t("default_error"), "error")
                 setIsLoading(false)
             }
         }; loadAccountInterest()
@@ -79,7 +78,7 @@ const Home = () => {
                 
                 loadSymbol(data.currency)
             } else {
-                setError(t("default_error"))
+                msgSwal(t("default_error"), "error")
                 setIsLoading(false)
             }
         }; loadUser()
@@ -90,8 +89,27 @@ const Home = () => {
                 setInterestSymbol(data)
                 setSymbol(data)
             } else {
-                setError(t("default_error"))
+                msgSwal(t("default_error"), "error")
                 setIsLoading(false)
+            }
+        }
+
+        // interest counter
+        const interestCounter = () => {
+            if (balanceStatic > 0) {
+                let interest = 0
+                let intRate = interestRate
+                
+                const interval = setInterval(() => {
+                    setInterest(intRate.toFixed(20))
+
+                    /* one percent of the total balance per second */
+                    interest = balanceStatic * 0.01 / 31536000
+                    intRate = intRate + interest
+                }, 1000);
+                return () => {
+                    clearInterval(interval);
+                };
             }
         }
 
@@ -100,49 +118,25 @@ const Home = () => {
 
 
     useEffect(() => {
-        let success = (sessionStorage.getItem('success') === "true")
-        let message = String(sessionStorage.getItem('msg'))
+        let reloading = localStorage.getItem("reloading");
+        let amount = localStorage.getItem("amount");
+        let symbol_ = localStorage.getItem("symbol");
+        if (reloading) {
+            msgSwal(t("cash_out_success", {"symbol": symbol_, "amount": amount}), "success")
 
-        // displaying any messages
-        if (message !== "" && message !== "null") {
-            if (!success) {
-                setError(t(message))
-            } else if (success) {
-                setMsg(t(message))
-            }
+            localStorage.removeItem("reloading");
+            localStorage.removeItem("amount");
+            localStorage.removeItem("symbol");
         }
-        // cleaning the cookies
-        sessionStorage.setItem('msg', "")
-        sessionStorage.setItem('success', false)
-        
+
         fetchStuff()
         // eslint-disable-next-line
     }, [fetchStuff])
 
 
-    // interest counter
-    const interestCounter = () => {
-        let interest = 0
-        let intRate = interestRate
-
-        if (balanceStatic > 0) {
-            let incrementCounter = () => {
-                setInterest(intRate.toFixed(20))
-
-                /* one percent of the total balance per second */
-                interest = balanceStatic * 0.01 / 31536000
-                intRate = intRate + interest
-
-                setTimeout(incrementCounter, 1000)
-            }; incrementCounter()
-        }
-    }
-
-
     // cash out
     const cashOut = async () => {
         setIsLoading(true)
-        setError(null)
         
         let {response, data} = await api("/api/cash-out/")
         if (response.status === 200) {
@@ -157,35 +151,21 @@ const Home = () => {
                 // interestRate = 0
 
             } else {
-                setError(t("cash_out_error"))
+                msgSwal(t("cash_out_error"), "error")
             }
             setIsLoading(false);
         } else {
             setIsLoading(false)
-            setError(t("default_error"))
+            msgSwal(t("default_error"), "error")
         }
     }
 
 
-    // page refresh for cashout
-    window.onload = () => {
-        let reloading = sessionStorage.getItem("reloading");
-        let amount = sessionStorage.getItem("amount");
-        let symbol = sessionStorage.getItem("symbol");
-        if (reloading) {
-            setMsg(t("cash_out_success", {"symbol": symbol, "amount": amount}))
+    let reloadP = (amount, symbol_) => {
+        localStorage.setItem("reloading", true);
+        localStorage.setItem("amount", amount);
+        localStorage.setItem("symbol", symbol_);
 
-            sessionStorage.removeItem("reloading");
-            sessionStorage.removeItem("amount");
-            sessionStorage.removeItem("symbol");
-        }
-    }
-    
-
-    let reloadP = (amount, s) => {
-        sessionStorage.setItem("reloading", "true");
-        sessionStorage.setItem("amount", amount)
-        sessionStorage.setItem("symbol", s)
         document.location.reload();
     }
 
@@ -199,9 +179,6 @@ const Home = () => {
 
 
     return ( <div className="home-page">
-
-        {error && <MsgAlert msg={error} variant="danger" />}
-        {msg && <MsgAlert msg={msg} variant="success" />}
         { isLoading && 
         <div className="spinner">
             <RotateLoader color="#f8b119" size={20} />
@@ -314,22 +291,3 @@ const Home = () => {
 }
  
 export default Home;
-
-        // const MySwal = withReactContent(Swal)
-
-        // MySwal.fire({
-        //     title: "Confirm actions ?",
-        //     text: `You are about to pay $`,
-        //     icon: "warning",
-        //     width: "20rem",
-        //     buttonsStyling: "false",
-        //     showClass: {
-        //         popup: "animate__animated animate__zoomInDown",
-        //       },
-        //       hideClass: {
-        //         popup: "animate__animated animate__zoomOutDown",
-        //       },
-        // })
-        // .then(() => {
-        //     return MySwal.fire(<p>Shorthand works too</p>)
-        // })

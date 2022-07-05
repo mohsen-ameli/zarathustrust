@@ -2,9 +2,13 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
 
+import useMsgSwal from "../../components/useMsgSwal";
+
+
 const PassReset = () => {
     const [err, setErr] = useState(null)
-    const [ok, setOk] = useState(false)
+    const [ok, setOk]   = useState(false)
+    const msgSwal       = useMsgSwal()
 
     let { t } = useTranslation()
     let history = useHistory()
@@ -37,7 +41,7 @@ const PassReset = () => {
         e.preventDefault()
 
         if (e.target.password.value !== e.target.password2.value) {
-            setErr("The two passwords did not match")
+            setErr(t("pass_no_match"))
         } else if (ok) {
             let res = await fetch("/api/password-reset-complete/", {
                 method: "PATCH",
@@ -52,17 +56,14 @@ const PassReset = () => {
             })
     
             if (res.ok) {
-                localStorage.setItem("success", true)
-                localStorage.setItem("msg", t("pass_success_change"))
+                msgSwal(t("pass_success_change"), "success")
                 history.push("/login")
             } else {
-                localStorage.setItem("success", true)
-                localStorage.setItem("msg", t("pass_unsuccess_change"))
+                msgSwal(t("pass_unsuccess_change"), "error")
                 history.push("/password-reset")
             }
         } else {
-            localStorage.setItem("success", true)
-            localStorage.setItem("msg", t("pass_unsuccess_change"))
+            msgSwal(t("pass_unsuccess_change"), "error")
             history.push("/password-reset")
         }
     }

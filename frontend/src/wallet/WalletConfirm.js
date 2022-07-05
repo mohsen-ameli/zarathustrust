@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 
 import RotateLoader from 'react-spinners/RotateLoader';
 import useFetch from "../components/useFetch";
-import MsgAlert from "../components/MsgAlert";
+import useMsgSwal from "../components/useMsgSwal";
 
 
 const WalletConfirm = () => {
@@ -20,7 +20,7 @@ const WalletConfirm = () => {
     const [currency, setCurrency]   = useState(null)
 
     const [isLoading, setIsLoading] = useState(true)
-    const [error, setError]         = useState(null)
+    const msgSwal                   = useMsgSwal()
 
 
     const fetchStuff = useCallback(() => {
@@ -31,7 +31,7 @@ const WalletConfirm = () => {
                 setWallets(data)
                 setIsLoading(false)
             } else {
-                setError("default_error")
+                msgSwal(t("default_error"), "error")
                 setIsLoading(false)
             }
         }; loadWallets()
@@ -42,7 +42,7 @@ const WalletConfirm = () => {
                 setCurrency(data[iso2])
                 setIsLoading(false)
             } else {
-                setError("default_error")
+                msgSwal(t("default_error"), "error")
                 setIsLoading(false)
             }
         }; nextFetch()
@@ -73,18 +73,16 @@ const WalletConfirm = () => {
         })
         if (response.status === 200) {
             if (data.success) {
-                sessionStorage.setItem('msg', t("new_wallet_success", {"currency": currency}))
-                sessionStorage.setItem('success', true)
+                msgSwal(t("new_wallet_success", {"currency": currency}), "success")
 
                 history.push("/home")
             } else {
-                sessionStorage.setItem('msg', "wallet_error")
-                sessionStorage.setItem('success', false)
+                msgSwal(t("wallet_error"), "error")
 
                 history.push("/wallet-search")
             }
         } else {
-            setError("default_error")
+            msgSwal(t("default_error"), "error")
             setIsLoading(false)
         }
     }
@@ -92,7 +90,6 @@ const WalletConfirm = () => {
 
     return (
         <div className="new-wallet-page">
-            {error && <MsgAlert msg={t(error)} variant="danger" />}
             { isLoading && 
                 <div className="spinner">
                     <RotateLoader color="#f8b119" size={20} />

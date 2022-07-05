@@ -20,7 +20,6 @@ export const AuthProvider = ({children}) => {
     let [authToken, setAuthToken] = useState(() => valid ? auth : null)
     let [user, setUser] = useState(() => valid ? jwt_decode(localStorage.getItem('authToken')) : null)
     let [loading, setLoading] = useState(true)
-    let [error, setError] = useState(null)
 
     let history = useHistory()
 
@@ -47,10 +46,10 @@ export const AuthProvider = ({children}) => {
 
                 history.push("/home")
             } else {
-                throw "no_user"
+                throw new Error("no_user")
             }
         } else {
-            throw "no_user"
+            throw new Error("no_user")
         }
     }
 

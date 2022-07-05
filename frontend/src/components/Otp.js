@@ -2,10 +2,10 @@ import OtpInput from "react-otp-input";
 import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from 'react-router-dom'
-import MsgAlert from "./MsgAlert";
+import useMsgSwal from "./useMsgSwal";
 
 const Otp = ({ url, next, statePrev, stateNew, translationTitle, translationHelp }) => {
-    const REFRESH_TIME = 5
+    const REFRESH_TIME = 30
 
     let { t }   = useTranslation()
     let btn     = useRef()
@@ -15,14 +15,14 @@ const Otp = ({ url, next, statePrev, stateNew, translationTitle, translationHelp
     const [emailCode, setEmailCode] = useState(null)
     const [timer, setTimer]         = useState(REFRESH_TIME)
     const [err, setErr]             = useState(null)
-    const [msg, setMsg]             = useState(null)
+    const msgSwal                   = useMsgSwal()
 
 
     useEffect(() => {
         if (!statePrev) {
             history.push("/country-picker")
         } else {
-            setMsg(statePrev?.msg)
+            msgSwal(t(statePrev?.msg), "info")
             getCode()
         }
         
@@ -59,7 +59,7 @@ const Otp = ({ url, next, statePrev, stateNew, translationTitle, translationHelp
             if (Number(code) === Number(emailCode)) {
                 history.push(next, stateNew)
             } else {
-                setErr("You have enterd the wrong verificaiton code! Please try again.")
+                setErr(t("wrong_verification"))
             }
         } else {
             setErr(null)
@@ -69,9 +69,6 @@ const Otp = ({ url, next, statePrev, stateNew, translationTitle, translationHelp
 
     return (
         <div className="otp">
-            {msg && <MsgAlert msg={t(msg)} variant="success" />}
-            {err && <MsgAlert msg={t(err)} variant="danger" />}
-
             <div className="card text-white zarathus-card mx-auto">
                 <div className="card-body">
                     <h3 className="fw-normal text-center">{t(translationTitle)}</h3>

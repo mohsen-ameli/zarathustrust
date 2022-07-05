@@ -1,18 +1,21 @@
-import { useEffect, useState } from "react";
-import Cookies from "js-cookie";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, useHistory, useLocation } from "react-router-dom";
-import RotateLoader from 'react-spinners/RotateLoader';
-import useFetch from "../components/useFetch";
 import { useTranslation } from "react-i18next";
-import { useCallback } from "react";
-import MsgAlert from "../components/MsgAlert";
+
+import Cookies from "js-cookie";
+import RotateLoader from 'react-spinners/RotateLoader';
+
+import useFetch from "../components/useFetch";
+import useSwal from "../components/useSwal";
+import useMsgSwal from "../components/useMsgSwal";
 
 const CurrencyExConfirm = () => {
     const [fromSymbol, setFromSymbol] = useState(null)
     const [toSymbol, setToSymbol]   = useState(null)
     const [exRate, setExRate]       = useState(null)
+
     const [isLoading, setIsLoading] = useState(true)
-    const [error, setError]         = useState(null)
+    const msgSwal                   = useMsgSwal()
 
     const { state }                 = useLocation()
     let { t }                       = useTranslation()
@@ -38,10 +41,11 @@ const CurrencyExConfirm = () => {
             setExRate(res.data['ex_rate'])
             setIsLoading(false)
         })
-        .catch(() => {setError("default_error"); setIsLoading(false);})
+        .catch(() => {msgSwal(t("default_error"), "error"); setIsLoading(false);})
 
         // eslint-disable-next-line
     }, [])
+
 
     useEffect(() => {
         if (!state?.fromApp) {
@@ -51,6 +55,7 @@ const CurrencyExConfirm = () => {
         fetchStuff()
         // eslint-disable-next-line
     }, [fetchStuff])
+
 
     let submit = () => {
         setIsLoading(true)
@@ -68,23 +73,27 @@ const CurrencyExConfirm = () => {
             )
         })
         .then (res => {
-            sessionStorage.setItem('success', res.data['success'])
-            sessionStorage.setItem('msg', t(res.data['message']))
-
             if (!res.data['success']) {
+                msgSwal(t("default_error"), "error")
                 history.push("/currency-exchange")
             } else {
+                msgSwal(t(res.data['message']), "success")
                 history.push("/home")
             }
             setIsLoading(false)
         })
-        .catch(() => {setError("default_error"); setIsLoading(false);})
+        .catch(() => {msgSwal(t("default_error"), "error"); setIsLoading(false);})
     }
+
+
+    const confirm = useSwal(
+        t("exchange_msg", {"from_symbol": fromSymbol, "from_amount": amount, "to_symbol": toSymbol, "to_amount": exRate*amount}),
+        submit
+    )
 
 
     return (
         <div className="currency-ex-confirm">
-            {error && <MsgAlert msg={t(error)} variant="danger" />}
             { isLoading && 
             <div className="spinner">
                 <RotateLoader color="#f8b119" size={20} />
@@ -106,7 +115,7 @@ const CurrencyExConfirm = () => {
                         1{ fromCurr } = { exRate }{ toCurr }
                     </p>
 
-                    <button className="neon-button my-3" onClick={() => submit()}>{t("exchange")}</button>
+                    <button className="neon-button my-3" onClick={() => confirm()}>{t("exchange")}</button>
                 </div>
             </div>
         </div>

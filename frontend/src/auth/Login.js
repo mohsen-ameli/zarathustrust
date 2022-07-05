@@ -1,10 +1,11 @@
-import { useState, useContext } from "react"
+import { useState, useContext, useEffect } from "react"
 import { useTranslation } from "react-i18next";
+import { Link, useHistory } from "react-router-dom";
+
 import AuthContext from "../context/AuthContext";
 import RotateLoader from 'react-spinners/RotateLoader';
-import { useEffect } from "react";
-import { Link, useHistory } from "react-router-dom";
-import MsgAlert from "../components/MsgAlert";
+import useMsgSwal from "../components/useMsgSwal";
+
 
 const Login = () => {
     let { loginUser, user } = useContext(AuthContext)
@@ -12,8 +13,7 @@ const Login = () => {
     let history = useHistory()
 
     const [isLoading, setIsLoading] = useState(false)
-    const [error, setError]         = useState(null)
-    const [msg, setMsg]             = useState("")
+    const msgSwal                   = useMsgSwal()
 
 
     useEffect(() => {
@@ -23,35 +23,18 @@ const Login = () => {
             history.push("/home")
         }
 
-        let success = (localStorage.getItem('success') === "true")
-        let message = String(localStorage.getItem('msg'))
-
-        // displaying any messages
-        if (message !== "" && message !== "null") {
-            if (!success) {
-                setError(message)
-            } else if (success) {
-                setMsg(message)
-            }
-        }
-        // cleaning the cookies
-        localStorage.setItem('msg', "")
-        localStorage.setItem('success', false)
-
         // eslint-disable-next-line
     }, [])
 
     
     let submit = (e) => {
         setIsLoading(true)
-        setError(null)
-        setMsg(null)
 
         let prom = loginUser(e)
         
         prom
         .catch(err => {
-            setError(err)
+            msgSwal(t(err.message), "error")
             setIsLoading(false)
         })
         
@@ -60,8 +43,6 @@ const Login = () => {
 
     return (
         <div className="login">
-            {error && <MsgAlert msg={t(error)} variant="danger" />}
-            {msg && <MsgAlert msg={t(msg)} variant="success" />}
             { isLoading && 
             <div className="spinner">
                 <RotateLoader color="#f8b119" size={20} />

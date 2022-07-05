@@ -1,13 +1,15 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import useAddMoney from '../components/useAddMoney'
+import { useTranslation } from 'react-i18next';
+
 import RotateLoader from 'react-spinners/RotateLoader';
 import ReactCountryFlag from 'react-country-flag';
+
+import useAddMoney from '../components/useAddMoney'
 import AuthContext from '../context/AuthContext';
-import { useContext } from 'react';
 import useFetch from '../components/useFetch';
-import { useTranslation } from 'react-i18next';
-import MsgAlert from '../components/MsgAlert';
+import useMsgSwal from '../components/useMsgSwal';
+
 
 const CurrencyEx = () => {
     let { user }    = useContext(AuthContext)
@@ -34,7 +36,7 @@ const CurrencyEx = () => {
     const [symbol, setSymbol]       = useState(null);
 
     const [isLoading, setIsLoading] = useState(true)
-    const [error, setError]         = useState(null)
+    const msgSwal                   = useMsgSwal()
 
     let changeCurr = (a, b, c) => {
         setIso2(a)
@@ -67,12 +69,11 @@ const CurrencyEx = () => {
     let submit = () => {
         if (good) {
             setIsLoading(true)
-            setError(null)
 
             api(`/api/currency-exchange/${curr}/${iso}/${money}/${toCurr}/${iso2}/`)
             .then (res => {
                 if (!res.data['success']) {
-                    setError(res.data['message'])
+                    msgSwal(t(res.data['message']), "error")
                 } else {
                     history.push(`/currency-exchange/${curr}/${iso}/${money}/${toCurr}/${iso2}`, {"fromApp": true})
                 }
@@ -89,7 +90,6 @@ const CurrencyEx = () => {
 
     return (
         <div className="currency-ex" onKeyPress={e => {handleKeyClick(e)}}>
-            {error && <MsgAlert msg={t(error)} variant="danger" />}
             { isLoading && 
             <div className="spinner">
                 <RotateLoader color="#f8b119" size={20} />

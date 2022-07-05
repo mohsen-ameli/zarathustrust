@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory, useLocation, Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import RotateLoader from 'react-spinners/RotateLoader';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
@@ -17,14 +17,14 @@ const SignUp = () => {
     const BOTTOM = document.body.scrollHeight
     const TOP = 0
 
-    const [phoneExt, setPhoneExt] = useState(null)
-    const [username, setUsername] = useState(null)
-    const [email, setEmail] = useState(null)
-    const [phoneNumber, setPhoneNumber] = useState(null)
-    const [password, setPassword] = useState(null)
+    const [phoneExt, setPhoneExt]               = useState(null)
+    const [username, setUsername]               = useState(null)
+    const [email, setEmail]                     = useState(null)
+    const [phoneNumber, setPhoneNumber]         = useState(null)
+    const [password, setPassword]               = useState(null)
     const [passwordConfirm, setPasswordConfirm] = useState(null)
 
-    const [isLoading, setIsLoading] = useState(true)
+    const [isLoading, setIsLoading]             = useState(true)
 
     const [errUser, setErrUser] = useState(null);
     const [errEmail, setErrEmail] = useState(null);
@@ -44,7 +44,6 @@ const SignUp = () => {
             if (response.ok) {
                 let data = await response.json()
                 setPhoneExt(data[state?.iso])
-
                 setIsLoading(false)
             }
         }; getPhoneExt()
@@ -269,7 +268,7 @@ const SignUp = () => {
                     {/* reset pass */}
                     <div className="pt-2">
                         <small className="text-muted">
-                            <a style={{color: "#f8b119c7"}} href="#0">{t("reset_password")}</a>
+                            <Link style={{color: "#f8b119c7"}} to="/password-reset">{t("reset_password")}</Link>
                         </small>
                     </div>
 

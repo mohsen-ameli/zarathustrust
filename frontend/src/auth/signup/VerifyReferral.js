@@ -1,8 +1,9 @@
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useLocation } from "react-router-dom";
+
 import RotateLoader from 'react-spinners/RotateLoader';
+import useMsgSwal from "../../components/useMsgSwal";
 
 const VerifyReferral = () => {
     let { t }       = useTranslation()
@@ -10,6 +11,7 @@ const VerifyReferral = () => {
     let history     = useHistory()
 
     const [isLoading, setIsLoading] = useState(false)
+    const msgSwal                   = useMsgSwal()
 
     useEffect(() => {
         if (!state?.fromVerifyPhone) {
@@ -35,12 +37,12 @@ const VerifyReferral = () => {
 
         if (res.ok) {
             let data = await res.json()
-            localStorage.setItem("success", true)
-            localStorage.setItem("msg", t("success_register", {"username": String(data.user)}))
+
+            msgSwal(t("success_register", {"username": String(data.user)}), "success")
             history.push("/login")
         } else {
-            localStorage.setItem("success", false)
-            localStorage.setItem("msg", "An error occured while registering. Please try again later.")
+            msgSwal(t("register_error"), "error")
+            setIsLoading(false)
         }
     }
 

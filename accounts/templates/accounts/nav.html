@@ -47,7 +47,7 @@
                                 class="flag-icon flag-icon-{{ LANGUAGE_CODE }}"></span>
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <form class="form-inline" action="{% url 'set_language' %}" method="post"> {% csrf_token %}
+                            <form class="form-inline" action="" method="post"> {% csrf_token %}
                                 <input name="next" type="hidden" value="{{ redirect_to }}" />
                                 {% for language in languages %}
                                     <li>

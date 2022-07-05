@@ -1,21 +1,22 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import Cookies from 'js-cookie';
 import RotateLoader from 'react-spinners/RotateLoader'
 
 import useFetch from "../components/useFetch";
-import MsgAlert from "../components/MsgAlert";
+import useMsgSwal from "../components/useMsgSwal";
 
 const TransferSearch = () => {
     let { t }                       = useTranslation()
+    let history                     = useHistory()
     let api                         = useFetch()
 
     const [data, setData]           = useState(null)
 
     const [isLoading, setIsLoading] = useState(true);
-    const [error, setError]         = useState(null);
+    const msgSwal                   = useMsgSwal()
 
 
     useEffect(() => {
@@ -23,7 +24,7 @@ const TransferSearch = () => {
     }, [])
 
 
-    let sendSearchData = (typed) => {
+    let submit = (typed) => {
         api("/api/transferSearch/", {
             method: "POST",
             headers: {
@@ -36,22 +37,30 @@ const TransferSearch = () => {
         .then(res => {
             setData(JSON.parse(res.data))
         })
-        .catch(() => {setError("default_error"); setIsLoading(false);})
+        .catch(() => {msgSwal(t("default_error"), "error"); setIsLoading(false);})
     }
 
 
     let search = (typed) => {
         if (typed.length >= 3) {
-            sendSearchData(typed)
+            submit(typed)
         } else {
             setData(null)
         }
     }
 
 
+    let handleKeyClick = (e) => {
+        if (e.key === 'Enter') {
+            if (data) {
+                history.push(`/${data[0]['username']}/transfer-confirm`, { fromApp: true })
+            }
+        }
+    }
+
+
     return (
-        <div className="transfer-search">
-            {error && <MsgAlert msg={error} variant="danger" />}
+        <div className="transfer-search" onKeyDown={e => handleKeyClick(e)}>
             { isLoading && 
             <div className="spinner">
                 <RotateLoader color="#f8b119" size={20} />
