@@ -894,10 +894,9 @@ def verifyPhone(request):
     phone_code = request.session.get('ver_code')['phone_verify_code']
     phone_number = user['phone_number']
 
-    print(phone_code)
-    # phone_msg_verify(
-    #             verify_code=phone_code, phone_number_to=phone_number
-    #         )
+    phone_msg_verify(
+                verify_code=phone_code, phone_number_to=phone_number
+            )
 
     return Response({"code": phone_code})
 
