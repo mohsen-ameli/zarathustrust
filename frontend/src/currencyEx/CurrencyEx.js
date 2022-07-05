@@ -42,7 +42,6 @@ const CurrencyEx = () => {
         setSymbol(c)
     }
 
-
     useEffect(() => {
         if (window.innerWidth < 450) {
             dflex.current.classList.remove("d-flex")
@@ -68,11 +67,12 @@ const CurrencyEx = () => {
     let submit = () => {
         if (good) {
             setIsLoading(true)
+            setError(null)
 
             api(`/api/currency-exchange/${curr}/${iso}/${money}/${toCurr}/${iso2}/`)
             .then (res => {
                 if (!res.data['success']) {
-                    setError("exchange_same_error")
+                    setError(res.data['message'])
                 } else {
                     history.push(`/currency-exchange/${curr}/${iso}/${money}/${toCurr}/${iso2}`, {"fromApp": true})
                 }

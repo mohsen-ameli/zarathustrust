@@ -12,7 +12,7 @@ import MsgAlert from "../components/MsgAlert";
 
 
 const TransferConfirm = () => {
-    const MAX_MESSAGE_LENGTH        = 10
+    const MAX_MESSAGE_LENGTH        = 100
     let { user_ }                   = useContext(AuthContext)
     let { t }                       = useTranslation()
     let pk                          = user_?.user_id      
@@ -122,9 +122,9 @@ const TransferConfirm = () => {
                         className={colour==="red" ? "form-control is-invalid" : "form-control"} id="msg"></input>
                         <label htmlFor="msg">{t("message")}</label>
                     </div>
-                    {colour && colour==="green" ? <div>{t("max_char", {"counter": counter, "MAX_MESSAGE_LENGTH": MAX_MESSAGE_LENGTH})}</div> : null}
-                    {colour && colour==="yellow" ? <div style={{color: "orange"}}>{t("max_char", {"counter": counter, "MAX_MESSAGE_LENGTH": MAX_MESSAGE_LENGTH})}</div> : null}
-                    {colour && colour==="red" ? <div className="input-error">{t("max_char_reached")}</div> : null}
+                    {colour && colour==="green" ? <div>{t("max_char", {"counter": counter, "max": MAX_MESSAGE_LENGTH})}</div> : null}
+                    {colour && colour==="yellow" ? <div style={{color: "orange"}}>{t("max_char", {"counter": counter, "max": MAX_MESSAGE_LENGTH})}</div> : null}
+                    {colour && colour==="red" ? <div className="input-error">{t("max_char_reached", {"over": counter - MAX_MESSAGE_LENGTH})}</div> : null}
 
 
                     {/* button */}

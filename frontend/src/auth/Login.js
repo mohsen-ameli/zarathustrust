@@ -44,6 +44,8 @@ const Login = () => {
     
     let submit = (e) => {
         setIsLoading(true)
+        setError(null)
+        setMsg(null)
 
         let prom = loginUser(e)
         

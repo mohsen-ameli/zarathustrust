@@ -142,6 +142,7 @@ const Home = () => {
     // cash out
     const cashOut = async () => {
         setIsLoading(true)
+        setError(null)
         
         let {response, data} = await api("/api/cash-out/")
         if (response.status === 200) {

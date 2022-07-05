@@ -154,7 +154,6 @@ def deposit(request):
     user            = CustomUser.objects.get(pk=pk)
 
     body = json.loads(request.body)
-    print("request : ", json.loads(request.body))
     symbol          = body['symbol']
     amount          = body['amount']
     EMAIL_ID        = config.get('EMAIL_ID')
@@ -167,7 +166,7 @@ def deposit(request):
 
     Account.objects.filter(pk=pk).update(add_money=0)
     
-    return Response({"message": "success", "success": True})
+    return Response({"success": True})
 
 
 @api_view(['POST'])
@@ -513,16 +512,16 @@ def currencyEx(request, fromCurr, fromIso, amount, toCurr, toIso):
     #-------------------------------- CHECKS ------------------------------#
     # confirming from and to currencies
     if minTo is None or minFrom is None: # the currency doesnt exist (JXL)
-        message = "88You cannot exchange with the specified currencies!"
+        message = "exchange_specified_error"
         return Response({"message": message, "success": False})
     elif fromCurr == toCurr: # exchanging the same currencies
-        message = "You cannot exchange the same currencies!"
+        message = "exchange_same_error"
         return Response({"message": message, "success": False})
     elif not wallet.filter(currency=toCurr, iso2=toIso).exists() and acc.main_currency != toCurr:
-        message = "You do not own the specified wallets!"
+        message = "exchange_not_have_error"
         return Response({"message": message, "success": False})
     elif not wallet.filter(currency=fromCurr, iso2=fromIso).exists() and acc.main_currency != fromCurr:
-        message = "You do not own the specified wallets!"
+        message = "exchange_not_have_error"
         return Response({"message": message, "success": False})
 
     # if user has enough money
@@ -534,7 +533,7 @@ def currencyEx(request, fromCurr, fromIso, amount, toCurr, toIso):
             if float(wallet.total_balance) < float(amount):
                 notEnough = True
     if notEnough:
-        message = "You do not have enough money for this transaction!"
+        message = "not_enough_money"
         return Response({"message": message, "success": False})
     #-------------------------------- CHECKS ------------------------------#
 
@@ -587,7 +586,7 @@ def currencyEx(request, fromCurr, fromIso, amount, toCurr, toIso):
             history.save()
 
             # success msg & redirect
-            message = "You have successfuly exchanged your desired currencies!"
+            message = "success_ex"
             success = True
         
         # sending to an account
@@ -615,10 +614,10 @@ def currencyEx(request, fromCurr, fromIso, amount, toCurr, toIso):
             history.save()
 
             # msg & redirect
-            message = "You have successfuly exchanged your desired currencies!"
+            message = "success_ex"
             success = True
         else:
-            message = "You do not have a wallet with the specified currency!"
+            message = "error_ex"
             success = False
 
     return Response({"message": message, "success": success, "ex_rate": ex_rate})

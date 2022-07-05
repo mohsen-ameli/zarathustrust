@@ -69,7 +69,7 @@ const CurrencyExConfirm = () => {
         })
         .then (res => {
             sessionStorage.setItem('success', res.data['success'])
-            sessionStorage.setItem('msg', res.data['message'])
+            sessionStorage.setItem('msg', t(res.data['message']))
 
             if (!res.data['success']) {
                 history.push("/currency-exchange")
