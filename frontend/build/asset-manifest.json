@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/static/css/main.7b9d4ff5.css",
-    "main.js": "/static/js/main.75c505dd.js",
+    "main.css": "/static/css/main.77f996bb.css",
+    "main.js": "/static/js/main.4e69df6d.js",
     "static/media/rocks.jpg": "/static/media/rocks.1515fe42ffea6153e21a.jpg",
     "static/media/zarathus-5.jpg": "/static/media/zarathus-5.574d4dcf4757400df83f.jpg",
     "static/media/zarathustrust_new.png": "/static/media/zarathustrust_new.3e739568728e478332c9.png",
     "index.html": "/index.html",
     "static/media/getFetch.cjs": "/static/media/getFetch.c780682470504fffbd04.cjs",
-    "main.7b9d4ff5.css.map": "/static/css/main.7b9d4ff5.css.map",
-    "main.75c505dd.js.map": "/static/js/main.75c505dd.js.map"
+    "main.77f996bb.css.map": "/static/css/main.77f996bb.css.map",
+    "main.4e69df6d.js.map": "/static/js/main.4e69df6d.js.map"
   },
   "entrypoints": [
-    "static/css/main.7b9d4ff5.css",
-    "static/js/main.75c505dd.js"
+    "static/css/main.77f996bb.css",
+    "static/js/main.4e69df6d.js"
   ]
 }

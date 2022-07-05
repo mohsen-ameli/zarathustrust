@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 
-import Alert from 'react-bootstrap/Alert';
 import RotateLoader from 'react-spinners/RotateLoader';
 import useFetch from "../components/useFetch";
+import MsgAlert from "../components/MsgAlert";
 
 const TransactionsDetail = () => {
     let tId                                     = useParams().tId
@@ -19,15 +19,12 @@ const TransactionsDetail = () => {
     const [currencySymbol, setCurrencySymbol]   = useState(null)
     const [message, setMessage]                 = useState(null)
     const [person, setPerson]                   = useState(null)
-    // const [person2, setPerson2]                 = useState(null)
     const [wallet, setWallet]                   = useState(null)
-    // const [wallet2, setWallet2]                 = useState(null)
     const [giverSymbol, setGiverSymbol]         = useState(null)
     const [recieverSymbol, setRecieverSymbol]   = useState(null)
 
     const [isLoading, setIsLoading]             = useState(true)
     const [error, setError]                     = useState(null)
-    const [showErr, setShowErr]                 = useState(false)
 
     useEffect(() => {
         let loadTransaction = async () => {
@@ -60,8 +57,7 @@ const TransactionsDetail = () => {
     
                 setIsLoading(false)
             } else {
-                setError('An error occurred. Awkward..')
-                setShowErr(true)
+                setError("default_error")
                 setIsLoading(false)
             }
         }; loadTransaction()
@@ -72,11 +68,7 @@ const TransactionsDetail = () => {
 
     return (
         <div className="transactions-detail">
-            {showErr && 
-            <Alert className="text-center" variant="danger" onClose={() => setShowErr(false)} dismissible>
-                { error }
-            </Alert>
-            }
+            {error && <MsgAlert msg={error} variant="danger" />}
             { isLoading && 
                 <div className="spinner">
                     <RotateLoader color="#f8b119" size={20} />

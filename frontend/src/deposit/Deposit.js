@@ -1,12 +1,12 @@
 import { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import Cookies from 'js-cookie';
-import Alert from 'react-bootstrap/Alert';
 import RotateLoader from 'react-spinners/RotateLoader'
 import useAddMoney from "../components/useAddMoney"
 import AuthContext from "../context/AuthContext";
 import useFetch from "../components/useFetch";
 import { useTranslation } from "react-i18next";
+import MsgAlert from '../components/MsgAlert';
 
 const Deposit = () => {
     let { user }  = useContext(AuthContext)
@@ -15,15 +15,16 @@ const Deposit = () => {
     let api       = useFetch()
     const { t }   = useTranslation()
 
-    const [addMoney, good, money, , , symbol, addLoad, addError, addShowErr] = useAddMoney(pk)
+    const [addMoney, good, money, , , symbol, addLoad, addError, ,] = useAddMoney(pk)
 
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError]         = useState(null);
-    const [showErr, setShowErr]     = useState(false);
+
 
     useEffect(() => {
         setIsLoading(false)
     }, [])
+
 
     let submit = async () => {
         if (good) {
@@ -37,13 +38,16 @@ const Deposit = () => {
                 },
                 body: JSON.stringify({"symbol" : symbol, "amount" : money})
             })
+
             if (response.status === 200) {
                 history.push("/deposit-info")
             } else {
-                setError('0 An error occurred. Awkward..')
-                setShowErr(true)
+                setError("default_error")
                 setIsLoading(false)
             }
+        } else {
+            setError("default_error")
+            setIsLoading(false)
         }
     }
 
@@ -55,17 +59,12 @@ const Deposit = () => {
 
     return (
         <div className="deposit-page" onKeyPress={e => {handleKeyClick(e)}}>
-            {(showErr || addShowErr) && 
-                <Alert className="text-center" variant="danger" onClose={() => setShowErr(false)} dismissible>
-                    { error || addError }
-                </Alert>
-            }
+            {(error || addError) &&  <MsgAlert msg={t(error) || t(addError)} variant="danger" />}
             {(isLoading || addLoad) && 
             <div className="spinner">
                 <RotateLoader color="#f8b119" size={20} />
             </div>
             }
-
 
             <div className="card zarathus-card mx-auto">
                 <div className="card-body">

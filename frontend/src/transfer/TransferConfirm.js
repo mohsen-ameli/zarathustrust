@@ -1,28 +1,28 @@
-import { useEffect, useState } from "react";
-import { useParams, useHistory } from "react-router-dom";
-import Cookies from 'js-cookie';
-import Alert from 'react-bootstrap/Alert';
-import RotateLoader from 'react-spinners/RotateLoader'
-import { useLocation } from "react-router-dom";
-import useAddMoney from "../components/useAddMoney"
-import AuthContext from "../context/AuthContext";
-import { useContext } from "react";
-import useFetch from "../components/useFetch";
+import { useEffect, useState, useContext } from "react";
+import { useParams, useHistory, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
+import Cookies from 'js-cookie';
+import RotateLoader from 'react-spinners/RotateLoader'
+
+import useAddMoney from "../components/useAddMoney"
+import AuthContext from "../context/AuthContext";
+import useFetch from "../components/useFetch";
+import MsgAlert from "../components/MsgAlert";
+
+
 const TransferConfirm = () => {
+    const MAX_MESSAGE_LENGTH        = 10
     let { user_ }                   = useContext(AuthContext)
     let { t }                       = useTranslation()
     let pk                          = user_?.user_id      
     let user                        = useParams().user
     let history                     = useHistory()
-    let max                         = 10
 
-    const { state }                 = useLocation()
+    let { state }                   = useLocation()
     let api                         = useFetch()
 
-    const [addMoney, good, money, curr,,, addLoad, addError, addShowErr] = useAddMoney(pk)
-    
+    const [addMoney, good, money, curr,,symbol, addLoad, addError, ,] = useAddMoney(pk)
 
     const [colour, setColour]       = useState(null);
     const [counter, setCounter]     = useState(null);
@@ -30,7 +30,6 @@ const TransferConfirm = () => {
 
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError]         = useState(null);
-    const [showErr, setShowErr]     = useState(false);
 
 
     useEffect(() => {
@@ -38,26 +37,30 @@ const TransferConfirm = () => {
             history.push("transfer-search")
         }
         setIsLoading(false)
-    }, [history, pk, state?.fromApp])
+
+        // eslint-disable-next-line
+    }, [])
+
 
     let changeMsg = (typed) => {
         setCounter(typed.length)
 
         if (typed.length === 0) {
             setColour(null)
-        } else if (typed.length > max) { // red
+        } else if (typed.length > MAX_MESSAGE_LENGTH) { // red
             setColour("red")
-        } else if (typed.length >= max * 0.75) { // yellow
+        } else if (typed.length >= MAX_MESSAGE_LENGTH * 0.75) { // yellow
             setMsg(typed)
             setColour("yellow")
-        } else if (typed.length < max) { // green
+        } else if (typed.length < MAX_MESSAGE_LENGTH) { // green
             setMsg(typed)
             setColour("green")
         }
     }
 
+
     let submit = () => {
-        if (counter <= max && good) {
+        if (counter <= MAX_MESSAGE_LENGTH && good) {
             setIsLoading(true)
 
             api("/api/transferConfirm/",{
@@ -71,21 +74,21 @@ const TransferConfirm = () => {
             })
             .then(res => {
                 if (!res.data['success']) {
-                    setError(res.data['message'])
-                    setShowErr(true)
+                    setError(t(res.data['message']))
                 } else {
-                    sessionStorage.setItem('msg', res.data['message'])
-                    sessionStorage.setItem('success', res.data['success'])
+                    sessionStorage.setItem('msg', t("transfer_success", {"symbol": symbol, "amount": money, "user": user}))
+                    sessionStorage.setItem('success', true)
                     
                     history.push("/home")
                 }
 
                 setIsLoading(false)
             })
-            .catch(() => {setError('015 An error occurred. Awkward..'); setShowErr(true); setIsLoading(false);})
+            .catch(() => {setError("default_error"); setIsLoading(false);})
 
         }
     }
+
 
     let handleKeyClick = (e) => {
         if (e.key === 'Enter') {
@@ -93,13 +96,10 @@ const TransferConfirm = () => {
         }
     }
 
+
     return (
         <div className="transfer-confirm" onKeyDown={e => handleKeyClick(e)}>
-            {(showErr || addShowErr) && 
-                <Alert className="text-center" variant="danger" onClose={() => setShowErr(false)} dismissible>
-                    { error || addError }
-                </Alert>
-            }
+            {(error || addError) && <MsgAlert msg={error || addError} variant="danger" />}
             {(isLoading || addLoad) && 
             <div className="spinner">
                 <RotateLoader color="#f8b119" size={20} />
@@ -122,8 +122,8 @@ const TransferConfirm = () => {
                         className={colour==="red" ? "form-control is-invalid" : "form-control"} id="msg"></input>
                         <label htmlFor="msg">{t("message")}</label>
                     </div>
-                    {colour && colour==="green" ? <div>{t("max_char", {"counter": counter, "max": max})}</div> : null}
-                    {colour && colour==="yellow" ? <div style={{color: "orange"}}>{t("max_char", {"counter": counter, "max": max})}</div> : null}
+                    {colour && colour==="green" ? <div>{t("max_char", {"counter": counter, "MAX_MESSAGE_LENGTH": MAX_MESSAGE_LENGTH})}</div> : null}
+                    {colour && colour==="yellow" ? <div style={{color: "orange"}}>{t("max_char", {"counter": counter, "MAX_MESSAGE_LENGTH": MAX_MESSAGE_LENGTH})}</div> : null}
                     {colour && colour==="red" ? <div className="input-error">{t("max_char_reached")}</div> : null}
 
 

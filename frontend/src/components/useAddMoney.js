@@ -124,7 +124,7 @@ const useAddMoney = (pk) => {
                 {/* Input */}
                 <div className="form-floating flex-grow-1">
                     <input type="text" placeholder=" " className={err ? "form-control is-invalid" : "form-control"} 
-                        onChange={e => changeMoney(e.target.value)} autoComplete="off"></input>
+                        onChange={e => changeMoney(e.target.value)} autoComplete="off" required={true}></input>
                     <label htmlFor="id_add_money">
                         {t("enter_amount")}
                     </label>

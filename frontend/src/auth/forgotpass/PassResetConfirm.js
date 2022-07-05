@@ -55,11 +55,16 @@ const PassReset = () => {
                 localStorage.setItem("success", true)
                 localStorage.setItem("msg", t("pass_success_change"))
                 history.push("/login")
+            } else {
+                localStorage.setItem("success", true)
+                localStorage.setItem("msg", t("pass_unsuccess_change"))
+                history.push("/password-reset")
             }
+        } else {
+            localStorage.setItem("success", true)
+            localStorage.setItem("msg", t("pass_unsuccess_change"))
+            history.push("/password-reset")
         }
-        localStorage.setItem("success", true)
-        localStorage.setItem("msg", t("pass_unsuccess_change"))
-        history.push("/password-reset")
     }
 
 
@@ -68,7 +73,7 @@ const PassReset = () => {
             <div className="card text-white zarathus-card mx-auto my-3">
                 <div className="card-body">
                     <form onSubmit={e => submit(e)} autoComplete="off">
-                        <h3 className="fw-normal text-center">Reset Password</h3>
+                        <h3 className="fw-normal text-center">{t("reset_pass")}</h3>
                         <hr className="zarathus-hr" />
 
                         {/* Password */}

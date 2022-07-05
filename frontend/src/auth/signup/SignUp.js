@@ -114,7 +114,7 @@ const SignUp = () => {
             }
 
             if (Object.keys(data).length === 0) {
-                history.push("/verify-email", {"data": data, "msg": t("email_verify"), "fromSignUp": true})
+                history.push("/verify-email", {"data": data, "msg": "email_verify", "fromSignUp": true})
             }
 
             setIsLoading(false)

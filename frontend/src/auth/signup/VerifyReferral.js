@@ -36,7 +36,7 @@ const VerifyReferral = () => {
         if (res.ok) {
             let data = await res.json()
             localStorage.setItem("success", true)
-            localStorage.setItem("msg", data.msg)
+            localStorage.setItem("msg", t("success_register", {"username": String(data.user)}))
             history.push("/login")
         } else {
             localStorage.setItem("success", false)
@@ -54,7 +54,7 @@ const VerifyReferral = () => {
 
             <div className="card text-white zarathus-card mx-auto">
                 <div className="card-body">
-                    <h3 className="fw-normal text-center">Referral Code (Optional)</h3>
+                    <h3 className="fw-normal text-center">{t("verify_referral")}</h3>
                     <hr className="zarathus-hr" />
 
                     <form onSubmit={e => submit(e)}>
@@ -62,10 +62,10 @@ const VerifyReferral = () => {
                             <input type="text" className="form-control" name="code"
                             placeholder=" " id="id_referral_code" />
 
-                            <label htmlFor="id_referral_code">Referral Code (Optional)</label>
+                            <label htmlFor="id_referral_code">{t("verify_referral")}</label>
 
                             <p className="form-text text-white">
-                                Please enter your referral code to get grand prizes , or leave blank for no prize!
+                                {t("verify_referral_helper")}
                             </p>
                         </div>
 

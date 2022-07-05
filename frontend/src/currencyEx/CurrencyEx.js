@@ -1,13 +1,13 @@
 import { useEffect, useState, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import useAddMoney from '../components/useAddMoney'
-import Alert from 'react-bootstrap/Alert';
 import RotateLoader from 'react-spinners/RotateLoader';
 import ReactCountryFlag from 'react-country-flag';
 import AuthContext from '../context/AuthContext';
 import { useContext } from 'react';
 import useFetch from '../components/useFetch';
 import { useTranslation } from 'react-i18next';
+import MsgAlert from '../components/MsgAlert';
 
 const CurrencyEx = () => {
     let { user }    = useContext(AuthContext)
@@ -35,7 +35,6 @@ const CurrencyEx = () => {
 
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError]         = useState(null)
-    const [showErr, setShowErr]     = useState(false)
 
     let changeCurr = (a, b, c) => {
         setIso2(a)
@@ -73,8 +72,7 @@ const CurrencyEx = () => {
             api(`/api/currency-exchange/${curr}/${iso}/${money}/${toCurr}/${iso2}/`)
             .then (res => {
                 if (!res.data['success']) {
-                    setError(res.data['message'])
-                    setShowErr(true)
+                    setError("exchange_same_error")
                 } else {
                     history.push(`/currency-exchange/${curr}/${iso}/${money}/${toCurr}/${iso2}`, {"fromApp": true})
                 }
@@ -91,11 +89,7 @@ const CurrencyEx = () => {
 
     return (
         <div className="currency-ex" onKeyPress={e => {handleKeyClick(e)}}>
-            {showErr && 
-            <Alert className="text-center" variant="danger" onClose={() => setShowErr(false)} dismissible>
-                { error }
-            </Alert>
-            }
+            {error && <MsgAlert msg={t(error)} variant="danger" />}
             { isLoading && 
             <div className="spinner">
                 <RotateLoader color="#f8b119" size={20} />

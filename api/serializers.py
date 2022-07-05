@@ -1,3 +1,4 @@
+from rest_framework.response import Response
 from rest_framework import serializers
 from accounts.models import Account, AccountInterest
 from users.models import CustomUser
@@ -8,6 +9,7 @@ from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_str
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from rest_framework.exceptions import AuthenticationFailed
+from rest_framework import status
 
 
 class EmailTokenObtainSerializer(TokenObtainSerializer):
@@ -21,22 +23,25 @@ class EmailTokenObtainSerializer(TokenObtainSerializer):
             Q(email__iexact=attrs[self.username_field]) | Q(username__iexact=attrs[self.username_field])
         )
 
-        # getting the username of the user
-        for obj in user:
-            username = obj.username
+        if user.exists():
+            # getting the username of the user
+            for obj in user:
+                username = obj.username
 
-        # doing everything else from the original parent class
-        data = super().validate({self.username_field:username, "password":attrs['password']})
+            # doing everything else from the original parent class
+            data = super().validate({self.username_field: username, "password": attrs['password']})
 
-        # getting out two tokens
-        refresh = self.get_token(self.user)
+            # getting out two tokens
+            refresh = self.get_token(self.user)
 
-        # setting those two tokens
-        data["refresh"] = str(refresh)
-        data["access"] = str(refresh.access_token)
+            # setting those two tokens
+            data["refresh"] = str(refresh)
+            data["access"] = str(refresh.access_token)
 
-        # returning them tokens
-        return data
+            # returning them tokens
+            return data
+        else:
+            return status.HTTP_404_NOT_FOUND
 
 
 class AccountSerializer(serializers.ModelSerializer):

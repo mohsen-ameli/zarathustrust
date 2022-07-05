@@ -2,7 +2,7 @@ import OtpInput from "react-otp-input";
 import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from 'react-router-dom'
-import Alert from 'react-bootstrap/Alert';
+import MsgAlert from "./MsgAlert";
 
 const Otp = ({ url, next, statePrev, stateNew, translationTitle, translationHelp }) => {
     const REFRESH_TIME = 5
@@ -15,7 +15,6 @@ const Otp = ({ url, next, statePrev, stateNew, translationTitle, translationHelp
     const [emailCode, setEmailCode] = useState(null)
     const [timer, setTimer]         = useState(REFRESH_TIME)
     const [err, setErr]             = useState(null)
-    const [showMsg, setShowMsg]     = useState(false)
     const [msg, setMsg]             = useState(null)
 
 
@@ -24,7 +23,6 @@ const Otp = ({ url, next, statePrev, stateNew, translationTitle, translationHelp
             history.push("/country-picker")
         } else {
             setMsg(statePrev?.msg)
-            setShowMsg(true)
             getCode()
         }
         
@@ -71,11 +69,8 @@ const Otp = ({ url, next, statePrev, stateNew, translationTitle, translationHelp
 
     return (
         <div className="otp">
-            {showMsg &&
-            <Alert className="text-center" variant="success" onClose={() => setShowMsg(false)} dismissible>
-                { msg && msg }
-            </Alert>
-            }
+            {msg && <MsgAlert msg={t(msg)} variant="success" />}
+            {err && <MsgAlert msg={t(err)} variant="danger" />}
 
             <div className="card text-white zarathus-card mx-auto">
                 <div className="card-body">
@@ -115,7 +110,7 @@ const Otp = ({ url, next, statePrev, stateNew, translationTitle, translationHelp
                         <p className="form-text text-white">{t(translationHelp)}</p>
                     </div>
 
-                    {timer && <small>Resend verificaiton code in: {timer}</small>}
+                    {timer && <small>{t("resend_verification")} {timer}</small>}
                     <button className="my-2 neon-button" ref={btn} style={{display: "none"}} onClick={() => getCode()}>{t("send_again")}</button>
                 </div>
             </div>

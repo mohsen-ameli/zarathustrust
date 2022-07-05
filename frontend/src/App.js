@@ -1,10 +1,12 @@
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import React, { useState } from "react";
+import React, { useState, createContext } from "react";
+import { AuthProvider } from './context/AuthContext';
 
-import Home from "./pages/Home";
-import Navbar from "./components/Navbar";
 import LandingPage from "./landingPage/LandingPage";
+import Home from "./pages/Home";
 import About from "./pages/About";
+import Navbar from "./components/Navbar";
+import PrivateRoute from './components/PrivateRoute';
 import Deposit from "./deposit/Deposit";
 import DepositInfo from './deposit/DepositInfo';
 import WalletSearch from './wallet/WalletSearch';
@@ -16,20 +18,18 @@ import CurrencyEx from './currencyEx/CurrencyEx';
 import CurrencyExConfirm from './currencyEx/CurrencyExConfirm';
 import Transactions from './transaction/Transactions';
 import TransactionsDetail from './transaction/TransactionsDetail'
+
 import Login from './auth/Login';
 import Logout from './auth/Logout';
-
-import { AuthProvider } from './context/AuthContext';
-import PrivateRoute from './components/PrivateRoute';
-import SignUp from './auth/SignUp';
-import CountryPicker from './auth/CountryPicker';
-import VerifyEmail from './auth/VerifyEmail';
-import VerifyPhone from './auth/VerifyPhone';
-import VerifyReferral from './auth/VerifyReferral';
+import SignUp from './auth/signup/SignUp';
+import CountryPicker from './auth/signup/CountryPicker';
+import VerifyEmail from './auth/signup/VerifyEmail';
+import VerifyPhone from './auth/signup/VerifyPhone';
+import VerifyReferral from './auth/signup/VerifyReferral';
 import Settings from './pages/Settings';
-import { createContext } from 'react';
-import PassReset from './auth/PassReset';
-import PassResetConfirm from './auth/PassResetConfirm';
+
+import PassReset from './auth/forgotpass/PassReset';
+import PassResetConfirm from './auth/forgotpass/PassResetConfirm';
 
 export const ThemeContext = createContext(null)
 

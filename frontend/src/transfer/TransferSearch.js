@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Cookies from 'js-cookie';
-import Alert from 'react-bootstrap/Alert';
-import RotateLoader from 'react-spinners/RotateLoader'
-import useFetch from "../components/useFetch";
 import { useTranslation } from "react-i18next";
+
+import Cookies from 'js-cookie';
+import RotateLoader from 'react-spinners/RotateLoader'
+
+import useFetch from "../components/useFetch";
+import MsgAlert from "../components/MsgAlert";
 
 const TransferSearch = () => {
     let { t }                       = useTranslation()
@@ -14,11 +16,12 @@ const TransferSearch = () => {
 
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError]         = useState(null);
-    const [showErr, setShowErr]     = useState(false);
+
 
     useEffect(() => {
         setIsLoading(false)
     }, [])
+
 
     let sendSearchData = (typed) => {
         api("/api/transferSearch/", {
@@ -33,8 +36,9 @@ const TransferSearch = () => {
         .then(res => {
             setData(JSON.parse(res.data))
         })
-        .catch(() => {setError('14 An error occurred. Awkward..'); setShowErr(true); setIsLoading(false);})
+        .catch(() => {setError("default_error"); setIsLoading(false);})
     }
+
 
     let search = (typed) => {
         if (typed.length >= 3) {
@@ -44,21 +48,18 @@ const TransferSearch = () => {
         }
     }
 
+
     return (
         <div className="transfer-search">
-            {showErr && 
-                <Alert className="text-center" variant="danger" onClose={() => setShowErr(false)} dismissible>
-                    { error }
-                </Alert>
-            }
+            {error && <MsgAlert msg={error} variant="danger" />}
             { isLoading && 
             <div className="spinner">
                 <RotateLoader color="#f8b119" size={20} />
             </div>
             }
+
             <div className="card zarathus-card mx-auto">
                 <div className="card-body">
-                    
 
                     <h3 className="fw-normal text-center">{t("send_money_info")}</h3>
                     <hr className="zarathus-hr"></hr>

@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom"; // Link component just like the anchor tag in html
 import { useEffect, useState } from 'react'; // useEffect to run a function on the each render, useState for react variables 
-import Alert from 'react-bootstrap/Alert'; // a react-bootstrap component to show alerts on DOM
 import RotateLoader from 'react-spinners/RotateLoader' // a react-spinner called RotateLoader in order to show a loading screen when users are waiting
 import AuthContext from "../context/AuthContext"; // react component which stores variables and functions that are accessible throughout the whole proj 
 import { useContext } from "react"; // this is needed to use the context provided by the previous import
 import useFetch from "../components/useFetch"; // custom react hook to fetch data from the backend, with authentication included
 import { useTranslation } from "react-i18next";
+import MsgAlert from "../components/MsgAlert";
 
 /**
  * Component to show the deposit information required for users to be able to deposit money into their account.
@@ -47,12 +47,6 @@ const DepositInfo = () => {
      * first render
      */
     const [error, setError]         = useState(null);
-    /**
-     * variable to set the whether or not to show error messages on the DOM
-     * @default -> has a default value of false as there are no errors to start with
-     * on the first render
-     */
-    const [showErr, setShowErr]     = useState(false);
 
     /**
      * Translations
@@ -72,7 +66,6 @@ const DepositInfo = () => {
         let loadUser = async () => {
             // awaiting the response from the backend
             let { response, data } = await api("/api/currUser/")
-            
             // if the response was successful or not
             if (response.status === 200) {
                 // setting the username
@@ -82,9 +75,7 @@ const DepositInfo = () => {
                 setIsLoading(false)
             } else { // unsuccesful fetch
                 // show an error message since fetching was unsuccesful
-                setError('An error occurred with fetching data. Awkward..')
-                // show the error
-                setShowErr(true)
+                setError("default_error")
                 // set loading as false.
                 setIsLoading(false)
             }
@@ -100,11 +91,7 @@ const DepositInfo = () => {
     return (
         <div className="deposit-info-page">
             {/* showing error messages */}
-            {showErr && 
-                <Alert className="text-center" variant="danger" onClose={() => setShowErr(false)} dismissible>
-                    { error }
-                </Alert>
-            }
+            {error && <MsgAlert msg={t(error)} variant="danger" />}
             {/* loading screen */}
             {isLoading && 
             <div className="spinner">

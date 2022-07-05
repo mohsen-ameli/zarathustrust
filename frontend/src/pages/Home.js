@@ -1,17 +1,18 @@
-import { useEffect, useState, useRef, useContext, useCallback } from 'react';
+import { useEffect, useState, useContext, useCallback } from 'react';
 import { Link } from "react-router-dom";
-import ShowWallets from "../components/ShowWallets";
+import { useTranslation } from 'react-i18next';
 
-import Alert from 'react-bootstrap/Alert';
 import RotateLoader from 'react-spinners/RotateLoader'
 
 import Tippy from "@tippyjs/react";
 import 'tippy.js/dist/tippy.css';
-import '../css/tooltip.css'
 import 'tippy.js/animations/scale.css';
+
+import '../css/tooltip.css'
 import AuthContext from "../context/AuthContext";
 import useFetch from "../components/useFetch";
-import { useTranslation } from 'react-i18next';
+import MsgAlert from "../components/MsgAlert";
+import ShowWallets from "../components/ShowWallets";
 
 
 const Home = () => {
@@ -28,18 +29,14 @@ const Home = () => {
 
     const [isLoading, setIsLoading]     = useState(true)
     const [error, setError]             = useState(null)
-    const [showErr, setShowErr]         = useState(false)
-    const [showMsg, setShowMsg]         = useState(false)
     const [msg, setMsg]                 = useState("")
     
     let { user }                        = useContext(AuthContext)
+    let { t }                           = useTranslation()
     let pk                              = user?.user_id
-    const { t }                         = useTranslation()
     let api                             = useFetch()
-    const ref                           = useRef(null)
 
     let balanceStatic                   = null
-    let currencyStatic                  = null
     let interestRate                    = 0
 
 
@@ -53,8 +50,7 @@ const Home = () => {
                 setBalance(Number(data.total_balance).toFixed(2));
                 setBonus(Number(data.bonus).toFixed(1));
             } else {
-                setError('An error occurred. Awkward..')
-                setShowErr(true)
+                setError(t("default_error"))
                 setIsLoading(false)
             }
         }; loadAccount()
@@ -66,11 +62,9 @@ const Home = () => {
                 setInterest(Number(data.interest_rate).toFixed(20));
                 // eslint-disable-next-line
                 interestRate = Number(data.interest_rate)
-                setIsLoading(false);
                 interestCounter()
             } else {
-                setError('An error occurred. Awkward..')
-                setShowErr(true)
+                setError(t("default_error"))
                 setIsLoading(false)
             }
         }; loadAccountInterest()
@@ -82,34 +76,26 @@ const Home = () => {
                 setName(data.username)
                 setIsBiz(data.is_business)
                 setCurrency(data.currency)
-                // eslint-disable-next-line
-                currencyStatic = data.currency
+                
+                loadSymbol(data.currency)
             } else {
-                setError('An error occurred. Awkward..')
-                setShowErr(true)
+                setError(t("default_error"))
                 setIsLoading(false)
             }
         }; loadUser()
 
-        let loadCurrencies = async () => {
-            let { response, data } = await api("/api/json/currencies/")
-    
+        let loadSymbol = async (iso3) => {
+            let { response, data } = await api(`/api/getCurrencySymbol/${iso3}/`)
             if (response.status === 200) {
-                setIsLoading(false);
-                data.map(item => {
-                    if (item.currency.code === currencyStatic) {
-                        setInterestSymbol(item.currency.symbol)
-                        setSymbol(item.currency.symbol)
-                    }
-                    return null;
-                })
-                setIsLoading(false);
+                setInterestSymbol(data)
+                setSymbol(data)
             } else {
-                setError('An error occurred. Awkward..')
-                setShowErr(true)
+                setError(t("default_error"))
                 setIsLoading(false)
             }
-        }; loadCurrencies()
+        }
+
+        setIsLoading(false);
     }, [])
 
 
@@ -120,14 +106,9 @@ const Home = () => {
         // displaying any messages
         if (message !== "" && message !== "null") {
             if (!success) {
-                setError(message)
-                setShowErr(true)
+                setError(t(message))
             } else if (success) {
-                setMsg(message)
-                setShowMsg(true)
-            } else {
-                setShowErr(false)
-                setShowMsg(false)
+                setMsg(t(message))
             }
         }
         // cleaning the cookies
@@ -135,6 +116,7 @@ const Home = () => {
         sessionStorage.setItem('success', false)
         
         fetchStuff()
+        // eslint-disable-next-line
     }, [fetchStuff])
 
 
@@ -158,14 +140,13 @@ const Home = () => {
 
 
     // cash out
-    let cashOut = () => {
+    const cashOut = async () => {
         setIsLoading(true)
         
-        api("/api/cash-out/")
-        .then (res => {
-            setIsLoading(false);
-            if (res.data.success) {
-                reloadP(res.data.amount, symbol);
+        let {response, data} = await api("/api/cash-out/")
+        if (response.status === 200) {
+            if (data.success) {
+                reloadP(data.amount, symbol);
 
                 // setBalance(Number(res.balance).toFixed(2))
                 // setInterest(zero.toFixed(20))
@@ -175,12 +156,13 @@ const Home = () => {
                 // interestRate = 0
 
             } else {
-                setShowErr(true)
-                setError(`You need at least $0.1 to be able to cash out !`)
-                setIsLoading(false);
+                setError(t("cash_out_error"))
             }
-        })
-        .catch(() => {setIsLoading(false); setError('5 An error occurred. Awkward..'); setShowErr(true)})
+            setIsLoading(false);
+        } else {
+            setIsLoading(false)
+            setError(t("default_error"))
+        }
     }
 
 
@@ -188,10 +170,9 @@ const Home = () => {
     window.onload = () => {
         let reloading = sessionStorage.getItem("reloading");
         let amount = sessionStorage.getItem("amount");
-        let s = sessionStorage.getItem("symbol");
+        let symbol = sessionStorage.getItem("symbol");
         if (reloading) {
-            setShowMsg(true)
-            setMsg(`You have successfuly cashed out ${s}${amount}!`)
+            setMsg(t("cash_out_success", {"symbol": symbol, "amount": amount}))
 
             sessionStorage.removeItem("reloading");
             sessionStorage.removeItem("amount");
@@ -216,35 +197,10 @@ const Home = () => {
     }
 
 
-    let dismiss = (msg) => {
-        const element = ref.current
-        element.classList.replace("animate__fadeInDown", "animate__fadeOutDown")
-
-        if (msg === "danger") {
-            setTimeout(() => {
-                setShowErr(false)
-            }, 1000)
-        } else {
-            setTimeout(() => {
-                setShowMsg(false)
-            }, 1000)
-        }
-    }
-
     return ( <div className="home-page">
 
-        {showErr && 
-        <Alert className="text-center animate__animated animate__fadeInDown"
-            variant="danger" onClick={() => dismiss("danger")} dismissible ref={ref}>
-            { error }
-        </Alert>
-        }
-        {showMsg &&
-        <Alert className="text-center animate__animated animate__fadeInDown"
-            variant="success" onClick={() => dismiss("success")} dismissible ref={ref}>
-            { msg }
-        </Alert>
-        }
+        {error && <MsgAlert msg={error} variant="danger" />}
+        {msg && <MsgAlert msg={msg} variant="success" />}
         { isLoading && 
         <div className="spinner">
             <RotateLoader color="#f8b119" size={20} />

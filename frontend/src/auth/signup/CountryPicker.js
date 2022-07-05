@@ -3,10 +3,10 @@ import { useCallback, useContext, useEffect } from "react"
 import { useState } from "react"
 import { Link, useHistory } from "react-router-dom"
 import ReactCountryFlag from "react-country-flag"
-import Alert from 'react-bootstrap/Alert';
 import RotateLoader from 'react-spinners/RotateLoader';
 import { useRef } from "react"
-import AuthContext from "../context/AuthContext"
+import AuthContext from "../../context/AuthContext"
+import MsgAlert from "../../components/MsgAlert"
 
 
 const CountryPicker = () => {
@@ -49,7 +49,7 @@ const CountryPicker = () => {
                 setCountries(data)
                 setIsLoading(false)
             })
-            .catch(() => {setError('An error occurred. Awkward..'); setShowErr(true); setIsLoading(false)})
+            .catch(() => {setError('default_error'); setShowErr(true); setIsLoading(false)})
         }; loadJson()
         // eslint-disable-next-line
     }, [])
@@ -92,11 +92,7 @@ const CountryPicker = () => {
 
     return (
         <div className="country-picker" onKeyDown={e => {e.key === "Enter" && next(choices[0][1], choices[0][0])}}>
-            {showErr && 
-            <Alert className="text-center" variant="danger" onClose={() => setShowErr(false)} dismissible>
-                { error }
-            </Alert>
-            }
+            {showErr && <MsgAlert msg={error} variant="danger" />}
 
             { isLoading && 
             <div className="spinner">
@@ -106,7 +102,7 @@ const CountryPicker = () => {
 
             <div className="card text-white zarathus-card mx-auto">
                 <div className="card-body">
-                    <h3 className="fw-normal text-center">Please Choose a Country</h3>
+                    <h3 className="fw-normal text-center">{t("plz_choose_country")}</h3>
                     <hr className="zarathus-hr" />
 
                     <div className="dropdown form-floating">
@@ -114,9 +110,9 @@ const CountryPicker = () => {
                             placeholder="Country" id="country-input" autoComplete="off"
                             defaultValue={defCountry} ref={ref} onClick={() => ref.current.value = ""} onChange={e => search(e.target.value)} />
 
-                        <label htmlFor="country-input">Please choose a country</label>
+                        <label htmlFor="country-input">{t("plz_choose_country")}</label>
 
-                        <button type="submit" className="neon-button my-3" name="default-submit" value="canada" onClick={() => next(defCountry.toLowerCase(), defCountryIso)}>Next</button>
+                        <button type="submit" className="neon-button my-3" name="default-submit" value="canada" onClick={() => next(defCountry.toLowerCase(), defCountryIso)}>{t("next")}</button>
 
                         <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink" id="new-country-list">
                             {choices && choices.map((item, i) => (
@@ -136,7 +132,7 @@ const CountryPicker = () => {
                             {empty && 
                                 <li>
                                 <span className="dropdown-item disabled" style={{textTransform: "capitalize", color: "black"}}>
-                                    <b>No countries were found.</b>
+                                    <b>{t("no_countries")}</b>
                                 </span>
                             </li>
                             }
@@ -144,7 +140,7 @@ const CountryPicker = () => {
                     </div>
 
                     <div className="d-flex text-white" style={{fontSize: "9.5pt"}}>
-                        <div className="mt-3">Already have an account ?</div>
+                        <div className="mt-3">{t("already_user")}</div>
                         <Link className="mt-3 ms-2" to="/login" style={{color: "#f8b119"}}>{t("log_in")}</Link>
                     </div>
                 </div>

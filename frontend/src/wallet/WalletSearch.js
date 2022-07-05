@@ -5,18 +5,22 @@ import ReactCountryFlag from "react-country-flag"
 import Alert from 'react-bootstrap/Alert';
 import RotateLoader from 'react-spinners/RotateLoader';
 import useFetch from "../components/useFetch";
+import MsgAlert from "../components/MsgAlert";
+import { useTranslation } from "react-i18next";
 
 const WalletSearch = () => {
-    let api                             = useFetch()
     const [currencies, setCurrencies]   = useState([])
     const [choices, setChoices]         = useState(null)
     const [empty, setEmpty]             = useState(true)
 
-    const [isLoading, setIsLoading] = useState(true)
-    const [error, setError]         = useState(null)
-    const [showErr, setShowErr]     = useState(false)
-    const [showMsg, setShowMsg]     = useState(false)
-    const [msg, setMsg]             = useState("")
+    const [isLoading, setIsLoading]     = useState(true)
+    const [error, setError]             = useState(null)
+    const [showMsg, setShowMsg]         = useState(false)
+    const [msg, setMsg]                 = useState("")
+
+    let api                             = useFetch()
+    let { t }                           = useTranslation()
+
 
     useEffect(() => {
         let success = (sessionStorage.getItem('success') === "true")
@@ -26,12 +30,10 @@ const WalletSearch = () => {
         if (m !== "" && m !== "null") {
             if (!success) {
                 setError(m)
-                setShowErr(true)
             } else if (success) {
                 setMsg(m)
                 setShowMsg(true)
             } else {
-                setShowErr(false)
                 setShowMsg(false)
             }
         }
@@ -47,7 +49,7 @@ const WalletSearch = () => {
                 setCurrencies(data)
                 setIsLoading(false)
             } else {
-                setError('An error occurred. Awkward..'); setShowErr(true); setIsLoading(false);
+                setError("default_error"); setIsLoading(false);
             }
         }; loadJson()
 
@@ -74,11 +76,7 @@ const WalletSearch = () => {
 
     return (
         <div className="new-wallet-page">
-            {showErr && 
-            <Alert className="text-center" variant="danger" onClose={() => setShowErr(false)} dismissible>
-                { error }
-            </Alert>
-            }
+            {error && <MsgAlert msg={t(error)} variant="danger" />}
             {showMsg &&
             <Alert className="text-center" variant="success" onClose={() => setShowMsg(false)} dismissible>
                 { msg }
@@ -93,7 +91,7 @@ const WalletSearch = () => {
 
             <div className="card text-white zarathus-card mx-auto">
                 <div className="card-body">
-                    <h3 className="fw-normal text-center">You can have up to 10 wallets with different currencies</h3>
+                    <h3 className="fw-normal text-center">{t("max_wallets")}</h3>
                     <hr className="zarathus-hr"></hr>
 
                     <div className="dropdown form-floating">
@@ -101,7 +99,7 @@ const WalletSearch = () => {
                         data-bs-toggle="dropdown" placeholder="Country"
                         onChange={e => search(e.target.value)}></input>
                         
-                        <label htmlFor="country-input">Please choose a currency</label>
+                        <label htmlFor="country-input">{t("plz_choose_currency")}</label>
                         
                         <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink" id="new-country-list">
                             {choices && choices.map((item, i) => (
@@ -121,7 +119,7 @@ const WalletSearch = () => {
                             {empty && 
                                 <li>
                                 <span className="dropdown-item disabled" style={{textTransform: "capitalize", color: "black"}}>
-                                    <b>No accounts were found.</b>
+                                    <b>{t("no_currencies_found")}</b>
                                 </span>
                             </li>
                             }

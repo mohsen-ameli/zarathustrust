@@ -91,6 +91,19 @@ def jsonSearch(request, file):
 
     return Response(data)
 
+@api_view(['GET'])
+def getCurrencySymbol(request, country):
+    try:
+        country_code = country.upper()
+        project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        file = f'{project}/json/currencies_symbols.json' # getting the file containing all country codes
+        with open(file, 'r') as config_file: # opening and reading the json file
+            data = json.load(config_file)
+
+        return Response(data[country_code])
+    except:
+        return Response({})
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -471,11 +484,11 @@ def transferConfirm(request):
             elif moneyToSend < minCurrency:
                 message = f"Please consider that the minimum amount to send is {userCurrencySymbol}{minCurrency}!"
             elif moneyToSend > balance:
-                message = "You have requested to transfer more than you have in your current balance!"
+                message = "more_than_ballance"
         else:
-            message = "You cannot send money to yourself."
+            message = "cannot_send_to_self"
     except ObjectDoesNotExist:
-        message = "The account you are trying to send money to has not finished signing up!"
+        message = "hasnt_finished_signup"
 
     return Response({"message" : message, "success": success})
 
@@ -881,9 +894,10 @@ def verifyPhone(request):
     phone_code = request.session.get('ver_code')['phone_verify_code']
     phone_number = user['phone_number']
 
-    phone_msg_verify(
-                verify_code=phone_code, phone_number_to=phone_number
-            )
+    print(phone_code)
+    # phone_msg_verify(
+    #             verify_code=phone_code, phone_number_to=phone_number
+    #         )
 
     return Response({"code": phone_code})
 
@@ -972,7 +986,7 @@ def verifyReferral(request):
         else: # referral code was wrong
             message = f"Sorry, this referral code is incorrect, but you have successfully registered, {username}!"
 
-    return Response({"msg": message})
+    return Response({"msg": message, "user": username})
 
 
 class EmailTokenObtainPairView(TokenObtainPairView):
@@ -1007,8 +1021,9 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
                 f"{EMAIL_ID}",
                 [f"{user.email}"],
             )
-
-        return Response({'msg': 'check your email to reset your password'}, status=status.HTTP_200_OK)
+            return Response({'msg': 'check your email to reset your password'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'msg': 'No user with the specified email exists.'}, status=status.HTTP_404_NOT_FOUND)
 
 
 class PasswordTokenCheck(generics.GenericAPIView):

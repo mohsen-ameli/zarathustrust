@@ -1,13 +1,20 @@
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { useParams, useHistory, useLocation } from "react-router-dom";
-import Alert from 'react-bootstrap/Alert';
 import RotateLoader from 'react-spinners/RotateLoader';
 import useFetch from "../components/useFetch";
 import { useTranslation } from "react-i18next";
 import { useCallback } from "react";
+import MsgAlert from "../components/MsgAlert";
 
 const CurrencyExConfirm = () => {
+    const [fromSymbol, setFromSymbol] = useState(null)
+    const [toSymbol, setToSymbol]   = useState(null)
+    const [exRate, setExRate]       = useState(null)
+    const [isLoading, setIsLoading] = useState(true)
+    const [error, setError]         = useState(null)
+
+    const { state }                 = useLocation()
     let { t }                       = useTranslation()
     let fromCurr                    = useParams().fromCurr
     let fromIso                     = useParams().fromIso
@@ -18,15 +25,7 @@ const CurrencyExConfirm = () => {
     let history                     = useHistory()
     let api                         = useFetch()
 
-    const [fromSymbol, setFromSymbol] = useState(null)
-    const [toSymbol, setToSymbol]   = useState(null)
-    const [exRate, setExRate]       = useState(null)
-    const [isLoading, setIsLoading] = useState(true)
-    const [error, setError]         = useState(null)
-    const [showErr, setShowErr]     = useState(false)  
     
-    const { state }                 = useLocation()
-
     const fetchStuff = useCallback(() => {
         api("/api/json/currencies_symbols/")
         .then(res => {
@@ -39,7 +38,7 @@ const CurrencyExConfirm = () => {
             setExRate(res.data['ex_rate'])
             setIsLoading(false)
         })
-        .catch(() => {setError('1 An error occurred. Awkward..'); setShowErr(true); setIsLoading(false);})
+        .catch(() => {setError("default_error"); setIsLoading(false);})
 
         // eslint-disable-next-line
     }, [])
@@ -79,17 +78,13 @@ const CurrencyExConfirm = () => {
             }
             setIsLoading(false)
         })
-        .catch(() => {setError('1 An error occurred. Awkward..'); setShowErr(true); setIsLoading(false);})
+        .catch(() => {setError("default_error"); setIsLoading(false);})
     }
 
 
     return (
         <div className="currency-ex-confirm">
-            {showErr && 
-            <Alert className="text-center" variant="danger" onClose={() => setShowErr(false)} dismissible>
-                { error }
-            </Alert>
-            }
+            {error && <MsgAlert msg={t(error)} variant="danger" />}
             { isLoading && 
             <div className="spinner">
                 <RotateLoader color="#f8b119" size={20} />

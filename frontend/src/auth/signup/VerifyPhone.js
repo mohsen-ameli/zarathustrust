@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom";
-import Otp from "../components/Otp";
+import Otp from "../../components/Otp";
 
 const VerifyPhone = () => {
     const { state } = useLocation()

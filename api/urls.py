@@ -29,6 +29,7 @@ urlpatterns = [
     path('account/', views.accounts, name='account'),
     path('account-interest/', views.accountInterest, name='account-interest'),
     path('json/<str:file>/', views.jsonSearch, name='json-search'),
+    path('getCurrencySymbol/<str:country>/', views.getCurrencySymbol, name='get-currency-symbol'),
     path('cash-out/', views.cashOut, name='cash-out'),
     path('transferSearch/', views.transferSearch, name='transfer-search'),
     path('transferConfirm/', views.transferConfirm, name='transfer-confirm'),

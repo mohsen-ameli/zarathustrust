@@ -12,8 +12,13 @@ let useFetch = () => {
 
     let originalRequest = async (url, config)=> {
         url = `${url}`
+        let data = ""
         let response = await fetch(url, config)
-        let data = await response.json()
+        try {
+            data = await response.json()   
+        } catch (error) {
+            ;
+        }
         return {response, data}
     }
 

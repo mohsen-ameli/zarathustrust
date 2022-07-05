@@ -104,7 +104,7 @@ const LandingPage = () => {
                 </Link>
                 <Link to="/login" className="zoom-login">
                     <i className="fas fa-sign-in-alt buttons-2 p-2"></i>
-                    <h1 style={{fontSize: "2rem"}}>{t("login")}</h1>
+                    <h1 style={{fontSize: "2rem"}}>{t("log_in")}</h1>
                 </Link>
             </div>
         </div>
@@ -143,13 +143,13 @@ const LandingPage = () => {
                     <ul className="nav col-md-4 justify-content-end">
                         <li className="nav-item"><a href="#0" className="nav-link px-2 text-muted">{t("home")}</a></li>
                         <li className="nav-item"><Link to="/login" className="nav-link px-2 text-muted">{t("log_in")}</Link></li>
-                        <li className="nav-item"><a href="#0" className="nav-link px-2 text-muted">Register</a></li>
+                        <li className="nav-item"><Link to="/country-picker" className="nav-link px-2 text-muted">{t("sign_up")}</Link></li>
                         <li className="nav-item"><a href="#0" className="nav-link px-2 text-muted">FAQs</a></li>
                         <li className="nav-item"><Link to="/about" className="nav-link px-2 text-muted">{t("about")}</Link></li>
                     </ul>
 
                     {/*  under dev */}
-                    <div className="text-muted pt-3" id="under-dev">Still Under Development</div>
+                    <div className="text-muted pt-3" id="under-dev">{t("under_dev")}</div>
                 </footer>
             </div>
         </div>

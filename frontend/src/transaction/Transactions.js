@@ -1,17 +1,19 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback, useContext } from "react";
 import { Link } from "react-router-dom";
-import ShowDate from '../components/ShowDate'
-import ShowWallets from "../components/ShowWallets";
 import { useTranslation } from "react-i18next";
 
-import Alert from 'react-bootstrap/Alert';
 import RotateLoader from 'react-spinners/RotateLoader';
+
+import ShowDate from '../components/ShowDate'
+import ShowWallets from "../components/ShowWallets";
 import AuthContext from "../context/AuthContext";
-import { useContext } from "react";
 import useFetch from "../components/useFetch";
-import { useCallback } from "react";
+import MsgAlert from "../components/MsgAlert";
+
 
 const Transactions = () => {
+    const DEFAULT_NUM_ITEMS = 10
+    const DEFAULT_FIRST_PAGE = 1
     let { user }                        = useContext(AuthContext)
     let { t }                           = useTranslation()
     const pk                            = user?.user_id
@@ -27,12 +29,12 @@ const Transactions = () => {
 
     const [iso2, setIso2]               = useState(null)
     const [currency, setCurrency]       = useState(null)
-    const [numItems, setNumItems]       = useState(10)
-    const [pageNum, setPageNum]         = useState(1)
+    const [numItems, setNumItems]       = useState(DEFAULT_NUM_ITEMS)
+    const [pageNum, setPageNum]         = useState(DEFAULT_FIRST_PAGE)
 
     const [isLoading, setIsLoading]     = useState(true)
     const [error, setError]             = useState(null)
-    const [showErr, setShowErr]         = useState(false)
+
 
     const fetchStuff = useCallback(() => {
         let loadUser = async () => {
@@ -45,8 +47,7 @@ const Transactions = () => {
     
                 getTransactions(data.iso2, data.currency)
             } else {
-                setError('An error occurred. Awkward..')
-                setShowErr(true)
+                setError("default_error")
                 setIsLoading(false)
             }
         }; loadUser()
@@ -61,8 +62,7 @@ const Transactions = () => {
     
                 setIsLoading(false)
             } else {
-                setError('An error occurred. Awkward..')
-                setShowErr(true)
+                setError("default_error")
                 setIsLoading(false)
             }
         }
@@ -70,11 +70,10 @@ const Transactions = () => {
         // eslint-disable-next-line
     }, [])
 
+
     useEffect(() => {
         fetchStuff()
     }, [fetchStuff])
-
-    
 
 
     let changeCurr = async (wallet) => {
@@ -94,8 +93,7 @@ const Transactions = () => {
 
             setIsLoading(false)
         } else {
-            setError('An error occurred. Awkward..')
-            setShowErr(true)
+            setError("default_error")
             setIsLoading(false)
         }
     }
@@ -113,8 +111,7 @@ const Transactions = () => {
 
             setIsLoading(false)
         } else {
-            setError('An error occurred. Awkward..')
-            setShowErr(true)
+            setError("default_error")
             setIsLoading(false)
         }
     }
@@ -138,8 +135,7 @@ const Transactions = () => {
 
             setIsLoading(false)
         } else {
-            setError('An error occurred. Awkward..')
-            setShowErr(true)
+            setError("default_error")
             setIsLoading(false)
         }
     }
@@ -163,11 +159,7 @@ const Transactions = () => {
 
     return (
         <div className="transactions">
-            {showErr && 
-            <Alert className="text-center" variant="danger" onClose={() => setShowErr(false)} dismissible>
-                { error }
-            </Alert>
-            }
+            {error && <MsgAlert msg={error} variant="danger" />}
             { isLoading && 
                 <div className="spinner">
                     <RotateLoader color="#f8b119" size={20} />
