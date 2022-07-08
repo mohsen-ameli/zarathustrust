@@ -136,8 +136,8 @@ else:
             "NAME": config.get("db_name"),
             "USER": config.get("db_user"),
             "PASSWORD": config.get("db_pass"),
-            "HOST": "localhost",
-            "PORT": "",
+            "HOST": config.get("db_host"),
+            "PORT": "5432",
         }
     }
 
