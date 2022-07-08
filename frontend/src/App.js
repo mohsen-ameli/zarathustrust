@@ -30,7 +30,7 @@ import Settings from './pages/Settings';
 
 import PassReset from './auth/forgotpass/PassReset';
 import PassResetConfirm from './auth/forgotpass/PassResetConfirm';
-import Link from './plaid/Link';
+// import Link from './plaid/Link';
 
 export const ThemeContext = createContext(null)
 
@@ -64,8 +64,8 @@ function App() {
                                 <PrivateRoute path="/transactions/:tId" exact comp={TransactionsDetail} />
                                 <PrivateRoute path="/transactions" exact comp={Transactions} />
                                 <PrivateRoute path="/settings" exact comp={Settings} />
-                                {/* <Route path="/plaid" component={Link} />
-                                <Route path="/about" component={About} /> */}
+                                {/* <Route path="/plaid" component={Link} /> */}
+                                <Route path="/about" component={About} />
                                 <Route path="/country-picker" component={CountryPicker} />
                                 <Route path="/signup" component={SignUp} />
                                 <Route path="/verify-email" component={VerifyEmail} />

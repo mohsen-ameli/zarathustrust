@@ -64,7 +64,7 @@ margin-right: 0px!important;
 
 @supports (-webkit-touch-callout: none) {
   .landing {
-    background: url('../images/rocks.jpg') center top no-repeat scroll;
+    background: url('../images/zarathus-4.jpg') center top no-repeat scroll;
     position: relative;
     width: 100%;
     height: 100vh;
@@ -79,7 +79,7 @@ margin-right: 0px!important;
 
 .parent {
   z-index: -100;
-  background: url('../images/rocks.jpg') repeat fixed 100%;
+  background: url('../images/zarathus-4.jpg') repeat fixed 100%;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -99,7 +99,7 @@ margin-right: 0px!important;
   height: auto;
   z-index: -100;
   margin: 0;
-  background: url('../images/rocks.jpg') repeat fixed 100%;
+  background: url('../images/zarathus-4.jpg') repeat fixed 100%;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;

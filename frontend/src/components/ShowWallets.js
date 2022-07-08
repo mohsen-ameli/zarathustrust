@@ -3,8 +3,9 @@ import { Link } from "react-router-dom"
 import ReactCountryFlag from "react-country-flag"
 import useFetch from "./useFetch"
 import { useTranslation } from "react-i18next"
+import persia from '../images/persia.jpg'
 
-const ShowWallets = ({pk, home, changeCurr}) => {
+const ShowWallets = ({home, changeCurr}) => {
     const [wallets, setWallets] = useState([])
 
     let link                    = useRef()
@@ -50,12 +51,16 @@ const ShowWallets = ({pk, home, changeCurr}) => {
                         <span key={i}>
                             <button name="wallet-post" onClick={() => changeCurr(wallet)}
                                 value={wallet[0]} className="dropdown-item">
+                                
+                                {wallet[0] === "IR" ? 
+                                <img alt='' style={{width: '1.5em', lineHeight: '1.5em', marginBottom: '.1em', marginRight: '.5em'}} src={persia} ></img> :
                                 <ReactCountryFlag
                                     countryCode={`${wallet[0]}`}
                                     svg
                                     style={{width: '1.5em', lineHeight: '1.5em', marginBottom: '.1em', marginRight: '.5em'}}
                                     title={`${wallet[0]}`}
                                 />
+                                }
                                 {wallet[1]} ({wallet[2]})
                             </button>
                         </span>

@@ -7,6 +7,7 @@ import RotateLoader from 'react-spinners/RotateLoader';
 
 import useFetch from "../components/useFetch";
 import useMsgSwal from "../components/useMsgSwal";
+import persia from '../images/persia.jpg'
 
 
 const WalletSearch = () => {
@@ -79,12 +80,15 @@ const WalletSearch = () => {
                                 <li key={i}>
                                     <Link className="dropdown-item" to={{ pathname: `/wallet-search/${item[0]}`, state: { fromApp: true } }}
                                         style={{textTransform: "capitalize"}}>
+                                        {item[0] === "IR" ? 
+                                        <img alt='' style={{width: '1.5em', lineHeight: '1.5em', marginBottom: '.1em', marginRight: '.5em'}} src={persia} ></img> :
                                         <ReactCountryFlag
                                             countryCode={item[0]}
                                             svg
                                             style={{width: '1.5em', lineHeight: '1.5em', marginBottom: '.1em', marginRight: '.5em'}}
                                             title={item[0]}
-                                        /> 
+                                        />
+                                        }
                                         {item[1]}
                                     </Link>
                                 </li>

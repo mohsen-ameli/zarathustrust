@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import ReactCountryFlag from "react-country-flag";
 import { useTranslation } from "react-i18next";
 import useFetch from "./useFetch";
+import persia from '../images/persia.jpg'
 
 
-const useAddMoney = (pk) => {
+const useAddMoney = () => {
     const [iso2, setIso2]               = useState(null)
     const [curr, setCurr]               = useState(null);
     const [symbol, setSymbol]           = useState(null);
@@ -91,12 +92,15 @@ const useAddMoney = (pk) => {
                     {/* dropdown button */}
                     <button style={{minHeight: "3.65rem"}} onClick={e => e.preventDefault()}
                     className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        {iso2 === "IR" ? 
+                        <img alt='' style={{width: '1.5em', lineHeight: '1.5em', marginBottom: '.1em', marginRight: '.5em'}} src={persia} ></img> :
                         <ReactCountryFlag
                             countryCode={iso2}
                             svg
                             style={{width: '1.5em', lineHeight: '1.5em', marginBottom: '.1em', marginRight: '.5em'}}
                             title={iso2}
                         />
+                        }
                         { curr && curr } ({ symbol && symbol })
                     </button>
 
@@ -107,12 +111,15 @@ const useAddMoney = (pk) => {
                             <li key={i}>
                                 <button className="dropdown-item" 
                                 onClick={e => {changeCurr(item[0], item[1], item[2], item[3]); e.preventDefault()}}>
+                                    {item[0] === "IR" ? 
+                                    <img alt='' style={{width: '1.5em', lineHeight: '1.5em', marginBottom: '.1em', marginRight: '.5em'}} src={persia} ></img> :
                                     <ReactCountryFlag
                                         countryCode={`${item[0]}`}
                                         svg
                                         style={{width: '1.5em', lineHeight: '1.5em', marginBottom: '.1em', marginRight: '.5em'}}
                                         title={`${item[0]}`}
                                     />
+                                    }
                                     {item[1]} ({item[2]})
                                 </button>
                             </li>

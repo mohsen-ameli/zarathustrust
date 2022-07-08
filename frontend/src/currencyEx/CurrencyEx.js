@@ -9,6 +9,7 @@ import useAddMoney from '../components/useAddMoney'
 import AuthContext from '../context/AuthContext';
 import useFetch from '../components/useFetch';
 import useMsgSwal from '../components/useMsgSwal';
+import persia from '../images/persia.jpg'
 
 
 const CurrencyEx = () => {
@@ -111,12 +112,15 @@ const CurrencyEx = () => {
                         <div className="dropdown">
                             <button style={{minHeight: "3.65rem"}} className="btn btn-secondary dropdown-toggle" type="button" 
                             id="toDropdownMenu" ref={toDropMenu} data-bs-toggle="dropdown" aria-expanded="false">
+                                {iso2 === "IR" ? 
+                                <img alt='' style={{width: '1.5em', lineHeight: '1.5em', marginBottom: '.1em', marginRight: '.5em'}} src={persia} ></img> :
                                 <ReactCountryFlag
                                     countryCode={iso2}
                                     svg
                                     style={{width: '1.5em', lineHeight: '1.5em', marginBottom: '.1em', marginRight: '.5em'}}
                                     title={iso2}
                                 />
+                                }
                                 {toCurr} ({symbol})
                             </button>
                             <ul className="dropdown-menu" aria-labelledby="toDropdownMenu" id="dropdown-to-item">
@@ -124,12 +128,15 @@ const CurrencyEx = () => {
                                     <li key={i}>
                                         <button className="dropdown-item"
                                             onClick={() => changeCurr(item[0], item[1], item[2])}>
+                                            {item[0] === "IR" ? 
+                                            <img alt='' style={{width: '1.5em', lineHeight: '1.5em', marginBottom: '.1em', marginRight: '.5em'}} src={persia} ></img> :
                                             <ReactCountryFlag
                                                 countryCode={item[0]}
                                                 svg
                                                 style={{width: '1.5em', lineHeight: '1.5em', marginBottom: '.1em', marginRight: '.5em'}}
                                                 title={item[0]}
                                             />
+                                            }
                                             {item[1]} ({item[2]})
                                         </button>
                                     </li>

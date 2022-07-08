@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import img from '../images/zarathustrust_new.png'
+import persia from '../images/persia.jpg'
 
 import { useRef, useContext } from 'react';
 import AuthContext from '../context/AuthContext';
@@ -35,7 +36,7 @@ const Navbar = () => {
 
     let changeLang = (lang, code) => {
         i18next.changeLanguage(lang)
-        langIcon.current.classList.replace(langIcon.current.classList[1],`flag-icon-${code}`)
+        langIcon.current.classList.replace(langIcon?.current.classList[1],`flag-icon-${code}`)
         localStorage.setItem("code", code)
     }
 
@@ -72,9 +73,12 @@ const Navbar = () => {
                             <li className="nav-item dropdown">
                                 <Link className="nav-link dropdown-toggle text-white" to="/" 
                                 id="langDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i className="fa-solid fa-globe"></i>
+                                    <i className="fa-solid fa-globe mx-1"></i>
                                     {t("language")}
+                                    {countryCodes[localStorage.getItem("i18nextLng")] === "ir" ? 
+                                    <img alt='' height="16em" className="flag-icon mx-1" src={persia} ></img> :
                                     <span className={`flag-icon flag-icon-${countryCodes[localStorage.getItem("i18nextLng")]} mx-1`} ref={langIcon}></span>
+                                    }
                                 </Link>
                                 <ul className="dropdown-menu" aria-labelledby="langDropdown">
                                     <input type="hidden" value="" />
@@ -88,7 +92,7 @@ const Navbar = () => {
                                             Deutsch
                                         </button>
                                         <button onClick={() => changeLang("fa-IR", "ir")} className="dropdown-item">
-                                            <span className="flag-icon flag-icon-ir mx-1"></span>
+                                            <img alt='' height="16em" className="flag-icon mx-1" src={persia} ></img>
                                             Persian
                                         </button>
                                     </li>
