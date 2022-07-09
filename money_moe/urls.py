@@ -6,17 +6,18 @@ app_name = "money_moe"
 
 urlpatterns = [
     # admin
-    path("g0atch33se&pizz1/", admin.site.urls, name="admin"),
+    path('g0atch33se&pizz1', admin.site.urls),
     
     # api
     path("api/", include("api.urls"), name="api"),
 
     # React
-    path("", TemplateView.as_view(template_name='index.html')),
-
-    # match all other pages (React)
-    re_path(r'^(?:.*)/?$', TemplateView.as_view(template_name='index.html')),
+    # path("", TemplateView.as_view(template_name='index.html')),
+    # re_path(r'^(?:.*)/?$', TemplateView.as_view(template_name='index.html')),
 ]
+
+# match all other pages (React)
+urlpatterns += [re_path(r'^.*',TemplateView.as_view(template_name='index.html'))]
 
 
 '''
