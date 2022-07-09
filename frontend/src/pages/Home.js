@@ -14,6 +14,7 @@ import AuthContext from "../context/AuthContext";
 import useFetch from "../components/useFetch";
 import ShowWallets from "../components/ShowWallets";
 import useMsgSwal from "../components/useMsgSwal";
+import useInterest from './useInterest';
 
 const Home = () => {
     let zero = 0
@@ -35,8 +36,7 @@ const Home = () => {
     let pk                              = user?.user_id
     let api                             = useFetch()
 
-    let balanceStatic                   = null
-    let interestRate                    = 0
+    const interestCounter = useInterest(interest, balance, setInterest)
 
 
     const fetchStuff = useCallback(() => {
@@ -45,8 +45,6 @@ const Home = () => {
             let { response, data } = await api("/api/account/")
     
             if (response.status === 200) {
-                // eslint-disable-next-line
-                balanceStatic = (Number(data.total_balance))
                 setBalance(Number(data.total_balance).toFixed(2))
                 setBonus(Number(data.bonus).toFixed(1))
                 setIsLoading(false)
@@ -62,10 +60,7 @@ const Home = () => {
     
             if (response.status === 200) {
                 setInterest(Number(data.interest_rate).toFixed(20));
-                // eslint-disable-next-line
-                interestRate = Number(data.interest_rate)
                 setIsLoading(false)
-                interestCounter()
             } else {
                 msgSwal(t("default_error"), "error")
                 setIsLoading(false)
@@ -99,31 +94,6 @@ const Home = () => {
             } else {
                 msgSwal(t("default_error"), "error")
                 setIsLoading(false)
-            }
-        }
-
-        // interest counter
-        const interestCounter = () => {
-            if (balanceStatic > 0) {
-                let interest = 0
-                let intRate = interestRate
-
-                // canceling the delay
-                setInterest(intRate.toFixed(20))
-                interest = balanceStatic * 0.01 / 31536000
-                intRate = intRate + interest
-                // canceling the delay
-
-                const interval = setInterval(() => {
-                    setInterest(intRate.toFixed(20))
-
-                    /* one percent of the total balance per second */
-                    interest = balanceStatic * 0.01 / 31536000
-                    intRate = intRate + interest
-                }, 1000);
-                return () => {
-                    clearInterval(interval);
-                };
             }
         }
     }, [])
@@ -266,7 +236,8 @@ const Home = () => {
                 {/************* bottom part (counter) **************/}
                 <div className="d-flex">
                     <div className="d-flex counter-interest">
-                        <div>{ interestSymbol }{ interest }</div>
+                        {/* <div>{ interestSymbol }{ interest }</div> */}
+                        { interestSymbol }{interestCounter}
                     </div>
                 </div>
                 <br></br>
