@@ -1,10 +1,6 @@
 import json
 
-from crum import get_current_user
-from django.core.mail import send_mail
 from django.db import models
-from django.db.models.signals import post_save, pre_delete
-from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from users.models import CustomUser
@@ -55,7 +51,7 @@ class Account(models.Model):
 
 class AccountInterest(models.Model):
     interest                    = models.DecimalField(decimal_places=10, max_digits=30, null=True)
-    interest_rate               = models.DecimalField(decimal_places=10, max_digits=30, null=True, default=0)
+    interest_rate               = models.DecimalField(decimal_places=20, max_digits=30, null=True, default=0)
 
     def __str__(self):
         return f'account-interest-pk : {self.pk}'
@@ -117,32 +113,3 @@ class TransactionHistory(models.Model):
             return f'CASH OUT as {person} for the amount {symbol}{self.price} at {self.date}'
         elif self.method == "Exchange":
             return f'EXCHANGE as {person} for the amount {symbol}{self.price} at {self.date}'
-
-
-# signal to create an AccountInterest, right after an account is created
-@receiver(post_save, sender=Account)
-def account_created_handler(sender, created, instance, *args, **kwargs):
-    if created:
-        AccountInterest.objects.create(interest=instance.total_balance, id=instance.pk)
-
-        # starting the interest making process
-        from .tasks import interest_loop
-        # interest_loop()
-
-        # Notify us that a new account has been created
-        # new_user(instance.created_by)
-
-        # Emailing our business users
-        EMAIL_ID = config.get('EMAIL_ID')
-        id = CustomUser.objects.get(pk=get_current_user().pk).pk
-        email = CustomUser.objects.get(pk=get_current_user().pk).email
-        if CustomUser.objects.get(pk=id).is_business:
-            send_mail(instance.created_by.username,
-                        _(f'WHAT UPP'),
-                        f'{EMAIL_ID}',
-                        [f'{email}'],)
-
-
-@receiver(pre_delete, sender=Account)
-def account_delete_hendler(sender, instance, using, *args, **kwargs):
-    AccountInterest.objects.get(id=instance.pk).delete()

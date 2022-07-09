@@ -28,7 +28,7 @@ const Settings = () => {
                     <h5 className="fw-normal my-3">Friend Zone</h5>
                     <hr className="zarathus-hr-half" />
 
-                    <a className="neon-button" href="#0">Invite a Friend</a>
+                    <Link className="neon-button" to="/invite-friend">Invite a Friend</Link>
 
 
                     {/* Changing theme */}

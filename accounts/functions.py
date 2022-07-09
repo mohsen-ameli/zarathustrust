@@ -38,6 +38,7 @@ def get_currency_symbol(country_code):
 
 # returns the most recent $1 in that currency
 def currency_min(currency):
+    # currency_min_generator()
     try:
         currency = currency.upper()
         project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -69,10 +70,11 @@ def currency_min_generator():
             a = round(decimal.Decimal(r['result']))
             digits = len(str(a))
             rate = round(a, -digits+1)
-        except TypeError:
-            rate = None
 
-        final_data[currency] = f'{rate}'
+            if rate != 0:
+                final_data[currency] = f'{rate}'
+        except TypeError:
+            pass
 
         print(currency, " : ", rate)
 

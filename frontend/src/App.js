@@ -26,7 +26,8 @@ import CountryPicker from './auth/signup/CountryPicker';
 import VerifyEmail from './auth/signup/VerifyEmail';
 import VerifyPhone from './auth/signup/VerifyPhone';
 import VerifyReferral from './auth/signup/VerifyReferral';
-import Settings from './pages/Settings';
+import Settings from './settings/Settings';
+import InviteFriend from './settings/InviteFriend';
 
 import PassReset from './auth/forgotpass/PassReset';
 import PassResetConfirm from './auth/forgotpass/PassResetConfirm';
@@ -63,7 +64,8 @@ function App() {
                                 <PrivateRoute path="/currency-exchange" exact comp={CurrencyEx} />
                                 <PrivateRoute path="/transactions/:tId" exact comp={TransactionsDetail} />
                                 <PrivateRoute path="/transactions" exact comp={Transactions} />
-                                <PrivateRoute path="/settings" exact comp={Settings} />
+                                <PrivateRoute path="/settings" comp={Settings} />
+                                <PrivateRoute path="/invite-friend" comp={InviteFriend} />
                                 {/* <Route path="/plaid" component={Link} /> */}
                                 <Route path="/about" component={About} />
                                 <Route path="/country-picker" component={CountryPicker} />

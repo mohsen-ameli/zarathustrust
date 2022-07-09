@@ -38,7 +38,7 @@ const VerifyReferral = () => {
         if (res.ok) {
             let data = await res.json()
 
-            msgSwal(t("success_register", {"username": String(data.user)}), "success")
+            msgSwal(t(`${data.msg}`, {"username": String(data.user), "currency": data?.currency, "extraBonus": data?.extraBonus}), "success")
             history.push("/login")
         } else {
             msgSwal(t("register_error"), "error")

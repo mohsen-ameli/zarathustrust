@@ -1,11 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext as _
-from django.db.models.deletion import CASCADE
 from django.db.models.fields import BooleanField, CharField, PositiveIntegerField
 from django.contrib.auth.validators import UnicodeUsernameValidator
 import random
-import string
 from django_countries.fields import CountryField
 
 
@@ -32,6 +30,7 @@ class CustomUser(AbstractUser):
     phone_number        = CharField(max_length=20, null=True)
     iban                = CharField(max_length=30, null=True, blank=True)
     stripe_id           = CharField(max_length=50, null=True, blank=True)
+    referral_code       = CharField(max_length=12, null=True, blank=True)
 
     is_business         = BooleanField(null=True, blank=True, default=False)
     type_business       = CharField(max_length=10, null=True)
@@ -70,21 +69,6 @@ class code(models.Model):
         self.iban_verify_code = code_string
         # End
 
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return f'{self.user}'
-
-
-class ReferralCode(models.Model):
-    user                = models.OneToOneField(CustomUser, on_delete=CASCADE)
-    referral_code       = CharField(max_length=12, null=True, blank=True)
-
-    def save(self, *args, **kwargs):
-        # Referral Code
-        code_string = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(12))
-        self.referral_code = code_string
-        # End
         super().save(*args, **kwargs)
 
     def __str__(self):

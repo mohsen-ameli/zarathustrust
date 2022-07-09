@@ -25,7 +25,7 @@ const CurrencyEx = () => {
     const arrow = useRef(null)
     const toDropMenu = useRef(null)
     
-    const [addMoney, good, money, curr, iso, , , , , currencies] = useAddMoney(pk)
+    const [addMoney, good, money, curr, iso, , loading, , , currencies] = useAddMoney(pk)
 
     if (currencies.length !== 0) {
         filtered = currencies.filter(item => {return item[0] !== curr})
@@ -91,7 +91,7 @@ const CurrencyEx = () => {
 
     return (
         <div className="currency-ex" onKeyPress={e => {handleKeyClick(e)}}>
-            { isLoading && 
+            { (isLoading || loading) && 
             <div className="spinner">
                 <RotateLoader color="#f8b119" size={20} />
             </div>

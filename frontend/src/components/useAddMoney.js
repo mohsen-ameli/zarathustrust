@@ -15,7 +15,7 @@ const useAddMoney = () => {
     const [good, setGood]               = useState(false);
     const [money, setMoney]             = useState(null);
 
-    const [isLoading, setIsLoading]     = useState(false);
+    const [isLoading, setIsLoading]     = useState(true);
     const [error, setError]             = useState(null);
     const [showErr, setShowErr]         = useState(false);
 

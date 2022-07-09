@@ -41,4 +41,5 @@ urlpatterns = [
     path('transactions/<str:walletIso>/<str:walletName>/<int:pageNum>/<int:numItems>/', views.transactions, name="transactions"),
     path('transactions/<int:tId>/', views.transactionDetail, name='transaction-detail'),
     path('currency-exchange/<str:fromCurr>/<str:fromIso>/<str:amount>/<str:toCurr>/<str:toIso>/', views.currencyEx, name='currency-exchange'),
+    path('invite-friend/', views.inviteFriend, name='invite-friend'),
 ]

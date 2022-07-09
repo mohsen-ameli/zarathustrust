@@ -41,13 +41,15 @@ const Home = () => {
 
     const fetchStuff = useCallback(() => {
         let loadAccount = async () => {
+            setIsLoading(true)
             let { response, data } = await api("/api/account/")
     
             if (response.status === 200) {
                 // eslint-disable-next-line
-                balanceStatic = (Number(data.total_balance));
-                setBalance(Number(data.total_balance).toFixed(2));
-                setBonus(Number(data.bonus).toFixed(1));
+                balanceStatic = (Number(data.total_balance))
+                setBalance(Number(data.total_balance).toFixed(2))
+                setBonus(Number(data.bonus).toFixed(1))
+                setIsLoading(false)
             } else {
                 msgSwal(t("default_error"), "error")
                 setIsLoading(false)
@@ -55,12 +57,14 @@ const Home = () => {
         }; loadAccount()
 
         let loadAccountInterest = async () => {
+            setIsLoading(true)
             let { response, data } = await api("/api/account-interest/")
     
             if (response.status === 200) {
                 setInterest(Number(data.interest_rate).toFixed(20));
                 // eslint-disable-next-line
                 interestRate = Number(data.interest_rate)
+                setIsLoading(false)
                 interestCounter()
             } else {
                 msgSwal(t("default_error"), "error")
@@ -69,6 +73,7 @@ const Home = () => {
         }; loadAccountInterest()
 
         let loadUser = async () => {
+            setIsLoading(true)
             let { response, data } = await api("/api/currUser/")
     
             if (response.status === 200) {
@@ -84,10 +89,13 @@ const Home = () => {
         }; loadUser()
 
         let loadSymbol = async (iso3) => {
+            setIsLoading(true)
             let { response, data } = await api(`/api/getCurrencySymbol/${iso3}/`)
+            
             if (response.status === 200) {
                 setInterestSymbol(data)
                 setSymbol(data)
+                setIsLoading(false)
             } else {
                 msgSwal(t("default_error"), "error")
                 setIsLoading(false)
@@ -99,7 +107,13 @@ const Home = () => {
             if (balanceStatic > 0) {
                 let interest = 0
                 let intRate = interestRate
-                
+
+                // canceling the delay
+                setInterest(intRate.toFixed(20))
+                interest = balanceStatic * 0.01 / 31536000
+                intRate = intRate + interest
+                // canceling the delay
+
                 const interval = setInterval(() => {
                     setInterest(intRate.toFixed(20))
 
@@ -112,8 +126,6 @@ const Home = () => {
                 };
             }
         }
-
-        setIsLoading(false);
     }, [])
 
 

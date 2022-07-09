@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser, ReferralCode
+from .models import CustomUser
 from .forms import UserRegisterForm
 
 class CustomUserAdmin(UserAdmin):
@@ -19,10 +19,10 @@ class CustomUserAdmin(UserAdmin):
                     'phone_ext',
                     'phone_number',
                     'is_business',
+                    'referral_code',
                 )
             }
         )
     )
 
 admin.site.register(CustomUser, CustomUserAdmin)
-admin.site.register(ReferralCode)

@@ -22,7 +22,7 @@ from rest_framework import status
 
 from accounts.functions import *
 from accounts.models import *
-from users.models import CustomUser, code, ReferralCode
+from users.models import CustomUser, code
 from users.forms import RegisterForm
 from users.functions import *
 from users.utils import phone_msg_verify
@@ -922,68 +922,66 @@ def verifyReferral(request):
     iso2            = pycountry.countries.search_fuzzy(country)[0].alpha_2
     currency        = get_country_currency(iso2)
     language        = get_country_lang(iso2)
-    friend_code     = ReferralCode.objects.filter(referral_code=enterd_code)
+    friend          = CustomUser.objects.filter(referral_code=enterd_code)
     user_currency_min = currency_min(currency)
 
     # creating a user
     user = CustomUser.objects.create(username=username, password=make_password(password), email=email, phone_number=phone_number, country=iso2,
     phone_ext=phone_ext, currency=currency, iso2=iso2, language=language)
 
-
-    if friend_code.exists():  # referral code exists
+    if friend.exists():  # referral code exists
         # getting current user's stuff
-        user_currency_symbol    = get_currency_symbol(user.currency) # their currency symbol
+        user_currency_symbol    = get_currency_symbol(currency) # their currency symbol
         user_extra_bonus        = user_currency_min * EXTRA_BONUS_VALUE
 
         # creating an account for the user
         bonus = (user_currency_min * 1000) + user_extra_bonus
-        Account.objects.create(created_by=user, bonus=bonus, total_balance=0, main_currency=currency, iso2=iso2, id=user.pk)
+        Account.objects.create(created_by=user, bonus=bonus, total_balance=currency_min(currency), main_currency=currency, iso2=iso2, id=user.pk)
 
-        # updating the user's bonus
-        # Account.objects.filter(created_by=user).update(bonus = user_extra_bonus + user_currency_min * 1000)
-
-        # getting the some info from the user whose referral code was used
-        giver_user = ReferralCode.objects.get(referral_code=enterd_code).user # their name
-        giver_account           = Account.objects.get(created_by=giver_user) # their account
-        giver_balance           = giver_account.total_balance # their balance
-        giver_bonus             = giver_account.bonus # their bonus
-        giver_currency          = giver_account.main_currency # their currency in iso-3 format
-        giver_currency_min      = currency_min(giver_currency) # $1 in their currency
-        giver_extra_bonus       = giver_currency_min * EXTRA_BONUS_VALUE
-        giver_currency_symbol   = get_currency_symbol(giver_currency) # their currency symbol
+        # getting some info from the user whose referral code was used
+        refUser_pk                = friend.values("pk")[0]["pk"] # their name
+        refUser_account           = Account.objects.filter(pk=refUser_pk)
+        refUser_balance           = refUser_account.values('total_balance')[0]['total_balance']
+        refUser_bonus             = refUser_account.values('bonus')[0]['bonus']
+        refUser_currency          = refUser_account.values('main_currency')[0]['main_currency']
+        refUser_email             = friend.values('email')[0]['email']
+        refUser_username          = friend.values('username')[0]['username']
+        refUser_currency_min      = currency_min(refUser_currency) # $1 in their currency
+        refUser_extra_bonus       = refUser_currency_min * EXTRA_BONUS_VALUE
+        refUser_currency_symbol   = get_currency_symbol(refUser_currency) # their currency symbol
 
         # updating the giver user's bonus
-        Account.objects.filter(created_by=giver_user).update(
-            bonus = giver_bonus + giver_extra_bonus,
-            total_balance = giver_balance + giver_currency_min
+        refUser_account.update(
+            bonus = refUser_bonus + refUser_extra_bonus,
+            total_balance = refUser_balance + refUser_currency_min
         )
 
         # send email to the person whose referral code was just used
         EMAIL_ID = config.get("EMAIL_ID")
-        GIVER_EMAIL = giver_user.email
         send_mail(
-            f"Dear {giver_user.username}!",
-            f"{user['username']} just used your referral code! You recieved {giver_currency_symbol}{giver_currency_min} on your balance, and {giver_currency_symbol}{giver_extra_bonus} added to your bonus!",
+            f"Dear {refUser_username}!",
+            f"{username} just used your referral code! You recieved {refUser_currency_symbol}{refUser_currency_min} on your balance, and {refUser_currency_symbol}{refUser_extra_bonus} added to your bonus!",
             f"{EMAIL_ID}",
-            [f"{GIVER_EMAIL}"],
+            [f"{refUser_email}"],
         )
 
         # success message
-        message = f"You have successfully registered, {user['username']}. For your prize, {user_currency_symbol}{user_extra_bonus} has been transfered to your bonus!"
+        message = f"success_register_right_referral"
+        
+        return Response({"msg": message, "user": username, "currency": user_currency_symbol, "extraBonus": user_extra_bonus})
     else:  # referral code not entered
-        # creating an account for the user
         bonus = user_currency_min * 1000
         try:
             Account.objects.create(created_by=user, bonus=bonus, main_currency=currency, iso2=iso2, pk=user.pk)
         except Exception as e:
             print(e)
-        # success message
-        if enterd_code == "":  # referral code not submitted
-            message = f"You have successfully registered, {username}!"
-        else: # referral code was wrong
-            message = f"Sorry, this referral code is incorrect, but you have successfully registered, {username}!"
 
-    return Response({"msg": message, "user": username})
+        if enterd_code == "":  # referral code not submitted
+            message = f"success_register"
+        else: # referral code was wrong
+            message = f"success_register_wrong_referral"
+
+        return Response({"msg": message, "user": username})
 
 
 class EmailTokenObtainPairView(TokenObtainPairView):
@@ -1045,3 +1043,11 @@ class PasswordResetAPIView(generics.GenericAPIView):
 
         serializer.is_valid(raise_exception=True)
         return Response({"success": True, "msg": "Passowrd has been reset succefully!"}, status=status.HTTP_200_OK)
+
+
+# Referral Code
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def inviteFriend(request):
+    code = CustomUser.objects.get(pk=request.user.pk).referral_code
+    return Response({"code" : code})
