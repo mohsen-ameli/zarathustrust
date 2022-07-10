@@ -31,7 +31,6 @@ import InviteFriend from './settings/InviteFriend';
 
 import PassReset from './auth/forgotpass/PassReset';
 import PassResetConfirm from './auth/forgotpass/PassResetConfirm';
-// import Link from './plaid/Link';
 
 export const ThemeContext = createContext(null)
 
@@ -66,7 +65,6 @@ function App() {
                                 <PrivateRoute path="/transactions" exact comp={Transactions} />
                                 <PrivateRoute path="/settings" comp={Settings} />
                                 <PrivateRoute path="/invite-friend" comp={InviteFriend} />
-                                {/* <Route path="/plaid" component={Link} /> */}
                                 <Route path="/about" component={About} />
                                 <Route path="/country-picker" component={CountryPicker} />
                                 <Route path="/signup" component={SignUp} />

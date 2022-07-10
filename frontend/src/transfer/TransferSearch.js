@@ -18,11 +18,9 @@ const TransferSearch = () => {
     const [isLoading, setIsLoading] = useState(true);
     const msgSwal                   = useMsgSwal()
 
-
     useEffect(() => {
         setIsLoading(false)
     }, [])
-
 
     let submit = (typed) => {
         api("/api/transferSearch/", {
@@ -40,7 +38,6 @@ const TransferSearch = () => {
         .catch(() => {msgSwal(t("default_error"), "error"); setIsLoading(false);})
     }
 
-
     let search = (typed) => {
         if (typed.length >= 3) {
             submit(typed)
@@ -49,7 +46,6 @@ const TransferSearch = () => {
         }
     }
 
-
     let handleKeyClick = (e) => {
         if (e.key === 'Enter') {
             if (data) {
@@ -57,7 +53,6 @@ const TransferSearch = () => {
             }
         }
     }
-
 
     return (
         <div className="transfer-search" onKeyDown={e => handleKeyClick(e)}>

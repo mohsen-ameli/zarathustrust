@@ -5,7 +5,6 @@ import RotateLoader from 'react-spinners/RotateLoader';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import { useRef } from "react";
 
-
 const SignUp = () => {
     let bot = false
     let { state }   = useLocation()
@@ -32,7 +31,6 @@ const SignUp = () => {
     const [errPass1, setErrPass1] = useState(null);
     const [errPass2, setErrPass2] = useState(null);
 
-
     useEffect(() => {
         if (!state?.fromApp) {
             history.push("/country-picker")
@@ -50,7 +48,6 @@ const SignUp = () => {
 
         // eslint-disable-next-line
     }, [])
-
 
     let submit = async (e) => {
         e.preventDefault()
@@ -120,7 +117,6 @@ const SignUp = () => {
         }
     }
 
-
     let showPass = () => {
         let pass = passRef.current
 
@@ -132,7 +128,6 @@ const SignUp = () => {
             eyeRef.current.className = "fa-solid fa-eye"
           }
     }
-
     
     return (
         <GoogleReCaptchaProvider reCaptchaKey={process.env.REACT_APP_RECAPTCHA_KEY} SameSite="None">

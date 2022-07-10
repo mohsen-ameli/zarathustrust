@@ -11,7 +11,6 @@ import useFetch from "../components/useFetch";
 import MsgAlert from '../components/MsgAlert';
 import useMsgSwal from "../components/useMsgSwal";
 
-
 const Deposit = () => {
     let { user }  = useContext(AuthContext)
     let pk        = user?.user_id
@@ -24,11 +23,9 @@ const Deposit = () => {
     const [isLoading, setIsLoading] = useState(true);
     const msgSwal                   = useMsgSwal()
 
-
     useEffect(() => {
         setIsLoading(false)
     }, [])
-
 
     let submit = async () => {
         if (good) {

@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom"; // Link component just like the anchor tag in html
-import { useEffect, useState } from 'react'; // useEffect to run a function on the each render, useState for react variables 
-import RotateLoader from 'react-spinners/RotateLoader' // a react-spinner called RotateLoader in order to show a loading screen when users are waiting
-import AuthContext from "../context/AuthContext"; // react component which stores variables and functions that are accessible throughout the whole proj 
-import { useContext } from "react"; // this is needed to use the context provided by the previous import
-import useFetch from "../components/useFetch"; // custom react hook to fetch data from the backend, with authentication included
+import { useEffect, useState, useContext } from 'react'; // useEffect to run a function on the each render, useState for react variables 
 import { useTranslation } from "react-i18next";
+
+import RotateLoader from 'react-spinners/RotateLoader' // a react-spinner called RotateLoader in order to show a loading screen when users are waiting
+
+import AuthContext from "../context/AuthContext"; // react component which stores variables and functions that are accessible throughout the whole proj 
+import useFetch from "../components/useFetch"; // custom react hook to fetch data from the backend, with authentication included
 import MsgAlert from "../components/MsgAlert";
 
 /**

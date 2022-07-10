@@ -8,7 +8,6 @@ const LandingAni = () => {
     const WIDTH = window.innerWidth;
     const navImgWidth = 60;
 
-
     useEffect(() => {
         let elem = document.querySelector("#zarathus-img")
         let rect = elem?.getBoundingClientRect();

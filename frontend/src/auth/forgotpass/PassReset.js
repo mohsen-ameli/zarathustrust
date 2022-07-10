@@ -34,11 +34,9 @@ const PassReset = () => {
         }
     }
 
-
     let showSwal = () => {
         msgSwal(t("email_reset_msg"), "info")
     }
-
 
     return (
         <div className="pass-reset">

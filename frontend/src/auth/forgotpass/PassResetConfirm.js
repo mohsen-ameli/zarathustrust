@@ -4,8 +4,7 @@ import { useHistory, useParams } from "react-router-dom";
 
 import useMsgSwal from "../../components/useMsgSwal";
 
-
-const PassReset = () => {
+const PassResetConfirm = () => {
     const [err, setErr] = useState(null)
     const [ok, setOk]   = useState(false)
     const msgSwal       = useMsgSwal()
@@ -16,7 +15,6 @@ const PassReset = () => {
     const uidb64 = useParams().uidb64
     const token = useParams().token
     
-
     useEffect(() => {
         let verifyCreds = async () => {
             let res = await fetch(`/api/password-reset-confirm/${uidb64}/${token}/`)
@@ -35,7 +33,6 @@ const PassReset = () => {
         }; verifyCreds()
         // eslint-disable-next-line
     }, [])
-
 
     let submit = async e => {
         e.preventDefault()
@@ -68,9 +65,8 @@ const PassReset = () => {
         }
     }
 
-
     return (
-        <div className="">
+        <div className="pass-reset-confirm">
             <div className="card text-white zarathus-card mx-auto my-3">
                 <div className="card-body">
                     <form onSubmit={e => submit(e)} autoComplete="off">
@@ -120,4 +116,4 @@ const PassReset = () => {
     );
 }
  
-export default PassReset;
+export default PassResetConfirm;

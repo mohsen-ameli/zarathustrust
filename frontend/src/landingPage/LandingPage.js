@@ -1,10 +1,12 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import '../css/features.css'
-import '../css/fixed_bg.css'
+
 import zarathus_5 from '../images/zarathus-5.jpg'
 import zarathustrust_new from '../images/zarathustrust_new.png'
 import LandingAni from './LandingAni'
+
+import '../css/features.css'
+import '../css/fixed_bg.css'
 
 const LandingPage = () => {
     let { t } = useTranslation()

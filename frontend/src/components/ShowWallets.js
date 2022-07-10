@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react"
 import { Link } from "react-router-dom"
-import ReactCountryFlag from "react-country-flag"
-import useFetch from "./useFetch"
 import { useTranslation } from "react-i18next"
+
+import ReactCountryFlag from "react-country-flag"
+
+import useFetch from "./useFetch"
 import persia from '../images/persia.jpg'
 
 const ShowWallets = ({home, changeCurr}) => {
@@ -12,7 +14,6 @@ const ShowWallets = ({home, changeCurr}) => {
     let dropdown                = useRef()
     let api                     = useFetch()
     const { t }                 = useTranslation()
-
     
     useEffect(() => {
         let loadWallets = async () => {
@@ -25,10 +26,8 @@ const ShowWallets = ({home, changeCurr}) => {
         // eslint-disable-next-line
     }, [])
 
-    
     let mouseOver = () => link.current.style.color = "black"
     let mouseOut = () => link.current.style.color = "#f8b119c7"
-
 
     return (
         <div className="show-wallets dropdown align-self-center ms-3">

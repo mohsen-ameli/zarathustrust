@@ -29,7 +29,6 @@ const Withdraw = () => {
         setIsLoading(false)
     }, [])
 
-
     let submit = async () => {
         if (good) {
             setIsLoading(true)
@@ -66,14 +65,12 @@ const Withdraw = () => {
         submit
     )
 
-
     let handleKeyClick = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault()
             confirm()
         }
     }
-
 
     return (
         <div className="withdraw" onKeyDown={e => handleKeyClick(e)}>

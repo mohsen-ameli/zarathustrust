@@ -11,7 +11,6 @@ import useFetch from '../components/useFetch';
 import useMsgSwal from '../components/useMsgSwal';
 import persia from '../images/persia.jpg'
 
-
 const CurrencyEx = () => {
     let { user }    = useContext(AuthContext)
     let { t }       = useTranslation()
@@ -65,7 +64,6 @@ const CurrencyEx = () => {
 
         // eslint-disable-next-line
     }, [currencies])
-
 
     let submit = () => {
         if (good) {

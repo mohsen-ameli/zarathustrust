@@ -2,7 +2,7 @@ import { t } from "i18next";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-import {CopyToClipboard} from 'react-copy-to-clipboard';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import RotateLoader from 'react-spinners/RotateLoader'
 
 import useFetch from "../components/useFetch";

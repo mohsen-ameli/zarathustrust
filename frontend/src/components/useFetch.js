@@ -3,12 +3,10 @@ import jwt_decode from "jwt-decode";
 import dayjs from 'dayjs'
 import AuthContext from '../context/AuthContext';
 
-
 let useFetch = () => {
     let config = {}
 
     let {authToken, setAuthToken, setUser, logoutUser} = useContext(AuthContext)
-
 
     let originalRequest = async (url, config)=> {
         url = `${url}`

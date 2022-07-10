@@ -35,7 +35,6 @@ const Transactions = () => {
     const [isLoading, setIsLoading]     = useState(true)
     const [error, setError]             = useState(null)
 
-
     const fetchStuff = useCallback(() => {
         let loadUser = async () => {
             let { response, data } = await api("/api/currUser/")
@@ -70,11 +69,9 @@ const Transactions = () => {
         // eslint-disable-next-line
     }, [])
 
-
     useEffect(() => {
         fetchStuff()
     }, [fetchStuff])
-
 
     let changeCurr = async (wallet) => {
         setIsLoading(true)
@@ -98,7 +95,6 @@ const Transactions = () => {
         }
     }
 
-
     let changeNumItems = async (num) => {
         setIsLoading(true)
         setNumItems(num)
@@ -115,7 +111,6 @@ const Transactions = () => {
             setIsLoading(false)
         }
     }
-
 
     let changePageNum = async (num) => {
         setIsLoading(true)
@@ -140,22 +135,8 @@ const Transactions = () => {
         }
     }
 
-
-    let mouseOver = (num) => {
-        if (num === 1) {
-            link.current.style.color = "black"
-        } else {
-            link2.current.style.color = "black"
-        }
-    }
-    let mouseOut = (num) => {
-        if (num === 1) {
-            link.current.style.color = "#f8b119c7"
-        } else {
-            link2.current.style.color = "#f8b119c7"
-        }
-    }
-
+    let mouseOver = (num) => (num === 1) ? link.current.style.color = "black" : link2.current.style.color = "black"
+    let mouseOut  = (num) => (num === 1) ? link.current.style.color = "#f8b119c7" : link2.current.style.color = "#f8b119c7"
 
     return (
         <div className="transactions">
@@ -165,7 +146,6 @@ const Transactions = () => {
                     <RotateLoader color="#f8b119" size={20} />
                 </div>
             }
-
 
             <div className="card mx-auto zarathus-card">
                 <div className="card-body">

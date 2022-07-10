@@ -9,7 +9,6 @@ import AuthContext from "../../context/AuthContext"
 import MsgAlert from "../../components/MsgAlert"
 import persia from '../../images/persia.jpg'
 
-
 const CountryPicker = () => {
     let ref = useRef()
     let history = useHistory()
@@ -24,7 +23,6 @@ const CountryPicker = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError]         = useState(null)
     const [showErr, setShowErr]     = useState(false)
-
 
     const fetchStuff = useCallback(() => {
         // getting the country of the user based on their ip
@@ -55,7 +53,6 @@ const CountryPicker = () => {
         // eslint-disable-next-line
     }, [])
 
-
     useEffect(() => {
         let id = user?.user_id
 
@@ -66,7 +63,6 @@ const CountryPicker = () => {
         fetchStuff()
         // eslint-disable-next-line
     }, [fetchStuff])
-
 
     let search = (typed) => {
         setEmpty(true)
@@ -85,11 +81,9 @@ const CountryPicker = () => {
         setChoices(ch)
     }
 
-
     let next = (country, iso) => {
         history.push("/signup", { fromApp: true, country: country, iso: iso })
     }
-
 
     return (
         <div className="country-picker" onKeyDown={e => {e.key === "Enter" && next(choices[0][1], choices[0][0])}}>

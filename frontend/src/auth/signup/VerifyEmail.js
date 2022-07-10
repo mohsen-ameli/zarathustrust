@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import Otp from "../../components/Otp";
 
-const VerifyVerify = () => {
+const VerifyEmail = () => {
     const { state } = useLocation()
 
     return (
@@ -11,4 +11,4 @@ const VerifyVerify = () => {
     );
 }
  
-export default VerifyVerify;
+export default VerifyEmail;

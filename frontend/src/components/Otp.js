@@ -1,7 +1,9 @@
-import OtpInput from "react-otp-input";
 import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from 'react-router-dom'
+
+import OtpInput from "react-otp-input";
+
 import useMsgSwal from "./useMsgSwal";
 
 const Otp = ({ url, next, statePrev, stateNew, translationTitle, translationHelp }) => {
@@ -17,7 +19,6 @@ const Otp = ({ url, next, statePrev, stateNew, translationTitle, translationHelp
     const [err, setErr]             = useState(null)
     const msgSwal                   = useMsgSwal()
 
-
     useEffect(() => {
         if (!statePrev) {
             history.push("/country-picker")
@@ -28,7 +29,6 @@ const Otp = ({ url, next, statePrev, stateNew, translationTitle, translationHelp
         
         // eslint-disable-next-line
     }, [])
-
 
     let getCode = async () => {
         let time = REFRESH_TIME
@@ -65,7 +65,6 @@ const Otp = ({ url, next, statePrev, stateNew, translationTitle, translationHelp
             setErr(null)
         }
     }
-
 
     return (
         <div className="otp">

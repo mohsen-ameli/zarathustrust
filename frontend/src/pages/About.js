@@ -1,20 +1,19 @@
 import { Link } from 'react-router-dom';
-import RotateLoader from 'react-spinners/RotateLoader';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import RotateLoader from 'react-spinners/RotateLoader';
 
 const About = () => {
     const { t } = useTranslation()
     const [isLoading, setIsLoading] = useState(true)
 
-
     useEffect(() => {
         setIsLoading(false)
     }, [])
 
-
     return (
-    <div className="about-page">
+    <div className="about">
         { isLoading && 
             <div className="spinner">
                 <RotateLoader color="#f8b119" size={20} />

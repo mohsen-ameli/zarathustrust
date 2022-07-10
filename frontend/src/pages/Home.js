@@ -38,7 +38,6 @@ const Home = () => {
 
     const interestCounter = useInterest(interest, balance, setInterest)
 
-
     const fetchStuff = useCallback(() => {
         let loadAccount = async () => {
             setIsLoading(true)
@@ -96,8 +95,9 @@ const Home = () => {
                 setIsLoading(false)
             }
         }
-    }, [])
 
+        // eslint-disable-next-line
+    }, [])
 
     useEffect(() => {
         let reloading = localStorage.getItem("reloading");
@@ -114,7 +114,6 @@ const Home = () => {
         fetchStuff()
         // eslint-disable-next-line
     }, [fetchStuff])
-
 
     // cash out
     const cashOut = async () => {
@@ -142,7 +141,6 @@ const Home = () => {
         }
     }
 
-
     let reloadP = (amount, symbol_) => {
         localStorage.setItem("reloading", true);
         localStorage.setItem("amount", amount);
@@ -151,14 +149,12 @@ const Home = () => {
         document.location.reload();
     }
 
-
     let changeCurr = (wallet) => {
         const [, iso3, symbol, balance] = wallet
         setBalance(Number(balance).toFixed(2))
         setCurrency(iso3)
         setSymbol(symbol)
     }
-
 
     return ( <div className="home-page">
         { isLoading && 

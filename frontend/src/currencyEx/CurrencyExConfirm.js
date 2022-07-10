@@ -27,7 +27,6 @@ const CurrencyExConfirm = () => {
 
     let history                     = useHistory()
     let api                         = useFetch()
-
     
     const fetchStuff = useCallback(() => {
         api("/api/json/currencies_symbols/")
@@ -46,7 +45,6 @@ const CurrencyExConfirm = () => {
         // eslint-disable-next-line
     }, [])
 
-
     useEffect(() => {
         if (!state?.fromApp) {
             history.push("/currency-exchange")
@@ -55,7 +53,6 @@ const CurrencyExConfirm = () => {
         fetchStuff()
         // eslint-disable-next-line
     }, [fetchStuff])
-
 
     let submit = () => {
         setIsLoading(true)
@@ -85,12 +82,10 @@ const CurrencyExConfirm = () => {
         .catch(() => {msgSwal(t("default_error"), "error"); setIsLoading(false);})
     }
 
-
     const confirm = useSwal(
         t("exchange_msg", {"from_symbol": fromSymbol, "from_amount": amount, "to_symbol": toSymbol, "to_amount": exRate*amount}),
         submit
     )
-
 
     return (
         <div className="currency-ex-confirm">

@@ -33,7 +33,6 @@ const TransferConfirm = () => {
     const [isLoading, setIsLoading] = useState(true);
     const msgSwal                   = useMsgSwal()
 
-
     useEffect(() => {
         if (!state?.fromApp) {
             history.push("transfer-search")
@@ -42,7 +41,6 @@ const TransferConfirm = () => {
 
         // eslint-disable-next-line
     }, [])
-
 
     let changeMsg = (typed) => {
         setCounter(typed.length)
@@ -59,7 +57,6 @@ const TransferConfirm = () => {
             setColour("green")
         }
     }
-
 
     let submit = () => {
         if (counter <= MAX_MESSAGE_LENGTH && good) {
@@ -94,14 +91,12 @@ const TransferConfirm = () => {
         submit
     )
 
-
     let handleKeyClick = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault()
             confirm()
         }
     }
-
 
     return (
         <div className="transfer-confirm" onKeyDown={e => handleKeyClick(e)}>

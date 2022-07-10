@@ -65,7 +65,6 @@ const TransactionsDetail = () => {
         // eslint-disable-next-line
     }, [])
 
-
     return (
         <div className="transactions-detail">
             {error && <MsgAlert msg={error} variant="danger" />}

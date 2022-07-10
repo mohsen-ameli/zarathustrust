@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import ReactCountryFlag from "react-country-flag";
 import { useTranslation } from "react-i18next";
+
+import ReactCountryFlag from "react-country-flag";
+
 import useFetch from "./useFetch";
 import persia from '../images/persia.jpg'
-
 
 const useAddMoney = () => {
     const [iso2, setIso2]               = useState(null)
@@ -21,7 +22,6 @@ const useAddMoney = () => {
 
     let api                             = useFetch()
     const { t }                         = useTranslation()
-
 
     useEffect(() => {
         let loadMoneyForm = async () => {
@@ -46,7 +46,6 @@ const useAddMoney = () => {
         // eslint-disable-next-line
     }, [])
 
-
     let changeCurr = (iso, curr, symbol, min) => {
         setIso2(iso)
         setCurr(curr)
@@ -60,7 +59,6 @@ const useAddMoney = () => {
             setErr(null)
         }
     }
-
 
     let changeMoney = (typed) => {
         if (typed) {

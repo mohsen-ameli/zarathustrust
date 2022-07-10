@@ -9,7 +9,6 @@ import useFetch from "../components/useFetch";
 import useMsgSwal from "../components/useMsgSwal";
 import persia from '../images/persia.jpg'
 
-
 const WalletSearch = () => {
     const [currencies, setCurrencies]   = useState([])
     const [choices, setChoices]         = useState(null)
@@ -20,7 +19,6 @@ const WalletSearch = () => {
 
     let api                             = useFetch()
     let { t }                           = useTranslation()
-
 
     useEffect(() => {
         let loadJson = async () => {
@@ -36,7 +34,6 @@ const WalletSearch = () => {
 
         // eslint-disable-next-line
     }, [])
-
 
     let search = (typed) => {
         setEmpty(true)

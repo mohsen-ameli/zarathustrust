@@ -1,8 +1,10 @@
 import { useContext } from "react";
 import { useTranslation } from "react-i18next";
-import { ThemeContext } from "../App";
-import Switch from "react-switch";
 import { Link } from "react-router-dom";
+
+import Switch from "react-switch";
+
+import { ThemeContext } from "../App";
 
 const Settings = () => {
     let { t } = useTranslation()

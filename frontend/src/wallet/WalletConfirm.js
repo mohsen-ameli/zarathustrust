@@ -8,7 +8,6 @@ import RotateLoader from 'react-spinners/RotateLoader';
 import useFetch from "../components/useFetch";
 import useMsgSwal from "../components/useMsgSwal";
 
-
 const WalletConfirm = () => {
     const iso2                      = useParams().curr
     let history                     = useHistory()
@@ -21,7 +20,6 @@ const WalletConfirm = () => {
 
     const [isLoading, setIsLoading] = useState(true)
     const msgSwal                   = useMsgSwal()
-
 
     const fetchStuff = useCallback(() => {
         let loadWallets = async () => {
@@ -49,7 +47,6 @@ const WalletConfirm = () => {
 
         // eslint-disable-next-line
     }, [])
-
     
     useEffect(() => {
         if (!state?.fromApp) {
@@ -86,7 +83,6 @@ const WalletConfirm = () => {
             setIsLoading(false)
         }
     }
-
 
     return (
         <div className="new-wallet-page">

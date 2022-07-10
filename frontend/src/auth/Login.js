@@ -6,7 +6,6 @@ import AuthContext from "../context/AuthContext";
 import RotateLoader from 'react-spinners/RotateLoader';
 import useMsgSwal from "../components/useMsgSwal";
 
-
 const Login = () => {
     let { loginUser, user } = useContext(AuthContext)
     const { t }       = useTranslation()
@@ -14,7 +13,6 @@ const Login = () => {
 
     const [isLoading, setIsLoading] = useState(false)
     const msgSwal                   = useMsgSwal()
-
 
     useEffect(() => {
         let id = user?.user_id
@@ -25,8 +23,7 @@ const Login = () => {
 
         // eslint-disable-next-line
     }, [])
-
-    
+ 
     let submit = (e) => {
         setIsLoading(true)
 
@@ -39,7 +36,6 @@ const Login = () => {
         })
         
     }
-
 
     return (
         <div className="login">
