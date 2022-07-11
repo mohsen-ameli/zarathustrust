@@ -12,8 +12,8 @@ with open('/etc/config.json') as config_file:
 class Account(models.Model):
     created_by    = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
     total_balance = models.DecimalField(decimal_places=2, max_digits=10, null=True, default=0)
-    add_money     = models.DecimalField(decimal_places=1, max_digits=10, null=True, blank=True)
-    take_money    = models.DecimalField(decimal_places=1, max_digits=10, null=True, blank=True)
+    add_money     = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
+    take_money    = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
     bonus         = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
     currency      = models.CharField(max_length=3, null=True)
     iso2          = models.CharField(max_length=2, null=True)
@@ -37,7 +37,6 @@ class Account(models.Model):
             
             self.add_money = 0
         elif self.take_money:
-            print("hereeeeeee")
             # updating AccountInterest
             if self.primary:
                 accountInterest.interest = F("interest") - self.take_money

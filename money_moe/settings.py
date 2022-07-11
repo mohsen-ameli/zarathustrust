@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os, json
 from datetime import timedelta
-from django.utils.translation import gettext_lazy as _
 
 with open("/etc/config.json") as config_file:
     config = json.load(config_file)
@@ -46,14 +45,7 @@ INSTALLED_APPS = [
     "accounts.apps.AccountsConfig",
     "api.apps.ApiConfig",
     
-    "crispy_forms",
-    "rosetta",
-    # "axes",
-    "mathfilters",
     "django_countries",
-    "crispy_bootstrap5",
-    "django_htmx",
-    "captcha",
     "admin_interface",
     "colorfield",
     "corsheaders",
@@ -71,7 +63,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "crum.CurrentRequestUserMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
@@ -80,16 +71,11 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    # "axes.middleware.AxesMiddleware",
-    "django_htmx.middleware.HtmxMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "corsheaders.middleware.CorsPostCsrfMiddleware",
 ]
 
 AUTHENTICATION_BACKENDS = [
-    # AxesBackend should be the first backend in the AUTHENTICATION_BACKENDS list.
-    # "axes.backends.AxesBackend",
-    # Django ModelBackend is the default authentication backend.
     "django.contrib.auth.backends.ModelBackend",
 ]
 
@@ -168,8 +154,6 @@ USE_TZ = True
 
 # USE_THOUSAND_SEPARATOR = True
 
-LANGUAGES = [("de", _("German")), ("en", _("English"))]
-LANGUAGE_COOKIE_NAME = "cookie_monster_lang"
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 SESSION_COOKIE_HTTPONLY = True
 
@@ -211,17 +195,6 @@ EMAIL_HOST_USER = config.get("EMAIL_ID")
 EMAIL_HOST_PASSWORD = config.get("EMAIL_PW")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # EMAIL_USE_SSL = False
-
-
-# LOGIN
-LOGIN_URL = "/login/"
-# LOGIN_REDIRECT_URL = "/"
-
-
-# AXES LOGIN
-# AXES_FAILURE_LIMIT = 3
-# AXES_COOLOFF_TIME = timedelta(minutes=3)
-# AXES_LOCKOUT_TEMPLATE = "users/login_timeout.html"
 
 
 # STRIPE

@@ -5,7 +5,6 @@ from .models import Account, AccountInterest
 # signal to create an AccountInterest, right after an account is created
 @receiver(post_save, sender=Account)
 def account_created_handler(sender, created, instance, *args, **kwargs):
-    print("instance.primaryinstance.primary", instance.primary)
     if created and instance.primary:
         AccountInterest.objects.create(interest=instance.total_balance, id=instance.pk)
 
@@ -14,7 +13,6 @@ def account_created_handler(sender, created, instance, *args, **kwargs):
 
         # Emailing our business users
         # EMAIL_ID = config.get('EMAIL_ID')
-        # print(instance)
         # user = CustomUser.objects.get(pk=instance.pk)
         # email = user.email
         # if user.is_business:

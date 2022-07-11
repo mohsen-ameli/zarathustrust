@@ -1,16 +1,7 @@
 import os, json, requests, decimal
-from tokenize import Double
-from crum import get_current_user
 from django.conf import settings
 from django.utils import translation
 from .models import Account
-
-
-# test function to see if the user tryna see the page is allowed to do so
-def correct_user(pk):
-    if pk == get_current_user().pk:
-        return True
-    return False
 
 
 def loadJson(filename):
@@ -19,16 +10,6 @@ def loadJson(filename):
 
     with open(file, 'r') as json_currency:
         return json.load(json_currency)
-
-
-# getting the language cookie
-def cookie_monster(request):
-    cookies = request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
-    if cookies is None:
-        print('bruh no cookies for me', cookies)
-    else:
-        print('old cookies', cookies)
-        translation.activate(cookies)
 
 
 # returns the currency's symbol
@@ -73,8 +54,6 @@ def currency_min_generator():
                 final_data[currency] = f'{rate}'
         except TypeError:
             pass
-
-        print(currency, " : ", rate)
 
     with open(file, 'w', encoding='utf-8') as json_file:
         json.dump(final_data, json_file, ensure_ascii=False, indent=4)

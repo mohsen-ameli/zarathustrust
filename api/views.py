@@ -194,7 +194,7 @@ def withdraw(request):
                 f'{EMAIL_ID}',
                 [f'{EMAIL_ID_MAIN}'],)
 
-        account.take_money = decimal.Decimal(moneyToWithdraw)
+        account.take_money = round(decimal.Decimal(moneyToWithdraw), 2)
         account.saveView()
 
         # success
@@ -716,7 +716,7 @@ def verifyReferral(request):
         try:
             Account.objects.create(created_by=user, bonus=bonus, currency=currency, total_balance=currency_min(currency), iso2=iso2, primary=True, pk=user.pk)
         except Exception as e:
-            print(e)
+            pass
 
         if enterd_code == "":  # referral code not submitted
             message = f"success_register"

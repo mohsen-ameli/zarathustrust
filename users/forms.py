@@ -1,9 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.utils.translation import gettext as _
-from crispy_bootstrap5.bootstrap5 import FloatingField
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div, HTML
 
 from .models import CustomUser, code
 
@@ -14,27 +11,6 @@ class RegisterForm(UserCreationForm):
         label="Phone Number",
         widget=forms.TextInput(attrs={"placeholder": "999-999-9999"}),
     )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.layout = Layout(
-            FloatingField("username"),
-            FloatingField("email"),
-            Div(
-                Div(css_class="input-group-text", id="phone_ext"),
-                Div(FloatingField("phone_number"), css_class="form-floating-group flex-grow-1"),
-                css_class="d-flex",
-            ),
-            Div(
-                HTML('Enter your phone number with no dashes, spaces, or any other special characters.'),
-                css_class="form-text text-white",
-                id="phone_number_help",
-            ),
-            FloatingField("password1"),
-            FloatingField("password2"),
-        )
 
     def clean(self):
         cleaned_data = super(RegisterForm, self).clean()
@@ -104,14 +80,6 @@ class EmailCodeForm(forms.ModelForm):
         model = code
         fields = ["email_verify_code"]
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.layout = Layout(
-            FloatingField("email_verify_code"),
-        )
-
 
 class PhoneCodeForm(forms.ModelForm):
     phone_verify_code = forms.CharField(
@@ -121,14 +89,6 @@ class PhoneCodeForm(forms.ModelForm):
     class Meta:
         model = code
         fields = ["phone_verify_code"]
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.layout = Layout(
-            FloatingField("phone_verify_code"),
-        )
 
 
 class IbanCodeForm(forms.ModelForm):
@@ -153,66 +113,3 @@ class ReferralCodeForm(forms.ModelForm):
     class Meta:
         model = code
         fields = ["referral_code"]
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.layout = Layout(
-            FloatingField("referral_code"),
-        )
-
-
-
-
-
-# iban = forms.CharField(
-#     max_length=30,
-#     label=_("IBAN (optional)"),
-#     required=False,
-#     help_text=_("For European countries only !"),
-# )
-# country_choices = [
-#     ("1", "🇨🇦(+1)"),
-#     ("1", "🇺🇸(+1)"),
-#     ("49", "🇩🇪(+49)"),
-#     ("98", "🇮🇷(+98)"),
-# ]
-# country = CountryField(blank=True)
-
-# class PhoneEnterForm(forms.ModelForm):
-#     phone_number = forms.CharField(
-#         max_length=20,
-#         label="",
-#         widget=forms.TextInput(attrs={"placeholder": "999-999-9999"}),
-#     )
-
-#     class Meta:
-#         model = CustomUser
-#         fields = ['phone_number']
-
-
-# class CountryForm(forms.ModelForm):
-#     country = forms.ChoiceField(choices=countries)
-
-#     class Meta:
-#         model = CustomUser
-#         fields = ['country']
-
-# class CountryForm(forms.ModelForm):
-#     country_choices = [
-#         ("1", "🇨🇦(+1)"),
-#         ("1", "🇺🇸(+1)"),
-#         ("49", "🇩🇪(+49)"),
-#         ("98", "🇮🇷(+98)"),
-#     ]
-
-#     # country = CountryField(blank=True)
-
-#     country = forms.ChoiceField(
-#         choices=country_choices,
-#         label="Country")
-
-#     class Meta:
-#         model = CountryChoose
-#         fields = ['country']

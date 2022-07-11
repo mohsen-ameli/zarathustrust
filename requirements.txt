@@ -4,21 +4,13 @@ celery
 djangorestframework
 twilio
 requests
-stripe
+# stripe
 whitenoise
 Pillow
-django-crispy-forms
-django-rosetta
-django-axes
-django-mathfilters
 django-countries
-crispy-bootstrap5
-django-htmx
-django-simple-captcha
 django-admin-interface
 django-cors-headers
 psycopg2-binary
-django-crum
 phonenumbers
 gunicorn
 djangorestframework-simplejwt

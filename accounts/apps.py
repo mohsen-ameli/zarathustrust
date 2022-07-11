@@ -1,6 +1,5 @@
 from unittest import signals
 from django.apps import AppConfig
-from stripe import Account
 
 
 class AccountsConfig(AppConfig):

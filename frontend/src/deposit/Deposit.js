@@ -55,7 +55,7 @@ const Deposit = () => {
 
     let handleKeyClick = (e) => {
         if (e.key === 'Enter') {
-            submit()
+            good && submit()
         }
     }
 
@@ -80,7 +80,7 @@ const Deposit = () => {
                     <br></br>
 
                     <button className="neon-button mb-2 mt-3" type="submit" id="Action" 
-                        onClick={() => submit()}>
+                        onClick={() => good && submit()}>
                         {t("deposit")}
                     </button>
                 </div>

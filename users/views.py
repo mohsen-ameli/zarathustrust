@@ -139,7 +139,6 @@ def PersonalCountryPickSignUp(request):
 
 # Personal Register
 def PersonalSignUp(request, country):
-    print(country)
     if request.user.is_anonymous == True:
         ext = phonenumbers.country_code_for_region(country)
         # if country is valid

@@ -70,6 +70,9 @@ const useAddMoney = () => {
                 if (Number(typed) < min) {
                     setErr(t("min_warning", {"min": min, "symbol": symbol}))
                     setGood(false)
+                } else if (typed.split(".")[1]?.length > 2) {
+                    setErr(t("too_many_decimals"))
+                    setGood(false)
                 } else {
                     setGood(true)
                     setErr(null)

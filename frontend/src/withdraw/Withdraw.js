@@ -68,7 +68,7 @@ const Withdraw = () => {
     let handleKeyClick = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault()
-            confirm()
+            good && confirm()
         }
     }
 
@@ -93,7 +93,7 @@ const Withdraw = () => {
                     {/* amount to send */}
                     { addMoney }
 
-                    <button className="neon-button my-2" type="submit" onClick={() => confirm()}>{t("withdraw")}</button>
+                    <button className="neon-button my-2" type="submit" onClick={() => good && confirm()}>{t("withdraw")}</button>
                 </div>
             </div>
         </div>
