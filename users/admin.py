@@ -18,6 +18,7 @@ class CustomUserAdmin(UserAdmin):
                     'phone_number',
                     'is_business',
                     'referral_code',
+                    'bank_account_number'
                 )
             }
         )

@@ -34,27 +34,27 @@ class RegisterForm(UserCreationForm):
         ]
 
 
-class BusinessForm(UserCreationForm):
-    biz_types = [
-        ("1", "Sole Proprietorship"),
-        ("2", "Partnership"),
-        ("3", "Corporation"),
-        ("4", "Limited Liability Company"),
-    ]
+# class BusinessForm(UserCreationForm):
+#     biz_types = [
+#         ("1", "Sole Proprietorship"),
+#         ("2", "Partnership"),
+#         ("3", "Corporation"),
+#         ("4", "Limited Liability Company"),
+#     ]
 
-    type_business = forms.ChoiceField(choices=biz_types)
-    business_website = forms.CharField(max_length=30)
+#     type_business = forms.ChoiceField(choices=biz_types)
+#     business_website = forms.CharField(max_length=30)
 
-    class Meta:
-        model = CustomUser
-        fields = [
-            "username",
-            "email",
-            "phone_ext",
-            "phone_number",
-            "iban",
-            "password1",
-            "password2",
-            "type_business",
-            "business_website",
-        ]
+#     class Meta:
+#         model = CustomUser
+#         fields = [
+#             "username",
+#             "email",
+#             "phone_ext",
+#             "phone_number",
+#             "iban",
+#             "password1",
+#             "password2",
+#             "type_business",
+#             "business_website",
+#         ]

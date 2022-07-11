@@ -5,6 +5,7 @@ from django.db.models import Q, F
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
@@ -190,6 +191,22 @@ def moneyForm(request):
         currencyOptions.append((account.iso2, account.currency, get_currency_symbol(account.currency), currency_min(account.currency)))
     
     return Response({'currencyOptions': currencyOptions})
+
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def getBankingInfo(request):
+    if request.method == "GET":
+        pk = request.user.pk
+        bank = CustomUser.objects.get(pk=pk).bank_account_number
+
+        return Response({"bank": bank})
+    else:
+        body = json.loads(request.body)
+        bank_num = body['bank_num']
+
+        print(bank_num)
+        return Response({}, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])

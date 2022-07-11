@@ -24,7 +24,16 @@ const Deposit = () => {
     const msgSwal                   = useMsgSwal()
 
     useEffect(() => {
+        // let fetchStuff = async () => {
+        //     let { response, data } = await api("/api/get-banking-info/")
+
+        //     if (response.status === 200) {
+        //         !data.bank && history.push("/require-banking")
+        //     }
+        // }; fetchStuff()
         setIsLoading(false)
+
+        // eslint-disable-next-line
     }, [])
 
     let submit = async () => {

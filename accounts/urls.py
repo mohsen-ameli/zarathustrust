@@ -17,6 +17,7 @@ urlpatterns = [
     path('deposit/', deposit, name='deposit'),
     path('withdraw/', withdraw, name='withdraw'),
     path('money-form/', moneyForm, name='money-form'),
+    path('get-banking-info/', getBankingInfo, name='get-banking-info'),
     
     path('wallets/', wallets, name='wallets'),
     path('wallets-confirm/', walletsConfirm, name='wallets-confirm'),
