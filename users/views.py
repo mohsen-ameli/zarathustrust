@@ -328,7 +328,7 @@ def referral_verify_view(request, backend='django.contrib.auth.backends.ModelBac
 
                 # creating an account for the user
                 bonus                   = (user_currency_min * 1000) + user_extra_bonus
-                user_account = Account.objects.create(created_by=user_, bonus=bonus, main_currency=currency, pk=user_.pk)
+                user_account = Account.objects.create(created_by=user_, bonus=bonus, currency=currency, pk=user_.pk)
                 user_account.save()
 
                 # updating the user's bonus
@@ -339,7 +339,7 @@ def referral_verify_view(request, backend='django.contrib.auth.backends.ModelBac
                 giver_account           = Account.objects.get(created_by=giver_user) # their account
                 giver_balance           = giver_account.total_balance # their balance
                 giver_bonus             = giver_account.bonus # their bonus
-                giver_currency          = giver_account.main_currency # their currency in iso-3 format
+                giver_currency          = giver_account.currency # their currency in iso-3 format
                 giver_currency_min      = currency_min(giver_currency) # $1 in their currency
                 giver_extra_bonus       = giver_currency_min * extra_bonus_value
                 giver_currency_symbol   = get_currency_symbol(giver_currency) # their currency symbol
@@ -380,7 +380,7 @@ def referral_verify_view(request, backend='django.contrib.auth.backends.ModelBac
                 # creating an account for the user
                 user_currency_min       = currency_min(user_.currency)
                 bonus                   = user_currency_min * 1000
-                Account.objects.create(created_by=user_, bonus=bonus, main_currency=currency, pk=user_.pk)
+                Account.objects.create(created_by=user_, bonus=bonus, currency=currency, pk=user_.pk)
                 
                 # success message
                 if enterd_code == "":  # referral code not submitted

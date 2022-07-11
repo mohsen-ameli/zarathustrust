@@ -19,7 +19,6 @@ const TransactionsDetail = () => {
     const [currencySymbol, setCurrencySymbol]   = useState(null)
     const [message, setMessage]                 = useState(null)
     const [person, setPerson]                   = useState(null)
-    const [wallet, setWallet]                   = useState(null)
     const [giverSymbol, setGiverSymbol]         = useState(null)
     const [recieverSymbol, setRecieverSymbol]   = useState(null)
 
@@ -42,8 +41,6 @@ const TransactionsDetail = () => {
     
                 setPerson(transaction.person)
                 // setPerson2(transaction.person2)
-                setWallet(transaction.wallet)
-                // setWallet2(transaction.wallet2)
     
                 setGiverSymbol(data.giverSymbol)
                 setRecieverSymbol(data.recieverSymbol)
@@ -90,7 +87,7 @@ const TransactionsDetail = () => {
                     <div style={{fontSize: "large"}}>
                         {type === "Deposit" ? 
                             <div>
-                                Deposit to {person !== "Anonymous" && person[0]}{wallet !== "Anonymous" && wallet[0]}, for the amount {currencySymbol}{price}
+                                Deposit to {person !== "Anonymous" && person[0]}, for the amount {currencySymbol}{price}
                             </div>
                         : ""}
                     </div>
@@ -98,7 +95,7 @@ const TransactionsDetail = () => {
                     <div style={{fontSize: "large"}}>
                         {type === "Withdraw" ? 
                             <div>
-                                Withdraw from {person !== "Anonymous" && person[0]}{wallet !== "Anonymous" && wallet[0]}, for the amount {currencySymbol}{price}
+                                Withdraw from {person !== "Anonymous" && person[0]}, for the amount {currencySymbol}{price}
                             </div>
                         : ""}
                     </div>

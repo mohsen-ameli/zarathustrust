@@ -4,15 +4,15 @@ from . import models
 class detailsAdmin(admin.ModelAdmin):
     model = models.Account
 
-    fields=('created_by', ('main_currency', 'iso2'), 'total_balance', ('add_money', 'take_money'), 'bonus')
+    fields=(('created_by', 'primary'), ('currency', 'iso2'), 'total_balance', ('add_money', 'take_money'), 'bonus')
 
 
 class detailsTransactions(admin.ModelAdmin):
     model = models.TransactionHistory
 
     fields = (
-        ('person', 'wallet'), 
-        ('second_person', 'second_wallet'),
+        'person', 
+        'second_person',
         ('price', 'ex_rate', 'exchanged_price'), 
         'purpose_of_use', 
         'method'

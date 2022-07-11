@@ -25,7 +25,6 @@ urlpatterns += [re_path(r'^.*',TemplateView.as_view(template_name='index.html'))
 urlpatterns = [
     path("", include("accounts.urls"), name="home"),
     path("", include("users.urls"), name="users"),
-    path("", include("wallets.urls"), name="wallets"),
     path("api/", include("api.urls"), name="api"),
     path("captcha/", include('captcha.urls')),
 

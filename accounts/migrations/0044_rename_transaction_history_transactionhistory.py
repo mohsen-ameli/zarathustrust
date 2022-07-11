@@ -6,7 +6,6 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wallets', '0002_branchaccounts_iso2'),
         ('accounts', '0043_rename_account_interest_accountinterest'),
     ]
 

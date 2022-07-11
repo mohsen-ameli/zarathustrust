@@ -1,52 +1,70 @@
 import json
 
 from django.db import models
-from django.urls import reverse
 from django.utils.translation import gettext as _
 from users.models import CustomUser
-from .functions import get_currency_symbol
+from django.db.models import F
 
 with open('/etc/config.json') as config_file:
     config = json.load(config_file)
 
 
 class Account(models.Model):
-    created_by        = models.OneToOneField(CustomUser, on_delete=models.CASCADE, null=True)
-    total_balance     = models.DecimalField(decimal_places=2, max_digits=10, null=True, default=0)
-    add_money         = models.DecimalField(decimal_places=1, max_digits=10, null=True, blank=True)
-    take_money        = models.DecimalField(decimal_places=1, max_digits=10, null=True, blank=True)
-    bonus             = models.DecimalField(decimal_places=1, max_digits=10, null=True) # remove this default
-    target_account    = models.CharField(max_length=30, null=True, blank=True)
-    money_to_send     = models.PositiveIntegerField(null=True, blank=True, default=0)
-    main_currency     = models.CharField(max_length=6, null=True)
-    iso2              = models.CharField(max_length=2, null=True)
+    created_by    = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
+    total_balance = models.DecimalField(decimal_places=2, max_digits=10, null=True, default=0)
+    add_money     = models.DecimalField(decimal_places=1, max_digits=10, null=True, blank=True)
+    take_money    = models.DecimalField(decimal_places=1, max_digits=10, null=True, blank=True)
+    bonus         = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
+    currency      = models.CharField(max_length=3, null=True)
+    iso2          = models.CharField(max_length=2, null=True)
+    primary       = models.BooleanField(null=True)
 
-    def save(self, *args, **kwargs):
+    def saveView(self, *args, **kwargs):
+        if self.primary:
+            try:
+                accountInterest = AccountInterest.objects.get(pk=self.pk)
+            except:
+                pass
+
         if self.add_money:
-            a = AccountInterest.objects.get(pk=self.pk).interest + self.add_money
-            AccountInterest.objects.filter(pk=self.pk).update(interest=a)
-            self.total_balance = self.total_balance + self.add_money
+            # updating AccountInterest
+            if self.primary:
+                accountInterest.interest = F("interest") + self.add_money
+                accountInterest.save()
 
-            r = TransactionHistory(person=self, method="Deposit", price=self.add_money)
-            r.save()
+            # updating self
+            self.total_balance = self.total_balance + self.add_money
             
             self.add_money = 0
         elif self.take_money:
-            b = AccountInterest.objects.get(pk=self.pk).interest - self.take_money
-            AccountInterest.objects.filter(pk=self.pk).update(interest=b)
+            print("hereeeeeee")
+            # updating AccountInterest
+            if self.primary:
+                accountInterest.interest = F("interest") - self.take_money
+                accountInterest.save()
 
-            r = TransactionHistory(person=self, method="Withdraw", price=self.take_money)
-            r.save()
+            # updating self
+            self.total_balance = self.total_balance - self.take_money
 
             self.take_money = 0
+        if not kwargs.get('inside'):
+            super().save(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        self.saveView(self, inside=True)
+        
+        if self.add_money:
+            # updating transaction
+            transaction = TransactionHistory(person=self, method="Deposit", price=self.add_money)
+            transaction.save()
+        elif self.take_money:
+            # updating transaction
+            transaction = TransactionHistory(person=self, method="Withdraw", price=self.take_money)
+            transaction.save()
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'Username : {self.created_by}, Currency : {self.main_currency}'
-
-    def get_absolute_url(self):
-        # return '%s/account_profile/' % 18
-        return reverse('accounts:account-profile', kwargs={'pk':self.pk})
+        return f'Username: {self.created_by.username}, Currency: {self.currency}, Primary: {self.primary}'
 
 
 class AccountInterest(models.Model):
@@ -54,14 +72,12 @@ class AccountInterest(models.Model):
     interest_rate               = models.DecimalField(decimal_places=20, max_digits=30, null=True, default=0)
 
     def __str__(self):
-        return f'account-interest-pk : {self.pk}'
+        return f'account-pk : {self.pk}'
 
 
 class TransactionHistory(models.Model):
     person              = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True)
-    wallet              = models.ForeignKey("wallets.BranchAccounts", on_delete=models.SET_NULL, null=True, blank=True, related_name="wallet")
     second_person       = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True, related_name="second_person")
-    second_wallet       = models.ForeignKey("wallets.BranchAccounts", on_delete=models.SET_NULL, null=True, blank=True, related_name="second_wallet")
     date                = models.DateTimeField(auto_now_add=True)
     price               = models.DecimalField(decimal_places=2, max_digits=10)
     purpose_of_use      = models.CharField(max_length=500, null=True, blank=True)
@@ -91,25 +107,16 @@ class TransactionHistory(models.Model):
                 person = self.wallet.main_account.created_by.username
             except:
                 person = "Anonymous"
-            try:
-                symbol = get_currency_symbol(self.wallet.currency)
-            except:
-                symbol = "None"
-        else:
-            try:
-                symbol = get_currency_symbol(self.person.created_by.currency)
-            except:
-                symbol = "None"
         
         if self.method == "Transfer":
-            return f'TRANSFER from {person} to {second_person} for the amount {symbol}{price} at {self.date}'
+            return f'TRANSFER from {person} to {second_person} for the amount {price} at {self.date}'
         elif self.method == "Payment":
-            return f'PAYMENT from {person} to {second_person} for the amount {symbol}{price} at {self.date}'
+            return f'PAYMENT from {person} to {second_person} for the amount {price} at {self.date}'
         elif self.method == "Deposit":
-            return f'DEPOSIT from {person} for the amount {symbol}{self.price} at {self.date}'
+            return f'DEPOSIT from {person} for the amount {self.price} at {self.date}'
         elif self.method == "Withdraw":
-            return f'WITHDRAW from {person} for the amount {symbol}{self.price} at {self.date}'
+            return f'WITHDRAW from {person} for the amount {self.price} at {self.date}'
         elif self.method == "Cash Out":
-            return f'CASH OUT as {person} for the amount {symbol}{self.price} at {self.date}'
+            return f'CASH OUT as {person} for the amount {self.price} at {self.date}'
         elif self.method == "Exchange":
-            return f'EXCHANGE as {person} for the amount {symbol}{self.price} at {self.date}'
+            return f'EXCHANGE as {person} for the amount {self.price} at {self.date}'

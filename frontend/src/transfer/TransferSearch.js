@@ -7,18 +7,32 @@ import RotateLoader from 'react-spinners/RotateLoader'
 
 import useFetch from "../components/useFetch";
 import useMsgSwal from "../components/useMsgSwal";
+import { useRef } from "react";
 
 const TransferSearch = () => {
     let { t }                       = useTranslation()
     let history                     = useHistory()
     let api                         = useFetch()
+    let ref                         = useRef()
 
     const [data, setData]           = useState(null)
+    const [user, setUser]           = useState(null)
 
     const [isLoading, setIsLoading] = useState(true);
     const msgSwal                   = useMsgSwal()
 
     useEffect(() => {
+        let loadUser = async () => {
+            setIsLoading(true)
+            let { response, data } = await api("/api/currUser/")
+    
+            if (response.status === 200) {
+                setUser(data.username)
+            } else {
+                msgSwal(t("default_error"), "error")
+                setIsLoading(false)
+            }
+        }; loadUser()
         setIsLoading(false)
     }, [])
 
@@ -48,9 +62,16 @@ const TransferSearch = () => {
 
     let handleKeyClick = (e) => {
         if (e.key === 'Enter') {
-            if (data) {
-                history.push(`/${data[0]['username']}/transfer-confirm`, { fromApp: true })
-            }
+            e.preventDefault()
+            next(data[0]['username'])
+        }
+    }
+
+    let next = (username) => {
+        if (ref.current.value.toLowerCase() === user.toLowerCase()) {
+            msgSwal(t("cannot_send_to_self"), "error")
+        } else {
+            history.push(`/transfer-confirm/${username}`, { fromApp: true })
         }
     }
 
@@ -70,16 +91,16 @@ const TransferSearch = () => {
 
                     <div className="dropdown form-floating">
                         <input type="text" id="search-input" className="form-control dropdown-toggle" data-bs-toggle="dropdown"
-                            placeholder="Country" autoComplete="off" onChange={e => search(e.target.value)}></input>
+                            placeholder="Country" autoComplete="off" onChange={e => search(e.target.value)} ref={ref}></input>
                         <label htmlFor="search-input">{t("send_money_fields")}</label>
 
                         <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink" id="results-box">
                             {data ? data.map((item, i) => (
                                 <li key={i}>
-                                    <Link className="dropdown-item" to={{ pathname: `/${item['username']}/transfer-confirm`, state: { fromApp: true } }}
+                                    <button className="dropdown-item" onClick={() => next(item['username'])}
                                         style={{textTransform: "capitalize"}}>
                                         {item['username']}
-                                    </Link>
+                                    </button>
                                 </li>
                             )) : 
                                 <li>

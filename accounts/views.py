@@ -182,8 +182,8 @@ def TransferSendView(request, pk, reciever_name):
     reciever                 = Account.objects.get(created_by__username=reciever_name)
     giver_wallet             = BranchAccounts.objects.filter(main_account=giver)
     balance                  = giver.total_balance
-    giver_currency           = giver.main_currency
-    reciever_currency        = reciever.main_currency
+    giver_currency           = giver.currency
+    reciever_currency        = reciever.currency
 
     # making the array for currency options
     currency_options    = [(currency_name, currency_symbol_)]
@@ -273,7 +273,7 @@ def TransferSendView(request, pk, reciever_name):
                                 # recording the transaction
                                 r = TransactionHistory(wallet=abc, second_wallet=reciever_wallet.get(currency=currency_name),
                                 price=MoneyToSend, purpose_of_use=purpose, method="Transfer")
-                            elif reciever.main_currency == currency_name:
+                            elif reciever.currency == currency_name:
                                 # wallet-to-account
                                 print("wallet-to-account")
                                 reciever_total_balance = reciever.total_balance
@@ -661,7 +661,7 @@ def History(request, pk):
 
     # getting user's currency stuff
     user_                  = CustomUser.objects.get(pk=pk)
-    currency               = Account.objects.get(pk=pk).main_currency
+    currency               = Account.objects.get(pk=pk).currency
     acc                    = Account.objects.get(pk=pk)
     branch_acc             = BranchAccounts.objects.filter(main_account__pk=pk) # getting user's wallets
 
@@ -750,10 +750,10 @@ def HistoryDetail(request, pk, tran_id):
     transaction = TransactionHistory.objects.get(pk=tran_id)
 
     if transaction.person:
-        currency = transaction.person.main_currency
+        currency = transaction.person.currency
         id.append(transaction.person.pk)
     if transaction.second_person:
-        currency = transaction.second_person.main_currency
+        currency = transaction.second_person.currency
         id.append(transaction.second_person.pk)
     if transaction.wallet:
         currency = transaction.wallet.currency
@@ -799,11 +799,11 @@ def HistoryDetail(request, pk, tran_id):
     # if transaction is an exchange
     elif transaction.method == "Exchange":
         try:
-            giver_symbol = get_currency_symbol(transaction.person.main_currency)
+            giver_symbol = get_currency_symbol(transaction.person.currency)
         except AttributeError:
             giver_symbol = get_currency_symbol(transaction.wallet.currency)
         try:
-            reciever_symbol = get_currency_symbol(transaction.second_person.main_currency)
+            reciever_symbol = get_currency_symbol(transaction.second_person.currency)
         except AttributeError:
             reciever_symbol = get_currency_symbol(transaction.second_wallet.currency)
 
@@ -937,10 +937,10 @@ if giver_currency != reciever_currency:
     data = response.json() # getting the data
     ex_rate = round(decimal.Decimal(data['result']), 4)
     reciever_amount = ex_rate * MoneyToSend
-    giver_currency = get_currency_symbol(giver.main_currency)
-    reciever_currency = get_currency_symbol(reciever.main_currency)
+    giver_currency = get_currency_symbol(giver.currency)
+    reciever_currency = get_currency_symbol(reciever.currency)
 else:
     reciever_amount = MoneyToSend
     ex_rate = 1
-    giver_currency = get_currency_symbol(giver.main_currency)
-    reciever_currency = get_currency_symbol(reciever.main_currency)'''
+    giver_currency = get_currency_symbol(giver.currency)
+    reciever_currency = get_currency_symbol(reciever.currency)'''

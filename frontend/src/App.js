@@ -57,8 +57,8 @@ function App() {
                                 <PrivateRoute path="/withdraw" comp={Withdraw} />
                                 <PrivateRoute path="/wallet-search/:curr" exact comp={WalletConfirm} />
                                 <PrivateRoute path="/wallet-search" exact comp={WalletSearch} />
-                                <PrivateRoute path="/:user/transfer-confirm" comp={TransferConfirm} />
-                                <PrivateRoute path="/transfer-search" comp={TransferSearch} />
+                                <PrivateRoute path="/transfer-confirm/:user" exact comp={TransferConfirm} />
+                                <PrivateRoute path="/transfer-search" exact comp={TransferSearch} />
                                 <PrivateRoute path="/currency-exchange/:fromCurr/:fromIso/:amount/:toCurr/:toIso" exact comp={CurrencyExConfirm} />
                                 <PrivateRoute path="/currency-exchange" exact comp={CurrencyEx} />
                                 <PrivateRoute path="/transactions/:tId" exact comp={TransactionsDetail} />

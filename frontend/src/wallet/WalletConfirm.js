@@ -70,14 +70,11 @@ const WalletConfirm = () => {
         })
         if (response.status === 200) {
             if (data.success) {
-                msgSwal(t("new_wallet_success", {"currency": currency}), "success")
-
-                history.push("/home")
+                msgSwal(t(data.msg, {"currency": currency}), "success")
             } else {
-                msgSwal(t("wallet_error"), "error")
-
-                history.push("/wallet-search")
+                msgSwal(t(data.msg), "error")
             }
+            history.push("/home")
         } else {
             msgSwal(t("default_error"), "error")
             setIsLoading(false)

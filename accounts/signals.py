@@ -5,7 +5,8 @@ from .models import Account, AccountInterest
 # signal to create an AccountInterest, right after an account is created
 @receiver(post_save, sender=Account)
 def account_created_handler(sender, created, instance, *args, **kwargs):
-    if created:
+    print("instance.primaryinstance.primary", instance.primary)
+    if created and instance.primary:
         AccountInterest.objects.create(interest=instance.total_balance, id=instance.pk)
 
         # Notify us that a new account has been created
@@ -25,4 +26,5 @@ def account_created_handler(sender, created, instance, *args, **kwargs):
 
 @receiver(pre_delete, sender=Account)
 def account_delete_hendler(sender, instance, using, *args, **kwargs):
-    AccountInterest.objects.get(id=instance.pk).delete()
+    if instance.primary:
+        AccountInterest.objects.get(id=instance.pk).delete()

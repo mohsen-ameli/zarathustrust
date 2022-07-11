@@ -3,6 +3,7 @@ from tokenize import Double
 from crum import get_current_user
 from django.conf import settings
 from django.utils import translation
+from .models import Account
 
 
 # test function to see if the user tryna see the page is allowed to do so
@@ -10,6 +11,14 @@ def correct_user(pk):
     if pk == get_current_user().pk:
         return True
     return False
+
+
+def loadJson(filename):
+    project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    file = f'{project}/json/{filename}.json'
+
+    with open(file, 'r') as json_currency:
+        return json.load(json_currency)
 
 
 # getting the language cookie
@@ -26,12 +35,7 @@ def cookie_monster(request):
 def get_currency_symbol(country_code):
     try:
         country_code = country_code.upper()
-        project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        file = f'{project}/json/currencies_symbols.json' # getting the file containing all country codes
-        with open(file, 'r') as config_file: # opening and reading the json file
-            data = json.load(config_file)
-
-        return data[country_code]
+        return loadJson("currencies_symbols")[country_code]
     except:
         return None
 
@@ -41,10 +45,7 @@ def currency_min(currency):
     # currency_min_generator()
     try:
         currency = currency.upper()
-        project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        file = f'{project}/json/currency_min.json' # getting the file containing all country codes
-        with open(file, 'r') as config_file: # opening and reading the json file
-            data = json.load(config_file)
+        data = loadJson("currency_min")
 
         return int(data[currency])
     except:
@@ -53,12 +54,9 @@ def currency_min(currency):
 
 # update the currency_min file with new $1 currencies
 def currency_min_generator():
+    data = loadJson("currency_min")
     project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    file = f'{project}/json/currency_min.json' # getting the file containing all country codes
-
-    with open(file, 'r') as json_currency: # opening and reading the json file
-        data = json.load(json_currency)
-
+    file = f'{project}/json/currency_min.json'
     final_data = {}
 
     for currency in data:
@@ -83,29 +81,23 @@ def currency_min_generator():
 
 
 # load country_currencies_clean
-def country_currencies_clean():
-    # loading the country currencies clean json file
-    project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    file = f'{project}/json/country_currencies_clean.json'
-    with open(file, 'r') as config_file:
-        data = json.load(config_file)
-
-    return data
+def iso3_to_iso2(iso_3):
+    data = loadJson("country_currencies_clean")
+    for key, value in data.items():
+        if value == iso_3:
+            return key
+    return None
 
 
-# returns the user's wallet's and account's iso 2 and 3, their currency symbol, and money they have
-def user_wallets(branch_acc, acc):
-    data = country_currencies_clean()
+# returns ALL of the user's wallets
+def getWallets(pk):
+    accounts = Account.objects.filter(created_by__pk=pk)
+    wallets  = []
 
-    wallets = [] # (country_iso2, currency, symbol, balance)
-
-    # attaching all wallets to the list
-    for i in data:
-        for item in branch_acc:
-            if data[i] == item.currency and i == item.iso2:
-                wallets.append((i, item.currency, get_currency_symbol(item.currency), float(item.total_balance)))
-
-        if data[i] == acc.main_currency:
-            wallets.insert(0, (i, acc.main_currency, get_currency_symbol(acc.main_currency), float(acc.total_balance)))
+    for account in accounts:
+        wallets.append((account.iso2, account.currency, get_currency_symbol(account.currency), account.total_balance))
 
     return wallets
+
+
+

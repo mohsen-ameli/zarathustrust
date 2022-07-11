@@ -140,7 +140,7 @@ const Transactions = () => {
 
     return (
         <div className="transactions">
-            {error && <MsgAlert msg={error} variant="danger" />}
+            {error && <MsgAlert msg={t(error)} variant="danger" />}
             { isLoading && 
                 <div className="spinner">
                     <RotateLoader color="#f8b119" size={20} />
@@ -189,7 +189,7 @@ const Transactions = () => {
                 </div>
             </div>
 
-            <br></br>
+            <br />
 
             {/* Transactions */}
             {allTrans.map((item, key) => (
@@ -214,6 +214,16 @@ const Transactions = () => {
                             :
                             undefined}
 
+                            {item.type === "Withdraw" ?
+                                <>
+                                    <i className="float-none history-icons bi-upload"></i>
+                                    <span className="float-none ms-3">
+                                    Withdraw for {username}
+                                    </span>
+                                </>
+                            :
+                            undefined}
+
                             {item.type === "Cash Out" ?
                                 <>
                                     <i className="fas fa-hand-holding-usd float-none history-icons py-2"></i>
@@ -228,7 +238,7 @@ const Transactions = () => {
                                 <>
                                     <i className="float-none history-icons bi-send-check"></i>
                                     <span className="float-none ms-3">
-                                        Transfer from  {Array.isArray(item.person) && item.person[0] !== "Anonymous" ? item.person[0] : item.wallet[0]} to {item.person2 !== "Anonymous" ? item.person2 : item.wallet2}
+                                        Transfer from  {item.person[0]} to {item.person2}
                                     </span>
                                 </>
                             :
@@ -244,29 +254,20 @@ const Transactions = () => {
                             :
                             undefined}
 
-                            {item.type === "Withdraw" ?
-                                <>
-                                    <i className="float-none history-icons bi-upload"></i>
-                                    <span className="float-none ms-3">
-                                    Withdraw for {username}
-                                    </span>
-                                </>
-                            :
-                            undefined}
 
-
+                            {/* symbol and money */}
                             {item.type === "Transfer" ? (
-                                ( item.person2 === username || item.wallet2 === username ) ? 
+                                item.person2 === username ? // recieving
                                     <span className="float-end plus-money">
                                         +{symbol}{ (item.price).toFixed(2) }
                                     </span>
-                                : 
+                                : // giving
                                     <span className="float-end minus-money">
                                         -{symbol}{ (item.price).toFixed(2) }
                                     </span>
                             ) :
                             ( item.type === "Exchange" ? (
-                                ( item.person[1] === currency || item.wallet[1] === currency ) ? 
+                                item.person[1] === currency ? 
                                     <span className="float-end minus-money">
                                         -{symbol}{ (item.price).toFixed(2) }
                                     </span>
