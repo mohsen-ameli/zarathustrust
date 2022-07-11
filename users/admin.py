@@ -1,11 +1,9 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
-from .forms import UserRegisterForm
 
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
-    add_form = UserRegisterForm
 
     fieldsets = (
         *UserAdmin.fieldsets,

@@ -1,11 +1,10 @@
 from twilio.rest import Client
-import json, os
+import json
 
 with open('/etc/config.json') as config_file:
     config = json.load(config_file)
 
-# Your Account Sid and Auth Token from twilio.com/console
-# and set the environment variables. See http://twil.io/secure
+
 account_sid = config.get('TWILIO_ACCOUNT_SID')
 auth_token = config.get('TWILIO_AUTH_TOKEN')
 client = Client(account_sid, auth_token)

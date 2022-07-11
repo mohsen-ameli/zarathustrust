@@ -1,29 +1,18 @@
-from django.contrib.auth import views as auth_views
 from django.urls import path
-from . import views as users_views
+from .views import *
+from rest_framework_simplejwt.views import TokenRefreshView
 
-app_name = "users"
 urlpatterns = [
-    # Matrix
-    path("matrix/", users_views.Matrix, name="matrix"),
+    path('token/', EmailTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('logout/', logoutView, name='logout'),
+    
+    path('signup/', signUp, name='sign-up'),
+    path('verify-email/', verifyEmail, name='verify-email'),
+    path('verify-phone/', verifyPhone, name='verify-phone'),
+    path('verify-referral/', verifyReferral, name='verify-referral'),
 
-    # cookies
-    path("cookie-policy/", users_views.CookiePolicy, name="cookie-policy"),
-
-    # login/out
-    path("login/", users_views.LoginClassView, name="login-view"),
-    path("logout/", auth_views.LogoutView.as_view(template_name="users/logout.html"), name="logout"),
-
-    # register
-    path("register/", users_views.register, name="register"),
-    path("register/business/", users_views.business, name="business"),
-    path("register/personal/", users_views.PersonalCountryPickSignUp, name="personal-country-pick"),
-    path("register/personal/<str:country>/", users_views.PersonalSignUp, name="personal-sign-up"),
-
-    # verifying
-    path("email-verify/", users_views.email_verify_view, name="verify-view"),
-    path("phone-verify/", users_views.phone_verify_view, name="phone-verify-view"),
-    path("referral-code/", users_views.referral_verify_view, name="referral-verify-view"),
+    path('password-reset/', RequestPasswordResetEmail.as_view(), name='password-reset'),
+    path('password-reset-confirm/<uidb64>/<token>/', PasswordTokenCheck.as_view(), name='password-reset-confirm'),
+    path('password-reset-complete/', PasswordResetAPIView.as_view(), name='password-complete'),
 ]
-
-# path("login/<str:url1>/<str:url2>/<str:url3>/<str:url4>/", users_views.auth_view, name="login-view-pay"),

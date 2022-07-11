@@ -1,433 +1,280 @@
-import json, os, phonenumbers
-from django.http import HttpResponse
+import phonenumbers
+import pycountry
+import json
+
+from django.core.mail import send_mail
+from django.contrib.auth.hashers import make_password
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.utils.encoding import smart_str, smart_bytes, DjangoUnicodeDecodeError
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.contrib.sites.shortcuts import get_current_site
+from django.conf import settings
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework import generics
+from rest_framework import status
 
 from accounts.models import Account
-from crum import get_current_user
-from django.http.response import JsonResponse
-from django.contrib import messages
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.hashers import make_password
-from django.contrib.auth.forms import AuthenticationForm
-from django.core.mail import send_mail
-from django.shortcuts import redirect, render
-from django.urls import reverse
-from django.utils.translation import gettext as _
-from django.conf import settings
-
-
-from .forms import (BusinessForm, EmailCodeForm, PhoneCodeForm,
-                    ReferralCodeForm, RegisterForm)
-from .models import CustomUser, code, ReferralCode
+from accounts.functions import currency_min, get_currency_symbol
+from .models import CustomUser, Code
+from .forms import RegisterForm
+from .functions import *
 from .utils import phone_msg_verify
-from .functions import country_from_ip, get_country_lang, get_country_currency
-from accounts.views import currency_min, get_currency_symbol
-
-with open("/etc/config.json") as config_file:
-    config = json.load(config_file)
+from .serializers import *
 
 
-################ Views ###############
-
-# Matrix Page
-def Matrix(request):
-    return render(request, "users/matrix.html")
+def loadConfig():
+    with open('/etc/config.json') as config_file:
+        return json.load(config_file)
 
 
-# Initial Register Page
-def register(request):
-    if request.user.is_anonymous == True:
-        country = country_from_ip(request)[1]
-        if country is None:
-            lang = 'en'
-        else:
-            lang = get_country_lang(country)
-        response = render(request, "users/register.html")
-        response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang)
-        return response
-    else:
-        return redirect("accounts:home", pk=request.user.pk)
+@api_view(['POST'])
+def logoutView(request):
+    try:
+        refresh_token = request.data["refresh"]
+        token = RefreshToken(refresh_token)
+        token.blacklist()
+    except:
+        pass
+    return Response("Successful Logout")
 
 
-# Business Register
-def business(request):
-    if request.user.is_anonymous == True:
-        if request.method == "POST":
-            form = BusinessForm(request.POST)
-            if form.is_valid():
-                user = form.save()
-                username = form.cleaned_data.get("username")
-                password = form.cleaned_data.get("password1")
-                user_ = authenticate(request, username=username, password=password)
-                if user_ is not None:
-                    request.session["pk"] = user.pk
-                    messages.success(request, _(f"HIIIII"))
-
-                    country = country_from_ip(request)[1]
-                    if country is None:
-                        country = 'en'
-                    else:
-                        lang = get_country_lang(country)
-                    response = redirect("/")
-                    response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang)
-                    return response
-                else:
-                    # Return an 'invalid login' error message.
-                    country = country_from_ip(request)[1]
-                    if country is None:
-                        country = 'en'
-                    else:
-                        lang = get_country_lang(country)
-                    response = redirect("/")
-                    response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang)
-                    return response
-        else:
-            form = BusinessForm()
-        country = country_from_ip(request)[1]
-        if country is None:
-            lang = 'en'
-        else:
-            lang = get_country_lang(country)
-        response = render(request, "users/business.html", {"form": form})
-        response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang)
-        return response
-    else:
-        return redirect("accounts:home", pk=request.user.pk)
-
-
-# view to handle the country picking
-def PersonalCountryPickSignUp(request):
-    if request.user.is_anonymous == True:
-        default_country = country_from_ip(request)
-
-        project = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        file = f'{project}/json/country_names.json' # getting the file containing all country codes
-        with open(file, 'r') as config_file: # opening and reading the json file
-            data = json.load(config_file)
-
-        all_countries = data.items()
-
-        # user has submited a country
-        if request.method == "POST":
-            # if user has chosen their default country
-            default_country_picker = request.POST.get('default-country-picker')
-            if default_country_picker != None: 
-                response = redirect("users:personal-sign-up", country=default_country[1])
-                response.set_cookie(settings.LANGUAGE_COOKIE_NAME, default_country[1])
-                return response
-
-        context = {
-            "default_country" : default_country[0], 
-                "default_country" : default_country[0], 
-            "default_country" : default_country[0], 
-            "default_country_code" : default_country[1], 
-                "default_country_code" : default_country[1], 
-            "default_country_code" : default_country[1], 
-            "countries" : all_countries,
-            "data" : data
-        }
-        country = country_from_ip(request)[1]
-        if country is None:
-            lang = 'en'
-        else:
-            lang = get_country_lang(country)
-        response = render(request, "users/country_pick.html", context)
-        response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang)
-        return response
-    else:
-        return redirect("accounts:home", pk=request.user.pk)
-
-
+@api_view(['POST'])
 # Personal Register
-def PersonalSignUp(request, country):
+def signUp(request):
+    form = RegisterForm(request.data)
+    
+    country = request.data['country']
+    ext = request.data['ext']
+    username = request.data['username']
+    email = request.data['email']
+    password1 = request.data['password1']
+    password2 = request.data['password2']
+
+    try:
+        phone_num = int(request.data['phone_number'])
+    except ValueError:
+        form.add_error('phone_number', 'Please enter a correct phone number')
+
+    if CustomUser.objects.filter(email=email).exists():
+        form.add_error('email', 'A user with that email address already exists!')
+
+    phone_number = ""
+
     if request.user.is_anonymous == True:
-        ext = phonenumbers.country_code_for_region(country)
-        # if country is valid
-        if ext != 0:
-            if request.method == "POST":
-                form = RegisterForm(request.POST)
-
-                # phone number checking
-                phone_num = request.POST.get('phone_number')
-                if phone_num.isnumeric():
-                    phone_number = phonenumbers.is_valid_number(phonenumbers.parse(f'+{ext}{phone_num}'))
-                    if phone_number is False:
-                        form.add_error('phone_number', _('Please enter a correct phone number'))
-                else:
-                    form.add_error('phone_number', _('Please enter a correct phone number'))
-                    
-                # form valid
-                if form.is_valid():
-                    # setting up to save user into sesssions
-                    user = {
-                        'username'      : form.cleaned_data.get("username"),
-                        'email'         : form.cleaned_data.get("email"),
-                        'phone_number'  : form.cleaned_data.get("phone_number"),
-                        'country'       : country,
-                        'password'      : form.cleaned_data.get("password1"),
-                        'iban'          : None,
-                    }
-                    request.session['user'] = user
-
-                    code.objects.create(user=user['username'])
-                    code_obj = code.objects.get(user=user['username'])
-                    ver_code = {
-                        'email_verify_code' : code_obj.email_verify_code,
-                        'phone_verify_code' : code_obj.phone_verify_code,
-                        'iban_verify_code'  : code_obj.iban_verify_code,
-                    }
-                    request.session['ver_code'] = ver_code
-                    code_obj.delete()
-                
-                    messages.success(
-                        request,
-                        _(
-                            f"Please check your mailbox (as well as spam folder) for a verification code, and enter the 5-digit code below"
-                        ),
-                    )
-                    return redirect("users:verify-view")
-            else:
-                form = RegisterForm()
-            return render(request, "users/personal.html", {"form": form, "ext" : ext})
-        else:
-            return redirect("users:personal-country-pick")
-    else:
-        return redirect("accounts:home", pk=request.user.pk)
-
-
-# Email Verify 
-def email_verify_view(request):
-    if request.user.is_anonymous == True:
-        user = request.session.get('user')
-        form = EmailCodeForm(request.POST or None)
+        # phone number checking
+        try:
+            phone_number = phonenumbers.is_valid_number(phonenumbers.parse(f'+{ext}{phone_num}'))
+        except Exception as e:
+            form.add_error('phone_number', e)
+        if phone_number is False:
+            form.add_error('phone_number', 'Please enter a correct phone number')
         
-        # if user just happened to visit the page, simply redirect them back to the register page
-        try:
-            email_code = request.session.get('ver_code')['email_verify_code']
-        except TypeError:
-            return redirect("users:register")
 
-        if not request.POST:
-            # send email
-            EMAIL_ID = config.get("EMAIL_ID")
-            send_mail(
-                _(f"Hello {user['username']}"),
-                _(
-                    f"Your verification code is : {email_code}, you are very close to starting your money making process!"
-                ),
-                f"{EMAIL_ID}",
-                [f"{user['email']}"],
-            )
+        # saving the user
         if form.is_valid():
-            num = form.cleaned_data.get("email_verify_code")
-            if str(email_code) == num:
-                messages.success(
-                    request,
-                    _(
-                        f"Please check your phone for verification code, and enter the 5-digit code below"
-                    ),
-                )
-                return redirect("users:phone-verify-view")
-            else:
-                messages.warning(
-                    request,
-                    _(f"You enterd the wrong verificaiton code ! Please try again"),
-                )
-        return render(request, "users/email_verify.html", {"form": form})
-    else:
-        return redirect("accounts:home", pk=request.user.pk)
+            user = {
+                'username'      : username,
+                'email'         : email,
+                'ext'           : ext,
+                'phone_number'  : phone_num,
+                'country'       : country,
+                'password1'     : password1,
+                'password2'     : password2,
+                'iban'          : None,
+            }
+            request.session['user'] = user
+
+            Code.objects.create(user=user['username'])
+            code_obj = Code.objects.get(user=user['username'])
+            ver_code = {
+                'email_verify_code' : code_obj.email_verify_code,
+                'phone_verify_code' : code_obj.phone_verify_code,
+                'iban_verify_code'  : code_obj.iban_verify_code,
+            }
+            request.session['ver_code'] = ver_code
+            code_obj.delete()
+    
+    return Response(form.errors.as_json())
 
 
-# Phone Verify
-def phone_verify_view(request):
-    if request.user.is_anonymous == True:
-        user = request.session.get('user')
-        form = PhoneCodeForm(request.POST or None)
+@api_view(['GET'])
+# Email Verify 
+def verifyEmail(request):
+    config = loadConfig()
+    user = request.session.get('user')
+    email_code = request.session.get('ver_code')['email_verify_code']
 
-        # if user just happened to visit the page, simply redirect them back to the register page
-        try:
-            phone_code = request.session.get('ver_code')['phone_verify_code']
-        except TypeError:
-            return redirect("users:register")
+    # send email
+    EMAIL_ID = config.get("EMAIL_ID")
+    send_mail(
+        f"Hello {user['username']}",
+        f"Your verification code is : {email_code}, you are very close to starting your money making process!",
+        f"{EMAIL_ID}",
+        [f"{user['email']}"],
+    )
 
-        phone_number = user['phone_number']
-        if not request.POST:
-            # send SMS
-            phone_msg_verify(
+    return Response({"code": email_code})
+
+
+@api_view(['GET'])
+# Phone Verify 
+def verifyPhone(request):
+    user = request.session.get('user')
+    phone_code = request.session.get('ver_code')['phone_verify_code']
+    phone_number = "+" + str(user['ext']) + str(user['phone_number'])
+
+    phone_msg_verify(
                 verify_code=phone_code, phone_number_to=phone_number
             )
-        if form.is_valid():
-            num = form.cleaned_data.get("phone_verify_code")
-            if str(phone_code) == num:
-                if user['iban'] is not None: # checking to see if the user has an iban
-                    messages.success(
-                        request,
-                        _(
-                            f"Enter your friend's referral code in order for both of you to get grand prize !"
-                        ),
-                    )
-                    return redirect("users:referral-verify-view")
-                else:
-                    messages.success(
-                        request,
-                        _(
-                            f"Enter your friend's referral code in order for both of you to get grand prize !"
-                        ),
-                    )
-                    return redirect("users:referral-verify-view")
-            else:
-                messages.warning(
-                    request,
-                    _(f"You enterd the wrong verificaiton code ! Please try again"),
-                )
-        return render(request, "users/phone_verify.html", {"form": form})
-    else:
-        return redirect("accounts:home", pk=request.user.pk)
+
+    return Response({"code": phone_code})
 
 
-# Referral Verify
-def referral_verify_view(request, backend='django.contrib.auth.backends.ModelBackend'):
-    if request.user.is_anonymous == True:
-        # the amount in which new user's bonus will get
-        extra_bonus_value = 200
+@api_view(['POST'])
+# Phone Verify 
+def verifyReferral(request):
+    # the amount in which new user's bonus will get
+    EXTRA_BONUS_VALUE = 200
 
-        # getting stuff to sign up the user
-        user = request.session.get('user')
+    message = ""
+    config  = loadConfig()
+
+    # getting stuff to sign up the user
+    user = request.session.get('user')
+    
+    # if user just happened to visit the page, simply redirect them back to the register page
+    username        = user['username']
+    email           = user['email']
+    password        = user['password1']
+    phone_number    = user['phone_number']
+    country         = user['country']
+    phone_ext       = user['ext']
+    enterd_code     = request.data['code']
+
+    iso2            = pycountry.countries.search_fuzzy(country)[0].alpha_2
+    currency        = get_country_currency(iso2)
+    language        = get_country_lang(iso2)
+    friend          = CustomUser.objects.filter(referral_code=enterd_code)
+    user_currency_min = currency_min(currency)
+
+    # creating a user
+    user = CustomUser.objects.create(username=username, password=make_password(password), email=email, phone_number=phone_number, country=iso2,
+    phone_ext=phone_ext, currency=currency, iso2=iso2, language=language)
+
+    if friend.exists():  # referral code exists
+        # getting current user's stuff
+        user_currency_symbol    = get_currency_symbol(currency) # their currency symbol
+        user_extra_bonus        = user_currency_min * EXTRA_BONUS_VALUE
+
+        # creating an account for the user
+        bonus = (user_currency_min * 1000) + user_extra_bonus
+        Account.objects.create(created_by=user, bonus=bonus, total_balance=currency_min(currency), currency=currency, iso2=iso2, primary=True, pk=user.pk)
+
+        # getting some info from the user whose referral code was used
+        refUser_pk                = friend.values("pk")[0]["pk"] # their name
+        refUser_account           = Account.objects.filter(created_by__pk=refUser_pk).filter(primary=True)
+        refUser_balance           = refUser_account.values('total_balance')[0]['total_balance']
+        refUser_bonus             = refUser_account.values('bonus')[0]['bonus']
+        refUser_currency          = refUser_account.values('currency')[0]['currency']
+        refUser_email             = friend.values('email')[0]['email']
+        refUser_username          = friend.values('username')[0]['username']
+        refUser_currency_min      = currency_min(refUser_currency) # $1 in their currency
+        refUser_extra_bonus       = refUser_currency_min * EXTRA_BONUS_VALUE
+        refUser_currency_symbol   = get_currency_symbol(refUser_currency) # their currency symbol
+
+        # updating the giver user's bonus
+        refUser_account.update(
+            bonus = refUser_bonus + refUser_extra_bonus,
+            total_balance = refUser_balance + refUser_currency_min
+        )
+
+        # send email to the person whose referral code was just used
+        EMAIL_ID = config.get("EMAIL_ID")
+        send_mail(
+            f"Dear {refUser_username}!",
+            f"{username} just used your referral code! You recieved {refUser_currency_symbol}{refUser_currency_min} on your balance, and {refUser_currency_symbol}{refUser_extra_bonus} added to your bonus!",
+            f"{EMAIL_ID}",
+            [f"{refUser_email}"],
+        )
+
+        # success message
+        message = f"success_register_right_referral"
         
-        # if user just happened to visit the page, simply redirect them back to the register page
+        return Response({"msg": message, "user": username, "currency": user_currency_symbol, "extraBonus": user_extra_bonus})
+    else:  # referral code not entered
+        bonus = user_currency_min * 1000
         try:
-            username        = user['username']
-            password        = user['password']
-            phone_number    = user['phone_number']
-            country         = user['country']
-        except TypeError:
-            return redirect("users:register")
+            Account.objects.create(created_by=user, bonus=bonus, currency=currency, total_balance=currency_min(currency), iso2=iso2, primary=True, pk=user.pk)
+        except Exception as e:
+            pass
 
-        phone_ext = phonenumbers.country_code_for_region(country)
-        currency = get_country_currency(country)
-        language = get_country_lang(country)
+        if enterd_code == "":  # referral code not submitted
+            message = f"success_register"
+        else: # referral code was wrong
+            message = f"success_register_wrong_referral"
 
-        form = ReferralCodeForm(request.POST or None)
-
-        if form.is_valid():
-            enterd_code = form.cleaned_data.get("referral_code")
-            friend_code = ReferralCode.objects.filter(referral_code=enterd_code)
-
-            if friend_code:  # referral code exists
-                # creating a user
-                user_ = CustomUser.objects.create(username=username, password=make_password(password), phone_number=phone_number, country=country,
-                phone_ext=phone_ext, currency=currency, language=language)
-                user_.save()
-                login(request, user_, backend)
-
-                # getting current user's stuff
-                user_currency           = user_.currency
-                user_currency_symbol    = get_currency_symbol(user_currency) # their currency symbol
-                user_currency_min       = currency_min(user_currency)
-                user_extra_bonus        = user_currency_min * extra_bonus_value
-
-                # creating an account for the user
-                bonus                   = (user_currency_min * 1000) + user_extra_bonus
-                user_account = Account.objects.create(created_by=user_, bonus=bonus, currency=currency, pk=user_.pk)
-                user_account.save()
-
-                # updating the user's bonus
-                Account.objects.filter(created_by=user_).update(bonus = user_extra_bonus + user_currency_min * 1000)
-
-                # getting the some info from the user whose referral code was used
-                giver_user = ReferralCode.objects.get(referral_code=enterd_code).user # their name
-                giver_account           = Account.objects.get(created_by=giver_user) # their account
-                giver_balance           = giver_account.total_balance # their balance
-                giver_bonus             = giver_account.bonus # their bonus
-                giver_currency          = giver_account.currency # their currency in iso-3 format
-                giver_currency_min      = currency_min(giver_currency) # $1 in their currency
-                giver_extra_bonus       = giver_currency_min * extra_bonus_value
-                giver_currency_symbol   = get_currency_symbol(giver_currency) # their currency symbol
-
-                # updating the giver user's bonus
-                Account.objects.filter(created_by=giver_user).update(
-                    bonus = giver_bonus + giver_extra_bonus,
-                    total_balance = giver_balance + giver_currency_min
-                )
-
-                # send email to the person whose referral code was just used
-                EMAIL_ID = config.get("EMAIL_ID")
-                GIVER_EMAIL = giver_user.email
-                send_mail(
-                    _(f"Dear {giver_user.username} !"),
-                    _(
-                        f"{user['username']} just used your referral code ! You recieved {giver_currency_symbol}{giver_currency_min} on your balance, and {giver_currency_symbol}{giver_extra_bonus} added to your bonus !"
-                    ),
-                    f"{EMAIL_ID}",
-                    [f"{GIVER_EMAIL}"],
-                )
-
-                # success message
-                messages.success(request,
-                    _(f"You have successfully registered, {user['username']}. For your prize, {user_currency_symbol}{user_extra_bonus} has been transfered to your bonus !")
-                )
-
-                # redirect to the new user's home page
-                return redirect("accounts:home", pk=user_.pk)
-
-            else:  # referral code not entered
-                # creating a user
-                user_ = CustomUser.objects.create(username=username, password=make_password(password), phone_number=phone_number, country=country,
-                phone_ext=phone_ext, currency=currency, language=language)
-                user_.save()
-                login(request, user_, backend)
-
-                # creating an account for the user
-                user_currency_min       = currency_min(user_.currency)
-                bonus                   = user_currency_min * 1000
-                Account.objects.create(created_by=user_, bonus=bonus, currency=currency, pk=user_.pk)
-                
-                # success message
-                if enterd_code == "":  # referral code not submitted
-                    messages.success(request,
-                        _(f"You have successfully registered, {user['username']} !")
-                    )
-                else: # referral code was wrong
-                    messages.success(request,
-                        _(f"Sorry, this referral code is incorrect, but you have successfully registered, {user['username']} !")
-                    )
-                
-                # redirect to the new user's home page
-                return redirect("accounts:home", pk=user_.pk)
-        
-        return render(request, "users/referral_code.html", {"form": form})
-    else:
-        return redirect("accounts:home", pk=request.user.pk)
+        return Response({"msg": message, "user": username})
 
 
-# Login Page
-def LoginClassView(request):
-    if request.user.is_anonymous == True:
-        form = AuthenticationForm()
-        template_name = "users/login.html"
-        next = request.GET.get('next')
-        if request.method == 'POST':
-            username = request.POST['username']
-            password = request.POST['password']
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                # Redirect to a success page.
-                user_language = CustomUser.objects.get(pk=request.user.pk).language
-                if next is None:
-                    response = redirect("accounts:home", pk=request.user.pk)
-                    response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user_language)
-                    return response
-                else:
-                    response = redirect(next)
-                    response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user_language)
-                    return response
+class EmailTokenObtainPairView(TokenObtainPairView):
+    serializer_class = EmailTokenObtainSerializer
+
+
+class RequestPasswordResetEmail(generics.GenericAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = ResetPasswordEmailRequestSerializer
+    
+    def post(self, request):
+        # serializer = self.serializer_class(data=request.data)
+        email = request.data['email']
+
+        if CustomUser.objects.filter(email=email).exists():
+            user = CustomUser.objects.get(email=email)
+            uidb64 = urlsafe_base64_encode(smart_bytes(user.id) )
+            token = PasswordResetTokenGenerator().make_token(user)
+
+            if settings.DEBUG:
+                current_site = "localhost:3000"
             else:
-                messages.warning(request, _("Please enter a correct username and password. Note that both fields are case-sensitive (Pay attention to capital letters)."))
-        return render(request, template_name, {'form' : form})
-    else:
-        return redirect("accounts:home", pk=request.user.pk)
+                current_site = get_current_site(request=request).domain
+                
+            absurl = f"http://{current_site}/password-reset-confirm/{uidb64}/{token}"
+
+            # send email
+            config  = loadConfig()
+            EMAIL_ID = config.get("EMAIL_ID")
+            send_mail(
+                f"Password reset on {current_site}",
+                f"You're receiving this email because you requested a password reset for your user account at {current_site}. \n\n Please go to the following page and choose a new password: \n\n {absurl} \n\n Your username, in case you've forgotten: {user.username} \n\n Thanks for using our site! \n The {current_site} team",
+                f"{EMAIL_ID}",
+                [f"{user.email}"],
+            )
+            return Response({'msg': 'check your email to reset your password'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'msg': 'No user with the specified email exists.'}, status=status.HTTP_404_NOT_FOUND)
 
 
-# cookie policy page
-def CookiePolicy(request):
-    return render(request, "users/cookie_policy.html")
+class PasswordTokenCheck(generics.GenericAPIView):
+    def get(self, request, uidb64, token):
+        try:
+            id = smart_str(urlsafe_base64_decode(uidb64))
+            user = CustomUser.objects.get(id=id)
+
+            if not PasswordResetTokenGenerator().check_token(user, token):
+                return Response({"error": "Token is not valid anymore. Please create a new one."}, status=status.HTTP_401_UNAUTHORIZED)
+
+            return Response({"success": True, "msg": "Valid Credentials.", "uidb64": uidb64, "token": token}, status=status.HTTP_200_OK)
+        except DjangoUnicodeDecodeError as e:
+            return Response({"error": "Token is not valid anymore. Please create a new one."}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class PasswordResetAPIView(generics.GenericAPIView):
+    serializer_class = PasswordResetSerializer
+
+    def patch(self, request):
+        serializer = self.serializer_class(data=request.data)
+
+        serializer.is_valid(raise_exception=True)
+        return Response({"success": True, "msg": "Passowrd has been reset succefully!"}, status=status.HTTP_200_OK)

@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 
 import LandingPage from "./landingPage/LandingPage";
 import Home from "./pages/Home";
+import NewDunc from "./pages/NewDunc";
 import About from "./pages/About";
 import Navbar from "./components/Navbar";
 import PrivateRoute from './components/PrivateRoute';
@@ -75,6 +76,8 @@ function App() {
                                 <Route path="/logout" component={Logout} />
                                 <Route path="/password-reset" component={PassReset} />
                                 <Route path="/password-reset-confirm/:uidb64/:token" component={PassResetConfirm} />
+
+                                <Route path="/new_dunc" component={NewDunc} />
                                 {/* <Route component={NotFound} /> */}
                             </div>
                         </Route>

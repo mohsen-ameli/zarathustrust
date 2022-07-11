@@ -1,6 +1,4 @@
 import os, json, requests, decimal
-from django.conf import settings
-from django.utils import translation
 from .models import Account
 
 
@@ -77,6 +75,3 @@ def getWallets(pk):
         wallets.append((account.iso2, account.currency, get_currency_symbol(account.currency), account.total_balance))
 
     return wallets
-
-
-

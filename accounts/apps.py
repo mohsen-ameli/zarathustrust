@@ -1,4 +1,3 @@
-from unittest import signals
 from django.apps import AppConfig
 
 
