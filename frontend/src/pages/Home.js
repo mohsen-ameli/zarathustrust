@@ -71,6 +71,7 @@ const Home = () => {
             let { response, data } = await api("/api/currUser/")
     
             if (response.status === 200) {
+                console.log(data)
                 setName(data.username)
                 setIsBiz(data.is_business)
                 setCurrency(data.currency)
@@ -213,7 +214,7 @@ const Home = () => {
                         <h1 className="fw-normal">
                             { symbol }{ balance }
                         </h1>
-                            {t("balance", {"currency":currency})}
+                            {t("balance", {"currency": currency})}
                     </div>
                 </div>
             </div>

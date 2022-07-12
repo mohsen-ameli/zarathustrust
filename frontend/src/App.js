@@ -33,6 +33,7 @@ import InviteFriend from './settings/InviteFriend';
 import PassReset from './auth/forgotpass/PassReset';
 import PassResetConfirm from './auth/forgotpass/PassResetConfirm';
 import RequireBanking from './components/RequireBanking';
+import CookiePolicy from './pages/CookiePolicy';
 
 export const ThemeContext = createContext(null)
 
@@ -69,6 +70,7 @@ function App() {
                                 <PrivateRoute path="/invite-friend" comp={InviteFriend} />
                                 <PrivateRoute path="/require-banking" comp={RequireBanking} />
                                 <Route path="/about" component={About} />
+                                <Route path="/cookie-policy" component={CookiePolicy} />
                                 <Route path="/country-picker" component={CountryPicker} />
                                 <Route path="/signup" component={SignUp} />
                                 <Route path="/verify-email" component={VerifyEmail} />
