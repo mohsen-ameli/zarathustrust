@@ -71,7 +71,6 @@ const Home = () => {
             let { response, data } = await api("/api/currUser/")
     
             if (response.status === 200) {
-                console.log(data)
                 setName(data.username)
                 setIsBiz(data.is_business)
                 setCurrency(data.currency)

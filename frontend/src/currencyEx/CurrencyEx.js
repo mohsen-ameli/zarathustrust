@@ -39,36 +39,24 @@ const CurrencyEx = () => {
         setSymbol(c)
     }
 
+    if (currencies?.length !== 0) {
+        if (currencies?.length > 1) {
+            filtered = currencies.filter(item => {return item[1] !== curr})
+            first = [filtered[0][0], filtered[0][1], filtered[0][2]]
+        } else {
+            msgSwal(t("wallet_first"), "warning")
+            history.push("/wallet-search")
+        }
+    }
+
     useEffect(() => {
-        if (currencies?.length !== 0) {
-            if (currencies?.length > 1) {
-                filtered = currencies.filter(item => {return item[0] !== curr})
-                first = [filtered[0][0], filtered[0][1], filtered[0][2]]
-            } else {
-                msgSwal(t("wallet_first"), "warning")
-                history.push("/wallet-search")
-            }
-        }
-
-        if (window.innerWidth < 450) {
-            dflex.current.classList.remove("d-flex")
-            arrow.current.classList.remove("bi-arrow-right")
-            arrow.current.classList.add("bi-arrow-down")
-    
-            dflex.current.style = "width: 100%; text-align: center;"
-            arrow.current.style = "display: inline-block;"
-    
-            toDropMenu.current.style = "min-height: 3.65rem; width: 100%;"
-        }
-
-        if (first) {
-            changeCurr(first[0], first[1], first[2])
-        }
+        first && changeCurr(first[0], first[1], first[2])
+        
 
         setIsLoading(false)
 
         // eslint-disable-next-line
-    }, [currencies])
+    }, [iso])
 
     let submit = () => {
         if (good) {
@@ -92,6 +80,17 @@ const CurrencyEx = () => {
         if (e.key === 'Enter') {
             submit()
         }
+    }
+
+    if (window.innerWidth < 450) {
+        dflex.current.classList.remove("d-flex")
+        arrow.current.classList.remove("bi-arrow-right")
+        arrow.current.classList.add("bi-arrow-down")
+
+        dflex.current.style = "width: 100%; text-align: center;"
+        arrow.current.style = "display: inline-block;"
+
+        toDropMenu.current.style = "min-height: 3.65rem; width: 100%;"
     }
 
     return (
