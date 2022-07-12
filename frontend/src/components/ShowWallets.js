@@ -44,27 +44,24 @@ const ShowWallets = ({home, changeCurr}) => {
                     <li><hr className="dropdown-divider"></hr></li>
                 </>
                 }
-
-                <li>
-                    {wallets && wallets.map((wallet, i) => (
-                        <span key={i}>
-                            <button name="wallet-post" onClick={() => changeCurr(wallet)}
-                                value={wallet[0]} className="dropdown-item">
-                                
-                                {wallet[0] === "IR" ? 
-                                <img alt='' style={{width: '1.5em', lineHeight: '1.5em', marginBottom: '.1em', marginRight: '.5em'}} src={persia} ></img> :
-                                <ReactCountryFlag
-                                    countryCode={`${wallet[0]}`}
-                                    svg
-                                    style={{width: '1.5em', lineHeight: '1.5em', marginBottom: '.1em', marginRight: '.5em'}}
-                                    title={`${wallet[0]}`}
-                                />
-                                }
-                                {wallet[1]} ({wallet[2]})
-                            </button>
-                        </span>
-                    ))}
-                </li>  
+                {wallets && wallets.map((wallet, i) => (
+                    <li key={i}>
+                        <Link to="#" name="wallet-post" onClick={() => changeCurr(wallet)}
+                            value={wallet[0]} className="dropdown-item">
+                            
+                            {wallet[0] === "IR" ? 
+                            <img alt='' style={{width: '1.5em', lineHeight: '1.5em', marginBottom: '.1em', marginRight: '.5em'}} src={persia} ></img> :
+                            <ReactCountryFlag
+                                countryCode={`${wallet[0]}`}
+                                svg
+                                style={{width: '1.5em', lineHeight: '1.5em', marginBottom: '.1em', marginRight: '.5em'}}
+                                title={`${wallet[0]}`}
+                            />
+                            }
+                            {wallet[1]} ({wallet[2]})
+                        </Link>
+                    </li>
+                ))}
             </ul>
 
         </div>

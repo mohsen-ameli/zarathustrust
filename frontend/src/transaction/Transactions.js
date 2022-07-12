@@ -161,12 +161,12 @@ const Transactions = () => {
                                 </button>
                             
                                 <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><button className="dropdown-item" onClick={() => changeNumItems(1)} type="button">1</button></li>
-                                    <li><button className="dropdown-item" onClick={() => changeNumItems(2)} type="button">2</button></li>
-                                    <li><button className="dropdown-item" onClick={() => changeNumItems(5)} type="button">5</button></li>
-                                    <li><button className="dropdown-item" onClick={() => changeNumItems(10)} type="button">10</button></li>
-                                    <li><button className="dropdown-item" onClick={() => changeNumItems(20)} type="button">20</button></li>
-                                    <li><button className="dropdown-item" onClick={() => changeNumItems(0)} type="button">ALL</button></li>
+                                    <li><Link to="#" className="dropdown-item" onClick={() => changeNumItems(1)} type="button">1</Link></li>
+                                    <li><Link to="#" className="dropdown-item" onClick={() => changeNumItems(2)} type="button">2</Link></li>
+                                    <li><Link to="#" className="dropdown-item" onClick={() => changeNumItems(5)} type="button">5</Link></li>
+                                    <li><Link to="#" className="dropdown-item" onClick={() => changeNumItems(10)} type="button">10</Link></li>
+                                    <li><Link to="#" className="dropdown-item" onClick={() => changeNumItems(20)} type="button">20</Link></li>
+                                    <li><Link to="#" className="dropdown-item" onClick={() => changeNumItems(0)} type="button">ALL</Link></li>
                                 </ul>
                             </div></>
                             : 

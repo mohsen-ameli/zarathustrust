@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import RotateLoader from 'react-spinners/RotateLoader';
@@ -24,12 +24,7 @@ const CurrencyEx = () => {
     const arrow = useRef(null)
     const toDropMenu = useRef(null)
     
-    const [addMoney, good, money, curr, iso, , loading, , , currencies] = useAddMoney(pk)
-
-    if (currencies.length !== 0) {
-        filtered = currencies.filter(item => {return item[0] !== curr})
-        first = [filtered[0][0], filtered[0][1], filtered[0][2]]
-    }
+    const [addMoney, good, money, curr, iso, , loading, , , currencies, setErr] = useAddMoney(pk)
 
     const [iso2, setIso2]           = useState(null) 
     const [toCurr, setToCurr]       = useState(null);
@@ -45,6 +40,16 @@ const CurrencyEx = () => {
     }
 
     useEffect(() => {
+        if (currencies?.length !== 0) {
+            if (currencies?.length > 1) {
+                filtered = currencies.filter(item => {return item[0] !== curr})
+                first = [filtered[0][0], filtered[0][1], filtered[0][2]]
+            } else {
+                msgSwal(t("wallet_first"), "warning")
+                history.push("/wallet-search")
+            }
+        }
+
         if (window.innerWidth < 450) {
             dflex.current.classList.remove("d-flex")
             arrow.current.classList.remove("bi-arrow-right")
@@ -78,6 +83,8 @@ const CurrencyEx = () => {
                 }
                 setIsLoading(false)
             })
+        } else if (money === null) {
+            setErr(t("enter_value_error"))
         }
     }
 
@@ -124,8 +131,7 @@ const CurrencyEx = () => {
                             <ul className="dropdown-menu" aria-labelledby="toDropdownMenu" id="dropdown-to-item">
                                 {filtered && filtered.map((item, i) => (
                                     <li key={i}>
-                                        <button className="dropdown-item"
-                                            onClick={() => changeCurr(item[0], item[1], item[2])}>
+                                        <Link to="#" className="dropdown-item" onClick={() => changeCurr(item[0], item[1], item[2])}>
                                             {item[0] === "IR" ? 
                                             <img alt='' style={{width: '1.5em', lineHeight: '1.5em', marginBottom: '.1em', marginRight: '.5em'}} src={persia} ></img> :
                                             <ReactCountryFlag
@@ -136,7 +142,7 @@ const CurrencyEx = () => {
                                             />
                                             }
                                             {item[1]} ({item[2]})
-                                        </button>
+                                        </Link>
                                     </li>
                                 ))}
                             </ul>

@@ -18,7 +18,7 @@ const Deposit = () => {
     let api       = useFetch()
     const { t }   = useTranslation()
 
-    const [addMoney, good, money, , , symbol, addLoad, addError, ,] = useAddMoney(pk)
+    const [addMoney, good, money, , , symbol, addLoad, addError, , , setErr] = useAddMoney(pk)
 
     const [isLoading, setIsLoading] = useState(true);
     const msgSwal                   = useMsgSwal()
@@ -56,9 +56,10 @@ const Deposit = () => {
                 msgSwal(t("default_error"), "error")
                 setIsLoading(false)
             }
+        } else if (money === null) {
+            setErr(t("enter_value_error"))
         } else {
             msgSwal(t("default_error"), "error")
-            setIsLoading(false)
         }
     }
 
@@ -89,7 +90,7 @@ const Deposit = () => {
                     <br></br>
 
                     <button className="neon-button mb-2 mt-3" type="submit" id="Action" 
-                        onClick={() => good && submit()}>
+                        onClick={() => submit()}>
                         {t("deposit")}
                     </button>
                 </div>

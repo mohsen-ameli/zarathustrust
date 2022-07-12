@@ -11,6 +11,7 @@ import persia from '../../images/persia.jpg'
 
 const CountryPicker = () => {
     let ref = useRef()
+    let results = useRef()
     let history = useHistory()
     let { user } = useContext(AuthContext)
 
@@ -79,6 +80,8 @@ const CountryPicker = () => {
             })
         }
         setChoices(ch)
+
+        results.current.classList.add("show")
     }
 
     let next = (country, iso) => {
@@ -101,18 +104,16 @@ const CountryPicker = () => {
                     <hr className="zarathus-hr" />
 
                     <div className="dropdown form-floating">
-                        <input type="text" className="form-control dropdown-toggle" data-bs-toggle="dropdown"
-                            placeholder="Country" id="country-input" autoComplete="off"
+                        <input type="text" className="form-control dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside"
+                            placeholder=" " id="country-input" autoComplete="off"
                             defaultValue={defCountry} ref={ref} onClick={() => ref.current.value = ""} onChange={e => search(e.target.value)} />
 
                         <label htmlFor="country-input">{t("plz_choose_country")}</label>
 
-                        <button type="submit" className="neon-button my-3" name="default-submit" value="canada" onClick={() => next(defCountry.toLowerCase(), defCountryIso)}>{t("next")}</button>
-
-                        <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink" id="new-country-list">
+                        <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink" id="new-country-list" ref={results}>
                             {choices && choices.map((item, i) => (
                                 <li key={i}>
-                                    <button className="dropdown-item" onClick={() => next(item[1], item[0])}
+                                    <a href="#0" className="dropdown-item" onClick={() => next(item[1], item[0])}
                                         style={{textTransform: "capitalize"}}>
                                         {item[0] === "IR" ? 
                                         <img alt='' style={{width: '1.5em', lineHeight: '1.5em', marginBottom: '.1em', marginRight: '.5em'}} src={persia} ></img> :
@@ -124,7 +125,7 @@ const CountryPicker = () => {
                                         />
                                         }
                                         {item[1]}
-                                    </button>
+                                    </a>
                                 </li>
                             ))}
                             {empty && 
@@ -135,6 +136,8 @@ const CountryPicker = () => {
                             </li>
                             }
                         </ul>
+
+                        <button type="submit" className="neon-button my-3" name="default-submit" value="canada" onClick={() => next(defCountry.toLowerCase(), defCountryIso)}>{t("next")}</button>
                     </div>
 
                     <div className="d-flex text-white" style={{fontSize: "9.5pt"}}>

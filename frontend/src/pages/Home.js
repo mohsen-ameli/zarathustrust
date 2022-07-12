@@ -176,7 +176,7 @@ const Home = () => {
 
                     <Tippy content={
                         `${t("bonus_msg", {"interestSymbol": interestSymbol, "bonus": bonus})}`
-                    } theme={'tomato'} animation={'scale'}>
+                    } theme={'tomato'} animation={'scale'} placement={'bottom'}>
                         <a href="#0" className="fas fa-question-circle p-2">{null}</a>
                     </Tippy>
                 </div>

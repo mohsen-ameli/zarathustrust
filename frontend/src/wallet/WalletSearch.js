@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -19,6 +19,8 @@ const WalletSearch = () => {
 
     let api                             = useFetch()
     let { t }                           = useTranslation()
+
+    let ref                             = useRef()
 
     useEffect(() => {
         let loadJson = async () => {
@@ -50,6 +52,8 @@ const WalletSearch = () => {
             })
         }
         setChoices(ch)
+
+        ref.current.classList.add("show")
     }
 
     return (
@@ -66,13 +70,14 @@ const WalletSearch = () => {
                     <hr className="zarathus-hr"></hr>
 
                     <div className="dropdown form-floating">
-                        <input type="text" id="country-input" className="form-control dropdown-toggle" autoComplete="off"
-                        data-bs-toggle="dropdown" placeholder="Country"
-                        onChange={e => search(e.target.value)}></input>
+                        {/* input */}
+                        <input type="text" id="country-input" className="form-control dropdown-toggle" data-bs-toggle="dropdown"  
+                        autoComplete="off" data-bs-auto-close="outside" placeholder=" " onChange={e => search(e.target.value)} />
                         
                         <label htmlFor="country-input">{t("plz_choose_currency")}</label>
                         
-                        <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink" id="new-country-list">
+                        {/* dropdown */}
+                        <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink" id="new-country-list" ref={ref}>
                             {choices && choices.map((item, i) => (
                                 <li key={i}>
                                     <Link className="dropdown-item" to={{ pathname: `/wallet-search/${item[0]}`, state: { fromApp: true } }}

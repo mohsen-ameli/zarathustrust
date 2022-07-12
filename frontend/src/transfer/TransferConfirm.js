@@ -24,7 +24,7 @@ const TransferConfirm = () => {
     let { state }                   = useLocation()
     let api                         = useFetch()
 
-    const [addMoney, good, money, curr,,symbol, addLoad, addError, ,] = useAddMoney(pk)
+    const [addMoney, good, money, curr,,symbol, addLoad, addError, , , setErr] = useAddMoney(pk)
 
     const [colour, setColour]       = useState(null);
     const [counter, setCounter]     = useState(null);
@@ -73,7 +73,7 @@ const TransferConfirm = () => {
             })
             .then(res => {
                 if (!res.data['success']) {
-                    msgSwal(t("default_error"), "error")
+                    msgSwal(t(res.data['message']), "error")
                 } else {
                     msgSwal(t("transfer_success", {"symbol": symbol, "amount": money, "user": user}), "success")
                     history.push("/home")
@@ -83,6 +83,8 @@ const TransferConfirm = () => {
             })
             .catch(() => {msgSwal(t("default_error"), "error"); setIsLoading(false);})
 
+        } else if (money === null) {
+            setErr(t("enter_value_error"))
         }
     }
 
@@ -91,10 +93,12 @@ const TransferConfirm = () => {
         submit
     )
 
+    const preConfirm = () => money === null ? setErr(t("enter_value_error")) : confirm()
+
     let handleKeyClick = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault()
-            confirm()
+            preConfirm()
         }
     }
 
@@ -120,7 +124,7 @@ const TransferConfirm = () => {
                     {/* message */}
                     <div className="form-floating mb-3">
                         <input type="text" placeholder=" " autoComplete="off" onChange={e => changeMsg(e.target.value)}
-                        className={colour==="red" ? "form-control is-invalid" : "form-control"} id="msg"></input>
+                        className={colour==="red" ? "form-control is-invalid" : "form-control"} id="msg" />
                         <label htmlFor="msg">{t("message")}</label>
                     </div>
                     {colour && colour==="green" ? <div>{t("max_char", {"counter": counter, "max": MAX_MESSAGE_LENGTH})}</div> : null}
@@ -129,7 +133,7 @@ const TransferConfirm = () => {
 
 
                     {/* button */}
-                    <button className="neon-button my-2" type="submit" onClick={() => confirm()}>{t("send")}</button>
+                    <button className="neon-button my-2" type="submit" onClick={() => preConfirm()}>{t("send")}</button>
                 </div>
             </div>
         </div>

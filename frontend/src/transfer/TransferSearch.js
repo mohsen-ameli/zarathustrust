@@ -14,6 +14,7 @@ const TransferSearch = () => {
     let history                     = useHistory()
     let api                         = useFetch()
     let ref                         = useRef()
+    let results                     = useRef()
 
     const [data, setData]           = useState(null)
     const [user, setUser]           = useState(null)
@@ -58,6 +59,8 @@ const TransferSearch = () => {
         } else {
             setData(null)
         }
+
+        results.current.classList.add("show")
     }
 
     let handleKeyClick = (e) => {
@@ -90,11 +93,11 @@ const TransferSearch = () => {
                     <hr className="zarathus-hr"></hr>
 
                     <div className="dropdown form-floating">
-                        <input type="text" id="search-input" className="form-control dropdown-toggle" data-bs-toggle="dropdown"
-                            placeholder="Country" autoComplete="off" onChange={e => search(e.target.value)} ref={ref}></input>
+                        <input type="text" id="search-input" className="form-control dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown"
+                        placeholder=" " autoComplete="off" onChange={e => search(e.target.value)} ref={ref} />
                         <label htmlFor="search-input">{t("send_money_fields")}</label>
 
-                        <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink" id="results-box">
+                        <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink" id="results-box" ref={results}>
                             {data ? data.map((item, i) => (
                                 <li key={i}>
                                     <button className="dropdown-item" onClick={() => next(item['username'])}

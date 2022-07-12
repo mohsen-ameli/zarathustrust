@@ -5,6 +5,7 @@ import ReactCountryFlag from "react-country-flag";
 
 import useFetch from "./useFetch";
 import persia from '../images/persia.jpg'
+import { Link } from "react-router-dom";
 
 const useAddMoney = () => {
     const [iso2, setIso2]               = useState(null)
@@ -55,7 +56,7 @@ const useAddMoney = () => {
             setErr(t("min_warning", {"min": min, "symbol": symbol}))
             setGood(false)
         } else {
-            setGood(true)
+            setGood(false)
             setErr(null)
         }
     }
@@ -110,7 +111,7 @@ const useAddMoney = () => {
 
                         {currencies.map((item, i) => (
                             <li key={i}>
-                                <button className="dropdown-item" 
+                                <Link to="#" className="dropdown-item" 
                                 onClick={e => {changeCurr(item[0], item[1], item[2], item[3]); e.preventDefault()}}>
                                     {item[0] === "IR" ? 
                                     <img alt='' style={{width: '1.5em', lineHeight: '1.5em', marginBottom: '.1em', marginRight: '.5em'}} src={persia} ></img> :
@@ -122,7 +123,7 @@ const useAddMoney = () => {
                                     />
                                     }
                                     {item[1]} ({item[2]})
-                                </button>
+                                </Link>
                             </li>
                         ))}
 
@@ -132,7 +133,7 @@ const useAddMoney = () => {
                 {/* Input */}
                 <div className="form-floating flex-grow-1">
                     <input type="text" placeholder=" " className={err ? "form-control is-invalid" : "form-control"} 
-                        onChange={e => changeMoney(e.target.value)} autoComplete="off" required={true}></input>
+                        onChange={e => changeMoney(e.target.value)} autoComplete="off" required={true} name="money" />
                     <label htmlFor="id_add_money">
                         {t("enter_amount")}
                     </label>
@@ -141,7 +142,7 @@ const useAddMoney = () => {
             </div>
             <div className="input-error mt-3">{err && err}</div>
         </div>
-    ), good, money, curr, iso2, symbol, isLoading, error, showErr, currencies];
+    ), good, money, curr, iso2, symbol, isLoading, error, showErr, currencies, setErr];
 }
  
 export default useAddMoney;

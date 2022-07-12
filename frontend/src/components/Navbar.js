@@ -27,8 +27,8 @@ const Navbar = () => {
     }
 
     window.addEventListener('click', (e) => {
-        if (nav.current?.classList.contains("show")) {
-            if (!e.target.id.includes("langDropdown")) {
+        if (nav.current?.classList.contains("show")) { // navbar already collapsed
+            if (!e.target.classList.contains("lang")) { // making sure the user is not clicking the language toggler
                 btn.current.click()
             }
         }
@@ -36,7 +36,7 @@ const Navbar = () => {
 
     let changeLang = (lang, code) => {
         i18next.changeLanguage(lang)
-        langIcon.current.classList.replace(langIcon?.current.classList[1],`flag-icon-${code}`)
+        langIcon.current?.classList.replace(langIcon.current?.classList[1],`flag-icon-${code}`)
         localStorage.setItem("code", code)
     }
 
@@ -71,30 +71,30 @@ const Navbar = () => {
 
                         <ul className="navbar-nav ms-auto">
                             <li className="nav-item dropdown">
-                                <Link className="nav-link dropdown-toggle text-white" to="/" 
+                                <Link className="nav-link dropdown-toggle text-white lang" to="/" 
                                 id="langDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i className="fa-solid fa-globe mx-1"></i>
+                                    <i className="fa-solid fa-globe mx-1 lang"></i>
                                     {t("language")}
                                     {countryCodes[localStorage.getItem("i18nextLng")] === "ir" ? 
-                                    <img alt='' height="16em" className="flag-icon mx-1" src={persia} ></img> :
-                                    <span className={`flag-icon flag-icon-${countryCodes[localStorage.getItem("i18nextLng")]} mx-1`} ref={langIcon}></span>
+                                    <img alt='' height="16em" className="flag-icon mx-1 lang" src={persia} ></img> :
+                                    <span className={`lang flag-icon flag-icon-${countryCodes[localStorage.getItem("i18nextLng")]} mx-1`} ref={langIcon}></span>
                                     }
                                 </Link>
                                 <ul className="dropdown-menu" aria-labelledby="langDropdown">
                                     <input type="hidden" value="" />
                                     <li>
-                                        <button onClick={() => changeLang("en", "en")} className="dropdown-item">
+                                        <Link to="#" onClick={() => changeLang("en", "en")} className="dropdown-item">
                                             <span className="flag-icon flag-icon-en mx-1"></span>
                                             English
-                                        </button>
-                                        <button onClick={() => changeLang("de", "de")} className="dropdown-item">
+                                        </Link>
+                                        <Link to="#" onClick={() => changeLang("de", "de")} className="dropdown-item">
                                             <span className="flag-icon flag-icon-de mx-1"></span>
                                             Deutsch
-                                        </button>
-                                        <button onClick={() => changeLang("fa-IR", "ir")} className="dropdown-item">
+                                        </Link>
+                                        <Link to="#" onClick={() => changeLang("fa-IR", "ir")} className="dropdown-item">
                                             <img alt='' height="16em" className="flag-icon mx-1" src={persia} ></img>
                                             Persian
-                                        </button>
+                                        </Link>
                                     </li>
                                 </ul> 
                             </li>

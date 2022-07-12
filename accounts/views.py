@@ -132,11 +132,9 @@ def deposit(request):
     EMAIL_ID        = config.get('EMAIL_ID')
     EMAIL_ID_MAIN   = config.get('EMAIL_ID_MAIN')
 
-    send_mail(f'DEPOSIT FOR {user.username}', 
-            f'{user.username} with account number : {pk} has requested to deposit {symbol}{amount}',
-            f'{EMAIL_ID}',
-            [f'{EMAIL_ID_MAIN}']
-    )
+    title = f'DEPOSIT FOR {user.username}'
+    body = f'{user.username} with account number : {pk} has requested to deposit {symbol}{amount}'
+    send_mail(title, body, EMAIL_ID, [EMAIL_ID_MAIN])
 
     return Response({"success": True})
 
@@ -164,10 +162,10 @@ def withdraw(request):
         EMAIL_ID        = config.get('EMAIL_ID')
         EMAIL_ID_MAIN   = config.get('EMAIL_ID_MAIN')
         MOE_EMAIL       = config.get('MOE_EMAIL')
-        send_mail(f'WITHDRAW FOR {user.username}', 
-                f'{user.username} with account number {pk} has requested to withdraw {userCurrencySymbol}{moneyToWithdraw}',
-                f'{EMAIL_ID}',
-                [f'{EMAIL_ID_MAIN}'],)
+
+        title = f'WITHDRAW FOR {user.username}'
+        body = f'{user.username} with account number {pk} has requested to withdraw {userCurrencySymbol}{moneyToWithdraw}'
+        send_mail(title, body, EMAIL_ID, [EMAIL_ID_MAIN])
 
         account.take_money = round(decimal.Decimal(moneyToWithdraw), 2)
         account.saveView()
@@ -287,14 +285,15 @@ def transferConfirm(request):
     # Logic starts
     try:
         # getting giver/reciever stuff
-        giver                    = Account.objects.filter(created_by__pk=pk).get(currency=currency)
-        reciever                 = Account.objects.filter(created_by__username=reciever_name)
+        giver = Account.objects.filter(created_by__pk=pk).get(currency=currency)
+        reciever = Account.objects.filter(created_by__username=reciever_name)
+        giver_balance = giver.total_balance
+
+        # checking to see if reciever has an account with the currency
         if not reciever.filter(currency=currency).exists():
             reciever = Account.objects.create(created_by=reciever_user, currency=currency, iso2=iso3_to_iso2(currency), primary=False)
         else:
             reciever = reciever.get(currency=currency)
-
-        giver_balance            = giver.total_balance
 
         # if user has entered the bare minimum, and if has enough money
         if money >= minCurrency and money <= giver_balance:    
@@ -313,39 +312,28 @@ def transferConfirm(request):
             message = f"{userCurrencySymbol}{money} has been transfered to {reciever_name}"
             success = True
 
-            # emailing the reciever
             reciever_email = reciever_user.email
             giver_username = giver_user.username
             giver_email    = giver_user.email
             EMAIL_ID       = config.get('EMAIL_ID')
 
+            # emailing the reciever
+            title = "ZARATHUSTRUST MONEY TRANSFER"
+            body = f"Dear {reciever_name}, <br> {giver_username} just transfered {userCurrencySymbol}{round(money, 1)} to your account!"
             if purpose is not None:
-                body = f"Dear {reciever_name}, <br> {giver_username} just transfered {userCurrencySymbol}{round(money, 1)} to your account! <br> Message: {purpose}"
-            else:
-                body = f"Dear {reciever_name}, <br> {giver_username} just transfered {userCurrencySymbol}{round(money, 1)} to your account!"
-            msg = EmailMessage(("ZARATHUSTRUST MONEY TRANSFER"),
-                    body,
-                    f"{EMAIL_ID}",
-                    [f"{reciever_email}"]
-            )
+                body += f"<br> Message: {purpose}"
+            msg = EmailMessage(title, body, EMAIL_ID, [reciever_email])
             msg.content_subtype = "html"
             msg.send()
 
             # emailing the giver
+            body = f"Dear {giver_username}, <br> {userCurrencySymbol}{round(money, 1)} has been transfered to {reciever_name} successfully!"
             if purpose is not None:
-                body = f"Dear {giver_username}, <br> {userCurrencySymbol}{round(money, 1)} has been transfered to {reciever_name} successfully! <br> Message: {purpose}"
-            else:
-                body = f"Dear {giver_username}, <br> {userCurrencySymbol}{round(money, 1)} has been transfered to {reciever_name} successfully!"
-            msg1 = EmailMessage(("ZARATHUSTRUST MONEY TRANSFER"),
-                    body,
-                    f"{EMAIL_ID}",
-                    [f"{giver_email}"]
-            )
+                body += f"<br> Message: {purpose}"
+            msg1 = EmailMessage(title, body, EMAIL_ID, [giver_email])
             msg1.content_subtype = "html"
             msg1.send()
 
-        elif money < minCurrency:
-            message = f"Please consider that the minimum amount to send is {userCurrencySymbol}{minCurrency}!"
         elif money > giver_balance:
             message = "more_than_ballance"
     except ObjectDoesNotExist:
@@ -425,7 +413,6 @@ def currencyEx(request, fromCurr, fromIso, amount, toCurr, toIso):
     return Response({"message": message, "success": success, "ex_rate": ex_rate})
 
 
-# Referral Code
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def inviteFriend(request):

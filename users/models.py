@@ -25,7 +25,7 @@ class CustomUser(AbstractUser):
     currency            = CharField(max_length=3, null=True)
     iso2                = CharField(max_length=2, null=True)
     language            = CharField(max_length=15, null=True)
-    phone_ext           = CharField(max_length=3, null=True)
+    phone_ext           = CharField(max_length=6, null=True)
     phone_number        = CharField(max_length=20, null=True)
     # iban                = CharField(max_length=30, null=True, blank=True)
     bank_account_number = CharField(max_length=50, null=True, blank=True)
