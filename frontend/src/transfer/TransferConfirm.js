@@ -8,7 +8,6 @@ import RotateLoader from 'react-spinners/RotateLoader'
 import useAddMoney from "../components/useAddMoney"
 import AuthContext from "../context/AuthContext";
 import useFetch from "../components/useFetch";
-import MsgAlert from "../components/MsgAlert";
 import useMsgSwal from "../components/useMsgSwal";
 import useSwal from "../components/useSwal";
 
@@ -24,13 +23,14 @@ const TransferConfirm = () => {
     let { state }                   = useLocation()
     let api                         = useFetch()
 
-    const [addMoney, good, money, curr,,symbol, addLoad, addError, , , setErr] = useAddMoney(pk)
+    const [addMoney, good, money, curr, , symbol, addLoad, , err, setErr] = useAddMoney(pk)
 
-    const [colour, setColour]       = useState(null);
-    const [counter, setCounter]     = useState(null);
-    const [msg, setMsg]             = useState(null);
+    const [colour, setColour]       = useState(null)
+    const [counter, setCounter]     = useState(null)
+    const [msg, setMsg]             = useState(null)
+    const [submitted, setSubmitted] = useState(false)
 
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true)
     const msgSwal                   = useMsgSwal()
 
     useEffect(() => {
@@ -59,8 +59,9 @@ const TransferConfirm = () => {
     }
 
     let submit = () => {
-        if (counter <= MAX_MESSAGE_LENGTH && good) {
+        if (good && counter <= MAX_MESSAGE_LENGTH) {
             setIsLoading(true)
+            setSubmitted(true)
 
             api("/api/transferConfirm/",{
                 method: "POST",
@@ -93,7 +94,7 @@ const TransferConfirm = () => {
         submit
     )
 
-    const preConfirm = () => money === null ? setErr(t("enter_value_error")) : confirm()
+    const preConfirm = () => money === null && err === null ? setErr(t("enter_value_error")) : !submitted  && good && confirm()
 
     let handleKeyClick = (e) => {
         if (e.key === 'Enter') {
@@ -104,7 +105,6 @@ const TransferConfirm = () => {
 
     return (
         <div className="transfer-confirm" onKeyDown={e => handleKeyClick(e)}>
-            {(addError) && <MsgAlert msg={addError} variant="danger" />}
             {(isLoading || addLoad) && 
             <div className="spinner">
                 <RotateLoader color="#f8b119" size={20} />

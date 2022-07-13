@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 import ReactCountryFlag from "react-country-flag";
 
 import useFetch from "./useFetch";
 import persia from '../images/persia.jpg'
-import { Link } from "react-router-dom";
 
 const useAddMoney = () => {
     const [iso2, setIso2]               = useState(null)
@@ -18,8 +18,6 @@ const useAddMoney = () => {
     const [money, setMoney]             = useState(null);
 
     const [isLoading, setIsLoading]     = useState(true);
-    const [error, setError]             = useState(null);
-    const [showErr, setShowErr]         = useState(false);
 
     let api                             = useFetch()
     const { t }                         = useTranslation()
@@ -38,8 +36,6 @@ const useAddMoney = () => {
     
                 setIsLoading(false)
             } else {
-                setError('An error occurred. Awkward..')
-                setShowErr(true)
                 setIsLoading(false)
             }
         }; loadMoneyForm()
@@ -142,7 +138,7 @@ const useAddMoney = () => {
             </div>
             <div className="input-error mt-3">{err && err}</div>
         </div>
-    ), good, money, curr, iso2, symbol, isLoading, error, showErr, currencies, setErr];
+    ), good, money, curr, iso2, symbol, isLoading, currencies, err, setErr];
 }
  
 export default useAddMoney;

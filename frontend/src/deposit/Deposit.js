@@ -8,7 +8,6 @@ import RotateLoader from 'react-spinners/RotateLoader'
 import useAddMoney from "../components/useAddMoney"
 import AuthContext from "../context/AuthContext";
 import useFetch from "../components/useFetch";
-import MsgAlert from '../components/MsgAlert';
 import useMsgSwal from "../components/useMsgSwal";
 
 const Deposit = () => {
@@ -18,10 +17,13 @@ const Deposit = () => {
     let api       = useFetch()
     const { t }   = useTranslation()
 
-    const [addMoney, good, money, , , symbol, addLoad, addError, , , setErr] = useAddMoney(pk)
+    const [addMoney, good, money, , , symbol, addLoad, , err, setErr] = useAddMoney(pk)
 
-    const [isLoading, setIsLoading] = useState(true);
+    const [submitted, setSubmitted] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
     const msgSwal                   = useMsgSwal()
+
+    console.log(err)
 
     useEffect(() => {
         // let fetchStuff = async () => {
@@ -36,42 +38,46 @@ const Deposit = () => {
         // eslint-disable-next-line
     }, [])
 
-    let submit = async () => {
-        if (good) {
-            setIsLoading(true)
-            
-            let { response } = await api("/api/deposit/", {
-                method: "POST",
-                headers: {
-                    'X-CSRFToken': Cookies.get('csrftoken'),
-                    'Content-Type':'application/json',
-                },
-                body: JSON.stringify({"symbol" : symbol, "amount" : money})
-            })
+    let submit = async (e) => {
+        e.preventDefault()
 
-            if (response.status === 200) {
-                msgSwal(t("deposit_success", {"symbol": symbol, "amount": money}), "success")
-                history.push("/deposit-info")
+        if (good) {
+            if (!submitted) {
+                setIsLoading(true)
+                setSubmitted(true)
+    
+                let { response } = await api("/api/deposit/", {
+                    method: "POST",
+                    headers: {
+                        'X-CSRFToken': Cookies.get('csrftoken'),
+                        'Content-Type':'application/json',
+                    },
+                    body: JSON.stringify({"symbol" : symbol, "amount" : money})
+                })
+    
+                if (response.status === 200) {
+                    msgSwal(t("deposit_success", {"symbol": symbol, "amount": money}), "success")
+                    history.push("/deposit-info")
+                } else {
+                    msgSwal(t("default_error"), "error")
+                    setIsLoading(false)
+                }
             } else {
                 msgSwal(t("default_error"), "error")
-                setIsLoading(false)
-            }
-        } else if (money === null) {
+            }   
+        } else if (money === null && err === null) {
             setErr(t("enter_value_error"))
-        } else {
-            msgSwal(t("default_error"), "error")
         }
     }
 
-    let handleKeyClick = (e) => {
+    let handleKeyClick = e => {
         if (e.key === 'Enter') {
-            good && submit()
+            submit(e)
         }
     }
 
     return (
-        <div className="deposit-page" onKeyPress={e => {handleKeyClick(e)}}>
-            {(addError) &&  <MsgAlert msg={t(addError)} variant="danger" />}
+        <div className="deposit-page" onKeyPress={e => handleKeyClick(e)}>
             {(isLoading || addLoad) && 
             <div className="spinner">
                 <RotateLoader color="#f8b119" size={20} />
@@ -90,7 +96,7 @@ const Deposit = () => {
                     <br></br>
 
                     <button className="neon-button mb-2 mt-3" type="submit" id="Action" 
-                        onClick={() => submit()}>
+                        onClick={e => submit(e)}>
                         {t("deposit")}
                     </button>
                 </div>

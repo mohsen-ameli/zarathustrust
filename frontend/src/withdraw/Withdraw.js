@@ -8,7 +8,6 @@ import RotateLoader from 'react-spinners/RotateLoader'
 import useAddMoney from "../components/useAddMoney"
 import AuthContext from "../context/AuthContext";
 import useFetch from "../components/useFetch";
-import MsgAlert from "../components/MsgAlert";
 import useSwal from "../components/useSwal";
 import useMsgSwal from "../components/useMsgSwal";
 
@@ -20,10 +19,11 @@ const Withdraw = () => {
 
     let history = useHistory()
 
-    const [isLoading, setIsLoading] = useState(true);
+    const [submitted, setSubmitted] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
     const msgSwal                   = useMsgSwal()
 
-    const [addMoney, good, money, curr, ,symbol ,addLoad, addError, ,] = useAddMoney(pk)
+    const [addMoney, good, money, curr, , symbol, addLoad, , err, setErr] = useAddMoney(pk)
 
     useEffect(() => {
         setIsLoading(false)
@@ -32,6 +32,7 @@ const Withdraw = () => {
     let submit = async () => {
         if (good) {
             setIsLoading(true)
+            setSubmitted(true)
 
             let { response, data } = await api("/api/withdraw/",{
                 method: "POST",
@@ -65,16 +66,17 @@ const Withdraw = () => {
         submit
     )
 
+    const preConfirm = () => money === null  && err === null ? setErr(t("enter_value_error")) : !submitted && good && confirm()
+
     let handleKeyClick = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault()
-            good && confirm()
+            preConfirm()
         }
     }
 
     return (
         <div className="withdraw" onKeyDown={e => handleKeyClick(e)}>
-            {(addError) &&  <MsgAlert msg={addError} variant="danger" />}
             {(isLoading || addLoad) && 
             <div className="spinner">
                 <RotateLoader color="#f8b119" size={20} />
@@ -93,7 +95,7 @@ const Withdraw = () => {
                     {/* amount to send */}
                     { addMoney }
 
-                    <button className="neon-button my-2" type="submit" onClick={() => good && confirm()}>{t("withdraw")}</button>
+                    <button className="neon-button my-2" type="submit" onClick={() => preConfirm()}>{t("withdraw")}</button>
                 </div>
             </div>
         </div>

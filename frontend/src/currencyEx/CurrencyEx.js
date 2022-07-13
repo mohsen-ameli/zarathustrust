@@ -24,7 +24,7 @@ const CurrencyEx = () => {
     const arrow = useRef(null)
     const toDropMenu = useRef(null)
     
-    const [addMoney, good, money, curr, iso, , loading, , , currencies, setErr] = useAddMoney(pk)
+    const [addMoney, good, money, curr, iso, , loading, currencies, err, setErr] = useAddMoney(pk)
 
     const [iso2, setIso2]           = useState(null) 
     const [toCurr, setToCurr]       = useState(null);
@@ -51,7 +51,6 @@ const CurrencyEx = () => {
 
     useEffect(() => {
         first && changeCurr(first[0], first[1], first[2])
-        
 
         setIsLoading(false)
 
@@ -71,7 +70,7 @@ const CurrencyEx = () => {
                 }
                 setIsLoading(false)
             })
-        } else if (money === null) {
+        } else if (money === null && err === null) {
             setErr(t("enter_value_error"))
         }
     }
