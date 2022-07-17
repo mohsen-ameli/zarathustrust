@@ -50,8 +50,6 @@ class Account(models.Model):
             super().save(*args, **kwargs)
 
     def save(self, *args, **kwargs):
-        self.saveView(self, inside=True)
-        
         if self.add_money:
             # updating transaction
             transaction = TransactionHistory(person=self, method="Deposit", price=self.add_money)
@@ -60,6 +58,8 @@ class Account(models.Model):
             # updating transaction
             transaction = TransactionHistory(person=self, method="Withdraw", price=self.take_money)
             transaction.save()
+
+        self.saveView(self, inside=True)
         super().save(*args, **kwargs)
 
     def __str__(self):

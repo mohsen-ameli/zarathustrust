@@ -1,11 +1,13 @@
+import { useRef, useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+
+import i18next from 'i18next';
+import AuthContext from '../context/AuthContext';
+
 import img from '../images/zarathustrust_new.png'
 import persia from '../images/persia.jpg'
-
-import { useRef, useContext } from 'react';
-import AuthContext from '../context/AuthContext';
-import i18next from 'i18next';
-import { useTranslation } from 'react-i18next';
+import '../css/navbar.css'
 
 const Navbar = () => {
     let countryCodes = {

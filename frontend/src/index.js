@@ -5,6 +5,8 @@ import './i18n'
 import RotateLoader from 'react-spinners/RotateLoader';
 
 import './css/style.css';
+import './css/neon.css';
+import './css/spinner.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

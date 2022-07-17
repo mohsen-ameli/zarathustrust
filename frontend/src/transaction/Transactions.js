@@ -4,11 +4,11 @@ import { useTranslation } from "react-i18next";
 
 import RotateLoader from 'react-spinners/RotateLoader';
 
-import ShowDate from '../components/ShowDate'
 import ShowWallets from "../components/ShowWallets";
 import AuthContext from "../context/AuthContext";
 import useFetch from "../components/useFetch";
 import MsgAlert from "../components/MsgAlert";
+import TransactionItem from "./TransactionItem";
 
 
 const Transactions = () => {
@@ -152,7 +152,7 @@ const Transactions = () => {
                     <div className="m-2 mx-auto">
                         {totalTrans !== 0 ? 
                             <><div className="mb-3 text-center">{t("pagniation")}</div>
-                                <div className="mb-3 text-center">{t("total_transaction")}{totalTrans}</div>
+                                <div className="mb-3 text-center">{t("total_transaction")} {totalTrans}</div>
 
                                 <div className="align-self-center ms-3 text-center">
                                 <button className="neon-button" onMouseOver={() => mouseOver(1)} onMouseOut={() => mouseOut(1)}
@@ -178,7 +178,7 @@ const Transactions = () => {
                             </>
                         }
 
-                        <hr></hr>
+                        <hr />
                         {/* selecting a wallet */}
 
                         <div className="text-center">
@@ -193,144 +193,41 @@ const Transactions = () => {
 
             {/* Transactions */}
             {allTrans.map((item, key) => (
-                
                 <div className="list-group mx-auto mb-4" key={key}>
-                    <Link to={`/transactions/${item.id}`} id="history-list"
-                    className="list-group-item list-group-item-action flex-column align-items-start text-white">
-                        <div className="d-flex w-100 justify-content-between">
-                            <h5 className="mb-1">
-                                <ShowDate year={item.date[0]} month={item.date[1]} day={item.date[2]} hour={item.date[3]} minute={item.date[4]} seconds={item.date[5]} format="first" />
-                            </h5>
-                        </div>
-
-                        <p className="mb-1" id="history-card-text">
-                            {item.type === "Deposit" ?
-                                <>
-                                    <i className="float-none history-icons bi bi-download"></i>
-                                    <span className="float-none ms-3">
-                                        Deposit to {item.person !== "Anonymous" ? item.person[0] : item.wallet[0]}
-                                    </span>
-                                </>
-                            :
-                            undefined}
-
-                            {item.type === "Withdraw" ?
-                                <>
-                                    <i className="float-none history-icons bi-upload"></i>
-                                    <span className="float-none ms-3">
-                                    Withdraw for {username}
-                                    </span>
-                                </>
-                            :
-                            undefined}
-
-                            {item.type === "Cash Out" ?
-                                <>
-                                    <i className="fas fa-hand-holding-usd float-none history-icons py-2"></i>
-                                    <span className="float-none ms-3">
-                                        Cash Out for {item.person[0] !== "Anonymous" ? item.person[0] : item.wallet[0]}
-                                    </span>
-                                </>
-                            :
-                            undefined}
-
-                            {item.type === "Transfer" ?
-                                <>
-                                    <i className="float-none history-icons bi-send-check"></i>
-                                    <span className="float-none ms-3">
-                                        Transfer from  {item.person[0]} to {item.person2}
-                                    </span>
-                                </>
-                            :
-                            undefined}
-
-                            {item.type === "Exchange" ?
-                                <>
-                                    <i className="bi bi-currency-exchange float-none history-icons"></i>
-                                    <span className="float-none ms-3">
-                                        Exchange for {username}
-                                    </span>
-                                </>
-                            :
-                            undefined}
-
-
-                            {/* symbol and money */}
-                            {item.type === "Transfer" ? (
-                                item.person2 === username ? // recieving
-                                    <span className="float-end plus-money">
-                                        +{symbol}{ (item.price).toFixed(2) }
-                                    </span>
-                                : // giving
-                                    <span className="float-end minus-money">
-                                        -{symbol}{ (item.price).toFixed(2) }
-                                    </span>
-                            ) :
-                            ( item.type === "Exchange" ? (
-                                item.person[1] === currency ? 
-                                    <span className="float-end minus-money">
-                                        -{symbol}{ (item.price).toFixed(2) }
-                                    </span>
-                                : 
-                                    <span className="float-end plus-money">
-                                        +{symbol}{ (item.exPrice).toFixed(2) }
-                                    </span>
-                            ) :
-                            ( ( item.person2 === username || item.type === "Deposit" || item.type === "Cash Out" ) ? 
-                                <span className="float-end plus-money">
-                                    +{symbol}{ (item.price).toFixed(2) }
-                                </span>
-                                : 
-                                <span className="float-end minus-money">
-                                    -{symbol}{ (item.price).toFixed(2) }
-                                </span>
-                            )
-                            )
-                            }
-
-                        </p>
-
-                        <small style={{color: "rgba(255, 255, 255, 0.7)"}}> 
-                            <ShowDate year={item.date[0]} month={item.date[1]} day={item.date[2]} hour={item.date[3]} minute={item.date[4]} seconds={item.date[5]} format="second" /> • { item.type }
-                        </small>
-                    </Link>
+                    <TransactionItem item={item} username={username} symbol={symbol} currency={currency} />
                 </div>
-
             ))}
 
-            {(!isLoading && totalTrans !== 0) &&
-            <>
-            {numItems !== 0 && 
-                <nav aria-label="Page navigation">
-                    <ul className="pagination justify-content-center">
-                        {pageNum !== 1 && 
-                        <>
-                            <li className="page-item"><button className="page-link" onClick={() => changePageNum(1)}>&laquo;</button></li>
-                            <li className="page-item"><button className="page-link" onClick={() => { changePageNum(pageNum - 1); } }>Previous</button></li>
-                        </>
-                        }
+            {(!isLoading && totalTrans !== 0) &&<>
+                {numItems !== 0 && 
+                    <nav aria-label="Page navigation">
+                        <ul className="pagination justify-content-center">
+                            {pageNum !== 1 && 
+                            <>
+                                <li className="page-item"><button className="page-link" onClick={() => changePageNum(1)}>&laquo;</button></li>
+                                <li className="page-item"><button className="page-link" onClick={() => { changePageNum(pageNum - 1); } }>Previous</button></li>
+                            </>
+                            }
 
-                        <li className="page-item disabled">
-                            <button className="page-link">
-                                Page {pageNum} of {Math.ceil(totalTrans / numItems)}
-                            </button>
-                        </li>
+                            <li className="page-item disabled">
+                                <button className="page-link">
+                                    Page {pageNum} of {Math.ceil(totalTrans / numItems)}
+                                </button>
+                            </li>
 
-                        {pageNum < Math.ceil(totalTrans / numItems) && 
-                        <>
-                            <li className="page-item"><button className="page-link" onClick={() => changePageNum(pageNum + 1)}>Next</button></li>
-                            <li className="page-item"><button className="page-link" onClick={() => changePageNum(Math.ceil(totalTrans / numItems))}>&raquo;</button></li>
-                        </>
-                        }
-                    </ul>
-                </nav>
-            }
-
+                            {pageNum < Math.ceil(totalTrans / numItems) && 
+                            <>
+                                <li className="page-item"><button className="page-link" onClick={() => changePageNum(pageNum + 1)}>Next</button></li>
+                                <li className="page-item"><button className="page-link" onClick={() => changePageNum(Math.ceil(totalTrans / numItems))}>&raquo;</button></li>
+                            </>
+                            }
+                        </ul>
+                    </nav>
+                }
                 <div className="text-center">
                     <Link className="neon-button my-2" to="/home">{t("home")}</Link> 
                 </div>
-            </>
-            }
+            </>}
 
             <br />
         </div>

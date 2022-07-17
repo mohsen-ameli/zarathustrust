@@ -1,0 +1,124 @@
+/********* Neon Button *********/
+.neon-button-green {
+    font-size: 1rem;
+    background-color: transparent;
+  
+    display: inline-block;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--clr-neon-green);
+    border: var(--clr-neon-green) 0.125em solid;
+    padding: 0.25em 1em;
+    border-radius: 0.25em;
+  
+    text-shadow: 0 0 0.125em rgba(255, 255, 255, 0.3), 0 0 0em currentColor;
+  
+    box-shadow: inset 0 0 0.5em 0 var(--clr-neon-green), 0 0 0.5em 0 var(--clr-neon-green);
+  
+    position: relative;
+}
+.neon-button-red {
+    font-size: 1rem;
+    background-color: transparent;
+  
+    display: inline-block;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--clr-neon-red);
+    border: var(--clr-neon-red) 0.125em solid;
+    padding: 0.25em 1em;
+    border-radius: 0.25em;
+  
+    text-shadow: 0 0 0.125em rgba(255, 255, 255, 0.3), 0 0 0em currentColor;
+  
+    box-shadow: inset 0 0 0.5em 0 var(--clr-neon-red), 0 0 0.5em 0 var(--clr-neon-red);
+  
+    position: relative;
+}
+.neon-button,
+button.swal2-confirm.swal2-styled,
+button.swal2-cancel.swal2-styled,
+.swal2-popup .swal2-styled:focus {
+    font-size: 1rem;
+    background-color: transparent;
+  
+    display: inline-block;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--clr-neon);
+    border: var(--clr-neon) 0.125em solid;
+    padding: 0.25em 1em;
+    border-radius: 0.25em;
+  
+    text-shadow: 0 0 0.125em rgba(255, 255, 255, 0.3), 0 0 0em currentColor;
+  
+    box-shadow: inset 0 0 0.5em 0 var(--clr-neon), 0 0 0.5em 0 var(--clr-neon) !important;
+  
+    position: relative;
+}
+.neon-button::after,
+button.swal2-cancel.swal2-styled::after,
+button.swal2-confirm.swal2-styled::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    box-shadow: 0 0 1em 0.25em var(--clr-neon);
+    opacity: 0;
+    background-color: var(--clr-neon);
+    z-index: -1;
+    transition: opacity 100ms linear;
+}
+.neon-button-red::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    box-shadow: 0 0 1em 0.25em var(--clr-neon-red);
+    opacity: 0;
+    background-color: var(--clr-neon-red);
+    z-index: -1;
+    transition: opacity 100ms linear;
+}
+.neon-button-green::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    box-shadow: 0 0 1em 0.25em var(--clr-neon-green);
+    opacity: 0;
+    background-color: var(--clr-neon-green);
+    z-index: -1;
+    transition: opacity 100ms linear;
+}
+  
+.neon-button:hover,
+.neon-button-red:hover,
+button.swal2-cancel.swal2-styled:hover,
+.neon-button-green:hover,
+button.swal2-confirm.swal2-styled:hover {
+    color: black;
+    text-shadow: none;
+}
+  
+.neon-button:hover::before,
+.neon-button-red::before,
+button.swal2-cancel.swal2-styled::before,
+.neon-button-green::before,
+button.swal2-confirm.swal2-styled::before {
+    opacity: 1;
+}
+  
+.neon-button:hover::after,
+.neon-button-red:hover::after,
+button.swal2-cancel.swal2-styled:hover::after,
+.neon-button-green:hover::after,
+button.swal2-confirm.swal2-styled:hover::after {
+    opacity: 1;
+}

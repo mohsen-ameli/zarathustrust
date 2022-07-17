@@ -82,7 +82,7 @@ function App() {
                                 <Route path="/password-reset-confirm/:uidb64/:token" component={PassResetConfirm} />
 
                                 <Route path="/new_dunc" component={NewDunc} />
-                                {/* <Route component={NotFound} /> */}
+                                {/* <Route path="*" component={NotFound} /> */}
                             </div>
                         </Route>
                     </Switch>

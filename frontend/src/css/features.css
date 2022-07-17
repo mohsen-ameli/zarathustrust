@@ -1,3 +1,33 @@
+/* carousel */
+.carousel-caption {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 85%;
+  text-transform: uppercase;
+  /* background-color: rgba(255, 255, 255, 0.225); */
+  height: 7rem;
+}
+.carousel-caption {
+  font-weight: 700;
+}
+.carousel-caption h1 {
+  font-weight: 400;
+}
+/* end */
+
+.social-icons {
+  font-size: 3rem;
+}
+
+/************ footer /************/
+#footer {
+  background-color: rgb(2, 28, 54);
+  height: 10rem;
+}
+/************ footer /************/
+
 /*-- Fixed Background --*/
 .fixed {
   width: 100%;
