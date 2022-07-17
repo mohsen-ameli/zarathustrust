@@ -508,8 +508,10 @@ def transactionDetail(request, tId):
                 transactor = "Anonymous"
     elif transaction.method == "Exchange":
         giver_symbol = get_currency_symbol(transaction.person.currency)
-        reciever_symbol = get_currency_symbol(transaction.second_person.currency)
-
+        try: 
+            reciever_symbol = get_currency_symbol(transaction.second_person.currency)
+        except AttributeError:
+            reciever_symbol = ""
 
     person  = [transaction.person.created_by.username, transaction.person.currency] if transaction.person else "Anonymous"
     person2 = transaction.second_person.created_by.username if transaction.second_person else "Anonymous"
