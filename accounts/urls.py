@@ -27,4 +27,5 @@ urlpatterns = [
 
     path('transactions/<str:walletIso>/<str:walletName>/<int:pageNum>/<int:numItems>/', transactions, name="transactions"),
     path('transactions/<int:tId>/', transactionDetail, name='transaction-detail'),
+    path('transactions/<int:tId>/delete/', transactionDelete, name='transaction-delete'),
 ]

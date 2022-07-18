@@ -2,7 +2,6 @@ import { useHistory } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import { useTranslation } from "react-i18next";
 
-import Cookies from 'js-cookie';
 import RotateLoader from 'react-spinners/RotateLoader'
 
 import useAddMoney from "../components/useAddMoney"
@@ -37,7 +36,6 @@ const Withdraw = () => {
             let { response, data } = await api("/api/withdraw/",{
                 method: "POST",
                 headers: {
-                    'X-CSRFToken': Cookies.get('csrftoken'),
                     'Content-Type':'application/json',
                 },
                 body: JSON.stringify(

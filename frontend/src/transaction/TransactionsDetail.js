@@ -4,11 +4,14 @@ import { useHistory, useParams } from "react-router-dom";
 import RotateLoader from 'react-spinners/RotateLoader';
 import useFetch from "../components/useFetch";
 import MsgAlert from "../components/MsgAlert";
+import useMsgSwal from "../components/useMsgSwal";
+import { t } from "i18next";
 
 const TransactionsDetail = () => {
     let tId                                     = useParams().tId
     const history                               = useHistory()
     let api                                     = useFetch()
+    const msgSwal                               = useMsgSwal()
 
     const [date, setDate]                       = useState(null)
     const [type, setType]                       = useState(null)
@@ -61,6 +64,24 @@ const TransactionsDetail = () => {
 
         // eslint-disable-next-line
     }, [])
+
+    let deleteTransaction = async () => {
+        let { response, data } = await api(`/api/transactions/${tId}/delete/`, {
+            method: "DELETE",
+            headers: {
+                'Content-Type':'application/json',
+            }
+        })
+        if (response.ok) {
+            if (data.success) {
+                history.goBack()
+                msgSwal(t("trans_del_suc"), "success")
+            } else {
+                setError("default_error")
+                setIsLoading(false)
+            }
+        }
+    }
 
     return (
         <div className="transactions-detail">
@@ -126,6 +147,7 @@ const TransactionsDetail = () => {
                     <small>{date}</small>
                     <hr />
                     <button className="neon-button" onClick={() => history.goBack()}>Back</button>
+                    <button className="neon-button-red mx-3" onClick={() => deleteTransaction()}>Delete This Transaction</button>
                 </div>
             </div>
         </div>

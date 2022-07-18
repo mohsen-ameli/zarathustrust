@@ -536,3 +536,13 @@ def transactionDetail(request, tId):
     }
 
     return Response(context)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def transactionDelete(request, tId):
+    try:
+        TransactionHistory.objects.get(id=tId).delete()
+        return Response({"success": True})
+    except:
+        return Response({"success": False})
