@@ -104,8 +104,8 @@ def Card(request, pk):
 # configuration = plaid.Configuration(
 #     host=plaid.Environment.Sandbox,
 #     api_key={
-#         'clientId': "6235305af410cd001a443813",
-#         'secret': "f09ba69583a6d19be07bf9df42a7d1",
+#         'clientId': "",
+#         'secret': "",
 #     }
 # )
 
