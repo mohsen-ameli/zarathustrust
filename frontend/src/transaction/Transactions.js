@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback, useContext } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -35,43 +35,32 @@ const Transactions = () => {
     const [isLoading, setIsLoading]     = useState(true)
     const [error, setError]             = useState(null)
 
-    const fetchStuff = useCallback(() => {
-        let loadUser = async () => {
-            let { response, data } = await api("/api/currUser/")
-    
-            if (response.status === 200) {
-                setUsername(data.username)
-                setIso2(data.iso2)
-                setCurrency(data.currency)
-    
-                getTransactions(data.iso2, data.currency)
-            } else {
-                setError("default_error")
-                setIsLoading(false)
-            }
-        }; loadUser()
-    
-        let getTransactions = async (iso, curr) => {
-            let { response, data } = await api(`/api/transactions/${iso}/${curr}/${pageNum}/${numItems}/`)
-            
-            if (response.status === 200) {            
-                setAllTrans(data.transactions)
-                setSymbol(data.currencySymbol)
-                setTotalTrans(data.counter)
-    
-                setIsLoading(false)
-            } else {
-                setError("default_error")
-                setIsLoading(false)
-            }
+    const fetchStuff = async () => {
+        let { response: res1, data: d1 } = await api("/api/currUser/")
+        if (res1.status === 200) {
+            setUsername(d1.username)
+            setIso2(d1.iso2)
+            setCurrency(d1.currency)
+        } else {
+            setError("default_error")
         }
 
-        // eslint-disable-next-line
-    }, [])
+        let { response: res2, data: d2 } = await api(`/api/transactions/${d1.iso2}/${d1.currency}/${pageNum}/${numItems}/`)
+        if (res2.status === 200) {
+            setAllTrans(d2.transactions)
+            setSymbol(d2.currencySymbol)
+            setTotalTrans(d2.counter)
+        } else {
+            setError("default_error")
+        }
+
+        setIsLoading(false)
+    }
 
     useEffect(() => {
         fetchStuff()
-    }, [fetchStuff])
+        // eslint-disable-next-line
+    }, [])
 
     let changeCurr = async (wallet) => {
         setIsLoading(true)

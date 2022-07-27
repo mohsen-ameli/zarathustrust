@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext, useCallback } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 
@@ -14,7 +14,6 @@ import AuthContext from "../context/AuthContext";
 import useFetch from "../components/useFetch";
 import ShowWallets from "../components/ShowWallets";
 import useMsgSwal from "../components/useMsgSwal";
-import useInterest from './useInterest';
 
 const Home = () => {
     let zero = 0
@@ -36,68 +35,53 @@ const Home = () => {
     let pk                              = user?.user_id
     let api                             = useFetch()
 
-    const interestCounter = useInterest(interest, balance, setInterest)
+    const fetchStuff = async () => {
+        setIsLoading(true)
 
-    const fetchStuff = useCallback(() => {
-        let loadAccount = async () => {
-            setIsLoading(true)
-            let { response, data } = await api("/api/account/")
-    
-            if (response.status === 200) {
-                setBalance(Number(data.total_balance).toFixed(2))
-                setBonus(Number(data.bonus).toFixed(1))
-                setIsLoading(false)
-            } else {
-                msgSwal(t("default_error"), "error")
-                setIsLoading(false)
-            }
-        }; loadAccount()
-
-        let loadAccountInterest = async () => {
-            setIsLoading(true)
-            let { response, data } = await api("/api/account-interest/")
-    
-            if (response.status === 200) {
-                setInterest(Number(data.interest_rate).toFixed(20));
-                setIsLoading(false)
-            } else {
-                msgSwal(t("default_error"), "error")
-                setIsLoading(false)
-            }
-        }; loadAccountInterest()
-
-        let loadUser = async () => {
-            setIsLoading(true)
-            let { response, data } = await api("/api/currUser/")
-    
-            if (response.status === 200) {
-                setName(data.username)
-                setIsBiz(data.is_business)
-                setCurrency(data.currency)
-                
-                loadSymbol(data.currency)
-            } else {
-                msgSwal(t("default_error"), "error")
-                setIsLoading(false)
-            }
-        }; loadUser()
-
-        let loadSymbol = async (iso3) => {
-            setIsLoading(true)
-            let { response, data } = await api(`/api/getCurrencySymbol/${iso3}/`)
-            
-            if (response.status === 200) {
-                setInterestSymbol(data)
-                setSymbol(data)
-                setIsLoading(false)
-            } else {
-                msgSwal(t("default_error"), "error")
-                setIsLoading(false)
-            }
+        let { response: r1, data: d1 } = await api("/api/account/")
+        if (r1.status === 200) {
+            setBalance(Number(d1.total_balance).toFixed(2))
+            setBonus(Number(d1.bonus).toFixed(1))
         }
 
-        // eslint-disable-next-line
-    }, [])
+        let { response: r2, data: d2 } = await api("/api/account-interest/")
+        if (r2.status === 200) {
+            setInterest(Number(d2.interest_rate).toFixed(20));
+        }
+
+        let { response: r3, data: d3 } = await api("/api/currUser/")
+        if (r3.status === 200) {
+            setName(d3.username)
+            setIsBiz(d3.is_business)
+            setCurrency(d3.currency)
+        }
+
+        let { response: r4, data: d4 } = await api(`/api/getCurrencySymbol/${d3.currency}/`)
+        if (r4.status === 200) {
+            setInterestSymbol(d4)
+            setSymbol(d4)
+        }
+
+        setIsLoading(false)
+
+        counter(Number(d2.interest_rate), Number(d1.total_balance))
+    }
+
+    const counter = (intRate, bal) => {
+        let int = 0
+
+        let everyTime = () => {
+            setInterest(intRate.toFixed(20))
+
+            /* one percent of the total balance per second */
+            int = bal * 0.01 / 31536000
+            intRate = intRate + int
+        }; everyTime()
+
+        if (bal > 0) {
+            setInterval(everyTime, 1000)
+        }
+    }
 
     useEffect(() => {
         let reloading = localStorage.getItem("reloading");
@@ -113,7 +97,7 @@ const Home = () => {
 
         fetchStuff()
         // eslint-disable-next-line
-    }, [fetchStuff])
+    }, [])
 
     // cash out
     const cashOut = async () => {
@@ -233,7 +217,7 @@ const Home = () => {
                 <div className="d-flex">
                     <div className="d-flex counter-interest">
                         {/* <div>{ interestSymbol }{ interest }</div> */}
-                        { interestSymbol }{interestCounter}
+                        { interestSymbol }{ interest }
                     </div>
                 </div>
                 <br></br>

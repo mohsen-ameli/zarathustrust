@@ -23,8 +23,6 @@ const Deposit = () => {
     const [isLoading, setIsLoading] = useState(true)
     const msgSwal                   = useMsgSwal()
 
-    console.log(err)
-
     useEffect(() => {
         // let fetchStuff = async () => {
         //     let { response, data } = await api("/api/get-banking-info/")
