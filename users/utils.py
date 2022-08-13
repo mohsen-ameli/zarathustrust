@@ -1,3 +1,4 @@
+import os
 from twilio.rest import Client
 import json
 
@@ -5,8 +6,8 @@ import json
 #     config = json.load(config_file)
 
 
-account_sid = config.get('TWILIO_ACCOUNT_SID')
-auth_token = config.get('TWILIO_AUTH_TOKEN')
+account_sid = os.environ.get('TWILIO_ACCOUNT_SID')
+auth_token = os.environ.get('TWILIO_AUTH_TOKEN')
 client = Client(account_sid, auth_token)
 
 def phone_msg_verify(verify_code, phone_number_to):

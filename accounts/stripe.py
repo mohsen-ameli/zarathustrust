@@ -1,4 +1,5 @@
 import json, requests, stripe
+import os
 
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
@@ -7,7 +8,6 @@ from django.contrib import messages
 from django.utils.translation import gettext as _
 from django.conf import settings
 
-from ..wallets.forms import BankInfo
 from accounts.models import CustomUser
 from accounts.functions import correct_user
 
@@ -35,9 +35,9 @@ def Bank(request, pk):
     # getting a token for the user
     url = "https://sandbox.api.yodlee.com/ysl/auth/token"
 
-    clientId = config.get('YODLEE_CLIENT_ID')
-    secret = config.get('YODLEE_SECRET')
-    loginName = config.get('YODLEE_LOGIN_NAME')
+    clientId = os.environ.get('YODLEE_CLIENT_ID')
+    secret = os.environ.get('YODLEE_SECRET')
+    loginName = os.environ.get('YODLEE_LOGIN_NAME')
 
     payload=f'clientId={clientId}&secret={secret}'
     headers = {
