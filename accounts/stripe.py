@@ -11,8 +11,8 @@ from ..wallets.forms import BankInfo
 from accounts.models import CustomUser
 from accounts.functions import correct_user
 
-with open("/etc/config.json") as config_file:
-    config = json.load(config_file)
+# with open("/etc/config.json") as config_file:
+#     config = json.load(config_file)
 
 
 @login_required

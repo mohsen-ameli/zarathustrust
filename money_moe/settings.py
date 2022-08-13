@@ -13,8 +13,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os, json
 from datetime import timedelta
 
-with open("/etc/config.json") as config_file:
-    config = json.load(config_file)
+# with open("/etc/config.json") as config_file:
+#     config = json.load(config_file)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,10 +24,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config.get("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = str(config.get("DEBUG")) == "1"
+DEBUG = str(os.environ.get("DEBUG")) == "1"
 
 ALLOWED_HOSTS = ['www.zarathustrust.com', 'zarathustrust.com', '165.227.37.14', '127.0.0.1', 'localhost']
 
@@ -119,10 +119,10 @@ else:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql_psycopg2",
-            "NAME": config.get("db_name"),
-            "USER": config.get("db_user"),
-            "PASSWORD": config.get("db_pass"),
-            "HOST": config.get("db_host"),
+            "NAME": os.environ.get("db_name"),
+            "USER": os.environ.get("db_user"),
+            "PASSWORD": os.environ.get("db_pass"),
+            "HOST": os.environ.get("db_host"),
             "PORT": "5432",
         }
     }
@@ -174,7 +174,7 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
 
 # CELERY
-CELERY_BROKER_URL = config.get("BROKER_URL")
+CELERY_BROKER_URL = os.environ.get("BROKER_URL")
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_BAKCEND = "amqp://"
@@ -189,15 +189,15 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config.get("EMAIL_ID")
-EMAIL_HOST_PASSWORD = config.get("EMAIL_PW")
+EMAIL_HOST_USER = os.environ.get("EMAIL_ID")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_PW")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # EMAIL_USE_SSL = False
 
 
 # STRIPE
-STRIPE_PUBLIC_KEY = config.get("STRIPE_PUBLIC_KEY")
-STRIPE_SECRET_KEY = config.get("STRIPE_SECRET_KEY")
+STRIPE_PUBLIC_KEY = os.environ.get("STRIPE_PUBLIC_KEY")
+STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY")
 
 
 # CORS & Django REST FRAMEWORK

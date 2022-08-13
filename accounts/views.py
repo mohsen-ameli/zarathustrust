@@ -1,4 +1,4 @@
-import json
+import json, os
 
 from django.core.mail import send_mail, EmailMessage
 from django.db.models import Q, F
@@ -15,9 +15,9 @@ from .models import *
 from .serializers import *
 
 
-def loadConfig():
-    with open('/etc/config.json') as config_file:
-        return json.load(config_file)
+# def loadConfig():
+#     with open('/etc/config.json') as config_file:
+#         return json.load(config_file)
 
 
 @api_view(['GET'])
@@ -123,14 +123,14 @@ def cashOut(request):
 @permission_classes([IsAuthenticated])
 def deposit(request):
     pk              = request.user.pk
-    config          = loadConfig()
+    # config          = loadConfig()
     user            = CustomUser.objects.get(pk=pk)
 
     body = json.loads(request.body)
     symbol          = body['symbol']
     amount          = body['amount']
-    EMAIL_ID        = config.get('EMAIL_ID')
-    EMAIL_ID_MAIN   = config.get('EMAIL_ID_MAIN')
+    EMAIL_ID        = os.environ.get('EMAIL_ID')
+    EMAIL_ID_MAIN   = os.environ.get('EMAIL_ID_MAIN')
 
     title = f'DEPOSIT FOR {user.username}'
     body = f'{user.username} with account number : {pk} has requested to deposit {symbol}{amount}'
@@ -143,7 +143,7 @@ def deposit(request):
 @permission_classes([IsAuthenticated])
 def withdraw(request):
     success             = False
-    config              = loadConfig()
+    # config              = loadConfig()
     pk                  = request.user.pk
 
     body                = json.loads(request.body)
@@ -159,9 +159,9 @@ def withdraw(request):
 
     if moneyToWithdraw >= minMoney and moneyToWithdraw <= balance:
         # sending email to admin and user
-        EMAIL_ID        = config.get('EMAIL_ID')
-        EMAIL_ID_MAIN   = config.get('EMAIL_ID_MAIN')
-        MOE_EMAIL       = config.get('MOE_EMAIL')
+        EMAIL_ID        = os.environ.get('EMAIL_ID')
+        EMAIL_ID_MAIN   = os.environ.get('EMAIL_ID_MAIN')
+        MOE_EMAIL       = os.environ.get('MOE_EMAIL')
 
         title = f'WITHDRAW FOR {user.username}'
         body = f'{user.username} with account number {pk} has requested to withdraw {userCurrencySymbol}{moneyToWithdraw}'
@@ -262,7 +262,7 @@ def transferSearch(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def transferConfirm(request):
-    config                   = loadConfig()
+    # config                   = loadConfig()
     pk                       = request.user.pk
     success                  = False
     message                  = ""
@@ -315,7 +315,7 @@ def transferConfirm(request):
             reciever_email = reciever_user.email
             giver_username = giver_user.username
             giver_email    = giver_user.email
-            EMAIL_ID       = config.get('EMAIL_ID')
+            EMAIL_ID       = os.environ.get('EMAIL_ID')
 
             # emailing the reciever
             title = "ZARATHUSTRUST MONEY TRANSFER"

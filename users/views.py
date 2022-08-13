@@ -1,6 +1,6 @@
 import phonenumbers
 import pycountry
-import json
+import json, os
 
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password
@@ -24,9 +24,9 @@ from .utils import phone_msg_verify
 from .serializers import *
 
 
-def loadConfig():
-    with open('/etc/config.json') as config_file:
-        return json.load(config_file)
+# def loadConfig():
+#     with open('/etc/config.json') as config_file:
+#         return json.load(config_file)
 
 
 @api_view(['POST'])
@@ -102,12 +102,12 @@ def signUp(request):
 @api_view(['GET'])
 # Email Verify 
 def verifyEmail(request):
-    config = loadConfig()
+    # config = loadConfig()
     user = request.session.get('user')
     email_code = request.session.get('ver_code')['email_verify_code']
 
     # send email
-    EMAIL_ID = config.get("EMAIL_ID")
+    EMAIL_ID = os.environ.get("EMAIL_ID")
     send_mail(
         f"Hello {user['username']}",
         f"Your verification code is : {email_code}, you are very close to starting your money making process!",
@@ -139,7 +139,7 @@ def verifyReferral(request):
     EXTRA_BONUS_VALUE = 200
 
     message = ""
-    config  = loadConfig()
+    # config  = loadConfig()
 
     # getting stuff to sign up the user
     user = request.session.get('user')
@@ -191,7 +191,7 @@ def verifyReferral(request):
         )
 
         # send email to the person whose referral code was just used
-        EMAIL_ID = config.get("EMAIL_ID")
+        EMAIL_ID = os.environ.get("EMAIL_ID")
         send_mail(
             f"Dear {refUser_username}!",
             f"{username} just used your referral code! You recieved {refUser_currency_symbol}{refUser_currency_min} on your balance, and {refUser_currency_symbol}{refUser_extra_bonus} added to your bonus!",
@@ -243,8 +243,8 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
             absurl = f"http://{current_site}/password-reset-confirm/{uidb64}/{token}"
 
             # send email
-            config  = loadConfig()
-            EMAIL_ID = config.get("EMAIL_ID")
+            # config  = loadConfig()
+            EMAIL_ID = os.environ.get("EMAIL_ID")
             send_mail(
                 f"Password reset on {current_site}",
                 f"You're receiving this email because you requested a password reset for your user account at {current_site}. \n\n Please go to the following page and choose a new password: \n\n {absurl} \n\n Your username, in case you've forgotten: {user.username} \n\n Thanks for using our site! \n The {current_site} team",

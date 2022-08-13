@@ -1,12 +1,7 @@
-import json
-
 from django.db import models
 from django.utils.translation import gettext as _
 from users.models import CustomUser
 from django.db.models import F
-
-with open('/etc/config.json') as config_file:
-    config = json.load(config_file)
 
 
 class Account(models.Model):
