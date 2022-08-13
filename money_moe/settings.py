@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os, json
 from datetime import timedelta
+import django_heroku
 
 # with open("/etc/config.json") as config_file:
 #     config = json.load(config_file)
@@ -267,3 +268,4 @@ if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     X_FRAME_OPTIONS = "DENY"
 
+django_heroku.settings(locals())

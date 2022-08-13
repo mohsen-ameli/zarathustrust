@@ -9,6 +9,7 @@ Pillow
 django-countries
 django-admin-interface
 django-cors-headers
+django-heroku
 psycopg2-binary
 phonenumbers
 gunicorn
