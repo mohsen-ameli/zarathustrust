@@ -29,7 +29,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = str(os.environ.get("DEBUG")) == "1"
 
-ALLOWED_HOSTS = ['www.zarathustrust.com', 'zarathustrust.com', '165.227.37.14', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['www.zarathustrust.com', 'zarathustrust.com', 'zarathustrust.herokuapp.com', '127.0.0.1', 'localhost']
 
 INTERNAL_IPS = (
     '127.0.0.1'
