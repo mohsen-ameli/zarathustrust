@@ -1,1 +1,1 @@
-web: gunicorn money_moe.wsgi --log-file
+web: gunicorn money_moe.wsgi
