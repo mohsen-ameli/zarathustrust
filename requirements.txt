@@ -4,7 +4,6 @@ celery
 djangorestframework
 twilio
 requests
-# stripe
 whitenoise
 Pillow
 django-countries

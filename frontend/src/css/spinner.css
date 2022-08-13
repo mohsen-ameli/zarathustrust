@@ -1,43 +1,43 @@
 .spinner {
-    background: rgba(0, 0, 0, .15);
-    overflow-y: auto;
-    display: flex;
-    position: absolute;
-    align-items: center;
-    justify-content: center;
-    z-index: 1060;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+  background: rgba(0, 0, 0, .15);
+  overflow-y: auto;
+  display: flex;
+  position: fixed;
+  align-items: center;
+  justify-content: center;
+  z-index: 1060;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 #container {
-    width: 200px;
-    height: 200px;
+  width: 200px;
+  height: 200px;
 }
 @keyframes animation {
-    0% {
-      stroke-dasharray: 1 98;
-      stroke-dashoffset: -105;
-    }
-    50% {
-      stroke-dasharray: 80 10;
-      stroke-dashoffset: -160;
-    }
-    100% {
-      stroke-dasharray: 1 98;
-      stroke-dashoffset: -300;
-    }
+  0% {
+    stroke-dasharray: 1 98;
+    stroke-dashoffset: -105;
+  }
+  50% {
+    stroke-dasharray: 80 10;
+    stroke-dashoffset: -160;
+  }
+  100% {
+    stroke-dasharray: 1 98;
+    stroke-dashoffset: -300;
+  }
 }
 #spinner {
-    transform-origin: center;
-    animation-name: animation;
-    animation-duration: 1.2s;
-    animation-timing-function: cubic-bezier;
-    animation-iteration-count: infinite;
-    fill:transparent;
-    stroke:var(--clr-neon);
-    stroke-width: 7px;
-    stroke-linecap: round;
-    filter:url(#shadow);
+  transform-origin: center;
+  animation-name: animation;
+  animation-duration: 1.2s;
+  animation-timing-function: cubic-bezier;
+  animation-iteration-count: infinite;
+  fill:transparent;
+  stroke:var(--clr-neon);
+  stroke-width: 7px;
+  stroke-linecap: round;
+  filter:url(#shadow);
 }

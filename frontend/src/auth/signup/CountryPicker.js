@@ -92,11 +92,7 @@ const CountryPicker = () => {
         <div className="country-picker" onKeyDown={e => {e.key === "Enter" && next(choices[0][1], choices[0][0])}}>
             {showErr && <MsgAlert msg={error} variant="danger" />}
 
-            { isLoading && 
-            <div className="spinner">
-                <RotateLoader color="#f8b119" size={20} />
-            </div>
-            }
+            {isLoading && <div className="spinner"><RotateLoader color="#f8b119" size={20} /></div>}
 
             <div className="card text-white zarathus-card mx-auto">
                 <div className="card-body">

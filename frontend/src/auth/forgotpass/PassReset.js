@@ -40,11 +40,7 @@ const PassReset = () => {
 
     return (
         <div className="pass-reset">
-            { isLoading && 
-            <div className="spinner">
-                <RotateLoader color="#f8b119" size={20} />
-            </div>
-            }
+            {isLoading && <div className="spinner"><RotateLoader color="#f8b119" size={20} /></div>}
 
             {!success ? 
                 <div className="card text-white zarathus-card mx-auto">

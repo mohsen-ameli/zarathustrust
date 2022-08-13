@@ -132,11 +132,7 @@ const SignUp = () => {
     return (
         <GoogleReCaptchaProvider reCaptchaKey={process.env.REACT_APP_RECAPTCHA_KEY} SameSite="None">
             <div className="sign-up">
-                { isLoading && 
-                <div className="spinner">
-                    <RotateLoader color="#f8b119" size={20} />
-                </div>
-                }
+                {isLoading && <div className="spinner"><RotateLoader color="#f8b119" size={20} /></div>}
 
                 <div className="card text-white zarathus-card mx-auto my-3">
                     <div className="card-body">
