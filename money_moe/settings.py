@@ -267,5 +267,6 @@ if not DEBUG:
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SECURE_BROWSER_XSS_FILTER = True
     X_FRAME_OPTIONS = "DENY"
+    SILENCED_SYSTEM_CHECKS = ["security.W019"]
 
 django_heroku.settings(locals())
