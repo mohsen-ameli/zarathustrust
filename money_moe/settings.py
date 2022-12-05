@@ -46,8 +46,8 @@ INSTALLED_APPS = [
     "accounts.apps.AccountsConfig",
     
     "django_countries",
-    "admin_interface",
-    "colorfield",
+    # "admin_interface",
+    # "colorfield",
     "corsheaders",
     "rest_framework",
 
@@ -266,7 +266,7 @@ if not DEBUG:
     SECURE_HSTS_PRELOAD = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SECURE_BROWSER_XSS_FILTER = True
-    X_FRAME_OPTIONS = "DENY"
-    SILENCED_SYSTEM_CHECKS = ["security.W019"]
+    # X_FRAME_OPTIONS = "DENY"
+    # SILENCED_SYSTEM_CHECKS = ["security.W019"]
 
 django_heroku.settings(locals())
