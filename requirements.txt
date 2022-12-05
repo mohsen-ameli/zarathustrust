@@ -15,4 +15,4 @@ phonenumbers
 gunicorn
 djangorestframework-simplejwt
 pycountry
-# psycopg2
+psycopg2

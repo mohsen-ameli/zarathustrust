@@ -30,7 +30,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = str(os.environ.get("DEBUG")) == "1"
 
-ALLOWED_HOSTS = ['www.zarathustrust.com', 'zarathustrust.com', 'zarathustrust.herokuapp.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['www.zarathustrust.com', 'zarathustrust.com', 'web-production-5197.up.railway.app', '127.0.0.1', 'localhost']
 
 INTERNAL_IPS = (
     '127.0.0.1'
@@ -108,23 +108,23 @@ WSGI_APPLICATION = "money_moe.wsgi.application"
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 # SQLITE3
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
-    }
-}
-# POSTGRESQL
 # DATABASES = {
 #     "default": {
-#         "ENGINE": "django.db.backends.postgresql_psycopg2",
-#         "NAME": os.environ.get("db_name"),
-#         "USER": os.environ.get("db_user"),
-#         "PASSWORD": os.environ.get("db_pass"),
-#         "HOST": os.environ.get("db_host"),
-#         "PORT": "5432",
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
 #     }
 # }
+# POSTGRESQL
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": os.environ.get("db_name"),
+        "USER": os.environ.get("db_user"),
+        "PASSWORD": os.environ.get("db_pass"),
+        "HOST": os.environ.get("db_host"),
+        "PORT": os.environ.get("db_port"),
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
