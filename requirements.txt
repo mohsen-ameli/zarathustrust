@@ -1,5 +1,5 @@
 # sudo apt install gcc, for psycopg2
-Django==3.2.15
+Django==3.2.17
 celery
 djangorestframework
 twilio
