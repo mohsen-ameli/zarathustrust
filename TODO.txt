@@ -1,0 +1,249 @@
+*** 1 : adding a message input when someone wants to send money to others, purpose of the send (use)
+	- on a successful transaction, for reciever :
+		dear <reciever>,
+		just sent you <price> for this purpose of use.
+		<purpose of use>
+	- for sender:
+		dear <giver>,
+		you just sent <reciever>, <price> for this purpose of use:
+		<purpose of use>
+	- (500 characters max)
+	- email it to them
+
+*** 2 : add the purpose of use to the users' transaction history
+
+*** 3 : transaction history, date, price, purpose of use, giver, and reciever (button on the main page)
+
+*** 4 : send money functionality needs to be fixed
+
+*** 5 : the interest counter is broken when at 0 dollars (specifically when you send all of your 
+money to someone else)
+
+*** 6 : add "mx-auto" to all forms in html, and remove the register-form from css or do whatevrer idk
+
+*** 7 : fixed sign up and login issues
+
+*** 8 : figure out this whole primary key of different users trying to be other users like here 
+"http://localhost:8000/14/history/5" compared to here "http://localhost:8000/1/history/5"
+
+*** 9 QUESTION : do i need to record all the cashouts in transaction history as well ?
+	+ added cashout and bonus money gets recorded
+
+*** 10 : ZarathusTrust, make T bigger
+
+*** 11 : if you open this "http://localhost:8000/checkout/craigslist/136/checkout_complete" and just
+reload the page as many times as u want, it will keep on paying the shop.
+	+ I think it would be better to have a button to submit a value, and do the stuff that
+	  is happening in checkout_complete when the button is pressed, and this'll make the
+	  confirmation easier
+
+*** 12 : confirmation before sending money plus a happy sound
+	+ probably have to make a confirmation page for every single pay page
+	+ nah jus use javascript
+	+ every form except deposit
+	+ amount to pay to this person
+
+*** 13 : add a url sanitastion to check whether or not the user visiting the page is actually the user 
+     that's logged in ...
+
+*** 14 : make the 1% to 2% in homepage
+
+*** 15 : make the bonus question mark untransparent
+
+*** 16 : make the pop ups bring down
+
+*** 17 : make the home page card smaller x-axis
+
+*** 18 : pagination for history (choose how many items to see per page)
+	+ up button
+	+ home button at the very bottom
+
+*** 19 : back to home button on history page
+
+*** 20 : loading page when users are on hold
+
+*** %%% 21 : transfering money to others's view needs to be fixed
+	+ search for "a" and other filler words needs to be fixed with "elasticsearch"
+	+ done with ajax, live search added too
+
+*** %%% 22 : using cookies to save the user's default langugae
+
+*** 23 : signup german translate delete the second sentenace
+
+*** 24 : change the website to use bootstrap v.5, to get that nice checkbox for money transfer AND floating forms
+
+*** %% 25 : make the up button closer to the cards, and add an up text
+
+*** 26 : user's currency shouldn't change when they change their language
+
+*** 27 : replace the homepage motto with a friendly welcome message with the user's name
+
+*** 28 : PersonalSignUp is messed up (language and country)
+
+*** %%% 29 : signup page's forms need to show error messages
+
+*** 30 : container-lg is broken
+
+*** %%% 31 : the country picker needs to have a dropdown with an input next to it
+	REALLYYYYY does it now ? wowww i don't think so pal
+
+*** %%%%% 32 : make the pagination dropdown, so that users choose the pagination number
+	+ maybe use sessions ?
+
+*** %% 33 : fix not being able to delete users in admin page
+
+*** %%%% 34 : if u pick ur country, and fill out the form, then try logging in with the incomplete user, the
+system breaks.
+
+*** %%%%% 35 : adding a currency sign field to models ? or using a python library to generate the symbol
+	+ edit the swal alert to match the user's currency 
+
+*** %%%%% 36 : adding a currency sign field to models ? or using a python library to generate the symbol
+	+ edit the swal alert to match the user's currency 
+
+*** %%%%% 37 : hamburger list on mobile is broken
+
+*** %%% 38 : add the currency field to the accounts page in admin page
+
+*** %%%% 39 : what currency should be displayed after each transfer in history page ?
+
+*** %%%% 40 : set a minimum number of characters to be set for the username field in sign up
+	+ min : 5
+
+*** %%% 41 : add proper error fields to phone_number
+
+*** 42 : add live error check to deposit and withdraw (js) 
+
+*** 44 : you can have up to 10 wallets with different currencies
+	
+*** 45 : wallet button needs to show flags like the language dropdown.
+	
+*** 46 : the button will take you to a page where you can select all of your currencies from 160 
+	currencies. (search button too) and then after you select at the most 10, you will save your selections
+	and it will redirect you back to the home page, and the selected currencies will be added to your wallet.
+		+ interest will only go towards your main currency
+*** 47 : button to show all of your currencies, and each button will load a new site with that currency
+	
+*** 48 : (exchange currency) a fifth button that converts differnet currencies
+
+*** 49 : (Send Money) when someone sends me money, it should automatically make a new wallet for me, 
+	and put that money to my newly created wallet
+
+*** 50 : (deposit and withdraw) add a dropdown button right next to the deposit page to choose their currency
+
+*** 51 : move settings all the way to the right
+
+*** 52 : try and find a way to keep track of the website traffic to see from which countries we're getting 
+
+*** %%%% 53 : minimum amount of money to interact with in different currencies around the website need to be 
+	changed according to the user's main currency
+	*** + when signing up get the users bonus, and convert th 1000$ to it and round to 3 digits
+
+*** %%% 54 : after withdraw lessen the amount
+
+*** %%% 55 : still under development
+
+*** 56 : if you input characters instead of numbers in the phone number field in sign up the system breaks
+*** 57 : sending money to youself shouldnt be allowed
+*** 58 : fixing the message area in send money
+
+*** 59 : fix the country selecting being too slow
+*** 60 : wallet model's add/take money is not working (admin page)
+
+*** 61 - put the landing page and every javascript that needs to be in the user's app, in the user's app
+*** %%% 62 : username field in sign up doesn't accept spaces
+*** %%% 63 : when choosing a country in the first step of sign up, if there is a default value, when you click next,
+		it won't work properly (the sign up form's phone number extention will be wrong).
+*** %%% 64 : if you try to exchange currencies, say EUR to CAD, and in the url u change the EUR to qwe, it'll still work
+*** %%% 65 : fix not allowing users to see other's history detail
+*** %%%% 66 : whenever a field is wrong in sign up, the page refreshes and empties out the other fields.
+*** % 67 : the hamburger button needs to be dissmissed when clicked outside of it. (when it is clicked when u 
+	wanna dismiss it, just click outside, it won't work)
+*** %%%%% 68 : interest making doesn't automatically start, upon user registeration
+	Interest is fucked up ...
+*** %%% 69 : landing page :
+	*** + add all of our usp's.
+	(NO maybe ?) + maybe a fade in animation to show everything after the initial animation
+	*** + add a still under development, and a bell icon to notify them when website is fully up (phone number)
+	*** + whole page be the gold colour, and then zoom out into the zarathustrust logo, and then
+		move up to the corner in the navbar.
+
+*** %% 70 : message pop ups need to be bigger and more in sight
+*** %% 71 : add CAPCHA to forms
+*** %%%% 72 : (history) history needs to have multiple history pages for each wallet
+	*** + figure out history details
+	*** + red or green for currency excahnge
+
+*** %%%%% 73 : referral code
+
+*** %%%%%% 74 : figure out the interest making progress with celery
+
+*** %%%% 75 : figuring out security (cloudflare)
+
+*** %%% 76 : users are able to make more than 10 wallets
+
+*** 77 : HTMX ? :) no react
+
+*** %% 78 : translations
+
+*** %%%% 79 : the search dropdowns are bugged when clicked twice on
+
+80 : currency exchange shouldn't be visible when users don't have any wallets
+
+81 : the two dropdowns for currency exchange should be different by default
+
+*** %%% 82 : when depositing (other transactions too) users can hit enter multiple times and submit multiple forms all at once
+
+==================== STUFF TO DO ====================
+%%%%% 82 : get users bank account number when they try to deposit or withdraw money.
+
+***? %%% 83 : storing users' sensitive data (bank account number) (aws or localhost)
+
+%%%%% 84 : checkout for shops
+	+ if user has that wallet or not, and if not show them an option to change currencies.
+	(LATER) + build an api with docs
+
+% 85 : a page where business accounts can visit to get their zarathustrust pay button
+	+ business sign up page
+
+* % 86 : add an entire new section called settings, and we can have these in it:
+	+ changing default language
+	+ changing default country
+	+ changing default currency
+	* + changing username
+	*** + changing password
+	** + dark/white theme toggle ;)
+
+==================== BUGS ====================
+%% 87 : interest counter doesn't start sometimes
+
+%%%%% 88 : searching through wallets should have more than just the iso3. have like country names, iso3 to search through
+
+%% 91 : sign ups' send_email and send_phone_code again can be acheieved by just reloading the page.
+
+92 : back button is not working.
+
+==================== LATER ====================
+92 : make a page where it asks users to link one of these two options
+	*** + Card
+	+ bank (account number or IBAN)
+		- confirmitaion
+		- store a token of some kind in the database
+	+ add a section for users to see their card information
+
+93 : add a support page, with approprate email.
+	+ FAQ page
+
+94 : add another entire new section called profile:
+	+ add user profile with their name and a pic, 
+	+ show their pictures when in send money
+	+ make profiles automatically
+	+ add a picture field in settings
+
+==================== DEPLOYMENT ====================
+*** migrate to postgresql, nginx, gunicorn, maybe digitalocean, with celery
+	+ get an email for the website and our business
+	+ run a cronjob of these
+		- python manage.py clearsessions (incomplete register dismisses)
+		- certbot
+

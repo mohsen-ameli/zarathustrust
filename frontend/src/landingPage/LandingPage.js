@@ -1,8 +1,5 @@
-import LandingAni from "./LandingAni"
+import LandingAnimation from "./LandingAnimation"
 import Carousel from "./Carousel"
-import PicUsp from "./PicUsp"
-import Socials from "./Socials"
-import IconUsp from "./IconUsp"
 import JoinUs from "./JoinUs"
 import Footer from "./Footer"
 
@@ -13,7 +10,7 @@ const LandingPage = () => {
   return (
     <div className="landing-page" style={{ marginTop: "46px" }}>
       {/* Starting Page Animation */}
-      <LandingAni />
+      <LandingAnimation />
       <div className="test-animation" id="ani"></div>
 
       {/* Carousel */}

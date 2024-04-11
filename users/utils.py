@@ -6,20 +6,24 @@ import json
 #     config = json.load(config_file)
 
 
-account_sid = os.environ.get('TWILIO_ACCOUNT_SID')
-auth_token = os.environ.get('TWILIO_AUTH_TOKEN')
-client = Client(account_sid, auth_token)
+# account_sid = os.environ.get('TWILIO_ACCOUNT_SID')
+# auth_token = os.environ.get('TWILIO_AUTH_TOKEN')
+# client = Client(account_sid, auth_token)
+# client = Client("", "")
+
 
 def phone_msg_verify(verify_code, phone_number_to):
-    message = client.messages.create(
-            body=f'Your verification code is : {verify_code}, you are even closer to starting your money making process!',
-            from_='+14432965265',
-            to=f'{phone_number_to}'
-        )
+    # message = client.messages.create(
+    #         body=f'Your verification code is : {verify_code}, you are even closer to starting your money making process!',
+    #         from_='+14432965265',
+    #         to=f'{phone_number_to}'
+    #     )
+    pass
 
 def new_user(name):
-    message = client.messages.create(
-        body=f'NEW ACCOUNT {name}',
-        from_='+14432965265',
-        to=['+16473948541', '+4915784096334']
-    )
+    # message = client.messages.create(
+    #     body=f'NEW ACCOUNT {name}',
+    #     from_='+14432965265',
+    #     to=['+16473948541', '+4915784096334']
+    # )
+    pass
